@@ -35,16 +35,12 @@ public:
 
 
 private:
-
-	ComPtr<ID3D12Resource> _uavBuffer;
-	ComPtr<ID3D12Resource> _readBackBuffer;
-
-	D3D12_CPU_DESCRIPTOR_HANDLE _uavDescriptorHandle;
-
-	tableContainer _tableContainer;
-
 	std::shared_ptr<Mesh> _mesh;
 	std::vector<std::shared_ptr<Material>> _materials;
+
+	shared_ptr<Shader> _debugShader;
+
+
 
 
 

@@ -26,26 +26,22 @@ cbuffer cameraParams : register(b2)
     float4 cameraScreenData;
 };
 
-cbuffer popo : register(b7)
-{
-    float2 uv;
-}
-
-
 struct VS_IN
 {
     float3 pos : POSITION;
-    float2 uv : TEXCOORD0;
     float3 normal : NORMAL;
-    uint vertexID : SV_VertexID;
 };
 
 struct VS_OUT
 {
     float4 pos : SV_Position;
-    float3 worldPos : POSITION;
-    float2 uv : TEXCOORD;
-    float3 worldNormal : NORMAL;
+    float3 normal : NORMAL;
+};
+
+struct GS_OUT
+{
+    float4 pos : SV_Position;
+    float4 color : COLOR;
 };
 
 VS_IN WaveGeneration(VS_IN input)
@@ -76,19 +72,16 @@ VS_IN WaveGeneration(VS_IN input)
         float wave = sin(dotProduct * frequency + phase);
         float waveDerivative = cos(dotProduct * frequency + phase);
 
-    // xz 및 y 방향 변위 적용
         modifiedPos.xz += amplitudes[i] * direction * waveDerivative;
         modifiedPos.y += amplitudes[i] * wave;
 
-    // 기울기 벡터 계산
         float3 tangentX = float3(direction.x, waveDerivative * direction.x, 0.0f);
         float3 tangentZ = float3(0.0f, waveDerivative * direction.y, direction.y);
-
-    // 법선 기여도 합산
+        
         modifiedNormal += cross(tangentX, tangentZ);
     }
 
-    modifiedNormal = normalize(modifiedNormal); // 정규화
+    modifiedNormal = normalize(modifiedNormal);
 
     VS_IN result;
     result.pos = modifiedPos;
@@ -102,21 +95,34 @@ VS_OUT VS_Main(VS_IN input)
     VS_OUT output = (VS_OUT) 0;
 
     VS_IN result = WaveGeneration(input);
- 
-    // 월드, 뷰, 프로젝션 변환
-    float4 worldPos = mul(float4(result.pos, 1.0f), WorldMat);
-    
-    output.worldPos = worldPos.xyz;
 
-    
-    output.pos = mul(worldPos, VPMatrix);
-    output.uv = input.uv;
-    output.worldNormal = normalize(mul(float4(result.normal, 0.0f), WorldMat).xyz);
+    output.pos = float4(result.pos, 1.0f);
+    output.normal = result.normal;
     
     return output;
 }
 
-float4 PS_Main(VS_OUT input) : SV_Target
+[maxvertexcount(2)]
+void GS_Main(point VS_OUT input[1], inout LineStream<GS_OUT> outputStream)
 {
-    return g_tex_0.Sample(g_sam_0, input.uv );
+    GS_OUT output;
+    
+    float4 worldPos = mul(float4(input[0].pos.xyz, 1.0f), WorldMat);
+    float4 normalWorld = mul(float4(input[0].normal, 0.0f), WorldMat);
+    
+    normalWorld = normalize(normalWorld);
+    output.pos = mul(worldPos, VPMatrix);
+    output.color = float4(1, 0, 0, 0);
+    outputStream.Append(output);
+    
+    output.pos = mul(worldPos + normalWorld * 5.0f, VPMatrix);
+    output.color = float4(0, 1, 0, 0);
+    outputStream.Append(output);
+
+}
+
+
+float4 PS_Main(GS_OUT input) : SV_Target
+{
+    return input.color;
 }

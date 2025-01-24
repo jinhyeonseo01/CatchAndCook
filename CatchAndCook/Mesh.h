@@ -78,6 +78,7 @@ private:
 			uploadBuffer = nullptr;
 		}
 
+	
 	}
 
 	void CreateIndexBuffer(vector<uint32>& vec);
@@ -102,6 +103,7 @@ private:
 	uint64 _vertexSize = 0;
 	uint32 _perVertexSize = 0;
 	uint32 _vertexCount = 0;
+
 
 	ComPtr<ID3D12Resource>		_IndexBuffer;
 	D3D12_INDEX_BUFFER_VIEW		_indexBufferView = {};
