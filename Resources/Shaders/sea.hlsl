@@ -1,4 +1,13 @@
 #include "GLOBAL.hlsl"
+
+struct VertexData
+{
+    float3 pos;
+    float2 uv;
+    float3 normal;
+};
+
+RWStructuredBuffer<VertexData> g_VertexDataBuffer : register(u0);
 Texture2D g_tex_0 : register(t0);
 SamplerState g_sam_0 : register(s0);
 
@@ -36,6 +45,7 @@ struct VS_IN
     float3 pos : POSITION;
     float2 uv : TEXCOORD0;
     float3 normal : NORMAL;
+    uint vertexID : SV_VertexID;
 };
 
 struct VS_OUT
@@ -110,6 +120,11 @@ VS_OUT VS_Main(VS_IN input)
     output.pos = mul(worldPos, VPMatrix);
     output.uv = input.uv;
     output.worldNormal = normalize(mul(float4(result.normal, 0.0f), WorldMat).xyz);
+    
+    g_VertexDataBuffer[input.vertexID].pos = result.pos;
+    g_VertexDataBuffer[input.vertexID].normal = result.normal;
+    g_VertexDataBuffer[input.vertexID].uv = input.uv;
+    
     return output;
 }
 

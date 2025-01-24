@@ -216,6 +216,7 @@
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteAction.cpp" />
     <ClCompile Include="SpriteRenderer.cpp" />
+    <ClCompile Include="TempRenderer.cpp" />
     <ClCompile Include="TestMain.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -275,6 +276,7 @@
     <ClInclude Include="SpriteAction.h" />
     <ClInclude Include="SpriteRenderer.h" />
     <ClInclude Include="strutil.h" />
+    <ClInclude Include="TempRenderer.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="TextManager.h" />
     <ClInclude Include="Texture.h" />

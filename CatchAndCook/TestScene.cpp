@@ -10,6 +10,7 @@
 #include "Sprite.h"
 #include "TextManager.h"
 #include "SpriteAction.h"
+#include "TempRenderer.h"
 
 void TestScene::Init()
 {
@@ -79,9 +80,7 @@ void TestScene::Init()
 		shared_ptr<Material> material = make_shared<Material>();
 
 		shared_ptr<GameObject> gameObject = CreateGameObject(L"grid");
-		auto meshRenderer = gameObject->AddComponent<MeshRenderer>();
-
-		meshRenderer->SetDrawNormal(false);
+		auto meshRenderer = gameObject->AddComponent<TempRenderer>();
 
 		gameObject->_transform->SetLocalPosition(vec3(0, 10.0f, 0));
 

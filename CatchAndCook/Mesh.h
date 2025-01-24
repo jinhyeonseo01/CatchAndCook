@@ -30,6 +30,9 @@ private:
 		_vertexCount = static_cast<uint32>(vec.size());
 		uint32 bufferSize = _vertexCount * sizeof(T);
 
+		_vertexSize = bufferSize;
+		_perVertexSize = sizeof(T);
+
 		//DEFAULT 버퍼 생성
 		ThrowIfFailed( Core::main->GetDevice()->CreateCommittedResource(
 			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
@@ -82,8 +85,12 @@ private:
 public:
 	D3D12_VERTEX_BUFFER_VIEW& GetVertexView() { return _vertexBufferView; }
 	D3D12_INDEX_BUFFER_VIEW& GetIndexView() { return _indexBufferView; }
+
 	uint32& GetVertexCount() { return _vertexCount; }
 	uint32& GetIndexCount() { return _indexCount; }
+	uint32& GetPerVertexSize() { return _perVertexSize; }
+	uint64& GetVertexSize() { return _vertexSize; }
+
 	void SetTopolgy(D3D_PRIMITIVE_TOPOLOGY topology) { _topology = topology; }
 	D3D_PRIMITIVE_TOPOLOGY&  GetTopology() { return _topology; }
 
@@ -92,6 +99,8 @@ private:
 
 	ComPtr<ID3D12Resource>		_vertexBuffer;
 	D3D12_VERTEX_BUFFER_VIEW	_vertexBufferView = {};
+	uint64 _vertexSize = 0;
+	uint32 _perVertexSize = 0;
 	uint32 _vertexCount = 0;
 
 	ComPtr<ID3D12Resource>		_IndexBuffer;
