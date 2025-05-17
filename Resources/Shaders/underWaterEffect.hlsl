@@ -146,6 +146,8 @@ float CalculateFogFactor(float3 posView)
     return 1-fogFactor;
 }
 
+
+
 ///////////////////////////////////////////////////////////////////////////////
 [numthreads(16, 16, 1)]
 void CS_Main(uint3 id : SV_DispatchThreadID)
@@ -158,21 +160,17 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     float3 worldPos = PositionTexture.SampleLevel(sampler_point, uv, 0).xyz;
     float3 viewPos = ProjToView(tex);
 
-   
-    //resultTexture[tex] = float4(viewPos.xyz, 1);
-    //return;
-
     float fogFactor = CalculateFogFactor(viewPos);
     
     LightingResult light = ComputeLightColor(worldPos, normal);
     float distFogNorm = saturate((length(viewPos.xyz) - g_fogMin) / (g_fogMax - g_fogMin));
     float swAtten = lerp(light.subWaterAtten, 1.0f, distFogNorm);
     
-//#ifdef SHADOW_ON
-//    float3 uvz[4];
-//    ComputeCascadeShadowUVs(worldPos.xyz, uvz);
-//    light.atten *= ComputeCascadeShadowAtten(uvz, mul(float4(worldPos.xyz, 1), ViewMatrix).z);
-//#endif
+#ifdef SHADOW_ON
+    float3 uvz[4];
+    ComputeCascadeShadowUVs(worldPos.xyz, uvz);
+    light.atten *= ComputeCascadeShadowAtten(uvz, mul(float4(worldPos.xyz, 1), ViewMatrix).z);
+#endif
     
     float3 underCol = lerp(g_underWaterColor * albedo, albedo, light.atten);
 

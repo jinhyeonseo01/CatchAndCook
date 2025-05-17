@@ -61,7 +61,6 @@ float3 ReconstructViewPos(int2 pixel)
     return posView.xyz / posView.w;
 }
 
-
 [numthreads(16, 16, 1)]
 void CS_Main(uint3 id : SV_DispatchThreadID)
 {
