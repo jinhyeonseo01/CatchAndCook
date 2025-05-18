@@ -92,16 +92,11 @@ void TestScene::Init()
 	shared_ptr<Mesh> mesh = GeoMetryHelper::LoadRectangleBox(1.0f);
 
 	ShaderInfo info;
-	info._blendEnable = false;
 	info.renderTargetCount = 4;
 	info.RTVForamts[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	info.RTVForamts[1] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	info.RTVForamts[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
 	info.RTVForamts[3] = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	info._blendType[0] = BlendType::Add;
-	info._blendType[1] = BlendType::Add;
-	info._blendType[2] = BlendType::Add;
-	info._blendType[3] = BlendType::Add;
 
 	shared_ptr<Shader> shader = make_shared<Shader>();
 	shader->Init(L"DeferredSea.hlsl", StaticProp, ShaderArg{},info);

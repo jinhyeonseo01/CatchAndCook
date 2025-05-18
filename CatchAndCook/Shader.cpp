@@ -222,6 +222,16 @@ void Shader::InitPipeLine(const std::vector<VertexProp>& vertexProp)
                 blendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
                 blendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
                 break;
+            case BlendType::PremultipliedAlpha:
+     /*           Out.rgb = = Src.rgb + Dst.rgb * (1 - Src.a)*/
+                blendDesc.BlendEnable = TRUE;
+                blendDesc.SrcBlend = D3D12_BLEND_ONE;
+                blendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+                blendDesc.BlendOp = D3D12_BLEND_OP_ADD;
+                blendDesc.SrcBlendAlpha = D3D12_BLEND_ONE;
+                blendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
+				blendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+				break;
             case BlendType::Add:
                 blendDesc.BlendEnable = TRUE;
                 blendDesc.LogicOpEnable = FALSE;

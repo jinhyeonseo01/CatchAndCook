@@ -19,7 +19,6 @@ VS_OUT VS_Main(VS_IN input, uint id : SV_InstanceID)
 {
     VS_OUT output = (VS_OUT) 0;
 
-    // 로컬 좌표를 그대로 전달
     output.localPos = input.localPos;
     Instance_Transform data = TransformDatas[offset[STRUCTURED_OFFSET(30)].r + id];
     

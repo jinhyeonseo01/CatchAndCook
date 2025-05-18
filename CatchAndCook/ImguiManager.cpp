@@ -546,6 +546,8 @@ void ImguiManager::VolumetricTest()
             ImGui::SliderInt("numSlice", &_volumetricData->numSlices, 0.0f, 50);
             ImGui::SliderFloat("phase", &_volumetricData->phaseG, 0.0f, 10.0f);
             ImGui::SliderFloat("waterHeight", &_volumetricData->waterHeight, 0.0f, 3000.0f);
+            ImGui::SliderInt("numstep", &_volumetricData->numSteps, 0.0f, 300);
+            ImGui::SliderFloat("stepSize", &_volumetricData->stepSize, 0.0f, 3.0f);
             ImGui::TreePop();
         }
     }

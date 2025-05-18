@@ -10,11 +10,12 @@ namespace RENDER_PASS
 		Forward = 1 << 2,
 		Transparent = 1 << 3,
 		PostProcessing = 1 << 4,
-		UI = 1 << 5,
-		Debug = 1 << 6,
+		NoEffectPostProcessing = 1 << 5,
+		UI = 1 << 6,
+		Debug = 1 << 7,
 	};
 
-	const int Count = 7;
+	const int Count = 8;
 
 	inline PASS operator|(PASS a, PASS b) {
 		return static_cast<PASS>(static_cast<int>(a) | static_cast<int>(b));
@@ -32,8 +33,9 @@ namespace RENDER_PASS
 		case Forward: return 2;
 		case Transparent: return 3;
 		case PostProcessing: return 4;
-		case UI: return 5;
-		case Debug: return 6;
+		case NoEffectPostProcessing: return 5;
+		case UI: return 6;
+		case Debug: return 7;
 		default: assert(false && "Invalid PASS value");
 		}
 	}

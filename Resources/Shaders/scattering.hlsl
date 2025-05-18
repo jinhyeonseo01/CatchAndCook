@@ -61,7 +61,6 @@ float3 ReconstructViewPos(int2 pixel)
     return posView.xyz / posView.w;
 }
 
-
 [numthreads(16, 16, 1)]
 void CS_Main(uint3 id : SV_DispatchThreadID)
 {
@@ -71,12 +70,13 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     float3 viewPos = ReconstructViewPos(pixel);
     float3 worldPos = mul(float4(viewPos, 1.0f), InvertViewMatrix).xyz;
 
-   
+    //viewDir: 픽셀에서 카메라(또는 관찰자) 방향으로 향하는 단위 벡터  
+    //lightDir: 픽셀에서 빛(광원) 방향으로 향하는 단위 벡터
+    
+    float3 lightToPixel = normalize(mainLight.position - worldPos ); // 픽셀에서 광원으로 나가는방향
+    float3 lightDir = normalize(-mainLight.direction);  //픽셀에서 광원으로 향하는방향
 
-    float3 lightToPixel = normalize(worldPos - mainLight.position);
-    float3 lightDir = normalize(mainLight.direction);
-
-    float cosTheta = dot(-lightToPixel, lightDir);
+    float cosTheta = dot(lightToPixel, lightDir);
     float g2 = phaseG * phaseG;
     float denom = max(1 + g2 - 2 * phaseG * cosTheta, 1e-3);
     float phase = (1 - g2) / (4 * 3.14159 * pow(denom, 1.5));

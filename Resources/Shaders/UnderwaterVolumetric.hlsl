@@ -1,75 +1,72 @@
+
 #include "Global_b0.hlsl"
 #include "Camera_b2.hlsl"
 
 
 cbuffer VolumetricData : register(b5)
 {
-    float3 fogColor; 
-    float phaseG; 
+    float3 fogColor;
+    float phaseG;
+    
     float3 lightDir;
-    float waterHeight; 
-    float absorption; 
+    float waterHeight;
+    
+    float absorption;
     int numSlices;
+    int numSteps;
+    float stepSize;
 };
 
-
-struct VS_IN
-{
-    float4 Position : POSITION;
-    float2 uv : TEXCOORD;
-    float3 normal : NORMAL;
-};
 
 struct VS_OUT
 {
     float4 pos : SV_POSITION;
-    float2 uv : TEXCOORD0;
-    float sliceNorm : TEXCOORD1;
-    uint sliceIdx : SV_InstanceID;
+    float3 ndcPos : POSITION;
 };
 
-VS_OUT VS_Main(VS_IN input, uint iid : SV_InstanceID)
+VS_OUT VS_Main(uint vid : SV_VertexID, uint instanceID : SV_InstanceID)
 {
     VS_OUT o;
 
-    o.pos = float4(input.Position.xy, 0.0f, 1.0f);
-    o.uv = input.uv;
-    o.sliceIdx = iid;
-    o.sliceNorm = (iid+0.5f) / numSlices;
+    float2 verts[4] =
+    {
+        float2(-1, 1), float2(1, 1), 
+        float2(-1, -1), float2(1, -1)
+    };
+    
+
+    o.pos = float4(verts[vid], 0.0f, 1.0f);
+    float ndcZ = (instanceID + 0.5f) / numSlices;
+    o.ndcPos = float3(o.pos.xy, ndcZ);
 
     return o;
 }
 
+
+float3 ProjToView(float3 ndcPos)
+{
+    float4 posProj;
+    
+    posProj.xy = ndcPos.xy;
+    posProj.z  = ndcPos.z;
+    posProj.w  = 1.0f;
+    
+    float4 posView = mul(posProj, InvertProjectionMatrix);
+    return posView.xyz / posView.w;
+}
+
+
 float4 PS_Main(VS_OUT input) : SV_Target
 {
-
-    float ndcZ = input.sliceNorm * 2.0f - 1.0f;
-    float4 clipPos = float4(input.uv * 2.0f - 1.0f, ndcZ, 1.0f);
-    clipPos.y *= -1;
-    
-    float4 viewPosH = mul(InvertProjectionMatrix, clipPos);
-    viewPosH /= viewPosH.w;
-    float3 viewPos = viewPosH.xyz;
-
+    float3 viewPos = ProjToView(input.ndcPos);
     float depth = viewPos.z;
+    float normDepth = saturate(depth / waterHeight);
     
-    if(depth>500.0f)
-    {
-        return float4(0, 0, 0, 0);
-    }
-   
-    float density = saturate(depth / waterHeight);
+    float density = normDepth;
 
-    float3 viewDir = normalize(viewPos);
+    float sliceAlpha = (1.0f - exp(-absorption)) * density;
 
-    float3 lightDirVS = normalize(mul((float3x3) ViewMatrix, lightDir));
- 
-    float cosTheta = dot(viewDir, lightDirVS);
-    float phase = (1 - phaseG * phaseG) /
-                  pow(1 + phaseG * phaseG - 2 * phaseG * cosTheta, 1.5f);
+    float3 fogCol = fogColor * density;
 
-
-    float3 fog = fogColor  * phase * exp(-absorption * depth);
-
-    return float4(fog, 1.0f); 
+    return float4(fogCol * sliceAlpha, sliceAlpha);
 }

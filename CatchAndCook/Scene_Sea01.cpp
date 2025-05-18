@@ -46,49 +46,76 @@ void Scene_Sea01::Init()
 	//	paths.push_back(orginPath + entry.path().filename().wstring());
 	//}
 
-	//{
-	//	ShaderInfo info;
-	//	info._zTest = true;
-	//	info._stencilTest = false;
-	//	info.cullingType = CullingType::BACK;
-	//	info.cullingType = CullingType::NONE;
-	//	info._primitiveType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
 
-	//	shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"seatest", L"seatest.hlsl", GeoMetryProp,
-	//		ShaderArg{ {{"VS_Main","vs"},{"PS_Main","ps"},{"HS_Main","hs"},{"DS_Main","ds"}} }, info);
+	{
+		ShaderInfo info;
+		info._zTest = true;
+		info._stencilTest = false;
+		info.cullingType = CullingType::NONE;
 
-	//	shared_ptr<Material> material = make_shared<Material>();
+		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"cubemap", L"cubemap.hlsl", GeoMetryProp,
+			ShaderArg{}, info);
 
-	//	shared_ptr<GameObject> gameObject = CreateGameObject(L"grid_orgin");
-	//	auto meshRenderer = gameObject->AddComponent<MeshRenderer>();
-	//	auto a = gameObject->AddComponent<WaterController>();
-	//	a->Setting(L"sea_color_sea.bin", L"sea_move_real.bin");
+		shared_ptr<Texture> texture = ResourceManager::main->Load<Texture>(L"cubemap", L"Textures/cubemap/Sky_0.png.dds", TextureType::CubeMap);
+		shared_ptr<Material> material = make_shared<Material>();
 
-	//	//meshRenderer->SetDebugShader(ResourceManager::main->Get<Shader>(L"DebugNormal_Sea"));
-	//	gameObject->_transform->SetLocalPosition(vec3(0, 600.f, 0));
+		shared_ptr<GameObject> gameObject = CreateGameObject(L"cubeMap");
 
-	//	material = make_shared<Material>();
-	//	material->SetShader(shader);
-	//	material->SetPass(RENDER_PASS::Forward);
-	//	material->SetTexture("_cubeMap", ResourceManager::main->_cubemap_skyTexture);
-	//	material->SetUseMaterialParams(true);
-	//	material->SetShadowCasting(false);
-	//	meshRenderer->AddMaterials({ material });
+		auto meshRenderer = gameObject->AddComponent<MeshRenderer>();
 
-	//	auto mesh = GeoMetryHelper::LoadGripMeshControlPoints(20000.0f, 20000.0f, 1000, 1000, false);
-	//	mesh->SetTopolgy(D3D_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
-	//	meshRenderer->AddMesh(mesh);
-	//	meshRenderer->SetCulling(false);
+		material = make_shared<Material>();
+		material->SetShader(shader);
+		material->SetPass(RENDER_PASS::Forward);
+		material->SetTexture("_BaseMap", texture);
 
-	//};
+		meshRenderer->AddMaterials({ material });
+		meshRenderer->AddMesh(GeoMetryHelper::LoadRectangleBox(300.0f));
+		meshRenderer->SetCulling(false);
+	}
+
+	{
+		ShaderInfo info;
+		info._zTest = true;
+		info._stencilTest = false;
+		info.cullingType = CullingType::BACK;
+		info.cullingType = CullingType::NONE;
+		info._primitiveType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+
+		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"seatest", L"seatest.hlsl", GeoMetryProp,
+			ShaderArg{ {{"VS_Main","vs"},{"PS_Main","ps"},{"HS_Main","hs"},{"DS_Main","ds"}} }, info);
+
+		shared_ptr<Material> material = make_shared<Material>();
+
+		shared_ptr<GameObject> gameObject = CreateGameObject(L"grid_orgin");
+		auto meshRenderer = gameObject->AddComponent<MeshRenderer>();
+		auto a = gameObject->AddComponent<WaterController>();
+		a->Setting(L"sea_color_sea.bin", L"sea_move_real.bin");
+
+		//meshRenderer->SetDebugShader(ResourceManager::main->Get<Shader>(L"DebugNormal_Sea"));
+		gameObject->_transform->SetLocalPosition(vec3(0, 500.0f, 0));
+
+		material = make_shared<Material>();
+		material->SetShader(shader);
+		material->SetPass(RENDER_PASS::Forward);
+		material->SetTexture("_cubeMap", ResourceManager::main->_cubemap_skyTexture);
+		material->SetUseMaterialParams(true);
+		material->SetShadowCasting(false);
+		meshRenderer->AddMaterials({ material });
+
+		auto mesh = GeoMetryHelper::LoadGripMeshControlPoints(20000.0f, 20000.0f, 1000, 1000, false);
+		mesh->SetTopolgy(D3D_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
+		meshRenderer->AddMesh(mesh);
+		meshRenderer->SetCulling(false);
+
+	};
 
 	caustics = make_shared<Texture>();
 	caustics->Init(L"../Resources/Textures/test.jpg");
 
 	std::shared_ptr<Light> light = std::make_shared<Light>();
 	light->onOff = 1;
-	light->direction = vec3(-0.122f, -0.732f, 0.299f);
-	light->position = vec3(0, 1000.0f, 0);
+	light->direction = vec3(-0.024f, 1.0f, 0.899f);
+	light->position = vec3(769.f, 1282.f, 750.0f);
 	light->direction.Normalize();
 
 	light->material.ambient = vec3(0.4f, 0.4f, 0.4f);
@@ -100,92 +127,92 @@ void Scene_Sea01::Init()
 	LightManager::main->PushLight(light);
 	LightManager::main->_lightParmas.mainLight = *light.get();
 
-//#pragma region DebugXYZ
-//	{
-//
-//		ShaderInfo info;
-//		info._zTest = true;
-//		info._stencilTest = false;
-//
-//		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"color", L"color.hlsl", ColorProp,
-//			ShaderArg{}, info);
-//
-//		shared_ptr<Material> material = make_shared<Material>();
-//
-//		shared_ptr<GameObject> root = CreateGameObject(L"X");
-//
-//		root->_transform->SetLocalPosition(vec3(3000.0f, 0, 0.0f));
-//		root->_transform->SetLocalScale(vec3(3000.0f, 1.0f, 1.0f));
-//		auto meshRenderer = root->AddComponent<MeshRenderer>();
-//
-//		material = make_shared<Material>();
-//		material->SetShader(shader);
-//		material->SetPass(RENDER_PASS::Forward);
-//
-//		meshRenderer->AddMaterials({ material });
-//
-//		meshRenderer->AddMesh(GeoMetryHelper::LoadRectangleBoxWithColor(1.0f, vec4(1, 0, 0, 0)));
-//
-//
-//	}
-//
-//	{
-//
-//
-//		ShaderInfo info;
-//		info._zTest = true;
-//		info._stencilTest = false;
-//
-//		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"color", L"color.hlsl", ColorProp,
-//			ShaderArg{}, info);
-//
-//		shared_ptr<Material> material = make_shared<Material>();
-//
-//		shared_ptr<GameObject> root = CreateGameObject(L"Y");
-//
-//		root->_transform->SetLocalPosition(vec3(0, 0, 3000.0f));
-//		root->_transform->SetLocalScale(vec3(1.0f, 1.0f, 3000.0f));
-//		auto meshRenderer = root->AddComponent<MeshRenderer>();
-//
-//		material = make_shared<Material>();
-//		material->SetShader(shader);
-//		material->SetPass(RENDER_PASS::Forward);
-//
-//		meshRenderer->AddMaterials({ material });
-//		meshRenderer->AddMesh(GeoMetryHelper::LoadRectangleBoxWithColor(1.0f, vec4(0, 1, 0, 0)));
-//	}
-//
-//	{
-//
-//
-//		ShaderInfo info;
-//		info._zTest = true;
-//		info._stencilTest = false;
-//
-//		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"color", L"color.hlsl", ColorProp,
-//			ShaderArg{}, info);
-//
-//		shared_ptr<Material> material = make_shared<Material>();
-//
-//		shared_ptr<GameObject> root = CreateGameObject(L"Z");
-//
-//		root->_transform->SetLocalPosition(vec3(0, 3000.0f, 0.0f));
-//		root->_transform->SetLocalScale(vec3(1.0f, 3000.0f, 1.0f));
-//		auto meshRenderer = root->AddComponent<MeshRenderer>();
-//
-//		material = make_shared<Material>();
-//		material->SetShader(shader);
-//		material->SetPass(RENDER_PASS::Forward);
-//
-//		meshRenderer->AddMaterials({ material });
-//		meshRenderer->AddMesh(GeoMetryHelper::LoadRectangleBoxWithColor(1.0f, vec4(0, 0, 1, 0)));
-//	}
-//#pragma endregion
+#pragma region DebugXYZ
+	{
+
+		ShaderInfo info;
+		info._zTest = true;
+		info._stencilTest = false;
+
+		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"color", L"color.hlsl", ColorProp,
+			ShaderArg{}, info);
+
+		shared_ptr<Material> material = make_shared<Material>();
+
+		shared_ptr<GameObject> root = CreateGameObject(L"X");
+
+		root->_transform->SetLocalPosition(vec3(3000.0f, 0, 0.0f));
+		root->_transform->SetLocalScale(vec3(3000.0f, 1.0f, 1.0f));
+		auto meshRenderer = root->AddComponent<MeshRenderer>();
+
+		material = make_shared<Material>();
+		material->SetShader(shader);
+		material->SetPass(RENDER_PASS::NoEffectPostProcessing);
+
+		meshRenderer->AddMaterials({ material });
+
+		meshRenderer->AddMesh(GeoMetryHelper::LoadRectangleBoxWithColor(1.0f, vec4(1, 0, 0, 0)));
+
+
+	}
+
+	{
+
+
+		ShaderInfo info;
+		info._zTest = true;
+		info._stencilTest = false;
+
+		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"color", L"color.hlsl", ColorProp,
+			ShaderArg{}, info);
+
+		shared_ptr<Material> material = make_shared<Material>();
+
+		shared_ptr<GameObject> root = CreateGameObject(L"Y");
+
+		root->_transform->SetLocalPosition(vec3(0, 0, 3000.0f));
+		root->_transform->SetLocalScale(vec3(1.0f, 1.0f, 3000.0f));
+		auto meshRenderer = root->AddComponent<MeshRenderer>();
+
+		material = make_shared<Material>();
+		material->SetShader(shader);
+		material->SetPass(RENDER_PASS::NoEffectPostProcessing);
+
+		meshRenderer->AddMaterials({ material });
+		meshRenderer->AddMesh(GeoMetryHelper::LoadRectangleBoxWithColor(1.0f, vec4(0, 1, 0, 0)));
+	}
+
+	{
+
+
+		ShaderInfo info;
+		info._zTest = true;
+		info._stencilTest = false;
+
+		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"color", L"color.hlsl", ColorProp,
+			ShaderArg{}, info);
+
+		shared_ptr<Material> material = make_shared<Material>();
+
+		shared_ptr<GameObject> root = CreateGameObject(L"Z");
+
+		root->_transform->SetLocalPosition(vec3(0, 3000.0f, 0.0f));
+		root->_transform->SetLocalScale(vec3(1.0f, 3000.0f, 1.0f));
+		auto meshRenderer = root->AddComponent<MeshRenderer>();
+
+		material = make_shared<Material>();
+		material->SetShader(shader);
+		material->SetPass(RENDER_PASS::NoEffectPostProcessing);
+
+		meshRenderer->AddMaterials({ material });
+		meshRenderer->AddMesh(GeoMetryHelper::LoadRectangleBoxWithColor(1.0f, vec4(0, 0, 1, 0)));
+	}
+#pragma endregion
 
 	ColliderManager::main->SetCellSize(100);
 
 
-	ResourceManager::main->LoadAlway<SceneLoader>(L"test2", L"../Resources/Datas/Scenes/sea.json");
+	ResourceManager::main->LoadAlway<SceneLoader>(L"test2", L"../Resources/Datas/Scenes/sea2.json");
 	auto sceneLoader = ResourceManager::main->Get<SceneLoader>(L"test2");
 	sceneLoader->Load(GetCast<Scene>());
 	auto player = Find(L"seaPlayer");
@@ -296,6 +323,10 @@ void Scene_Sea01::Rendering()
 
 	Profiler::Set("PASS : Compute", BlockTag::CPU);
 	ComputePass(cmdList);
+	Profiler::Fin();
+
+	Profiler::Set("PASS : NoEffect", BlockTag::CPU);
+	NoEffectPass(cmdList);
 	Profiler::Fin();
 
 	Profiler::Set("PASS : UI", BlockTag::CPU);
@@ -426,6 +457,44 @@ void Scene_Sea01::FinalRender(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>&
 void Scene_Sea01::ComputePass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList)
 {
 	ComputeManager::main->Dispatch(cmdList);
+}
+
+void Scene_Sea01::NoEffectPass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList)
+{
+	{ // Forward
+		auto& targets = _passObjects[RENDER_PASS::ToIndex(RENDER_PASS::NoEffectPostProcessing)];
+
+		for (auto& [shader, vec] : targets)
+		{
+			cmdList->SetPipelineState(shader->_pipelineState.Get());
+
+			for (auto& ele : vec)
+			{
+				g_debug_forward_count++;
+
+				if (ele.renderer->IsCulling() == true)
+				{
+					if (CameraManager::main->GetActiveCamera()->IsInFrustum(ele.renderer->GetBound()) == false)
+					{
+						g_debug_forward_culling_count++;
+						continue;
+					}
+				}
+
+				if (ele.renderer->isInstancing() == false)
+				{
+					InstancingManager::main->RenderNoInstancing(ele);
+				}
+				else
+				{
+					InstancingManager::main->AddObject(ele);
+				}
+			}
+
+			InstancingManager::main->Render();
+		}
+
+	} 
 }
 
 

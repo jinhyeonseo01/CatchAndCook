@@ -34,7 +34,7 @@ int main()
 
     // 1) 카메라 설정
     Vector3 cameraPos(0, 0, 0);
-    Vector3 cameraLook(0, 0, 1);
+    Vector3 cameraLook(0, 0, -1);
     Vector3 cameraUp(0, 1, 0);
 
     Matrix viewMat = Matrix::CreateLookAt(
@@ -75,15 +75,13 @@ int main()
     float pixelY = (1.0f - Originndc.y) * 0.5f * screenSize.y;
 
 	cout << "Pixel = (" << pixelX << ", " << pixelY << ")" << endl;
-    float depth = Originndc.z;
-
-
+  
     Vector3 ndc;
     //ndc.x = (pixelX / screenSize.x) * 2.0f - 1.0f;
     //ndc.y = 1.0f - (pixelY / screenSize.y) * 2.0f;
     ndc.x = Originndc.x;
     ndc.y = Originndc.y;
-    ndc.z = depth;
+    ndc.z = Originndc.z;
 
     // 4) NDC → Clip Space
     Vector4 clipPos2(ndc.x, ndc.y, ndc.z, 1.0f);
@@ -100,7 +98,7 @@ int main()
     Vector4 worldH = Vector4::Transform(viewH, invView);
     cout << worldH.w << endl;
 
-    //worldH = worldH / worldH.w;
+ /*   worldH = worldH / worldH.w;*/
 
     // 7) 결과 출력
     std::cout

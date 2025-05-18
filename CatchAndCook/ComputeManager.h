@@ -444,12 +444,12 @@ private:
 
 struct ScatteringData
 {
-	float phaseG=0.659f;
-	float absorption =992.f;
+	float phaseG=0.453f;
+	float absorption =3.6f;
 	vec2 Padding;
 
-	float density=7.283f;
-	vec3 scatterColor= vec3(1,1,1);
+	float density=15.0f;
+	vec3 scatterColor= vec3(0,1,0.375f);
 
 	//vec3 MainlightPos;
 	//float padding2;

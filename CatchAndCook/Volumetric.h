@@ -10,6 +10,10 @@ struct VolumetricData
 	float waterHeight;
 	float absorption; 
 	int numSlices; 
+
+	int numSteps;
+	float stepSize;
+
 };
 
 class Mesh;

@@ -325,6 +325,8 @@ shared_ptr<Mesh> GeoMetryHelper::LoadRectangleMesh(const float scale)
 
     vector<Vertex_GeoMetry> vec(4);
 
+    //[0][2]
+    //[1][3]
     // 앞면
     vec[0] = Vertex_GeoMetry(vec3(-scale, -scale, 0), vec2(0.0f, 1.0f), vec3(0.0f, 0.0f, -1.0f));
     vec[1] = Vertex_GeoMetry(vec3(-scale, +scale, 0), vec2(0.0f, 0.0f), vec3(0.0f, 0.0f, -1.0f));

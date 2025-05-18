@@ -33,13 +33,13 @@ void Volumetric::Init()
 
 
 		ShaderInfo info;
-		info._zTest = true;
+		info._zTest = false;
 		info._stencilTest = false;
 		info._zWrite = false;
-		info._blendEnable = false;
+		info._blendEnable = true;
 		info.cullingType = CullingType::NONE;
-		info._blendType[0] = BlendType::Add;
 
+		info._blendType[0] = BlendType::PremultipliedAlpha;
 		info.renderTargetCount = 1;
 
 		info.RTVForamts[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -75,11 +75,8 @@ void Volumetric::Render()
 	//Core::main->GetCmdList()->OMSetRenderTargets(1, &_texture->GetRTVCpuHandle(), false, &_texture->GetSharedDSVHandle());
 	//float clearColor[4] = { 0.0f,0.0f,0.0f,0.0f };
 	//Core::main->GetCmdList()->ClearRenderTargetView(_texture->GetRTVCpuHandle(), clearColor, 0, nullptr);
-
-	Core::main->GetCmdList()->IASetVertexBuffers(0, 1, &_mesh->GetVertexView());
-	Core::main->GetCmdList()->IASetIndexBuffer(&_mesh->GetIndexView());
-
-	Core::main->GetCmdList()->DrawIndexedInstanced(6, _data.numSlices, 0, 0,0);
+	Core::main->GetCmdList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	Core::main->GetCmdList()->DrawInstanced(4, _data.numSlices, 0, 0);
 	_texture->ResourceBarrier(D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
 
 }

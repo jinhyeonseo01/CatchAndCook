@@ -35,6 +35,7 @@ enum class FrontWise
 enum class BlendType
 {
     AlphaBlend = 0, //FinalColor = SrcColor * SrcAlpha + DestColor * (1 - SrcAlpha)
+	PremultipliedAlpha, //FinalColor = SrcColor + DestColor * (1 - SrcAlpha)
     Add, //FinalColor = SrcColor + DestColor
     Multiple, //FinalColor = SrcColor * DestColor
     ColorDodge, //FinalColor = DestColor / (1 - SrcColor)
