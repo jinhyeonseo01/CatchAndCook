@@ -12,6 +12,7 @@
 #include "InGameGlobal.h"
 #include "LightComponent.h"
 #include "PathFinder.h"
+#include "RectTransform.h"
 #include "Volumetric.h"
 unique_ptr<ImguiManager> ImguiManager::main;
 
@@ -513,6 +514,43 @@ void ImguiManager::Test2()
                                 transform->SetLocalRotation(eu * D2R);
 							ImGui::SliderFloat3("Scale", &transform->_localScale.x, 0.1f, 100.0f);
                         }
+                        if (name == "RectTransform")
+                        {
+                            auto transform = std::static_pointer_cast<RectTransform>(com);
+                            ImGui::SliderFloat3("Position", &transform->_localPosition.x, -1000.0f, 1000.0f);
+                            vec3 eu = transform->GetLocalEuler() * R2D;
+                            if (ImGui::SliderFloat3("LocalEuler", &eu.x, -180.0f, 180.0f))
+                                transform->SetLocalRotation(eu * D2R);
+                            ImGui::SliderFloat3("Scale", &transform->_localScale.x, 0.1f, 100.0f);
+
+                            auto& d = transform->_rectTransformData;
+                            ImGui::Separator();
+                            ImGui::Text("RectTransform");
+
+                            ImGui::SliderFloat2("Pivot", &d.pivot.x, 0.0f, 1.0f);
+                            ImGui::SliderFloat2("Anchor Min", &d.anchorMin.x, 0.0f, 1.0f);
+                            ImGui::SliderFloat2("Anchor Max", &d.anchorMax.x, 0.0f, 1.0f);
+
+                            // sizeDelta 와 rectSize 는 음수/임의 값이 필요할 수 있으니 InputFloat2 로
+                            ImGui::InputFloat2("Size Delta", &d.sizeDelta.x);
+                            ImGui::InputFloat2("Rect Size", &d.rectSize.x);
+
+                            auto& c = transform->_computedRect;
+                            ImGui::Separator();
+                            ImGui::Text("ComputedRect");
+                            ImGui::InputFloat3("LocalPos3D", &c.localPos3D.x);
+                            ImGui::InputFloat2("AnchoredCalc2D", &c.anchoredCalc2D.x);
+
+                            ImGui::Text("LocalRect2D Min/Max");
+                            ImGui::InputFloat2("  Min", &c.localRect2D.min.x);
+                            ImGui::InputFloat2("  Max", &c.localRect2D.max.x);
+
+                            ImGui::Text("WorldRect2D Min/Max");
+                            ImGui::InputFloat2("  Min", &c.worldRect2D.min.x);
+                            ImGui::InputFloat2("  Max", &c.worldRect2D.max.x);
+
+                        }
+
                         if (name == "LightComponent")
                         {
                             auto lightComponent = std::static_pointer_cast<LightComponent>(com);

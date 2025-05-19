@@ -16,6 +16,7 @@
 #include "ModelMesh.h"
 #include "NavMesh.h"
 #include "PhysicsComponent.h"
+#include "RectTransform.h"
 #include "SkinnedMeshRenderer.h"
 #include "Terrain.h"
 
@@ -110,6 +111,11 @@ void SceneLoader::PrevProcessingComponent(json& data)
     if (type == L"Transform")
     {
         auto transform = CreateObject<Transform>(guid);
+        component = transform;
+    }
+    if (type == L"RectTransform")
+    {
+        auto transform = CreateObject<RectTransform>(guid);
         component = transform;
     }
     if (type == L"MeshRenderer")
@@ -274,6 +280,63 @@ void SceneLoader::LinkComponent(json& jsonData)
         transform->SetLocalPosition(pos);
         transform->SetLocalRotation(rotation);
         transform->SetLocalScale(scale);
+    }
+
+    if (type == L"RectTransform")
+    {
+        auto transform = IGuid::FindObjectByGuid<RectTransform>(guid);
+        auto& d = transform->_rectTransformData;
+        Vector3 pos = {
+        jsonData["anchoredPosition"][0].get<float>(),
+        	jsonData["anchoredPosition"][1].get<float>(),
+        jsonData["position"][2].get<float>()
+        };
+        Quaternion rot = {
+            jsonData["rotation"][0].get<float>(),
+            jsonData["rotation"][1].get<float>(),
+            jsonData["rotation"][2].get<float>(),
+            jsonData["rotation"][3].get<float>()
+        };
+        Vector3 scl = {
+            jsonData["scale"][0].get<float>(),
+            jsonData["scale"][1].get<float>(),
+            jsonData["scale"][2].get<float>()
+        };
+        transform->SetLocalPosition(pos);
+        transform->SetLocalRotation(rot);
+        transform->SetLocalScale(scl);
+
+        // 2) RectTransformData 채우기
+        d.pivot = Vector2(
+            jsonData["pivot"][0].get<float>(),
+            jsonData["pivot"][1].get<float>()
+        );
+        d.anchorMin = Vector2(
+            jsonData["anchorMin"][0].get<float>(),
+            jsonData["anchorMin"][1].get<float>()
+        );
+        d.anchorMax = Vector2(
+            jsonData["anchorMax"][0].get<float>(),
+            jsonData["anchorMax"][1].get<float>()
+        );
+        d.sizeDelta = Vector2(
+            jsonData["sizeDelta"][0].get<float>(),
+            jsonData["sizeDelta"][1].get<float>()
+        );
+        d.rectSize = Vector2(
+            jsonData["rectSize"][0].get<float>(),
+            jsonData["rectSize"][1].get<float>()
+        );
+
+        d.offsetMin = Vector2(
+            jsonData["offsetMin"][0].get<float>(),
+            jsonData["offsetMin"][1].get<float>()
+        );
+        d.offsetMax = Vector2(
+            jsonData["offsetMax"][0].get<float>(),
+            jsonData["offsetMax"][1].get<float>()
+        );
+
     }
 
     if (type == L"MeshRenderer")

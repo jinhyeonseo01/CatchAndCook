@@ -387,6 +387,8 @@
     <ClCompile Include="InGameMainField.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
+    <ClCompile Include="GUISprite.cpp" />
+    <ClCompile Include="RectTransform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -726,6 +728,8 @@
     <ClInclude Include="InGameMainField.h">
       <Filter>03.Component</Filter>
     </ClInclude>
+    <ClInclude Include="GUISprite.h" />
+    <ClInclude Include="RectTransform.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath_LH.inl">
@@ -926,6 +930,7 @@
     <FxCompile Include="..\Resources\Shaders\UnderwaterVolumetric.hlsl">
       <Filter>998.HLSL\Graphics\KSH</Filter>
     </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\TestTransparent_Total.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\Direct12-Project-Scene\Assets\Models\Objects\Sea\Terrian_Seed\New Folder\2023-11-23T113343Z.png">
