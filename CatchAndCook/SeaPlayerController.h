@@ -10,8 +10,8 @@ enum class SeaPlayerState
 {
 	Idle,
 	Aiming,
-	Attack,
-	Skill,
+	Shot,
+	Reload,
 	PushBack,
 	Die,
 	Hit,
@@ -44,7 +44,7 @@ private:
 
 private:
 	void UpdateState(float dt);
-	void SetState(SeaPlayerState state);
+
 
 private:
 	void Idle(float dt);
@@ -64,7 +64,7 @@ private:
 	std::unordered_map<string, std::shared_ptr<Animation>> _animations;
 private:
 	weak_ptr<GameObject> _other;
-	SeaPlayerState _state = SeaPlayerState::Idle;
+
 	vec3 _velocity = vec3::Zero;
 
 	float _cameraYawOffset = -0.294f;
@@ -83,5 +83,8 @@ private:
 private:
 
 
+public:
+	void SetState(SeaPlayerState state);
+	SeaPlayerState _state = SeaPlayerState::Idle;
 };
 

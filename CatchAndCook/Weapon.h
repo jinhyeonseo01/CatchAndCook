@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Component.h"
+#include "SeaPlayerController.h"
 
 struct Gun
 {
@@ -14,12 +15,6 @@ struct Gun
 	float _speed =800.0f;
 };
 
-enum class WeaponState
-{
-	Idle,
-	Shot,
-	Reload,
-};
 
 class Weapon :public Component
 {
@@ -39,20 +34,28 @@ public:
 	void CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other) override;
 	void CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other) override;
 	bool IsExecuteAble() override;
-
-	void ChangeState(const WeaponState& state);
-
+	void SetTargetHudPos();
 public:
-	WeaponState GetState() { return  _state; }
+	
 	void SetCurrentWeapon(const wstring& weaponName);
 	void AddWeapon(const wstring& weaponName, const wstring& bodyName, const wstring& hookName, const wstring& weaponSlot );
 	void AddWeapon(shared_ptr<Gun> gun);
 	shared_ptr<Gun> GetCurrentWeapon() { return _currentWeapon; }
 
+	void Shot();
+	void Reload();
+
+	void SetTargetHudVisible(bool onOff)
+	{
+		if (_targetHud)
+			_targetHud->SetActiveSelf(onOff);
+	}
+
 private:
-	WeaponState _state = WeaponState::Idle;
+	SeaPlayerController* controller;
 	float _moveDist = 0;
 	shared_ptr<Gun> _currentWeapon;
+	shared_ptr<GameObject> _targetHud;
 	unordered_map<wstring, shared_ptr<Gun>> _weapons;
 
 };

@@ -73,7 +73,7 @@ protected:
 	vec2 _screenSize;
 	vec2 _ndcSize;
 
-	vec2 _firstWindowSize;
+	//vec2 _firstWindowSize;
 
 	shared_ptr<Texture> _spriteImage;
 

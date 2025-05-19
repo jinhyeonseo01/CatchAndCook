@@ -2,6 +2,9 @@
 #include "Weapon.h"
 #include "Transform.h"
 #include "Gizmo.h"
+#include "MeshRenderer.h"
+#include "CameraManager.h"
+#include "Camera.h"
 Weapon::Weapon()
 {
 }
@@ -16,67 +19,30 @@ void Weapon::SetDestroy()
 
 void Weapon::Init()
 {
-}
+
+	
+
+	_targetHud = SceneManager::main->GetCurrentScene()->CreateGameObject(L"Sprite1");
+	auto& renderer = _targetHud->AddComponent<MeshRenderer>();
+	auto& sprite = _targetHud->AddComponent<Sprite>();
+	sprite->SetLocalPos(vec3(300, 0, 0));
+	sprite->SetSize(vec2(10, 10));
+
+	sprite->SetTexture(ResourceManager::main->Load<Texture>(L"targetHud", L"Textures/targetHud.png"));
+
+	shared_ptr<Material> material = make_shared<Material>();
+	material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
+	material->SetPass(RENDER_PASS::UI);
+	renderer->AddMaterials({ material });
+};
 
 void Weapon::Start()
 {
+	controller = GetOwner()->GetComponent<SeaPlayerController>().get();
 }
 
 void Weapon::Update()
 {
-	float dt = Time::main->GetDeltaTime();
-
-	switch (_state)
-	{
-	case WeaponState::Idle:
-	{
-
-	}
-		break;
-	case WeaponState::Shot:
-	{
-		const float speed = _currentWeapon->_speed;
-		vec3 currentPos = _currentWeapon->hook->_transform->GetWorldPosition();
-		vec3 forward = _currentWeapon->hook->_transform->GetForward();
-		_currentWeapon->hook->_transform->SetWorldPosition(currentPos + forward * _currentWeapon->_speed * Time::main->GetDeltaTime());
-		_moveDist += speed * Time::main->GetDeltaTime();
-
-		if (_moveDist >= _currentWeapon->_range)
-		{
-			_moveDist = 0;
-			ChangeState(WeaponState::Reload);
-		}
-
-		Gizmo::main->Width(0.1f);
-		Gizmo::main->Line(_currentWeapon->weaponSlot->_transform->GetWorldPosition(), _currentWeapon->hook->_transform->GetWorldPosition(), vec4(1, 1, 1, 1));
-
-	}
-		break;
-	case WeaponState::Reload:
-	{
-		const float speed = _currentWeapon->_speed;
-		vec3 slotPos = _currentWeapon->weaponSlot->_transform->GetWorldPosition();
-		vec3 currentHookPos = _currentWeapon->hook->_transform->GetWorldPosition();
-		vec3 dir = slotPos - currentHookPos;
-		dir.Normalize();
-
-		_currentWeapon->hook->_transform->SetWorldPosition(currentHookPos + dir * speed * Time::main->GetDeltaTime());
-		_moveDist += speed * Time::main->GetDeltaTime();
-
-		Gizmo::main->Width(0.1f);
-		Gizmo::main->Line(_currentWeapon->weaponSlot->_transform->GetWorldPosition(), _currentWeapon->hook->_transform->GetWorldPosition(), vec4(1, 1, 1, 1));
-
-		if (_moveDist >= _currentWeapon->_range)
-		{
-			_moveDist = 0;
-			_currentWeapon->hook->_transform->SetLocalPosition(_currentWeapon->_backToPos);
-			ChangeState(WeaponState::Idle);
-		}
-	}
-		break;
-	default:
-		break;
-	}
 
 }
 
@@ -113,27 +79,34 @@ bool Weapon::IsExecuteAble()
     return false;
 }
 
-void Weapon::ChangeState(const WeaponState& state)
+
+
+void Weapon::SetTargetHudPos()
 {
-	if (_state == state)
+	if (_currentWeapon == nullptr)
 		return;
 
-	_state = state;
+	auto& cameraParams = CameraManager::main->GetCamera(CameraType::SeaCamera)->GetCameraParam();
 
-	switch (_state)
-	{
-	case WeaponState::Idle:
+	vec2 screenPos{ 0, 0 };
 
-		break;
-	case WeaponState::Shot:
-		break;
-	case WeaponState::Reload:
-		break;
-	default:
-		break;
-	}
+	vec4 worldPos = _currentWeapon->weaponSlot->_transform->GetWorldPosition() + _currentWeapon->hook->_transform->GetForward() * _currentWeapon->_range;
+	worldPos.w = 1.0f;
+
+	Matrix vp = cameraParams.VPMatrix;   
+
+	vec4 clipPos = vec4::Transform(worldPos, vp);
+
+	vec3 ndc = vec3(clipPos) / clipPos.w;
+
+	float w = static_cast<float>(WINDOW_WIDTH);
+	float h = static_cast<float>(WINDOW_HEIGHT);
+
+	screenPos.x = (ndc.x * 0.5f + 0.5f) * w;
+	screenPos.y = (1.0f - (ndc.y * 0.5f + 0.5f)) * h;
+
+	_targetHud->GetComponent<Sprite>()->SetLocalPos(vec3(screenPos.x-5.0f, screenPos.y-5.0f, 0.0f));
 }
-
 void Weapon::SetCurrentWeapon(const wstring& weaponName)
 {
 	if (_currentWeapon && _currentWeapon->GunName == weaponName)
@@ -190,6 +163,50 @@ void Weapon::AddWeapon(shared_ptr<Gun> gun)
 	}
 
 	_weapons[gun->GunName] = gun;
+}
+
+void Weapon::Shot()
+{
+	const float speed = _currentWeapon->_speed;
+	vec3 currentPos = _currentWeapon->hook->_transform->GetWorldPosition();
+	vec3 forward = _currentWeapon->hook->_transform->GetForward();
+	_currentWeapon->hook->_transform->SetWorldPosition(currentPos + forward * _currentWeapon->_speed * Time::main->GetDeltaTime());
+	_moveDist += speed * Time::main->GetDeltaTime();
+
+	if (_moveDist >= _currentWeapon->_range)
+	{
+		_moveDist = 0;
+		controller->SetState(SeaPlayerState::Reload);
+	}
+
+	SetTargetHudPos();
+
+	Gizmo::main->Width(0.2f);
+	Gizmo::main->Line(_currentWeapon->weaponSlot->_transform->GetWorldPosition(), _currentWeapon->hook->_transform->GetWorldPosition(), vec4(0.545f, 0.27f, 0.075f, 1));
+}
+
+void Weapon::Reload()
+{
+	const float speed = _currentWeapon->_speed;
+	vec3 slotPos = _currentWeapon->weaponSlot->_transform->GetWorldPosition();
+	vec3 currentHookPos = _currentWeapon->hook->_transform->GetWorldPosition();
+	vec3 dir = slotPos - currentHookPos;
+	dir.Normalize();
+
+	_currentWeapon->hook->_transform->SetWorldPosition(currentHookPos + dir * speed * Time::main->GetDeltaTime());
+	_moveDist += speed * Time::main->GetDeltaTime();
+
+	SetTargetHudPos();
+
+	Gizmo::main->Width(0.2f);
+	Gizmo::main->Line(_currentWeapon->weaponSlot->_transform->GetWorldPosition(), _currentWeapon->hook->_transform->GetWorldPosition(), vec4(0.545f, 0.27f, 0.075f, 1));
+
+	if (_moveDist >= _currentWeapon->_range)
+	{
+		_moveDist = 0;
+		_currentWeapon->hook->_transform->SetLocalPosition(_currentWeapon->_backToPos);
+		controller->SetState(SeaPlayerState::Aiming);
+	}
 }
 
 

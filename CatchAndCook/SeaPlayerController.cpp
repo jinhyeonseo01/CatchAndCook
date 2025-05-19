@@ -61,8 +61,6 @@ void SeaPlayerController::Start()
 void SeaPlayerController::Update()
 {
 
-
-
     if (CameraManager::main->GetCameraType() == CameraType::DebugCamera)
     {
         Gizmo::Width(0.02f);
@@ -74,6 +72,8 @@ void SeaPlayerController::Update()
         Gizmo::Line(o, o + f, Vector4(0, 0, 1, 1));
         Gizmo::Line(o, o + u, Vector4(0, 1, 0, 1));
         Gizmo::Line(o, o + r, Vector4(1, 0, 0, 1));
+
+        _weapons->SetTargetHudVisible(false);
 
     }
 
@@ -158,14 +158,30 @@ void SeaPlayerController::KeyUpdate(vec3& inputDir, Quaternion& rotation, float 
         inputDir += vec3::Right;
     }
 
+    if (Input::main->GetMouseDown(KeyCode::RightMouse))
+    {
+        if (_state == SeaPlayerState::Aiming)
+        {
+            if (_state == SeaPlayerState::Shot || _state == SeaPlayerState::Reload)
+                return;
+
+            SetState(SeaPlayerState::Idle);
+        }
+        else
+        {
+            if (_state == SeaPlayerState::Shot || _state == SeaPlayerState::Reload)
+                return;
+
+            SetState(SeaPlayerState::Aiming);
+        }
+    }
+
+
     if (Input::main->GetMouseDown(KeyCode::LeftMouse))
     {
         if (_state == SeaPlayerState::Aiming)
         {
-            if (_weapons->GetState() == WeaponState::Idle)
-            {
-                _weapons->ChangeState(WeaponState::Shot);
-            }
+            SetState(SeaPlayerState::Shot);
         }
     }
 
@@ -187,14 +203,7 @@ void SeaPlayerController::KeyUpdate(vec3& inputDir, Quaternion& rotation, float 
         }
     }
 
-    if (Input::main->GetMouseDown(KeyCode::RightMouse))
-    {
-        if (_state == SeaPlayerState::Aiming)
-            SetState(SeaPlayerState::Idle);
-        else
-            SetState(SeaPlayerState::Aiming);
-    }
-  
+
     if (Input::main->GetKey(KeyCode::F1))
     {
         auto& camera = CameraManager::main->GetCamera(CameraType::DebugCamera);
@@ -314,9 +323,15 @@ void SeaPlayerController::UpdateState(float dt)
     case SeaPlayerState::Idle:
         break;
     case SeaPlayerState::Aiming:
-  
+        _weapons->SetTargetHudPos();
         break;
-    case SeaPlayerState::Skill:
+    case SeaPlayerState::Shot:
+        _weapons->SetTargetHudPos();
+        _weapons->Shot();
+        break;
+    case SeaPlayerState::Reload:
+        _weapons->SetTargetHudPos();
+        _weapons->Reload();
         break;
     case SeaPlayerState::Die:
         break;
@@ -353,24 +368,29 @@ void SeaPlayerController::SetState(SeaPlayerState state)
 
 	switch (_state)
 	{
-	case SeaPlayerState::Idle:
+    case SeaPlayerState::Idle:
+    {
+   
+        _weapons->SetTargetHudVisible(false);
         if (_animations.find("Swim_Idle") != _animations.end())
         {
             _skined->Play(_animations["Swim_Idle"], 0.5f);
         };
+    }
 		break;
-	case SeaPlayerState::Aiming:
+    case SeaPlayerState::Aiming:
+    {
+        _weapons->SetTargetHudVisible(true);
+
         if (_animations.find("Swim_Run") != _animations.end())
         {
             _skined->Play(_animations["Swim_Run"], 0.5f);
         };
+    }
 		break;
-	case SeaPlayerState::Attack:
-
-		break;
-	case SeaPlayerState::Skill:
-
-		break;
+    case SeaPlayerState::Shot:
+        _weapons->SetTargetHudVisible(true);
+        break;
 	case SeaPlayerState::Die:
 
 		break;
