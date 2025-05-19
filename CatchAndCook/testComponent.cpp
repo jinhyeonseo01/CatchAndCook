@@ -82,7 +82,7 @@ void testComponent::Update()
 	if (Input::main->GetKey(KeyCode::P))
 	{
 		static float i = 0;;
-		transform->SetLocalRotation(vec3(0, 0, i * D2R));
+		transform->SetLocalScale(vec3(i * D2R, i * D2R, i * D2R));
 		i += 0.1f;
 	}
 

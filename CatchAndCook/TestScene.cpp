@@ -50,7 +50,6 @@ void TestScene::Init()
 	CameraManager::main->GetCamera(CameraType::DebugCamera)->SetCameraPos(vec3(245.946, 79.8085, 225.333));
 
 
-
 	{
 		ShaderInfo info;
 		info._zTest = true;
@@ -103,7 +102,7 @@ void TestScene::Init()
 	shader->SetInjector({ BufferType::SeaDefaultMaterialParam });
 	shader->SetPass(RENDER_PASS::Deferred);
 
-	for (int i = 0; i < 1000; ++i)
+	for (int i = 0; i < 3; ++i)
 	{
 		{
 
@@ -124,7 +123,7 @@ void TestScene::Init()
 			{
 
 				root->AddComponent<testComponent>();
-				root->_transform->SetLocalPosition(vec3(0, 0, 0));
+				root->_transform->SetLocalPosition(vec3(30.0f, 0, 0));
 				root->_transform->SetLocalScale(vec3(5.0f, 5.0f, 5.0f));
 				root->_transform->SetLocalRotation(vec3(0, 0, 0));
 				root->SetType(GameObjectType::Dynamic);

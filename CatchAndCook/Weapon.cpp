@@ -46,6 +46,10 @@ void Weapon::Update()
 			_moveDist = 0;
 			ChangeState(WeaponState::Reload);
 		}
+
+		Gizmo::main->Width(0.1f);
+		Gizmo::main->Line(_currentWeapon->weaponSlot->_transform->GetWorldPosition(), _currentWeapon->hook->_transform->GetWorldPosition(), vec4(1, 1, 1, 1));
+
 	}
 		break;
 	case WeaponState::Reload:
@@ -59,10 +63,13 @@ void Weapon::Update()
 		_currentWeapon->hook->_transform->SetWorldPosition(currentHookPos + dir * speed * Time::main->GetDeltaTime());
 		_moveDist += speed * Time::main->GetDeltaTime();
 
+		Gizmo::main->Width(0.1f);
+		Gizmo::main->Line(_currentWeapon->weaponSlot->_transform->GetWorldPosition(), _currentWeapon->hook->_transform->GetWorldPosition(), vec4(1, 1, 1, 1));
+
 		if (_moveDist >= _currentWeapon->_range)
 		{
 			_moveDist = 0;
-			_currentWeapon->hook->_transform->SetLocalPosition(vec3::Zero);
+			_currentWeapon->hook->_transform->SetLocalPosition(_currentWeapon->_backToPos);
 			ChangeState(WeaponState::Idle);
 		}
 	}
@@ -159,15 +166,17 @@ void Weapon::AddWeapon(const wstring& weaponName, const wstring& bodyName, const
 	gun->body = SceneManager::main->GetCurrentScene()->Find(bodyName);
 	gun->hook = SceneManager::main->GetCurrentScene()->Find(hookName);
 	gun->weaponSlot = SceneManager::main->GetCurrentScene()->Find(weaponSlot);
-
-	if (gun->body == nullptr || gun->hook == nullptr || gun->weaponSlot ==nullptr)
+	if (gun->body == nullptr || gun->hook == nullptr || gun->weaponSlot ==nullptr )
 	{
 		cout << "Weapon Not Found" << endl;
 		return;
 	}
 
+	gun->_backToPos = gun->hook->_transform->GetLocalPosition();
 	gun->GunName = weaponName;
+	_currentWeapon = gun;
 	_weapons[weaponName] = gun;
+
 }
 
 void Weapon::AddWeapon(shared_ptr<Gun> gun)

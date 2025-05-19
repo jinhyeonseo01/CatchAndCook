@@ -8,6 +8,7 @@ struct Gun
 	shared_ptr<GameObject> hook{};
 	shared_ptr<GameObject> weaponSlot{};
 
+	vec3 _backToPos;
 	float _power{};
 	float _range =300.0f;
 	float _speed =800.0f;
@@ -44,7 +45,7 @@ public:
 public:
 	WeaponState GetState() { return  _state; }
 	void SetCurrentWeapon(const wstring& weaponName);
-	void AddWeapon(const wstring& weaponName, const wstring& bodyName, const wstring& hookName , const wstring& weaponSlot);
+	void AddWeapon(const wstring& weaponName, const wstring& bodyName, const wstring& hookName, const wstring& weaponSlot );
 	void AddWeapon(shared_ptr<Gun> gun);
 	shared_ptr<Gun> GetCurrentWeapon() { return _currentWeapon; }
 
