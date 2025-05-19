@@ -103,7 +103,7 @@ void ComputePointLight(Light L, LightMateiral mat, float3 pos, float3 normal, fl
 {
     float3 lightVec = L.position - pos;
     float d = length(lightVec);
-    if (dot(lightVec, lightVec) > L.fallOffEnd * L.fallOffEnd)
+    if (d > L.fallOffEnd )
         return;
 
     lightVec /= d;
