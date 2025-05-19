@@ -27,6 +27,7 @@ void SeaPlayerController::Init()
     ImguiManager::main->cameraYawOffset = &_cameraYawOffset;
 
     _weapons = GetOwner()->AddComponent<Weapon>();
+	SceneManager::main->GetCurrentScene()->Find(L"Harpoon")->AddComponent<Weapon>();
 }
 
 void SeaPlayerController::Start()
@@ -52,7 +53,6 @@ void SeaPlayerController::Start()
 	{
 		cout << animation.first << endl;
 	}
-
 
     _weapons->AddWeapon(L"test", L"Gun", L"Harpoon",L"HarpoonSlot");
     _weapons->SetCurrentWeapon(L"test");
@@ -130,7 +130,6 @@ void SeaPlayerController::UpdatePlayerAndCamera(float dt, Quaternion& playerRota
         nextPos.y += deltaY;
     }
 
-  
 
      // 최종 위치 적용
     _transform->SetWorldPosition(nextPos);

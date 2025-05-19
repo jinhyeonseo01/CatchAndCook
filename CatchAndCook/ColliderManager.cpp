@@ -201,7 +201,6 @@ std::unordered_set<std::shared_ptr<Collider>> ColliderManager::GetPotentialColli
 	}
 	else
 	{
-	/*	cout << "못찾음" << endl;*/
 		occupiedCells = GetOccupiedCells(collider);
 	}
 

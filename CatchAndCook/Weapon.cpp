@@ -5,6 +5,7 @@
 #include "MeshRenderer.h"
 #include "CameraManager.h"
 #include "Camera.h"
+#include "Collider.h"
 Weapon::Weapon()
 {
 }
@@ -15,13 +16,11 @@ Weapon::~Weapon()
 
 void Weapon::SetDestroy()
 {
+
 }
 
 void Weapon::Init()
 {
-
-	
-
 	_targetHud = SceneManager::main->GetCurrentScene()->CreateGameObject(L"Sprite1");
 	auto& renderer = _targetHud->AddComponent<MeshRenderer>();
 	auto& sprite = _targetHud->AddComponent<Sprite>();
@@ -68,6 +67,8 @@ void Weapon::RenderBegin()
 
 void Weapon::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
 {
+	other->GetOwner()->SetDestroy();
+	cout << "Collision Begin" << endl;
 }
 
 void Weapon::CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
