@@ -6,6 +6,7 @@
 #include "CameraManager.h"
 #include "Camera.h"
 #include "Collider.h"
+#include "WeaponSystem.h"
 Weapon::Weapon()
 {
 }
@@ -98,6 +99,9 @@ void Weapon::AddWeapon(const wstring& weaponName, const wstring& bodyName, const
 		cout << "Weapon Not Found" << endl;
 		return;
 	}
+
+	auto weaponSystem =  gun->hook->AddComponent<WeaponSystem>();
+	weaponSystem->SetController(_controller);
 
 	gun->_backToPos = gun->hook->_transform->GetLocalPosition();
 	gun->GunName = weaponName;

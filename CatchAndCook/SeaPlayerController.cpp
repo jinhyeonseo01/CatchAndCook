@@ -11,6 +11,7 @@
 #include "SkinnedHierarchy.h"
 #include "Animation.h"
 #include "Weapon.h"
+#include "WeaponSystem.h"
 
 SeaPlayerController::SeaPlayerController()
 {
@@ -28,7 +29,6 @@ void SeaPlayerController::Init()
 
     _weapons = make_shared<Weapon>();
     _weapons->Init(this);
-	//SceneManager::main->GetCurrentScene()->Find(L"Harpoon")->AddComponent<Weapon>();
 }
 
 void SeaPlayerController::Start()
