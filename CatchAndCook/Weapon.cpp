@@ -14,12 +14,8 @@ Weapon::~Weapon()
 {
 }
 
-void Weapon::SetDestroy()
-{
 
-}
-
-void Weapon::Init()
+void Weapon::Init(SeaPlayerController* contorller)
 {
 	_targetHud = SceneManager::main->GetCurrentScene()->CreateGameObject(L"Sprite1");
 	auto& renderer = _targetHud->AddComponent<MeshRenderer>();
@@ -33,56 +29,13 @@ void Weapon::Init()
 	material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
 	material->SetPass(RENDER_PASS::UI);
 	renderer->AddMaterials({ material });
+	_controller = contorller;
 };
 
-void Weapon::Start()
-{
-	controller = GetOwner()->GetComponent<SeaPlayerController>().get();
-}
-
-void Weapon::Update()
-{
-
-}
-
-void Weapon::Update2()
-{
-}
-
-void Weapon::Enable()
-{
-}
-
-void Weapon::Disable()
-{
-}
-
-void Weapon::Destroy()
-{
-}
-
-void Weapon::RenderBegin()
-{
-}
-
-void Weapon::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
-{
-	other->GetOwner()->SetDestroy();
-	cout << "Collision Begin" << endl;
-}
-
-void Weapon::CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
-{
-}
-
-bool Weapon::IsExecuteAble()
-{
-    return false;
-}
 
 
 
-void Weapon::SetTargetHudPos()
+void Weapon::SetTargetHudPos() 
 {
 	if (_currentWeapon == nullptr)
 		return;
@@ -177,7 +130,7 @@ void Weapon::Shot()
 	if (_moveDist >= _currentWeapon->_range)
 	{
 		_moveDist = 0;
-		controller->SetState(SeaPlayerState::Reload);
+		_controller->SetState(SeaPlayerState::Reload);
 	}
 
 	SetTargetHudPos();
@@ -206,7 +159,7 @@ void Weapon::Reload()
 	{
 		_moveDist = 0;
 		_currentWeapon->hook->_transform->SetLocalPosition(_currentWeapon->_backToPos);
-		controller->SetState(SeaPlayerState::Aiming);
+		_controller->SetState(SeaPlayerState::Aiming);
 	}
 }
 

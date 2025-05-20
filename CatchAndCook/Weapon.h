@@ -16,25 +16,14 @@ struct Gun
 };
 
 
-class Weapon :public Component
+class Weapon 
 {
 
 public:
 	Weapon();
 	~Weapon();
-	void SetDestroy() override;
-	void Init() override;
-	void Start() override;
-	void Update() override;
-	void Update2() override;
-	void Enable() override;
-	void Disable() override;
-	void Destroy() override;
-	void RenderBegin() override;
-	void CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other) override;
-	void CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other) override;
-	bool IsExecuteAble() override;
 	void SetTargetHudPos();
+	void Init(SeaPlayerController* contorller);
 public:
 	
 	void SetCurrentWeapon(const wstring& weaponName);
@@ -52,7 +41,7 @@ public:
 	}
 
 private:
-	SeaPlayerController* controller;
+	SeaPlayerController* _controller;
 	float _moveDist = 0;
 	shared_ptr<Gun> _currentWeapon;
 	shared_ptr<GameObject> _targetHud;

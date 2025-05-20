@@ -26,8 +26,9 @@ void SeaPlayerController::Init()
 	ImguiManager::main->cameraPitchOffset = &_cameraPitchOffset;
     ImguiManager::main->cameraYawOffset = &_cameraYawOffset;
 
-    _weapons = GetOwner()->AddComponent<Weapon>();
-	SceneManager::main->GetCurrentScene()->Find(L"Harpoon")->AddComponent<Weapon>();
+    _weapons = make_shared<Weapon>();
+    _weapons->Init(this);
+	//SceneManager::main->GetCurrentScene()->Find(L"Harpoon")->AddComponent<Weapon>();
 }
 
 void SeaPlayerController::Start()
@@ -369,7 +370,6 @@ void SeaPlayerController::SetState(SeaPlayerState state)
 	{
     case SeaPlayerState::Idle:
     {
-   
         _weapons->SetTargetHudVisible(false);
         if (_animations.find("Swim_Idle") != _animations.end())
         {
