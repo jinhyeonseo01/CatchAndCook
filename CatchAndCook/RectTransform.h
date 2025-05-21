@@ -20,13 +20,18 @@ struct Rect2D {
 	Vector2 min;  // 왼쪽-아래
 	Vector2 max;  // 오른쪽-위
 };
+struct Rect3D {
+	Vector3 min;  // 왼쪽-아래
+	Vector3 max;  // 오른쪽-위
+};
 
 // 반환용 구조체
 struct ComputedRect {
 	Vector3 localPos3D;       // Pivot 반영된 3D localPosition
 	Vector2 anchoredCalc2D;   // 검산용 anchoredPosition
 	Rect2D  localRect2D;      // 계산된 local-space min/max
-	Rect2D  worldRect2D;      // 계산된 world-space min/max
+	Rect2D  localAdject2D;
+	Rect3D  worldRect3D;      // 계산된 world-space min/max
 	Matrix  worldMatrix = Matrix::Identity;      // 누적된 World TRS
 };
 

@@ -546,8 +546,12 @@ void ImguiManager::Test2()
                             ImGui::InputFloat2("  Max", &c.localRect2D.max.x);
 
                             ImGui::Text("WorldRect2D Min/Max");
-                            ImGui::InputFloat2("  Min", &c.worldRect2D.min.x);
-                            ImGui::InputFloat2("  Max", &c.worldRect2D.max.x);
+                            ImGui::InputFloat2("  Min", &c.worldRect3D.min.x);
+                            ImGui::InputFloat2("  Max", &c.worldRect3D.max.x);
+
+                            ImGui::Text("AdjRect2D Min/Max");
+                            ImGui::InputFloat2("  Min", &c.localAdject2D.min.x);
+                            ImGui::InputFloat2("  Max", &c.localAdject2D.max.x);
 
                         }
 
