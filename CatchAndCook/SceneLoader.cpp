@@ -291,6 +291,11 @@ void SceneLoader::LinkComponent(json& jsonData)
         	jsonData["anchoredPosition"][1].get<float>(),
         jsonData["position"][2].get<float>()
         };
+  //      pos = Vector3{
+		//jsonData["position"][0].get<float>(),
+		//jsonData["position"][1].get<float>(),
+		//jsonData["position"][2].get<float>()
+  //      };
         Quaternion rot = {
             jsonData["rotation"][0].get<float>(),
             jsonData["rotation"][1].get<float>(),

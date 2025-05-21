@@ -55,11 +55,11 @@ void RectTransform::Update2()
     cr.worldMatrix = Matrix::Identity;
     if (GetOwner()->GetParent())
         if (auto rect = GetOwner()->GetParent()->GetComponent<RectTransform>())
-            ComputeRectTransform(rect->_computedRect);
+            _computedRect = ComputeRectTransform(rect->_computedRect);
         else
-            ComputeRectTransform({});
+            _computedRect = ComputeRectTransform({});
     else
-        ComputeRectTransform(cr);
+        _computedRect = ComputeRectTransform(cr);
 
 	auto min = _computedRect.localAdject2D.min;
     auto max = _computedRect.localAdject2D.max;
@@ -73,7 +73,7 @@ void RectTransform::Update2()
     Vector3::Transform(br, _computedRect.worldMatrix, br);
 
     // 4개 변을 순서대로 그려준다
-    Gizmo::Width(1);
+    Gizmo::Width(0.01);
 	Gizmo::Line(bl, tl);
     Gizmo::Line(tl, tr);
     Gizmo::Line(tr, br);
@@ -125,12 +125,14 @@ ComputedRect RectTransform::ComputeRectTransform(const ComputedRect& parent)
 {
     // 1) 부모 Rect & WorldMatrix
     const Rect2D& parentRect = parent.localRect2D;
+    const Rect2D& parentAdject = parent.localAdject2D;
     const Vector3& parentLocalPos = parent.localPos3D;
 	const Matrix& parentWorld = parent.worldMatrix;
 
     // 2) 부모 크기, anchor 기준점
     Vector2 parentSize = parentRect.max - parentRect.min;
-    Vector2 anchorRef = parentRect.min + parentSize * _rectTransformData.anchorMin;
+    Vector2 anchorRefPosition = parentRect.min + parentSize * _rectTransformData.anchorMin;
+    Vector2 anchorRefAdjectPosition = parentAdject.min + parentSize * _rectTransformData.anchorMin;
 
     // 3) 요소 크기 = anchor 영역 크기 + sizeDelta
     Vector2 anchorArea = parentSize * (_rectTransformData.anchorMax - _rectTransformData.anchorMin);
@@ -150,6 +152,7 @@ ComputedRect RectTransform::ComputeRectTransform(const ComputedRect& parent)
     else {
         adjectMin.x = -_rectTransformData.pivot.x * elementSize.x;
         adjectMax.x = (1.0f - _rectTransformData.pivot.x) * elementSize.x;
+
         offsetMin.x = anchoredPos.x - _rectTransformData.pivot.x * elementSize.x;
         offsetMax.x = anchoredPos.x + (1.0f - _rectTransformData.pivot.x) * elementSize.x;
     }
@@ -178,8 +181,8 @@ ComputedRect RectTransform::ComputeRectTransform(const ComputedRect& parent)
         adjectMax.x = localMax2D.x - _localPosition.x;
     }
     else {
-        localMin2D.x = anchorRef.x + offsetMin.x;
-        localMax2D.x = anchorRef.x + offsetMax.x;
+        localMin2D.x = offsetMin.x;
+        localMax2D.x = offsetMax.x;
     }
     //  — Y축
     if (_rectTransformData.anchorMin.y != _rectTransformData.anchorMax.y) {
@@ -192,8 +195,8 @@ ComputedRect RectTransform::ComputeRectTransform(const ComputedRect& parent)
         adjectMax.y = localMax2D.y - _localPosition.y;
     }
     else {
-        localMin2D.y = anchorRef.y + offsetMin.y;
-        localMax2D.y = anchorRef.y + offsetMax.y;
+        localMin2D.y = anchorRefPosition.y + offsetMin.y;
+        localMax2D.y = anchorRefPosition.y + offsetMax.y;
     }
     Rect2D localRect{ localMin2D, localMax2D };
 
@@ -208,7 +211,7 @@ ComputedRect RectTransform::ComputeRectTransform(const ComputedRect& parent)
     // 8) 3D TRS 행렬 & 누적 World 행렬
     Matrix trs = Matrix::CreateScale(_localScale)
         * Matrix::CreateFromQuaternion(_localRotation)
-		* Matrix::CreateTranslation(_localPosition);
+		* Matrix::CreateTranslation(anchorRefAdjectPosition + _localPosition);
     Matrix worldMat = trs * parentWorld;
 
     // 9) local-space Rect 코너 → world-space AABB
