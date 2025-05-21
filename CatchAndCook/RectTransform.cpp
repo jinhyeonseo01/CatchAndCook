@@ -73,7 +73,7 @@ void RectTransform::Update2()
     Vector3::Transform(br, _computedRect.worldMatrix, br);
 
     // 4개 변을 순서대로 그려준다
-    Gizmo::Width(0.01);
+    Gizmo::Width(2);
 	Gizmo::Line(bl, tl);
     Gizmo::Line(tl, tr);
     Gizmo::Line(tr, br);
@@ -174,11 +174,14 @@ ComputedRect RectTransform::ComputeRectTransform(const ComputedRect& parent)
     if (_rectTransformData.anchorMin.x != _rectTransformData.anchorMax.x) {
         localMin2D.x = parentRect.min.x + offsetMin.x;
         localMax2D.x = parentRect.max.x + offsetMax.x;
-		auto offsetX = localMin2D.x - parentLocalPos.x;
-        SetLocalPosition(Vector3((localMax2D.x - localMin2D.x) * _rectTransformData.pivot.x + offsetX, _localPosition.y, _localPosition.z));
+        float adjectMin2 = parentAdject.min.x + offsetMin.x;
+        float adjectMax2 = parentAdject.max.x + offsetMax.x;
 
-        adjectMin.x = localMin2D.x - _localPosition.x;
-        adjectMax.x = localMax2D.x - _localPosition.x;
+		auto offsetX = localMin2D.x - parentLocalPos.x;
+        SetLocalPosition(Vector3((adjectMax2 - adjectMin2) * _rectTransformData.pivot.x + adjectMin2, _localPosition.y, _localPosition.z));
+        anchorRefAdjectPosition.x = 0;
+        adjectMin.x = adjectMin2 - _localPosition.x;
+        adjectMax.x = adjectMax2 - _localPosition.x;
     }
     else {
         localMin2D.x = offsetMin.x;
@@ -188,11 +191,14 @@ ComputedRect RectTransform::ComputeRectTransform(const ComputedRect& parent)
     if (_rectTransformData.anchorMin.y != _rectTransformData.anchorMax.y) {
         localMin2D.y = parentRect.min.y + offsetMin.y;
         localMax2D.y = parentRect.max.y + offsetMax.y;
-        auto offsetY = localMin2D.y - parentLocalPos.y;
-        SetLocalPosition(Vector3(_localPosition.x, (localMax2D.y - localMin2D.y) * _rectTransformData.pivot.y + offsetY, _localPosition.z));
+        float adjectMin2 = parentAdject.min.y + offsetMin.y;
+        float adjectMax2 = parentAdject.max.y + offsetMax.y;
 
-        adjectMin.y = localMin2D.y - _localPosition.y;
-        adjectMax.y = localMax2D.y - _localPosition.y;
+        auto offsetY = localMin2D.y - parentLocalPos.y;
+        SetLocalPosition(Vector3(_localPosition.x, (adjectMax2 - adjectMin2) * _rectTransformData.pivot.y + adjectMin2, _localPosition.z));
+        anchorRefAdjectPosition.y = 0;
+        adjectMin.y = adjectMin2 - _localPosition.y;
+        adjectMax.y = adjectMax2 - _localPosition.y;
     }
     else {
         localMin2D.y = anchorRefPosition.y + offsetMin.y;
@@ -203,8 +209,8 @@ ComputedRect RectTransform::ComputeRectTransform(const ComputedRect& parent)
     // 7) pivot 반영 localPosition 재계산 (X,Y) 및 Z 유지
     Vector2 anchoredCalc = offsetMin + _rectTransformData.pivot * elementSize;
     Vector3 localPos3D(
-        _localPosition.x,
-        _localPosition.y,
+        anchorRefAdjectPosition.x + _localPosition.x,
+        anchorRefAdjectPosition.y + _localPosition.y,
         _localPosition.z
     );
 
