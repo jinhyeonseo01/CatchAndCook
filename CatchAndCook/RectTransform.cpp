@@ -53,6 +53,7 @@ void RectTransform::Update2()
     ComputedRect cr;
     //GetLocalToWorldMatrix_BottomUp(cr.worldMatrix);
     cr.worldMatrix = Matrix::Identity;
+    cr.localMatrix = Matrix::Identity;
     if (GetOwner()->GetParent())
         if (auto rect = GetOwner()->GetParent()->GetComponent<RectTransform>())
             _computedRect = ComputeRectTransform(rect->_computedRect);
@@ -61,19 +62,22 @@ void RectTransform::Update2()
     else
         _computedRect = ComputeRectTransform(cr);
 
-	auto min = _computedRect.localAdject2D.min;
-    auto max = _computedRect.localAdject2D.max;
+	auto min = _computedRect.relativeRect.min;
+    auto max = _computedRect.relativeRect.max;
     Vector3 bl(min.x, min.y, 0.0f); // Bottom-Left
     Vector3 tl(min.x, max.y, 0.0f); // Top-Left
     Vector3 tr(max.x, max.y, 0.0f); // Top-Right
     Vector3 br(max.x, min.y, 0.0f); // Bottom-Right
+    Vector3 pos(0,0,0); // Bottom-Right
     Vector3::Transform(bl, _computedRect.worldMatrix, bl);
     Vector3::Transform(tl, _computedRect.worldMatrix, tl);
     Vector3::Transform(tr, _computedRect.worldMatrix, tr);
     Vector3::Transform(br, _computedRect.worldMatrix, br);
+    Vector3::Transform(pos, _computedRect.worldMatrix, pos);
 
     // 4개 변을 순서대로 그려준다
     Gizmo::Width(2);
+    Gizmo::Sphere({ pos , 10}, Vector4(0,1,0,1));
 	Gizmo::Line(bl, tl);
     Gizmo::Line(tl, tr);
     Gizmo::Line(tr, br);
@@ -124,126 +128,101 @@ void RectTransform::SetData(StructuredBuffer* buffer, Material* material)
 ComputedRect RectTransform::ComputeRectTransform(const ComputedRect& parent)
 {
     // 1) 부모 Rect & WorldMatrix
-    const Rect2D& parentRect = parent.localRect2D;
-    const Rect2D& parentAdject = parent.localAdject2D;
-    const Vector3& parentLocalPos = parent.localPos3D;
-	const Matrix& parentWorld = parent.worldMatrix;
+    const Rect2D& parentAbsoluteRect = parent.absoluteRect;
+    const Rect2D& parentRelativeRect = parent.relativeRect;
+    const Vector3& parentLocalPosition = parent.localPosition;
+	const Matrix& parentWorldMatrix = parent.worldMatrix;
+    Vector2 parentRectSize = parentAbsoluteRect.max - parentAbsoluteRect.min;
 
     // 2) 부모 크기, anchor 기준점
-    Vector2 parentSize = parentRect.max - parentRect.min;
-    Vector2 anchorRefPosition = parentRect.min + parentSize * _rectTransformData.anchorMin;
-    Vector2 anchorRefAdjectPosition = parentAdject.min + parentSize * _rectTransformData.anchorMin;
+    Vector2  anchorMin = _rectTransformData.anchorMin;
+    Vector2  anchorMax = _rectTransformData.anchorMax;
 
-    // 3) 요소 크기 = anchor 영역 크기 + sizeDelta
-    Vector2 anchorArea = parentSize * (_rectTransformData.anchorMax - _rectTransformData.anchorMin);
-    Vector2 elementSize = anchorArea + _rectTransformData.sizeDelta;
+    Vector2 parentAnchorAbsolutePosition = parentAbsoluteRect.min + parentRectSize * anchorMin;
+    Vector2 parentAnchorRelativePosition = parentRelativeRect.min + parentRectSize * anchorMin;
 
-    // 4) anchoredPosition 은 localPosition.x,y 로부터
-    Vector2 anchoredPos(_localPosition.x, _localPosition.y);
+    Vector2 rectSize = _rectTransformData.sizeDelta;
+    Vector2 anchoredPosition(_localPosition.x, _localPosition.y);
+
+    bool stretchX = (anchorMin.x != anchorMax.x);
+    bool stretchY = (anchorMin.y != anchorMax.y);
 
     // 5) offsetMin/offsetMax: stretch 축은 JSON 값, 나머지는 pivot 기반 계산
-    Vector2 adjectMin, adjectMax;
+    Vector2 relativeMin, relativeMax;
 	Vector2 offsetMin, offsetMax;
+    Vector2 absoluteMin, absoluteMax;
     //  — X 축 (Left/Right)
-    if (_rectTransformData.anchorMin.x != _rectTransformData.anchorMax.x) {
+    if (stretchX) {
         offsetMin.x = _rectTransformData.offsetMin.x;       // Left
         offsetMax.x = _rectTransformData.offsetMax.x;       // Right
+        absoluteMin.x = parentAbsoluteRect.min.x + offsetMin.x;
+        absoluteMax.x = parentAbsoluteRect.max.x + offsetMax.x;
+
+        float relativeRectMin = parentRelativeRect.min.x + offsetMin.x;
+        float relativeRectMax = parentRelativeRect.max.x + offsetMax.x;
+
+        anchoredPosition.x = (relativeRectMax - relativeRectMin) * _rectTransformData.pivot.x + relativeRectMin;
+        SetLocalPosition(Vector3(anchoredPosition.x, anchoredPosition.y, _localPosition.z));
+        parentAnchorRelativePosition.x = 0;
+        relativeMin.x = relativeRectMin -  anchoredPosition.x;
+        relativeMax.x = relativeRectMax -  anchoredPosition.x;
     }
     else {
-        adjectMin.x = -_rectTransformData.pivot.x * elementSize.x;
-        adjectMax.x = (1.0f - _rectTransformData.pivot.x) * elementSize.x;
+        relativeMin.x = -_rectTransformData.pivot.x * rectSize.x;
+        relativeMax.x = (1.0f - _rectTransformData.pivot.x) * rectSize.x;
 
-        offsetMin.x = anchoredPos.x - _rectTransformData.pivot.x * elementSize.x;
-        offsetMax.x = anchoredPos.x + (1.0f - _rectTransformData.pivot.x) * elementSize.x;
+        offsetMin.x = anchoredPosition.x + relativeMin.x;
+        offsetMax.x = anchoredPosition.x + relativeMax.x;
+        absoluteMin.x = parentAnchorAbsolutePosition.x + offsetMin.x;
+        absoluteMax.x = parentAnchorAbsolutePosition.x + offsetMax.x;
     }
     //  — Y 축 (Bottom/Top)
-    if (_rectTransformData.anchorMin.y != _rectTransformData.anchorMax.y) {
+    if (stretchY) {
         offsetMin.y = _rectTransformData.offsetMin.y;       // Bottom
         offsetMax.y = _rectTransformData.offsetMax.y;       // Top
+
+        absoluteMin.y = parentAbsoluteRect.min.y + offsetMin.y;
+        absoluteMax.y = parentAbsoluteRect.max.y + offsetMax.y;
+        float relativeRectMin = parentRelativeRect.min.y + offsetMin.y;
+        float relativeRectMax = parentRelativeRect.max.y + offsetMax.y;
+
+        anchoredPosition.y = (relativeRectMax - relativeRectMin) * _rectTransformData.pivot.y + relativeRectMin;
+        SetLocalPosition(Vector3(anchoredPosition.x, anchoredPosition.y, _localPosition.z));
+        parentAnchorRelativePosition.y = 0;
+        relativeMin.y = relativeRectMin - anchoredPosition.y;
+        relativeMax.y = relativeRectMax - anchoredPosition.y;
     }
     else {
-        adjectMin.y = -_rectTransformData.pivot.y * elementSize.y;
-        adjectMax.y = (1.0f - _rectTransformData.pivot.y) * elementSize.y;
-        offsetMin.y = anchoredPos.y - _rectTransformData.pivot.y * elementSize.y;
-        offsetMax.y = anchoredPos.y + (1.0f - _rectTransformData.pivot.y) * elementSize.y;
+        relativeMin.y = -_rectTransformData.pivot.y * rectSize.y;
+        relativeMax.y = (1.0f - _rectTransformData.pivot.y) * rectSize.y;
+        offsetMin.y = anchoredPosition.y + relativeMin.y;
+        offsetMax.y = anchoredPosition.y + relativeMax.y;
+        absoluteMin.y = parentAnchorAbsolutePosition.y + offsetMin.y;
+        absoluteMax.y = parentAnchorAbsolutePosition.y + offsetMax.y;
     }
-	
-    // 6) local-space Rect(min/max)
-    Vector2 localMin2D, localMax2D;
-    //  — X축
-    if (_rectTransformData.anchorMin.x != _rectTransformData.anchorMax.x) {
-        localMin2D.x = parentRect.min.x + offsetMin.x;
-        localMax2D.x = parentRect.max.x + offsetMax.x;
-        float adjectMin2 = parentAdject.min.x + offsetMin.x;
-        float adjectMax2 = parentAdject.max.x + offsetMax.x;
 
-		auto offsetX = localMin2D.x - parentLocalPos.x;
-        SetLocalPosition(Vector3((adjectMax2 - adjectMin2) * _rectTransformData.pivot.x + adjectMin2, _localPosition.y, _localPosition.z));
-        anchorRefAdjectPosition.x = 0;
-        adjectMin.x = adjectMin2 - _localPosition.x;
-        adjectMax.x = adjectMax2 - _localPosition.x;
-    }
-    else {
-        localMin2D.x = offsetMin.x;
-        localMax2D.x = offsetMax.x;
-    }
-    //  — Y축
-    if (_rectTransformData.anchorMin.y != _rectTransformData.anchorMax.y) {
-        localMin2D.y = parentRect.min.y + offsetMin.y;
-        localMax2D.y = parentRect.max.y + offsetMax.y;
-        float adjectMin2 = parentAdject.min.y + offsetMin.y;
-        float adjectMax2 = parentAdject.max.y + offsetMax.y;
 
-        auto offsetY = localMin2D.y - parentLocalPos.y;
-        SetLocalPosition(Vector3(_localPosition.x, (adjectMax2 - adjectMin2) * _rectTransformData.pivot.y + adjectMin2, _localPosition.z));
-        anchorRefAdjectPosition.y = 0;
-        adjectMin.y = adjectMin2 - _localPosition.y;
-        adjectMax.y = adjectMax2 - _localPosition.y;
-    }
-    else {
-        localMin2D.y = anchorRefPosition.y + offsetMin.y;
-        localMax2D.y = anchorRefPosition.y + offsetMax.y;
-    }
-    Rect2D localRect{ localMin2D, localMax2D };
+    Rect2D absoluteRect{ absoluteMin, absoluteMax };
+    Rect2D relativeRect{ relativeMin, relativeMax };
 
-    // 7) pivot 반영 localPosition 재계산 (X,Y) 및 Z 유지
-    Vector2 anchoredCalc = offsetMin + _rectTransformData.pivot * elementSize;
-    Vector3 localPos3D(
-        anchorRefAdjectPosition.x + _localPosition.x,
-        anchorRefAdjectPosition.y + _localPosition.y,
+    Vector3 finalLocalPosition(
+        parentAnchorRelativePosition.x + anchoredPosition.x,
+        parentAnchorRelativePosition.y + anchoredPosition.y,
         _localPosition.z
     );
 
-    // 8) 3D TRS 행렬 & 누적 World 행렬
-    Matrix trs = Matrix::CreateScale(_localScale)
+
+    Matrix localMatrix = Matrix::CreateScale(_localScale)
         * Matrix::CreateFromQuaternion(_localRotation)
-		* Matrix::CreateTranslation(anchorRefAdjectPosition + _localPosition);
-    Matrix worldMat = trs * parentWorld;
+		* Matrix::CreateTranslation(finalLocalPosition);
+    Matrix worldMatrix = localMatrix * parentWorldMatrix;
 
-    // 9) local-space Rect 코너 → world-space AABB
-    Vector3 corners[4] = {
-        { localMin2D.x, localMin2D.y, localPos3D.z },
-        { localMin2D.x, localMax2D.y, localPos3D.z },
-        { localMax2D.x, localMin2D.y, localPos3D.z },
-        { localMax2D.x, localMax2D.y, localPos3D.z }
-    };
-    Vector3 worldMin(+FLT_MAX, +FLT_MAX, +FLT_MAX), worldMax(-FLT_MAX, -FLT_MAX, -FLT_MAX);
-    for (auto& c : corners) {
-        Vector3 w = Vector3::Transform(c, worldMat);
-        worldMin.x = std::min(worldMin.x, w.x);
-        worldMin.y = std::min(worldMin.y, w.y);
-        worldMax.x = std::max(worldMax.x, w.x);
-        worldMax.y = std::max(worldMax.y, w.y);
-    }
-    Rect3D worldRect{ worldMin, worldMax };
-
-    // 10) 저장 & 리턴
-	_computedRect.localPos3D = localPos3D;
-	_computedRect.anchoredCalc2D = anchoredCalc;
-	_computedRect.localRect2D = localRect;
-	_computedRect.worldRect3D = worldRect;
-	_computedRect.worldMatrix = worldMat;
-	_computedRect.localAdject2D = { adjectMin, adjectMax };
+	_computedRect.localPosition = finalLocalPosition;
+	_computedRect.anchoredPosition = anchoredPosition;
+	_computedRect.absoluteRect = absoluteRect;
+    _computedRect.relativeRect = relativeRect;
+	_computedRect.worldMatrix = worldMatrix;
+	_computedRect.localMatrix = localMatrix;
 
     return _computedRect;
 }

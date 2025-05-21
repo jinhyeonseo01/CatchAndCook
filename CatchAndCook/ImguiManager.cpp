@@ -538,20 +538,15 @@ void ImguiManager::Test2()
                             auto& c = transform->_computedRect;
                             ImGui::Separator();
                             ImGui::Text("ComputedRect");
-                            ImGui::InputFloat3("LocalPos3D", &c.localPos3D.x);
-                            ImGui::InputFloat2("AnchoredCalc2D", &c.anchoredCalc2D.x);
+                            ImGui::InputFloat3("LocalPos3D", &c.localPosition.x);
 
                             ImGui::Text("LocalRect2D Min/Max");
-                            ImGui::InputFloat2("  Min", &c.localRect2D.min.x);
-                            ImGui::InputFloat2("  Max", &c.localRect2D.max.x);
-
-                            ImGui::Text("WorldRect2D Min/Max");
-                            ImGui::InputFloat2("  Min", &c.worldRect3D.min.x);
-                            ImGui::InputFloat2("  Max", &c.worldRect3D.max.x);
+                            ImGui::InputFloat2("  Min", &c.absoluteRect.min.x);
+                            ImGui::InputFloat2("  Max", &c.absoluteRect.max.x);
 
                             ImGui::Text("AdjRect2D Min/Max");
-                            ImGui::InputFloat2("  Min", &c.localAdject2D.min.x);
-                            ImGui::InputFloat2("  Max", &c.localAdject2D.max.x);
+                            ImGui::InputFloat2("  Min", &c.relativeRect.min.x);
+                            ImGui::InputFloat2("  Max", &c.relativeRect.max.x);
 
                         }
 

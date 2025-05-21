@@ -27,11 +27,11 @@ struct Rect3D {
 
 // 반환용 구조체
 struct ComputedRect {
-	Vector3 localPos3D;       // Pivot 반영된 3D localPosition
-	Vector2 anchoredCalc2D;   // 검산용 anchoredPosition
-	Rect2D  localRect2D;      // 계산된 local-space min/max
-	Rect2D  localAdject2D;
-	Rect3D  worldRect3D;      // 계산된 world-space min/max
+	Vector3 localPosition;       // Pivot 반영된 3D localPosition
+	Vector2 anchoredPosition;
+	Rect2D  absoluteRect;      // 계산된 local-space min/max
+	Rect2D  relativeRect;
+	Matrix  localMatrix = Matrix::Identity;
 	Matrix  worldMatrix = Matrix::Identity;      // 누적된 World TRS
 };
 
