@@ -94,7 +94,7 @@ void Game::Init(HWND hwnd)
 	SceneManager::main->AddScene(SceneType::TestScene, false);
 	SceneManager::main->AddScene(SceneType::TestScene2, false);
 	SceneManager::main->AddScene(SceneType::Sea01, false);
-	SceneManager::main->ChangeScene(nullptr, SceneManager::main->FindScene(SceneType::Sea01), true, true);
+	SceneManager::main->ChangeScene(nullptr, SceneManager::main->FindScene(SceneType::TestScene2), true, true);
 };
 
 void Game::PrevUpdate()

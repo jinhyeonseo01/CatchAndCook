@@ -127,7 +127,7 @@ void Terrain::Start()
                     if (material->GetShader()->_name == "DeferredSeaGrass.hlsl")
                     {
                         newMaterial->SetShader(ResourceManager::main->Get<Shader>(L"DeferredSeaGrass"));
-              /*          newMaterial->SetShadowCasting(false);*/
+                        newMaterial->SetShadowCasting(false);
                         _instancesObject[i].lock()->AddComponent<SeaGrassComponent>();
                         _instancesObject[i].lock()->SetType(GameObjectType::Static);
                     }
