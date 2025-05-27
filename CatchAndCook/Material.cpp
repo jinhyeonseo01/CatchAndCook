@@ -201,7 +201,7 @@ std::shared_ptr<Material> Material::Clone()
 	//material->_propertyVectors = _propertyVectors;
 	//material->_propertyMatrixs = _propertyMatrixs;
 	//material->_propertyHandle = _propertyHandle;
-	//material->_propertyTexture = _propertyTexture;
+	//m aterial->_propertyTexture = _propertyTexture;
 	//material->_shaderInjectors = _shaderInjectors;
 	//material->_customInjectors = _customInjectors;
 	//material->_shader = _shader;

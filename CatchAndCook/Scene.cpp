@@ -171,9 +171,9 @@ void Scene::Rendering()
     TransparentPass(cmdList); // Position,
     Profiler::Fin();
 
-    //Profiler::Set("PASS : Compute", BlockTag::CPU);
-    //ComputePass(cmdList);
-    //Profiler::Fin();
+    Profiler::Set("PASS : Compute", BlockTag::CPU);
+    ComputePass(cmdList);
+    Profiler::Fin();
 
     Profiler::Set("PASS : UI", BlockTag::CPU);
     UiPass(cmdList);
