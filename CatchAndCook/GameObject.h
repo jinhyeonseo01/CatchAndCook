@@ -350,5 +350,6 @@ private:
 	static std::queue<std::shared_ptr<Component>> _componentDestroyQueue;
 
 	friend class Transform;
+	friend class RectTransform;
 };
 

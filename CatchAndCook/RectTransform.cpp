@@ -49,18 +49,23 @@ void RectTransform::Update2()
 {
 	Transform::Update2();
 
-    
-    ComputedRect cr;
-    //GetLocalToWorldMatrix_BottomUp(cr.worldMatrix);
-    cr.worldMatrix = Matrix::Identity;
-    cr.localMatrix = Matrix::Identity;
     if (GetOwner()->GetParent())
+    {
         if (auto rect = GetOwner()->GetParent()->GetComponent<RectTransform>())
             _computedRect = ComputeRectTransform(rect->_computedRect);
+        else if (auto rect = GetOwner()->GetParent()->GetComponent<Transform>())
+        {
+            //ComputedRect cr;
+            //rect->GetLocalToWorldMatrix_BottomUp(cr.worldMatrix);
+            std::cout << "1234" << "\n";
+            auto rect2 = ChangeTransToRectTrans(rect);
+            _computedRect = ComputeRectTransform(rect2->_computedRect);
+        }
         else
             _computedRect = ComputeRectTransform({});
+    }
     else
-        _computedRect = ComputeRectTransform(cr);
+        _computedRect = ComputeRectTransform({});
 
 	auto min = _computedRect.relativeRect.min;
     auto max = _computedRect.relativeRect.max;
@@ -76,14 +81,58 @@ void RectTransform::Update2()
     Vector3::Transform(pos, _computedRect.worldMatrix, pos);
 
     // 4개 변을 순서대로 그려준다
-    Gizmo::Width(2);
-    Gizmo::Sphere({ pos , 10}, Vector4(0,1,0,1));
+    Gizmo::Width(0.02);
+    Gizmo::Sphere({ pos , 0.1}, Vector4(0,1,0,1));
 	Gizmo::Line(bl, tl);
     Gizmo::Line(tl, tr);
     Gizmo::Line(tr, br);
     Gizmo::Line(br, bl);
     Gizmo::WidthRollBack();
 }
+
+shared_ptr<RectTransform> RectTransform::ChangeTransToRectTrans(const shared_ptr<Transform>& transform)
+{
+    auto gameObject = transform->GetOwner();
+    auto prevTransform = transform;
+    auto newRectTrans = std::make_shared<RectTransform>();
+
+    newRectTrans->SetLocalPosition(prevTransform->GetLocalPosition());
+    newRectTrans->SetLocalScale(prevTransform->GetLocalScale());
+    newRectTrans->SetLocalRotation(prevTransform->GetLocalRotation());
+	newRectTrans->_owner = gameObject;
+    newRectTrans->_first = false;
+
+    gameObject->_transform = newRectTrans;
+    for (auto& comp : gameObject->_components)
+    {
+        if (auto trans = std::dynamic_pointer_cast<Transform>(comp))
+        {
+            comp = newRectTrans;
+            break;
+        }
+    }
+    return newRectTrans;
+}
+
+void RectTransform::TopDownCompute(const shared_ptr<Transform>& transform, const ComputedRect& parent)
+{
+    auto obj = transform->GetOwner();
+    auto rectTrans = std::dynamic_pointer_cast<RectTransform>(transform);
+    ComputedRect current;
+    if (rectTrans)
+        current = rectTrans->ComputeRectTransform(parent);
+    else
+        current = ComputeTransform(transform, parent);
+    
+    for (auto& c : obj->_childs)
+    {
+        if (auto rect = c.lock()->GetComponent<Transform>())
+        {
+            TopDownCompute(rect, current);
+        }
+    }
+}
+
 
 void RectTransform::Enable()
 {
@@ -125,6 +174,20 @@ void RectTransform::SetData(StructuredBuffer* buffer, Material* material)
 	Transform::SetData(buffer, material);
 }
 
+ComputedRect RectTransform::ComputeTransform(const shared_ptr<Transform>& transform, const ComputedRect& parent)
+{
+	ComputedRect current;
+    Matrix localMatrix;
+	transform->GetLocalSRTMatrix(localMatrix);
+	current.localMatrix = localMatrix;
+	current.worldMatrix = localMatrix * parent.worldMatrix;
+	current.localPosition = transform->GetLocalPosition();
+	current.rectTranslateMatrix = Matrix::Identity;
+	current.anchoredPosition = Vector2(current.localPosition.x, current.localPosition.y);
+
+    return current;
+}
+
 ComputedRect RectTransform::ComputeRectTransform(const ComputedRect& parent)
 {
     // 1) 부모 Rect & WorldMatrix
@@ -132,7 +195,7 @@ ComputedRect RectTransform::ComputeRectTransform(const ComputedRect& parent)
     const Rect2D& parentRelativeRect = parent.relativeRect;
     const Vector3& parentLocalPosition = parent.localPosition;
 	const Matrix& parentWorldMatrix = parent.worldMatrix;
-    Vector2 parentRectSize = parentAbsoluteRect.max - parentAbsoluteRect.min;
+    Vector2 parentRectSize = parentRelativeRect.max - parentRelativeRect.min;
 
     // 2) 부모 크기, anchor 기준점
     Vector2  anchorMin = _rectTransformData.anchorMin;
@@ -141,31 +204,31 @@ ComputedRect RectTransform::ComputeRectTransform(const ComputedRect& parent)
     Vector2 parentAnchorAbsolutePosition = parentAbsoluteRect.min + parentRectSize * anchorMin;
     Vector2 parentAnchorRelativePosition = parentRelativeRect.min + parentRectSize * anchorMin;
 
-    Vector2 rectSize = _rectTransformData.sizeDelta;
+    Vector2 rectSize = _rectTransformData.rectSize;
     Vector2 anchoredPosition(_localPosition.x, _localPosition.y);
 
     bool stretchX = (anchorMin.x != anchorMax.x);
     bool stretchY = (anchorMin.y != anchorMax.y);
 
-    // 5) offsetMin/offsetMax: stretch 축은 JSON 값, 나머지는 pivot 기반 계산
+    // 5) paddingMin/paddingMax: stretch 축은 JSON 값, 나머지는 pivot 기반 계산
     Vector2 relativeMin, relativeMax;
 	Vector2 offsetMin, offsetMax;
     Vector2 absoluteMin, absoluteMax;
     //  — X 축 (Left/Right)
     if (stretchX) {
-        offsetMin.x = _rectTransformData.offsetMin.x;       // Left
-        offsetMax.x = _rectTransformData.offsetMax.x;       // Right
+        offsetMin.x = _rectTransformData.paddingMin.x;       // Left
+        offsetMax.x = _rectTransformData.paddingMax.x;       // Right
         absoluteMin.x = parentAbsoluteRect.min.x + offsetMin.x;
         absoluteMax.x = parentAbsoluteRect.max.x + offsetMax.x;
 
-        float relativeRectMin = parentRelativeRect.min.x + offsetMin.x;
-        float relativeRectMax = parentRelativeRect.max.x + offsetMax.x;
+        float paddingRectMin = parentRelativeRect.min.x + offsetMin.x;
+        float paddingRectMax = parentRelativeRect.max.x + offsetMax.x;
 
-        anchoredPosition.x = (relativeRectMax - relativeRectMin) * _rectTransformData.pivot.x + relativeRectMin;
+        anchoredPosition.x = (paddingRectMax - paddingRectMin) * _rectTransformData.pivot.x + paddingRectMin;
         SetLocalPosition(Vector3(anchoredPosition.x, anchoredPosition.y, _localPosition.z));
         parentAnchorRelativePosition.x = 0;
-        relativeMin.x = relativeRectMin -  anchoredPosition.x;
-        relativeMax.x = relativeRectMax -  anchoredPosition.x;
+        relativeMin.x = paddingRectMin -  anchoredPosition.x;
+        relativeMax.x = paddingRectMax -  anchoredPosition.x;
     }
     else {
         relativeMin.x = -_rectTransformData.pivot.x * rectSize.x;
@@ -178,19 +241,19 @@ ComputedRect RectTransform::ComputeRectTransform(const ComputedRect& parent)
     }
     //  — Y 축 (Bottom/Top)
     if (stretchY) {
-        offsetMin.y = _rectTransformData.offsetMin.y;       // Bottom
-        offsetMax.y = _rectTransformData.offsetMax.y;       // Top
+        offsetMin.y = _rectTransformData.paddingMin.y;       // Bottom
+        offsetMax.y = _rectTransformData.paddingMax.y;       // Top
 
         absoluteMin.y = parentAbsoluteRect.min.y + offsetMin.y;
         absoluteMax.y = parentAbsoluteRect.max.y + offsetMax.y;
-        float relativeRectMin = parentRelativeRect.min.y + offsetMin.y;
-        float relativeRectMax = parentRelativeRect.max.y + offsetMax.y;
+        float paddingRectMin = parentRelativeRect.min.y + offsetMin.y;
+        float paddingRectMax = parentRelativeRect.max.y + offsetMax.y;
 
-        anchoredPosition.y = (relativeRectMax - relativeRectMin) * _rectTransformData.pivot.y + relativeRectMin;
+        anchoredPosition.y = (paddingRectMax - paddingRectMin) * _rectTransformData.pivot.y + paddingRectMin;
         SetLocalPosition(Vector3(anchoredPosition.x, anchoredPosition.y, _localPosition.z));
         parentAnchorRelativePosition.y = 0;
-        relativeMin.y = relativeRectMin - anchoredPosition.y;
-        relativeMax.y = relativeRectMax - anchoredPosition.y;
+        relativeMin.y = paddingRectMin - anchoredPosition.y;
+        relativeMax.y = paddingRectMax - anchoredPosition.y;
     }
     else {
         relativeMin.y = -_rectTransformData.pivot.y * rectSize.y;
@@ -210,11 +273,11 @@ ComputedRect RectTransform::ComputeRectTransform(const ComputedRect& parent)
         parentAnchorRelativePosition.y + anchoredPosition.y,
         _localPosition.z
     );
+    Vector2 rectHalfSize = (relativeRect.max - relativeRect.min) / 2.0f;
+    Vector2 rectCenter = relativeRect.min + rectHalfSize;
 
 
-    Matrix localMatrix = Matrix::CreateScale(_localScale)
-        * Matrix::CreateFromQuaternion(_localRotation)
-		* Matrix::CreateTranslation(finalLocalPosition);
+    Matrix localMatrix = Matrix::CreateScale(_localScale) * Matrix::CreateFromQuaternion(_localRotation) * Matrix::CreateTranslation(finalLocalPosition);
     Matrix worldMatrix = localMatrix * parentWorldMatrix;
 
 	_computedRect.localPosition = finalLocalPosition;
@@ -223,6 +286,8 @@ ComputedRect RectTransform::ComputeRectTransform(const ComputedRect& parent)
     _computedRect.relativeRect = relativeRect;
 	_computedRect.worldMatrix = worldMatrix;
 	_computedRect.localMatrix = localMatrix;
-
+    _computedRect.rectTranslateMatrix = Matrix::CreateScale(rectHalfSize.x, rectHalfSize.y, 1.0f) * Matrix::CreateTranslation(rectCenter.x, rectCenter.y, 0.0f);
+    
     return _computedRect;
 }
+

@@ -15,5 +15,6 @@ public:
 	static shared_ptr<Mesh> LoadSprtieMesh();
 	static shared_ptr<Mesh> LoadRectMesh();
 	static shared_ptr<Mesh> LoadRectCenterMesh();
+	static shared_ptr<Mesh> LoadRectCenterOneScaleMesh();
 };
 

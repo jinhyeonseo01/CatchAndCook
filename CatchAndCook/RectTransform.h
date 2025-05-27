@@ -6,13 +6,12 @@
 
 
 struct RectTransformData {
-	Vector2    pivot;
-	Vector2    anchorMin;
-	Vector2    anchorMax;
-	Vector2    sizeDelta;
-	Vector2    rectSize;
-	Vector2    offsetMin;
-	Vector2    offsetMax;
+	Vector2    pivot = Vector2(0.5, 0.5);
+	Vector2    anchorMin = Vector2(0.5, 0.5);
+	Vector2    anchorMax = Vector2(0.5, 0.5);
+	Vector2    rectSize = Vector2(0, 0);
+	Vector2    paddingMin; // left, bottom
+	Vector2    paddingMax; // right, top
 };
 
 
@@ -30,7 +29,8 @@ struct ComputedRect {
 	Vector3 localPosition;       // Pivot 반영된 3D localPosition
 	Vector2 anchoredPosition;
 	Rect2D  absoluteRect;      // 계산된 local-space min/max
-	Rect2D  relativeRect;
+	Rect2D  relativeRect = { Vector2::Zero, Vector2::Zero };
+	Matrix  rectTranslateMatrix = Matrix::Identity; // x,y -1 ~ 1 -> relativeRect
 	Matrix  localMatrix = Matrix::Identity;
 	Matrix  worldMatrix = Matrix::Identity;      // 누적된 World TRS
 };
@@ -57,10 +57,12 @@ public:
 	void SetData(StructuredBuffer* buffer, Material* material) override;
 
 	ComputedRect ComputeRectTransform(const ComputedRect& parent);
+	static ComputedRect ComputeTransform(const shared_ptr<Transform>& transform, const ComputedRect& parent);
+	static void TopDownCompute(const shared_ptr<Transform>& transform, const ComputedRect& parent);
+	static shared_ptr<RectTransform> ChangeTransToRectTrans(const shared_ptr<Transform>& transform);
 
 public:
 
 	RectTransformData _rectTransformData;
 	ComputedRect _computedRect;
 };
-

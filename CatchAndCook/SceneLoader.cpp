@@ -324,20 +324,20 @@ void SceneLoader::LinkComponent(json& jsonData)
             jsonData["anchorMax"][0].get<float>(),
             jsonData["anchorMax"][1].get<float>()
         );
-        d.sizeDelta = Vector2(
-            jsonData["sizeDelta"][0].get<float>(),
-            jsonData["sizeDelta"][1].get<float>()
-        );
         d.rectSize = Vector2(
             jsonData["rectSize"][0].get<float>(),
             jsonData["rectSize"][1].get<float>()
         );
+        //d.rectSize = Vector2(
+        //    jsonData["rectSize"][0].get<float>(),
+        //    jsonData["rectSize"][1].get<float>()
+        //);
 
-        d.offsetMin = Vector2(
+        d.paddingMin = Vector2(
             jsonData["offsetMin"][0].get<float>(),
             jsonData["offsetMin"][1].get<float>()
         );
-        d.offsetMax = Vector2(
+        d.paddingMax = Vector2(
             jsonData["offsetMax"][0].get<float>(),
             jsonData["offsetMax"][1].get<float>()
         );

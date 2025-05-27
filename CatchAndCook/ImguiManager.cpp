@@ -531,8 +531,8 @@ void ImguiManager::Test2()
                             ImGui::SliderFloat2("Anchor Min", &d.anchorMin.x, 0.0f, 1.0f);
                             ImGui::SliderFloat2("Anchor Max", &d.anchorMax.x, 0.0f, 1.0f);
 
-                            // sizeDelta 와 rectSize 는 음수/임의 값이 필요할 수 있으니 InputFloat2 로
-                            ImGui::InputFloat2("Size Delta", &d.sizeDelta.x);
+                            // rectSize 와 rectSize 는 음수/임의 값이 필요할 수 있으니 InputFloat2 로
+                            ImGui::InputFloat2("Size Delta", &d.rectSize.x);
                             ImGui::InputFloat2("Rect Size", &d.rectSize.x);
 
                             auto& c = transform->_computedRect;
