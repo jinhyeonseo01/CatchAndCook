@@ -95,7 +95,7 @@ public:
 	uint32 GetID() {return _instanceID;}
 
 	bool GetUseBuffer() const { return _UseBuffer; }
-	void SetUseBuffer(bool useBuffer) { _UseBuffer; }
+	void SetUseBuffer(bool useBuffer) { _UseBuffer =useBuffer; }
 	void SetDrawCall(int vertexCount, int InstacnceCount) 
 	{
 		SetUseBuffer(false);

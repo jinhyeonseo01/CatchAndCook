@@ -28,6 +28,7 @@ enum class BufferType
 	SeaGrassParam,
 	ScatteringData,
 	VolumetricData,
+	HookData,
 
 
 	PlayerMaterialParam,

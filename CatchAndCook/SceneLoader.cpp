@@ -2,7 +2,6 @@
 #include "SceneLoader.h"
 #include "SceneLoader.h"
 #include <nlohmann/json_fwd.hpp>
-
 #include "AnimationListComponent.h"
 #include "BufferPool.h"
 #include "CameraComponent.h"

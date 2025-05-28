@@ -7,14 +7,15 @@
 #include "Camera.h"
 #include "Collider.h"
 #include "WeaponSystem.h"
+#include "Mesh.h"
 Weapon::Weapon()
 {
 }
 
 Weapon::~Weapon()
 {
-}
 
+}
 
 void Weapon::Init(SeaPlayerController* contorller)
 {
@@ -99,6 +100,18 @@ void Weapon::AddWeapon(const wstring& weaponName, const wstring& bodyName, const
 		cout << "Weapon Not Found" << endl;
 		return;
 	}
+
+	shared_ptr<Mesh> mesh = make_shared<Mesh>();
+	mesh->SetDrawCall(3, 1);
+	shared_ptr<Shader> shader = ResourceManager::main->Get<Shader>(L"HookShader");
+	shared_ptr<Material> material = make_shared<Material>();
+	material->SetPass(RENDER_PASS::Forward);
+	material->SetShader(shader);
+	auto& meshrender = gun->hook->GetComponent<MeshRenderer>();
+	meshrender->AddMesh(mesh);
+	meshrender->SetCulling(false);
+	meshrender->SetInstancing(false);
+	meshrender->AddMaterial(material);
 
 	auto weaponSystem =  gun->hook->AddComponent<WeaponSystem>();
 	weaponSystem->SetController(_controller);

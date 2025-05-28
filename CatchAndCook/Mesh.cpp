@@ -39,7 +39,7 @@ void Mesh::Redner(int instanceCount)
 
 	else
 	{
-		cmdList->DrawInstanced(_vertexCount, _InstacnceCount, 0, 0);
+ 		cmdList->DrawInstanced(_vertexCount, _InstacnceCount, 0, 0);
 	}
 };
 

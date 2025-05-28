@@ -155,6 +155,11 @@ void MeshRenderer::RenderBegin()
 		Gizmo::Box(GetBound(), vec4(0, 0, 1.0f, 1.0f));
 	}
 
+	if (GetOwner()->GetName() == L"Harpoon")
+	{
+		int a = 5;
+	}
+	
 	for (int i = 0; i < _mesh.size(); i++)
 	{
 		auto& currentMesh = _mesh[i];
@@ -162,7 +167,9 @@ void MeshRenderer::RenderBegin()
 
 		SceneManager::main->GetCurrentScene()->AddRenderer(currentMaterial.get(), currentMesh.get(), this);
 	}
-	for (auto& ele : _depthNormalMaterials) {
+
+	for (auto& ele : _depthNormalMaterials) 
+	{
 		auto& currentMesh = _mesh[ele.first];
 		SceneManager::main->GetCurrentScene()->AddRenderer(ele.second.get(), currentMesh.get(), this);
 	}
@@ -243,6 +250,11 @@ void MeshRenderer::AddMaterials(const std::vector<std::shared_ptr<Material>>& _m
 {
 	for (auto& ele : _materials)
 		this->_uniqueMaterials.push_back(ele);
+}
+
+void MeshRenderer::AddMaterial(shared_ptr<Material>& material)
+{
+	this->_uniqueMaterials.push_back(material);
 }
 
 std::vector<std::shared_ptr<Material>>& MeshRenderer::GetMaterials()

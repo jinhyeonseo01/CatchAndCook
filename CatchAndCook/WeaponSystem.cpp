@@ -41,6 +41,7 @@ void WeaponSystem::Disable()
 
 void WeaponSystem::RenderBegin()
 {
+
 }
 
 void WeaponSystem::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
@@ -59,4 +60,16 @@ void WeaponSystem::SetDestroy()
 
 void WeaponSystem::Destroy()
 {
+}
+
+void WeaponSystem::SetData(Material* material)
+{
+
+    _hookPos.pos1 = vec3(0, 0, 0);
+    _hookPos.pos2 = vec3(0, 0, 100);
+
+    auto cbuffer = Core::main->GetBufferManager()->GetBufferPool(BufferType::HookData)->Alloc(1);
+    memcpy(cbuffer->ptr, &_hookPos, sizeof(ShadowCascadeIndexParams));
+    Core::main->GetCmdList()->SetGraphicsRootConstantBufferView(8, cbuffer->GPUAdress);
+
 }

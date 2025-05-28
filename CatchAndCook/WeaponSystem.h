@@ -1,9 +1,19 @@
 ﻿#pragma once
 #include "Component.h"
-
+#include "RendererBase.h"
 class SeaPlayerController;
 
-class WeaponSystem : public Component
+struct HookPos
+{
+
+	vec3 pos1;
+	float padding;
+	vec3 pos2;
+	float padding2;
+
+};
+
+class WeaponSystem : public Component , public RenderCBufferSetter
 {
 
 public:
@@ -23,12 +33,16 @@ public:
 	void SetDestroy() override;
 	void Destroy() override;
 
+	virtual void SetData(Material* material = nullptr);
+
 
 public:
 	void SetController(SeaPlayerController* controller) { _controller = controller; }
 
 private:
 	SeaPlayerController* _controller;
+	HookPos _hookPos;
+
 
 };
 
