@@ -52,7 +52,7 @@ void ResourceManager::CreateDefaultShaderKSH()
 	{
 		ShaderInfo info;
 		info.renderTargetCount = 1;
-		info._primitiveType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
+		info._primitiveType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
 		info.RTVForamts[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 
 		info.cullingType = CullingType::NONE;

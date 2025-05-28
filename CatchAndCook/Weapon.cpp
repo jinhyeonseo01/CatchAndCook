@@ -102,7 +102,8 @@ void Weapon::AddWeapon(const wstring& weaponName, const wstring& bodyName, const
 	}
 
 	shared_ptr<Mesh> mesh = make_shared<Mesh>();
-	mesh->SetDrawCall(3, 1);
+	mesh->SetDrawCall(1, 1);
+	mesh->SetTopolgy(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 	shared_ptr<Shader> shader = ResourceManager::main->Get<Shader>(L"HookShader");
 	shared_ptr<Material> material = make_shared<Material>();
 	material->SetPass(RENDER_PASS::Forward);

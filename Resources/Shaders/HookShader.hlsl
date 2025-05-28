@@ -39,8 +39,7 @@ VS_OUT VS_Main()
 }
 
 [maxvertexcount(4)]
-void GS_Main(line VS_OUT input[2], uint primID : SV_PrimitiveID,
-                              inout TriangleStream<GS_OUT> outputStream)
+void GS_Main(point VS_OUT input[1], inout TriangleStream<GS_OUT> outputStream)
 {
     float hw = 0.5 * 300.0f;
     
@@ -53,7 +52,6 @@ void GS_Main(line VS_OUT input[2], uint primID : SV_PrimitiveID,
     output.pos = float4(-hw, hw, 0.0f, 1.0f);
     output.pos = mul(output.pos, VPMatrix);
     outputStream.Append(output);
-    
     
     output.pos = float4(hw, -hw, 0.0f, 1.0f);
     output.pos = mul(output.pos, VPMatrix);
