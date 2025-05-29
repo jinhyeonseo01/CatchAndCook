@@ -22,5 +22,6 @@ public:
 	void NoEffectPass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList);
 
 	shared_ptr<Texture> caustics;
+	shared_ptr<Texture> lopeTexture;
 };
 

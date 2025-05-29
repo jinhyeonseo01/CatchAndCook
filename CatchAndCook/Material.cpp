@@ -34,7 +34,6 @@ void Material::AllocDefualtTextureHandle()
 {
 	auto& NoneTexture = ResourceManager::main->GetNoneTexture()->GetSRVCpuHandle();
 
-
 	auto& table = Core::main->GetBufferManager()->GetTable();
 	_defualtTableContainer = Core::main->GetBufferManager()->GetTable()->Alloc(SRV_TABLE_REGISTER_COUNT);
 	for (int i=0;i< SRV_TABLE_REGISTER_COUNT;i++)

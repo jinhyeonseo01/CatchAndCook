@@ -73,7 +73,7 @@ void WeaponSystem::Destroy()
 
 void WeaponSystem::SetData(Material* material)
 {
-
+    
     _hookPos.pos1 = _weaponSlot->_transform->GetWorldPosition();
     _hookPos.pos2 = GetOwner()->_transform->GetWorldPosition();
 

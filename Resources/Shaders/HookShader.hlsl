@@ -3,9 +3,7 @@
 #include "Camera_b2.hlsl"
 #include "Light_b3.hlsl"
 
-Texture2D _BaseMap : register(t0);
-
-
+Texture2D globalT18 : register(t18);
 
 struct VS_OUT
 {
@@ -17,7 +15,7 @@ struct VS_OUT
 struct GS_OUT
 {
     float4 pos : SV_POSITION; 
-
+    float2 uv : TEXCOORD0;
 };
 
 cbuffer PosParam : register(b8)
@@ -41,63 +39,84 @@ VS_OUT VS_Main()
 [maxvertexcount(36)]
 void GS_Main(point VS_OUT input[1], inout TriangleStream<GS_OUT> outputStream)
 {
-    float3 p0 = pos1;
-    float3 p1 = pos2;
+    float3 p1 = input[0].pos1;
+    float3 p2 = input[0].pos2;
 
-    float height = 0.5f; 
+    float side = 0.1f;
+    float halfSide = side * 0.5f;
 
-    float3 dir = normalize(p1 - p0);
+    float3 dir = normalize(p2 - p1);
+    float3 up = float3(0, 1, 0);
+    float3 right = normalize(cross(up, dir));
+    float3 realUp = normalize(cross(dir, right));
 
-    // 카메라 위치
-    float3 camPos = cameraPos.xyz;
-
-    // 카메라 방향과 dir의 외적으로 side 벡터 (폭 방향)
-    float3 toCam = normalize(camPos - 0.5f * (p0 + p1));
-    float3 side = normalize(cross(toCam, dir));
-
-    // dir, side와 직교하는 벡터 (높이 방향)
-    float3 up = normalize(cross(dir, side));
-
-    float halfStroke = height * 0.5f;
-    float halfHeight = height * 0.5f;
-
-    // 8개의 꼭짓점 (p0 주변 4개, p1 주변 4개)
     float3 v[8];
+    v[0] = p1 - right * halfSide - realUp * halfSide;
+    v[1] = p1 + right * halfSide - realUp * halfSide;
+    v[2] = p1 + right * halfSide + realUp * halfSide;
+    v[3] = p1 - right * halfSide + realUp * halfSide;
+    v[4] = p2 - right * halfSide - realUp * halfSide;
+    v[5] = p2 + right * halfSide - realUp * halfSide;
+    v[6] = p2 + right * halfSide + realUp * halfSide;
+    v[7] = p2 - right * halfSide + realUp * halfSide;
 
-    // p0 면
-    v[0] = p0 - side * halfStroke - up * halfHeight; // 아래 왼쪽
-    v[1] = p0 + side * halfStroke - up * halfHeight; // 아래 오른쪽
-    v[2] = p0 + side * halfStroke + up * halfHeight; // 위 오른쪽
-    v[3] = p0 - side * halfStroke + up * halfHeight; // 위 왼쪽
-
-    // p1 면
-    v[4] = p1 - side * halfStroke - up * halfHeight;
-    v[5] = p1 + side * halfStroke - up * halfHeight;
-    v[6] = p1 + side * halfStroke + up * halfHeight;
-    v[7] = p1 - side * halfStroke + up * halfHeight;
-
-    // 인덱스 (12개의 삼각형으로 육면체 구성)
     int idx[36] =
     {
-        0, 1, 2, 0, 2, 3, // p0 면
-        5, 4, 7, 5, 7, 6, // p1 면
-        4, 0, 3, 4, 3, 7, // 왼쪽 면
-        1, 5, 6, 1, 6, 2, // 오른쪽 면
-        3, 2, 6, 3, 6, 7, // 위쪽 면
-        4, 5, 1, 4, 1, 0 // 아래 면
+        0, 1, 2, 0, 2, 3, // front
+        5, 4, 7, 5, 7, 6, // back
+        4, 0, 3, 4, 3, 7, // left
+        1, 5, 6, 1, 6, 2, // right
+        3, 2, 6, 3, 6, 7, // top
+        4, 5, 1, 4, 1, 0 // bottom
     };
 
+    float2 uvMap[4] =
+    {
+        float2(0, 0), // bottom-left
+        float2(1, 0), // bottom-right
+        float2(1, 1), // top-right
+        float2(0, 1) // top-left
+    };
+
+    // 면별 정점의 uv 순서 (6면 * 6정점 = 36개)
+    float2 uvList[36] =
+    {
+        // front
+        uvMap[0], uvMap[1], uvMap[2],
+        uvMap[0], uvMap[2], uvMap[3],
+
+        // back
+        uvMap[1], uvMap[0], uvMap[3],
+        uvMap[1], uvMap[3], uvMap[2],
+
+        // left
+        uvMap[0], uvMap[1], uvMap[2],
+        uvMap[0], uvMap[2], uvMap[3],
+
+        // right
+        uvMap[0], uvMap[1], uvMap[2],
+        uvMap[0], uvMap[2], uvMap[3],
+
+        // top
+        uvMap[0], uvMap[1], uvMap[2],
+        uvMap[0], uvMap[2], uvMap[3],
+
+        // bottom
+        uvMap[0], uvMap[1], uvMap[2],
+        uvMap[0], uvMap[2], uvMap[3]
+    };
 
     for (int i = 0; i < 36; ++i)
     {
         GS_OUT output;
         output.pos = mul(float4(v[idx[i]], 1.0f), VPMatrix);
+        output.uv = uvList[i];
         outputStream.Append(output);
     }
-
-    outputStream.RestartStrip();
 }
+
+
 float4 PS_Main(GS_OUT input) : SV_Target
 {
-    return float4(1, 1, 1, 1);
+    return float4(0.3f, 0, 0, 0);
 }

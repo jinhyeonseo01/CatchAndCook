@@ -453,7 +453,6 @@ void Scene::GlobalSetting()
     cmdList->SetGraphicsRootConstantBufferView(0,CbufferContainer->GPUAdress);
     cmdList->SetComputeRootConstantBufferView(0, CbufferContainer->GPUAdress);
 
-
     auto& table = Core::main->GetBufferManager()->GetTable();
     TableContainer container = Core::main->GetBufferManager()->GetTable()->Alloc(1);
     table->CopyHandle(container.CPUHandle, Core::main->GetDSReadTexture()->GetSRVCpuHandle(), 0);

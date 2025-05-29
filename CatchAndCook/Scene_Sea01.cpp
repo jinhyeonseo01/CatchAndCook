@@ -32,6 +32,12 @@ void Scene_Sea01::Init()
 
 	Scene::Init();
 
+	caustics = make_shared<Texture>();
+	caustics->Init(L"../Resources/Textures/test.jpg");
+
+	lopeTexture = make_shared<Texture>();
+	lopeTexture->Init(L"../Resources/Textures/start.jpg");
+
 	//Volumetric::main = make_unique<Volumetric>();
 	//Volumetric::main->Init();
 
@@ -109,8 +115,7 @@ void Scene_Sea01::Init()
 
 	};
 
-	caustics = make_shared<Texture>();
-	caustics->Init(L"../Resources/Textures/test.jpg");
+
 
 	std::shared_ptr<Light> light = std::make_shared<Light>();
 	light->onOff = 1;
@@ -290,10 +295,14 @@ void Scene_Sea01::Rendering()
 	GlobalSetting();
 
 	TableContainer conatiner = Core::main->GetBufferManager()->GetTable()->Alloc(3);
-	Core::main->GetBufferManager()->GetTable()->CopyHandle(conatiner.CPUHandle, caustics->GetSRVCpuHandle(), 0);
-	Core::main->GetCmdList()->SetGraphicsRootDescriptorTable(GLOBAL_SRV_INDEX, conatiner.GPUHandle);
+	{
+		Core::main->GetBufferManager()->GetTable()->CopyHandle(conatiner.CPUHandle, caustics->GetSRVCpuHandle(), 0);
+		Core::main->GetBufferManager()->GetTable()->CopyHandle(conatiner.CPUHandle, lopeTexture->GetSRVCpuHandle(), 1);
+		Core::main->GetCmdList()->SetGraphicsRootDescriptorTable(GLOBAL_SRV_INDEX, conatiner.GPUHandle);
+		_globalParam.caustics = 1;
+	}
 
-	_globalParam.caustics = 1;
+
 
 	auto& cmdList = Core::main->GetCmdList();
 	Core::main->GetRenderTarget()->ClearDepth();

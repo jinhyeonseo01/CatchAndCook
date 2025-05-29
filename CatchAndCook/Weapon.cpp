@@ -106,7 +106,7 @@ void Weapon::AddWeapon(const wstring& weaponName, const wstring& bodyName, const
 	mesh->SetTopolgy(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 	shared_ptr<Shader> shader = ResourceManager::main->Get<Shader>(L"HookShader");
 	shared_ptr<Material> material = make_shared<Material>();
-	material->SetPass(RENDER_PASS::Forward);
+	material->SetPass(RENDER_PASS::NoEffectPostProcessing);
 	material->SetShader(shader);
 	auto& meshrender = gun->hook->GetComponent<MeshRenderer>();
 	meshrender->AddMesh(mesh);
@@ -154,8 +154,8 @@ void Weapon::Shot()
 
 	SetTargetHudPos();
 
-	Gizmo::main->Width(0.2f);
-	Gizmo::main->Line(_currentWeapon->weaponSlot->_transform->GetWorldPosition(), _currentWeapon->hook->_transform->GetWorldPosition(), vec4(0.545f, 0.27f, 0.075f, 1));
+	/*Gizmo::main->Width(0.2f);
+	Gizmo::main->Line(_currentWeapon->weaponSlot->_transform->GetWorldPosition(), _currentWeapon->hook->_transform->GetWorldPosition(), vec4(0.545f, 0.27f, 0.075f, 1));*/
 }
 
 void Weapon::Reload()
@@ -171,8 +171,8 @@ void Weapon::Reload()
 
 	SetTargetHudPos();
 
-	Gizmo::main->Width(0.2f);
-	Gizmo::main->Line(_currentWeapon->weaponSlot->_transform->GetWorldPosition(), _currentWeapon->hook->_transform->GetWorldPosition(), vec4(0.545f, 0.27f, 0.075f, 1));
+	//Gizmo::main->Width(0.2f);
+	//Gizmo::main->Line(_currentWeapon->weaponSlot->_transform->GetWorldPosition(), _currentWeapon->hook->_transform->GetWorldPosition(), vec4(0.545f, 0.27f, 0.075f, 1));
 
 	if (_moveDist >= _currentWeapon->_range)
 	{
