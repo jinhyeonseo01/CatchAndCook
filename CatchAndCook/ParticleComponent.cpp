@@ -115,7 +115,7 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 	}
 
 	vector<ParticleData> vecData(particleCount, data);
-	_strBuffer->CopyData(vecData);
+	_strBuffer->CopyToDefaultHeap(vecData);
 
 }
 

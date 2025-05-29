@@ -8,7 +8,7 @@ public:
 	void InitDefualtHeap(uint32 size, uint32 elementCount);
 
 	template<class T>
-	void CopyData(vector<T>& vec)
+	void CopyToDefaultHeap(vector<T>& vec)
 	{
 		assert(vec.size() <= _elementCount); 
 		memcpy(static_cast<uint8*>(_mappedData), vec.data(), vec.size() * sizeof(T));
