@@ -116,6 +116,7 @@ void Weapon::AddWeapon(const wstring& weaponName, const wstring& bodyName, const
 
 	auto weaponSystem =  gun->hook->AddComponent<WeaponSystem>();
 	weaponSystem->SetController(_controller);
+	weaponSystem->SetSlot(gun->weaponSlot.get());
 
 	gun->_backToPos = gun->hook->_transform->GetLocalPosition();
 	gun->GunName = weaponName;

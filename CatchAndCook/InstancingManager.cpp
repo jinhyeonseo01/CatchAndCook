@@ -62,7 +62,6 @@ void InstancingManager::Render()
 	{
 		if (RenderObjectStrutures.empty()) continue;
 
-
 		auto& material = RenderObjectStrutures[0].material;
 		auto& renderer = RenderObjectStrutures[0].renderer;
 		auto& mesh = RenderObjectStrutures[0].mesh;

@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
 #include "WeaponSystem.h"
 #include "Collider.h"
-
+#include "Transform.h"
 WeaponSystem::WeaponSystem()
 {
 }
@@ -21,6 +21,11 @@ void WeaponSystem::Init()
 
 void WeaponSystem::Start()
 {
+
+    if (GetOwner()->GetRenderer())
+    {
+        GetOwner()->GetRenderer()->AddCbufferSetter(static_pointer_cast<WeaponSystem>(shared_from_this()));
+    }
 }
 
 void WeaponSystem::Update()
@@ -56,6 +61,10 @@ void WeaponSystem::CollisionEnd(const std::shared_ptr<Collider>& collider, const
 
 void WeaponSystem::SetDestroy()
 {
+    if (GetOwner()->GetRenderer())
+    {
+        GetOwner()->GetRenderer()->RemoveCbufferSetter(static_pointer_cast<WeaponSystem>(shared_from_this()));
+    }
 }
 
 void WeaponSystem::Destroy()
@@ -65,11 +74,11 @@ void WeaponSystem::Destroy()
 void WeaponSystem::SetData(Material* material)
 {
 
-    _hookPos.pos1 = vec3(0, 0, 0);
-    _hookPos.pos2 = vec3(0, 0, 100);
+    _hookPos.pos1 = _weaponSlot->_transform->GetWorldPosition();
+    _hookPos.pos2 = GetOwner()->_transform->GetWorldPosition();
 
     auto cbuffer = Core::main->GetBufferManager()->GetBufferPool(BufferType::HookData)->Alloc(1);
-    memcpy(cbuffer->ptr, &_hookPos, sizeof(ShadowCascadeIndexParams));
+    memcpy(cbuffer->ptr, &_hookPos, sizeof(_hookPos));
     Core::main->GetCmdList()->SetGraphicsRootConstantBufferView(8, cbuffer->GPUAdress);
 
 }

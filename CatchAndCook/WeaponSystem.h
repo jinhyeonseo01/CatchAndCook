@@ -38,9 +38,10 @@ public:
 
 public:
 	void SetController(SeaPlayerController* controller) { _controller = controller; }
-
+	void SetSlot(GameObject* slot) { _weaponSlot = slot; }
 private:
 	SeaPlayerController* _controller;
+	GameObject* _weaponSlot;
 	HookPos _hookPos;
 
 
