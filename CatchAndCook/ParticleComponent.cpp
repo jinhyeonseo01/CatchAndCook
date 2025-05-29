@@ -83,42 +83,39 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 
 	_particleCount = particleCount;
 
-	for (int i = 0; i < particleCount; ++i)
+	ParticleData data;
+
+	switch (moveType)
 	{
-
-		ParticleData data;
-
+	case ParticleMoveType::RadialSpread:
 		data.worldPos = worldPos;
-
-		switch (moveType)
-		{
-		case ParticleMoveType::RadialSpread:
-			data.dir = vec3(dist(gen), dist(gen), dist(gen));
-			data.velocity = 3.0f;
-			break;
-		default:
-			break;
-		}
-
-		switch (colorType)
-		{
-		case ParticleColorType::Random:
-			data.color = vec3(dist(gen), dist(gen), dist(gen));
-			break;
-		case ParticleColorType::Black:
-			data.color = vec3(0, 0, 0);
-			break;
-		case ParticleColorType::White:
-			data.color = vec3(1, 1, 1);
-			break;
-		case ParticleColorType::Red:
-			data.color = vec3(1, 0, 0);
-			break;
-		default:
-			break;
-		}
-
-		_strBuffer->AddData(data);
+		data.dir = vec3(dist(gen), dist(gen), dist(gen));
+		data.velocity = 3.0f;
+		break;
+	default:
+		break;
 	}
+
+	switch (colorType)
+	{
+	case ParticleColorType::Random:
+		data.color = vec3(dist(gen), dist(gen), dist(gen));
+		break;
+	case ParticleColorType::Black:
+		data.color = vec3(0, 0, 0);
+		break;
+	case ParticleColorType::White:
+		data.color = vec3(1, 1, 1);
+		break;
+	case ParticleColorType::Red:
+		data.color = vec3(1, 0, 0);
+		break;
+	default:
+		break;
+	}
+
+	vector<ParticleData> vecData(particleCount, data);
+	_strBuffer->CopyData(vecData);
+
 }
 

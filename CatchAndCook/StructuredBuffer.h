@@ -7,6 +7,15 @@ public:
 	void Init(uint32 size, uint32 elementCount);
 
 	template<class T>
+	void CopyData(vector<T>& vec)
+	{
+		assert(vec.size() <= _elementCount); 
+		memcpy(static_cast<uint8*>(_mappedData), vec.data(), vec.size() * sizeof(T));
+		_writeOffsetIndex = vec.size();
+		_writeByteSizeIndex = sizeof(T) * vec.size();
+	}
+
+	template<class T>
 	void AddData(const T& data)
 	{
 		assert(_writeOffsetIndex < _elementCount);
@@ -44,11 +53,13 @@ public:
 
 public:
 	D3D12_CPU_DESCRIPTOR_HANDLE& GetSRVHandle() { return _srvHandle; }
+
 	int32 GetCount() const {return _writeOffsetIndex;}
 
 private:
 	ComPtr<ID3D12Resource> _structuredBuffer;
 	D3D12_CPU_DESCRIPTOR_HANDLE  _srvHandle;
+	D3D12_CPU_DESCRIPTOR_HANDLE  _uavHandle;
 	uint32 _elementCount;
 	uint64 _elementSize;
 
