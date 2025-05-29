@@ -237,6 +237,8 @@
     <ClCompile Include="NavMeshManager.cpp" />
     <ClCompile Include="NPCComponent.cpp" />
     <ClCompile Include="ObjectSettingComponent.cpp" />
+    <ClCompile Include="ParticleComponent.cpp" />
+    <ClCompile Include="ParticleManager.cpp" />
     <ClCompile Include="PathFinder.cpp" />
     <ClCompile Include="PathStamp.cpp" />
     <ClCompile Include="pch.cpp">
@@ -376,6 +378,8 @@
     <ClInclude Include="NavMeshManager.h" />
     <ClInclude Include="NPCComponent.h" />
     <ClInclude Include="ObjectSettingComponent.h" />
+    <ClInclude Include="ParticleComponent.h" />
+    <ClInclude Include="ParticleManager.h" />
     <ClInclude Include="PathFinder.h" />
     <ClInclude Include="PathStamp.h" />
     <ClInclude Include="pch.h" />

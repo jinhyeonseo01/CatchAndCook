@@ -27,7 +27,6 @@ public:
 	bool RemoveAtGameObject(int index);
 	void CameraControl();
 
-
 	void ExecuteDestroyGameObjects();
 	void GlobalSetting();
 

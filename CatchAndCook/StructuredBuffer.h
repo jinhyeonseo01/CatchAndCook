@@ -15,6 +15,7 @@ public:
 		_writeOffsetIndex++;
 		_writeByteSizeIndex += sizeof(T);
 	}
+
 	template<class T>
 	T* GetDataAddress(int count)
 	{
