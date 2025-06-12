@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
 #include "ParticleManager.h"
 #include "ParticleComponent.h"
-
+#include "ParticleRenderer.h"
 std::unique_ptr<ParticleManager> ParticleManager::main =nullptr;
 
 void ParticleManager::Init()
@@ -25,6 +25,8 @@ shared_ptr<GameObject> ParticleManager::GenParticle(float autodestroyTime, int p
 
 	auto& particleComponent = object->AddComponent<ParticleComponent>();
 	particleComponent->SetParticle(buffer, autodestroyTime, particleCount, worldPos, moveType, colorType);
+
+	object->AddComponent<ParticleRenderer>();
 
 	return object;
 }

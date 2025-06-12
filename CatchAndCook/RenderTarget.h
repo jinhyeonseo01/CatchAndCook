@@ -12,10 +12,11 @@ namespace RENDER_PASS
 		PostProcessing = 1 << 4,
 		NoEffectPostProcessing = 1 << 5,
 		UI = 1 << 6,
-		Debug = 1 << 7,
+		ParticlePass = 1<<7,
+		Debug = 1 << 8,
 	};
 
-	const int Count = 8;
+	const int Count = 9;
 
 	inline PASS operator|(PASS a, PASS b) {
 		return static_cast<PASS>(static_cast<int>(a) | static_cast<int>(b));

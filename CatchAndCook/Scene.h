@@ -14,7 +14,7 @@ struct GlobalParam
 	float Time;
 	float SkyBlend = 0.2;
 	float caustics = 0;
-	float p1, p2, p3 = 0;
+	float dt, p2, p3 = 0;
 };
 
 class Scene : public IGuid

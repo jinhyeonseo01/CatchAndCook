@@ -12,6 +12,7 @@
 #include "Animation.h"
 #include "Weapon.h"
 #include "WeaponSystem.h"
+#include "ParticleManager.h"
 
 SeaPlayerController::SeaPlayerController()
 {
@@ -156,6 +157,11 @@ void SeaPlayerController::KeyUpdate(vec3& inputDir, Quaternion& rotation, float 
     if (Input::main->GetKey(KeyCode::D))
     {
         inputDir += vec3::Right;
+    }
+
+    if (Input::main->GetKeyDown(KeyCode::F5))
+    {
+        ParticleManager::main->GenParticle(30.0f, 256, vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red);
     }
 
     if (Input::main->GetMouseDown(KeyCode::RightMouse))

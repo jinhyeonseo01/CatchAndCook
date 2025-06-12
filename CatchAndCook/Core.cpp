@@ -241,7 +241,7 @@ void Core::ResizeTexture(std::shared_ptr<Texture>& texture, int w, int h)
 
 void Core::InitDirectX12()
 {
-    CreateDevice(false, false);
+    CreateDevice(true, true);
     CreateCmdQueue();
     CreateSwapChain();
 }

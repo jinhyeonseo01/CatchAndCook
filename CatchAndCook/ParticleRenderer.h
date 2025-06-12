@@ -23,7 +23,7 @@ public:
 
 private:
 	virtual void Rendering(Material* material, Mesh* mesh, int instanceCount = 1);
-	virtual void DebugRendering() = 0;
+	virtual void DebugRendering();
 
 private:
 

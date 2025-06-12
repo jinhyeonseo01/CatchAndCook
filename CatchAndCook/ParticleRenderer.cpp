@@ -32,12 +32,11 @@ void ParticleRenderer::Init()
 
 		info.cullingType = CullingType::BACK;
 
-		shared_ptr<Shader> shader = make_shared<Shader>();
+		_particleRenderingShader = make_shared<Shader>();
 
-		shader->Init(L"ParticleRenderingShader.hlsl", {}, ShaderArg{ {{"PS_Main","ps"},{"VS_Main","vs"},{"GS_Main","gs"}} }, info);
-		shader->SetPass(RENDER_PASS::NoEffectPostProcessing);
+		_particleRenderingShader->Init(L"ParticleRenderingShader.hlsl", {}, ShaderArg{ {{"PS_Main","ps"},{"VS_Main","vs"},{"GS_Main","gs"}} }, info);
+		_particleRenderingShader->SetPass(RENDER_PASS::NoEffectPostProcessing);
 
-		_particleRenderingShader = shader;
 	}
 
 
@@ -77,7 +76,7 @@ void ParticleRenderer::Destroy()
 
 void ParticleRenderer::RenderBegin()
 {
-    SceneManager::main->GetCurrentScene()->AddRenderer(nullptr, nullptr, RENDER_PASS::NoEffectPostProcessing);
+    SceneManager::main->GetCurrentScene()->AddRenderer(nullptr, this, RENDER_PASS::ParticlePass);
 }
 
 void ParticleRenderer::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
@@ -98,30 +97,36 @@ void ParticleRenderer::Rendering(Material* material, Mesh* mesh, int instanceCou
 
 	//파티클 움직임 연산
 	{
+
 		cmdList->SetPipelineState(_particleComputeShader->_pipelineState.Get());
-		uint32 groupCount = (_particleComponent->GetParicleCount() + 255) / 256;
-		cmdList->Dispatch(groupCount, 1, 1);
 
 		auto& table = Core::main->GetBufferManager()->GetTable();
 		_tableContainer = table->Alloc(10);
-		table->CopyHandle(_tableContainer.CPUHandle, _particleComponent->GetStructuredBuffer()->GetUAVHandle(), 0);
+		table->CopyHandle(_tableContainer.CPUHandle, _particleComponent->GetStructuredBuffer()->GetUAVHandle(), 5);
 
 		cmdList->SetComputeRootDescriptorTable(10, _tableContainer.GPUHandle);
+
+		uint32 groupCount = (_particleComponent->GetParicleCount() + 255) / 256;
+		cmdList->Dispatch(groupCount, 1, 1);
+
 		cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(_particleComponent->GetStructuredBuffer()->GetDefaultBuffer().Get(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_GENERIC_READ));
 	}
 
 	//파티클 렌더링
 	{
 		cmdList->SetPipelineState(_particleRenderingShader->_pipelineState.Get());
-		auto& table = Core::main->GetBufferManager()->GetTable();
+		auto& table = Core::main->GetBufferManager()->GetTable(); 
 		_tableContainer = table->Alloc(1);
 		table->CopyHandle(_tableContainer.CPUHandle, _particleComponent->GetStructuredBuffer()->GetSRVHandle(), 0);
 
-		cmdList->SetComputeRootDescriptorTable(SRV_TABLE_INDEX, _tableContainer.GPUHandle);
-
+		cmdList->SetGraphicsRootDescriptorTable(SRV_TABLE_INDEX, _tableContainer.GPUHandle);
+		cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 		cmdList->DrawInstanced(1, _particleComponent->GetParicleCount(), 0, 0);
 	}
 
-
 	cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(_particleComponent->GetStructuredBuffer()->GetDefaultBuffer().Get(), D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_UNORDERED_ACCESS));
+}
+
+void ParticleRenderer::DebugRendering()
+{
 }

@@ -472,7 +472,10 @@ void Scene_Sea01::NoEffectPass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>
 
 		for (auto& [shader, vec] : targets)
 		{
-			cmdList->SetPipelineState(shader->_pipelineState.Get());
+			if (shader)
+			{
+				cmdList->SetPipelineState(shader->_pipelineState.Get());
+			}
 
 			for (auto& ele : vec)
 			{
@@ -502,6 +505,24 @@ void Scene_Sea01::NoEffectPass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>
 
 	} 
 }
+
+void Scene_Sea01::ParticlePass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList)
+{
+
+	auto& targets = _passObjects[RENDER_PASS::ToIndex(RENDER_PASS::ParticlePass)];
+
+	for (auto& [shader, vec] : targets)
+	{
+		for (auto& ele : vec)
+		{
+			ele.renderer->Rendering(nullptr, nullptr, 1);
+		}
+	}
+
+}
+
+
+
 
 
 void Scene_Sea01::UiPass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList)

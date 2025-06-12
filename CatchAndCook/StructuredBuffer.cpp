@@ -62,9 +62,9 @@ void StructuredBuffer::InitDefualtHeap(uint32 size, uint32 elementCount)
 		nullptr,
 		IID_PPV_ARGS(&_structuredUploadBuffer)));
 
-	void* mappedData = nullptr;
+
 	CD3DX12_RANGE readRange(0, 0);
-	ThrowIfFailed(_structuredUploadBuffer->Map(0, &readRange, &mappedData));
+	ThrowIfFailed(_structuredUploadBuffer->Map(0, &readRange, &_mappedData));
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;

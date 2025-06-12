@@ -80,39 +80,48 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 		cout << "파티클 갯수 잘못설정" << endl;
 
 	_particleCount = particleCount;
-
-	ParticleData data;
-
-	switch (moveType)
+	vector<ParticleData> vecData(particleCount);
+	
+	for (int i = 0; i < _particleCount; ++i)
 	{
-	case ParticleMoveType::RadialSpread:
-		data.worldPos = worldPos;
-		data.dir = vec3(dist(gen), dist(gen), dist(gen));
-		data.velocity = 3.0f;
-		break;
-	default:
-		break;
+
+		ParticleData data;
+
+		switch (moveType)
+		{
+		case ParticleMoveType::RadialSpread:
+			data.worldPos = worldPos;
+			data.dir = vec3(dist(gen), dist(gen), dist(gen));
+
+			data.velocity = 1.0f;
+			break;
+		default:
+			break;
+		}
+
+		switch (colorType)
+		{
+		case ParticleColorType::Random:
+			data.color = vec3(dist(gen), dist(gen), dist(gen));
+			break;
+		case ParticleColorType::Black:
+			data.color = vec3(0, 0, 0);
+			break;
+		case ParticleColorType::White:
+			data.color = vec3(1, 1, 1);
+			break;
+		case ParticleColorType::Red:
+			data.color = vec3(1, 0, 0);
+			break;
+		default:
+			break;
+		}
+
+		vecData[i] = data;
 	}
 
-	switch (colorType)
-	{
-	case ParticleColorType::Random:
-		data.color = vec3(dist(gen), dist(gen), dist(gen));
-		break;
-	case ParticleColorType::Black:
-		data.color = vec3(0, 0, 0);
-		break;
-	case ParticleColorType::White:
-		data.color = vec3(1, 1, 1);
-		break;
-	case ParticleColorType::Red:
-		data.color = vec3(1, 0, 0);
-		break;
-	default:
-		break;
-	}
 
-	vector<ParticleData> vecData(particleCount, data);
+
 	_strBuffer->CopyToDefaultHeap(vecData);
 
 }

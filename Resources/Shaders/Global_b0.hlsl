@@ -9,7 +9,7 @@ cbuffer GLOBAL_DATA : register(b0)
     float g_Time;
     float g_skyBlendTime;
     float g_castic;
-    float p1;
+    float dt;
     float p2;
     float p3;
 };

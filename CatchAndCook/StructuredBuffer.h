@@ -69,8 +69,8 @@ public:
 	}
 
 public:
-	ComPtr<ID3D12Resource>& GetDefaultBuffer() { _structuredDefaultBuffer; }
-	ComPtr<ID3D12Resource>& GetUploadBuffer() { _structuredUploadBuffer; }
+	ComPtr<ID3D12Resource>& GetDefaultBuffer() { return _structuredDefaultBuffer; }
+	ComPtr<ID3D12Resource>& GetUploadBuffer() { return _structuredUploadBuffer; }
 
 	D3D12_CPU_DESCRIPTOR_HANDLE& GetSRVHandle() { return _srvHandle; }
 	D3D12_CPU_DESCRIPTOR_HANDLE& GetUAVHandle() { return _uavHandle; }
