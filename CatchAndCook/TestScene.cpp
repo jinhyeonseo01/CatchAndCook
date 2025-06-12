@@ -163,7 +163,6 @@ void TestScene::Rendering()
 	auto& cmdList = Core::main->GetCmdList();
 	Core::main->GetRenderTarget()->ClearDepth();
 
-
 	Profiler::Set("PASS : Deferred", BlockTag::CPU);
 	DeferredPass(cmdList);
 	Profiler::Fin();
@@ -176,7 +175,7 @@ void TestScene::Rendering()
 	ForwardPass(cmdList);
 	Profiler::Fin();
 
-	Volumetric::main->Render();
+	//Volumetric::main->Render();
 
 	Profiler::Set("PASS : Transparent", BlockTag::CPU);
 	TransparentPass(cmdList); // Position,

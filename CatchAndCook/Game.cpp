@@ -52,8 +52,7 @@ void Game::Init(HWND hwnd)
 	ResourceManager::main = make_unique<ResourceManager>();
 	ResourceManager::main->Init();
 
-	ParticleManager::main = make_unique<ParticleManager>();
-	ParticleManager::main->Init();
+
 
 	NavMeshManager::main = make_unique<NavMeshManager>();
 	NavMeshManager::main->Init();
@@ -94,7 +93,8 @@ void Game::Init(HWND hwnd)
 	PathStamp::main = make_unique<PathStamp>();
 	PathStamp::main->Init();
 
-
+	ParticleManager::main = make_unique<ParticleManager>();
+	ParticleManager::main->Init();
 
 	SceneManager::main->AddScene(SceneType::TestScene, false);
 	SceneManager::main->AddScene(SceneType::TestScene2, false);

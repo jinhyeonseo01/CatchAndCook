@@ -35,14 +35,10 @@ void StructuredBuffer::Init(uint32 size, uint32 elementCount)
 	device->CreateShaderResourceView(_structuredUploadBuffer.Get(), &srvDesc, _srvHandle);
 
 
-
-
 }
 
 void StructuredBuffer::InitDefualtHeap(uint32 size, uint32 elementCount)
 {
-
-
 	_elementSize = size;
 	_elementCount = elementCount;
 
@@ -62,7 +58,7 @@ void StructuredBuffer::InitDefualtHeap(uint32 size, uint32 elementCount)
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
 		&CD3DX12_RESOURCE_DESC::Buffer(bufferSize),
-		D3D12_RESOURCE_STATE_COPY_SOURCE,
+		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&_structuredUploadBuffer)));
 
@@ -93,4 +89,3 @@ void StructuredBuffer::InitDefualtHeap(uint32 size, uint32 elementCount)
 	device->CreateUnorderedAccessView(_structuredDefaultBuffer.Get(), nullptr, &uavDesc, _uavHandle);
 };
 
-;

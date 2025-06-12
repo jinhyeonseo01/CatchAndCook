@@ -53,14 +53,16 @@ void ResourceManager::CreateDefaultShaderKSH()
 		ShaderInfo info;
 		info.renderTargetCount = 1;
 		info._primitiveType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
-		info.RTVForamts[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		info.RTVForamts[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 		info.cullingType = CullingType::BACK;
 
-		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"HookShader", L"HookShader.hlsl", StaticProp,
-			ShaderArg{ {{"PS_Main","ps"},{"VS_Main","vs"},{"GS_Main","gs"}} }, info);
+		shared_ptr<Shader> shader = make_shared<Shader>();
 
-		shader->SetPass(RENDER_PASS::Forward);
+		shader->Init(L"HookShader.hlsl", {}, ShaderArg{ {{"PS_Main","ps"},{"VS_Main","vs"},{"GS_Main","gs"}} }, info);
+		shader->SetPass(RENDER_PASS::NoEffectPostProcessing);
+		Add<Shader>(L"HookShader", shader);
+
 
 	}
 
