@@ -142,7 +142,6 @@ void Game::PrevUpdate()
 		else
 		{
 			SetWindowLong(hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_VISIBLE);
-			// ���� ũ��� ������ ����
 			SetWindowPos(hWnd, HWND_TOP, 0, 0, 800, 600, SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
 
 			RECT rect;

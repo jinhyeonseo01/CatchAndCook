@@ -69,8 +69,11 @@ public:
 	}
 
 public:
-	D3D12_CPU_DESCRIPTOR_HANDLE& GetSRVHandle() { return _srvHandle; }
+	ComPtr<ID3D12Resource>& GetDefaultBuffer() { _structuredDefaultBuffer; }
+	ComPtr<ID3D12Resource>& GetUploadBuffer() { _structuredUploadBuffer; }
 
+	D3D12_CPU_DESCRIPTOR_HANDLE& GetSRVHandle() { return _srvHandle; }
+	D3D12_CPU_DESCRIPTOR_HANDLE& GetUAVHandle() { return _uavHandle; }
 	int32 GetCount() const {return _writeOffsetIndex;}
 
 private:

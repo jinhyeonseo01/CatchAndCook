@@ -45,7 +45,10 @@ public:
 	virtual void SetDestroy() override;
 	virtual void Destroy();
 
-public:
+	int GetParicleCount() { return _particleCount; }
+	shared_ptr<StructuredBuffer>& GetStructuredBuffer() { return _strBuffer; }
+
+private:
 	void SetParticle(shared_ptr<StructuredBuffer> strBuffer,
 		float autoDestroyTime,int particleCount,vec3 worldPos,ParticleMoveType moveType, ParticleColorType colorType);
 
@@ -54,5 +57,7 @@ private:
 	float _autoDestroyTime = 0;
 	float _currTime = 0;
 	shared_ptr<StructuredBuffer> _strBuffer;
+
+	friend class ParticleManager;
 };
 

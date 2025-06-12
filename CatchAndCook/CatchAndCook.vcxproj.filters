@@ -71,6 +71,9 @@
     <Filter Include="998.HLSL\Graphics\JIN">
       <UniqueIdentifier>{2ef74114-fef0-4fc3-a635-60fe40bc6fc8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="998.HLSL\Particle">
+      <UniqueIdentifier>{40572f47-33f7-45dc-8d98-2cdcf7ea4ddf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -388,6 +391,9 @@
       <Filter>03.Component</Filter>
     </ClCompile>
     <ClCompile Include="WeaponSystem.cpp" />
+    <ClCompile Include="ParticleComponent.cpp" />
+    <ClCompile Include="ParticleManager.cpp" />
+    <ClCompile Include="ParticleRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -728,6 +734,9 @@
       <Filter>03.Component</Filter>
     </ClInclude>
     <ClInclude Include="WeaponSystem.h" />
+    <ClInclude Include="ParticleComponent.h" />
+    <ClInclude Include="ParticleManager.h" />
+    <ClInclude Include="ParticleRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath_LH.inl">
@@ -927,6 +936,13 @@
     </FxCompile>
     <FxCompile Include="..\Resources\Shaders\UnderwaterVolumetric.hlsl">
       <Filter>998.HLSL\Graphics\KSH</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\HookShader.hlsl" />
+    <FxCompile Include="..\Resources\Shaders\ParticleComputeShader.hlsl">
+      <Filter>998.HLSL\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\ParticleRenderingShader.hlsl">
+      <Filter>998.HLSL\Particle</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

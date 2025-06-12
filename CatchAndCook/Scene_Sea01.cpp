@@ -323,9 +323,6 @@ void Scene_Sea01::Rendering()
 	ForwardPass(cmdList);
 	Profiler::Fin();
 
-	//Volumetric::main->Render();
-	//Core::main->GetRenderTarget()->SetRenderTarget();
-
 	//Profiler::Set("PASS : Transparent", BlockTag::CPU);
 	//TransparentPass(cmdList); // Position,
 	//Profiler::Fin();

@@ -44,7 +44,6 @@ void Blur::Init(shared_ptr<Texture>& pingTexture, shared_ptr<Texture>& pongTextu
 		ShaderInfo info;
 		info._computeShader = true;
 
-		
 		_XBlurshader->Init(L"xblur.hlsl", {}, ShaderArg{ {{"CS_Main","cs"}}}, info);
 		ResourceManager::main->Add<Shader>(L"xblur", _XBlurshader);
 	}
