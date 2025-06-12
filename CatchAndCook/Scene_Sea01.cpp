@@ -354,10 +354,10 @@ void Scene_Sea01::Finish()
 {
 	Scene::Finish();
 
-	if (Input::main->GetKeyDown(KeyCode::F6))
+	/*if (Input::main->GetKeyDown(KeyCode::F6))
 	{
 		SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::TestScene2), true, true);
-	}
+	}*/
 }
 
 void Scene_Sea01::SetSeaGlobalData()

@@ -20,9 +20,7 @@ void CS_Main(int3 threadIndex : SV_DispatchThreadID)
 {
     ParticleData data = ParticleDatas[threadIndex.x];
     
-    data.worldPos = data.worldPos +  data.velocity * data.dir;
-    
-    data.color = float3(1, 1, 1);
-    
+    data.worldPos = data.worldPos +  data.velocity * data.dir * dt;
+   
     ParticleDatas[threadIndex.x] = data;
 }

@@ -161,7 +161,10 @@ void SeaPlayerController::KeyUpdate(vec3& inputDir, Quaternion& rotation, float 
 
     if (Input::main->GetKeyDown(KeyCode::F5))
     {
-        ParticleManager::main->GenParticle(30.0f, 256, vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red);
+        for (int i = 0; i < 20; ++i)
+        {
+            ParticleManager::main->GenParticle(10.0f, 256, vec3(i*50,i*50, i * 100), ParticleMoveType::RadialSpread, ParticleColorType::Random);
+        }
     }
 
     if (Input::main->GetMouseDown(KeyCode::RightMouse))

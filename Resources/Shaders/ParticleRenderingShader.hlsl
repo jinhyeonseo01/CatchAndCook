@@ -53,7 +53,7 @@ void GS_Main(point VS_OUT input[1], inout TriangleStream<GS_OUT> outputStream)
     };
 
 
-    float scale = 5.0f;
+    float scale = 2.0f;
 
     output[0].pos = input[0].pos + float4(-scale, scale, 0.f, 0.f);
     output[1].pos = input[0].pos + float4(scale, scale, 0.f, 0.f);
