@@ -73,6 +73,7 @@ PS_OUT PS_Main(VS_OUT input) : SV_Target
     output.normal = float4(N, 1.0f);
     
     
+    
     //output.color += ComputeCaustics(input.uv,1,input.worldPos);
 
     return output;

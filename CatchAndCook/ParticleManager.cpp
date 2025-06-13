@@ -6,14 +6,14 @@ std::unique_ptr<ParticleManager> ParticleManager::main =nullptr;
 
 void ParticleManager::Init()
 {
-	for (int i = 0; i < 20; ++i)
+	for (int i = 0; i < 100; ++i)
 	{
 		shared_ptr<StructuredBuffer> strBuffer = make_shared<StructuredBuffer>();
 		strBuffer->InitDefualtHeap(_MaxParticle, sizeof(ParticleData));
 		_strBufferPool.push(strBuffer);
 	}
 
-	_currentPoolCount += 20;
+	_currentPoolCount += 100;
 
 }
 

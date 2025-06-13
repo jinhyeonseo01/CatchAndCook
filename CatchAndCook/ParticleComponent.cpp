@@ -92,8 +92,7 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 		case ParticleMoveType::RadialSpread:
 			data.worldPos = worldPos;
 			data.dir = vec3(dist(gen), dist(gen), dist(gen));
-
-			data.velocity = 150.0f;
+			data.velocity = 100.0f;
 			break;
 		default:
 			break;

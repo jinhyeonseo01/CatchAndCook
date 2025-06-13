@@ -1,6 +1,5 @@
 #include "Global_b0.hlsl"
 
-
 struct ParticleData
 {
     float3 color;
@@ -21,6 +20,6 @@ void CS_Main(int3 threadIndex : SV_DispatchThreadID)
     ParticleData data = ParticleDatas[threadIndex.x];
     
     data.worldPos = data.worldPos +  data.velocity * data.dir * dt;
-   
+    
     ParticleDatas[threadIndex.x] = data;
 }

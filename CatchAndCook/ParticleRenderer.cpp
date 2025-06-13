@@ -4,7 +4,7 @@
 
 shared_ptr<Shader> ParticleRenderer::_particleComputeShader = nullptr;
 shared_ptr<Shader> ParticleRenderer::_particleRenderingShader = nullptr;
-
+shared_ptr<Texture> ParticleRenderer::_particleTexture = nullptr;
 bool ParticleRenderer::IsExecuteAble()
 {
     return false;
@@ -39,6 +39,11 @@ void ParticleRenderer::Init()
 
 	}
 
+	if (_particleTexture == nullptr)
+	{
+		_particleTexture = make_shared<Texture>();
+		_particleTexture->Init(L"../Resources/Textures/particle.png");
+	}
 
 }
 
@@ -117,7 +122,11 @@ void ParticleRenderer::Rendering(Material* material, Mesh* mesh, int instanceCou
 		cmdList->SetPipelineState(_particleRenderingShader->_pipelineState.Get());
 		auto& table = Core::main->GetBufferManager()->GetTable(); 
 		_tableContainer = table->Alloc(1);
+
+
+
 		table->CopyHandle(_tableContainer.CPUHandle, _particleComponent->GetStructuredBuffer()->GetSRVHandle(), 0);
+		table->CopyHandle(_tableContainer.CPUHandle, _particleTexture->GetSRVCpuHandle(), 1);
 
 		cmdList->SetGraphicsRootDescriptorTable(SRV_TABLE_INDEX, _tableContainer.GPUHandle);
 		cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);

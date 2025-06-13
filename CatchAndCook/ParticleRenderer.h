@@ -27,13 +27,12 @@ private:
 
 private:
 
-	int _particleCount = 0;
 	TableContainer _tableContainer{};
-
-
 	static shared_ptr<Shader> _particleComputeShader;
 	static shared_ptr<Shader> _particleRenderingShader;
 	shared_ptr<ParticleComponent> _particleComponent;
+	static shared_ptr<Texture> _particleTexture;
+
 
 };
 

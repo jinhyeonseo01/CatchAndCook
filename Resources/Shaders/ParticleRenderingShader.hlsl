@@ -31,6 +31,7 @@ struct GS_OUT
 };
 
 StructuredBuffer<ParticleData> ParticleDatas : register(t0);
+Texture2D _BaseMap : register(t1);
 
 VS_OUT VS_Main(uint id : SV_InstanceID)
 {
@@ -53,7 +54,7 @@ void GS_Main(point VS_OUT input[1], inout TriangleStream<GS_OUT> outputStream)
     };
 
 
-    float scale = 2.0f;
+    float scale = 1.0f;
 
     output[0].pos = input[0].pos + float4(-scale, scale, 0.f, 0.f);
     output[1].pos = input[0].pos + float4(scale, scale, 0.f, 0.f);
@@ -88,6 +89,14 @@ void GS_Main(point VS_OUT input[1], inout TriangleStream<GS_OUT> outputStream)
 
 float4 PS_Main(GS_OUT input) : SV_Target
 {
+    
+    float4 color = _BaseMap.Sample(sampler_lerp, input.uv);
+    
+    if (color.a == 0)
+        discard;
+    
+    return color;
+    
     return float4(input.color, 1.0f);
 
 }
