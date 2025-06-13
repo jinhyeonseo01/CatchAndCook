@@ -27,7 +27,8 @@ namespace RENDER_PASS
 		return (static_cast<int>(value) & static_cast<int>(flag)) != 0;
 	}
 
-	inline int ToIndex(PASS pass) {
+	inline int ToIndex(PASS pass) 
+	{
 		switch (pass) {
 		case Shadow: return 0;
 		case Deferred: return 1;
@@ -36,7 +37,8 @@ namespace RENDER_PASS
 		case PostProcessing: return 4;
 		case NoEffectPostProcessing: return 5;
 		case UI: return 6;
-		case Debug: return 7;
+		case ParticlePass: return 7;
+		case Debug: return 8;
 		default: assert(false && "Invalid PASS value");
 		}
 	}
