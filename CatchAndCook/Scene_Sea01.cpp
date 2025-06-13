@@ -335,6 +335,10 @@ void Scene_Sea01::Rendering()
 	NoEffectPass(cmdList);
 	Profiler::Fin();
 
+	Profiler::Set("PASS : Paricle", BlockTag::CPU);
+	ParticlePass(cmdList);
+	Profiler::Fin();
+
 	Profiler::Set("PASS : UI", BlockTag::CPU);
 	UiPass(cmdList);
 	Profiler::Fin();
