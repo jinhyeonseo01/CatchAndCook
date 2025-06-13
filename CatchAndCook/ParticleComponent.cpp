@@ -73,6 +73,7 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 {
 	assert(particleCount <= 500);
 
+
 	_strBuffer = strBuffer;
 	_autoDestroyTime = autoDestroyTime;
 

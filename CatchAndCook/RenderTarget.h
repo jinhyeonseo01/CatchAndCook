@@ -40,6 +40,7 @@ namespace RENDER_PASS
 		case ParticlePass: return 7;
 		case Debug: return 8;
 		default: assert(false && "Invalid PASS value");
+
 		}
 	}
 }

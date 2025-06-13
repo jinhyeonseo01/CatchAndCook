@@ -9,7 +9,7 @@ void ParticleManager::Init()
 	for (int i = 0; i < 100; ++i)
 	{
 		shared_ptr<StructuredBuffer> strBuffer = make_shared<StructuredBuffer>();
-		strBuffer->InitDefualtHeap(_MaxParticle, sizeof(ParticleData));
+		strBuffer->InitDefualtHeap(sizeof(ParticleData), _MaxParticle);
 		_strBufferPool.push(strBuffer);
 	}
 
