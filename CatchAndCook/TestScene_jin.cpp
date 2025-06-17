@@ -14,7 +14,7 @@
 #include "PlayerController.h"
 #include "testComponent.h"
 #include "EventComponent.h"
-
+#include "TextManager.h"
 
 void TestScene_jin::Init()
 {
@@ -92,6 +92,25 @@ void TestScene_jin::Init()
 	ResourceManager::main->LoadAlway<SceneLoader>(L"test", L"../Resources/Datas/Scenes/MainField2.json");
 	auto sceneLoader = ResourceManager::main->Get<SceneLoader>(L"test");
 	sceneLoader->Load(GetCast<Scene>());
+
+
+	{
+		shared_ptr<GameObject> root = CreateGameObject(L"SpriteTest");
+		auto& renderer = root->AddComponent<MeshRenderer>();
+
+		auto& sprite = root->AddComponent<TextSprite>();
+		sprite->SetLocalPos(vec3(0 + 400.0f, 300.0f, 0.000001f));
+		sprite->SetSize(vec2(300, 300));
+		sprite->SetText(L"Press F To Board");
+		sprite->CreateObject(512, 256, L"Arial", FontColor::WHITE, 60);
+
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
+		material->SetPass(RENDER_PASS::UI);
+
+		renderer->AddMaterials({ material });
+
+	};
 
 	{
 		auto& object = SceneManager::main->GetCurrentScene()->Find(L"OnBoardEvent");
