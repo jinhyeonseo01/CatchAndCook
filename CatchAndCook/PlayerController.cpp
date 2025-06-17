@@ -191,6 +191,7 @@ void PlayerController::MoveControl()
 			Quaternion::LookRotation(targetLookWorldDirection, Vector3::Transform(Vector3::Up, lookRotation)),
 			std::clamp(Time::main->GetDeltaTime() * 15, 0.0, 1.0));
 	}
+
 	//if (!(targetLookWorldDirectionDelayed.Length() < 0.1 && targetLookWorldDirection == Vector3::Zero))
 	//{
 	//	// 등속 운동 로직
@@ -210,9 +211,6 @@ void PlayerController::MoveControl()
 	velocity = Vector3(velocity.x, prevVelocity.y, velocity.z);
 
 	GetOwner()->_transform->LookUp(Vector3::Transform(Vector3::Forward, currentLookWorldRotation), Vector3::Up);
-
-
-
 
 
 	isGround = false;
@@ -251,10 +249,12 @@ void PlayerController::MoveControl()
 
 			// 이동할 곳에서 충돌되는지 보기.
 			std::vector<std::shared_ptr<Collider>> otherColliders;
+
 			if (ColliderManager::main->CollisionChecksDirect(boundingData, otherColliders))
 			{
 				for (auto& otherCollider : otherColliders)
 				{
+
 					if (otherCollider->GetGroupID() != playerGroupID && !otherCollider->IsTrigger())
 					{
 						auto otherBoundingData = otherCollider->GetBoundingData();
@@ -281,11 +281,12 @@ void PlayerController::MoveControl()
 
 	RayHit foundGround;
 	std::vector<RayHit> hitList;
-	if (auto isHit = ColliderManager::main->RayCastAllForMyCellDirect({ upRayOffset, Vector3::Down }, upDistance + gitMargin, hitList, 
-		BoundingData{CollisionType::Box, BoundingUnion(BoundingOrientedBox(currentPos, Vector3(2,2,2), Quaternion::Identity))}))
+
+	if (auto isHit = ColliderManager::main->RayCastAllForMyCellDirect({ upRayOffset, Vector3::Down }, upDistance + gitMargin, hitList, BoundingData{CollisionType::Box, BoundingUnion(BoundingOrientedBox(currentPos, Vector3(2,2,2), Quaternion::Identity))}))
 	{
 		for (auto& hit : hitList)
 		{
+		
 			if (PhysicsComponent::GetPhysicsGroupID(hit.gameObject->GetCast<GameObject>()) != PhysicsComponent::GetPhysicsGroupID(GetOwner()) && 
 				(hit.collider ==nullptr || (hit.collider != nullptr && (!hit.collider->IsTrigger()))))
 			{
@@ -356,10 +357,7 @@ void PlayerController::RenderBegin()
 void PlayerController::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
 {
 	Component::CollisionBegin(collider, other);
-	if (other->IsTrigger())
-	{
-		std::cout << "Trigger\n";
-	}
+
 }
 
 void PlayerController::CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)

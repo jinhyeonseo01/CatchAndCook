@@ -22,7 +22,6 @@ namespace RENDER_PASS
 		return static_cast<PASS>(static_cast<int>(a) | static_cast<int>(b));
 	}
 
-
 	inline bool HasFlag(PASS value, PASS flag) {
 		return (static_cast<int>(value) & static_cast<int>(flag)) != 0;
 	}
@@ -40,7 +39,6 @@ namespace RENDER_PASS
 		case ParticlePass: return 7;
 		case Debug: return 8;
 		default: assert(false && "Invalid PASS value");
-
 		}
 	}
 }

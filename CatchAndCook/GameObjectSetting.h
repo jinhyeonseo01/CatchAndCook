@@ -6,8 +6,8 @@ enum class GameObjectTag : uint64
 	Player = 1 << 1,
 	Monster = 1 << 2,
 	Wall = 1 << 3,
-	NPC = 1 << 2,
-
+	EVENT = 1<<  4,
+	NPC = 1 << 5,
 	NonCulling = 1ull << 25,
 	NonInstancing = 1ull << 26,
 };
@@ -19,6 +19,7 @@ static unordered_map<string, GameObjectTag> GameObjectTagMap =
 	{ "Monster", GameObjectTag::Monster },
 	{ "NPC", GameObjectTag::NPC },
 	{ "Wall", GameObjectTag::Wall },
+	{ "EVENT", GameObjectTag::EVENT },
 	{ "NonCulling", GameObjectTag::NonCulling },
 	{ "NonInstancing", GameObjectTag::NonInstancing },
 };

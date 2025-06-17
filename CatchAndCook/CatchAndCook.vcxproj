@@ -188,6 +188,7 @@
     <ClCompile Include="ComputeManager.cpp" />
     <ClCompile Include="convert_assimp.cpp" />
     <ClCompile Include="EffectComponent.cpp" />
+    <ClCompile Include="EventComponent.cpp" />
     <ClCompile Include="FishMonster.cpp" />
     <ClCompile Include="GameObjectSetting.cpp" />
     <ClCompile Include="GeoMetryHelper.cpp" />
@@ -333,6 +334,7 @@
     <ClInclude Include="convert_assimp.h" />
     <ClInclude Include="convert_directx.h" />
     <ClInclude Include="EffectComponent.h" />
+    <ClInclude Include="EventComponent.h" />
     <ClInclude Include="FishMonster.h" />
     <ClInclude Include="GameObjectSetting.h" />
     <ClInclude Include="GeoMetryHelper.h" />

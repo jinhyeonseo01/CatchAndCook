@@ -4,6 +4,8 @@
 #include "Component.h"
 #include "Game.h"
 
+
+
 enum class CollisionType
 {
 	Box,

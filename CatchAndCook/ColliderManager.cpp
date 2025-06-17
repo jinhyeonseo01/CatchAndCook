@@ -621,6 +621,8 @@ bool ColliderManager::RayCastAllForMyCellDirect(const Ray& ray, const float& dis
 
 	for (const auto& collider : potencialColliders)
 	{
+
+
 		RayHit currentHit;
 		currentHit.distance = dis;  // 최대 거리로 초기화
 		if (collider->RayCast(ray, dis, currentHit))

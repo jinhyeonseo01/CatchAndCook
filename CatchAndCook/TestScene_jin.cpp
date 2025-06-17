@@ -13,6 +13,7 @@
 #include "ComputeManager.h"
 #include "PlayerController.h"
 #include "testComponent.h"
+#include "EventComponent.h"
 
 
 void TestScene_jin::Init()
@@ -91,6 +92,14 @@ void TestScene_jin::Init()
 	ResourceManager::main->LoadAlway<SceneLoader>(L"test", L"../Resources/Datas/Scenes/MainField2.json");
 	auto sceneLoader = ResourceManager::main->Get<SceneLoader>(L"test");
 	sceneLoader->Load(GetCast<Scene>());
+
+	{
+
+		auto& object = SceneManager::main->GetCurrentScene()->Find(L"OnBoardEvent");
+		auto& eventComponent=  object->GetComponent<EventComponent>();
+		eventComponent->BindOnCollisionBegin([]() {cout << "hello" << endl; });
+		eventComponent->BindOnCollisionEnd([]() {cout << "Bye" << endl; });
+	}
 
 }
 
