@@ -8,7 +8,6 @@ class CameraComponent;
 class BoatController :public Component
 {
 
-
 public:
 	~BoatController() override;
 	bool IsExecuteAble() override;
@@ -25,9 +24,28 @@ public:
 	void SetDestroy() override;
 	void Destroy() override;
 
+	void SetOnBaord();
+
+
 private:
-	std::weak_ptr<CameraComponent> camera;
-	std::weak_ptr<SkinnedHierarchy> _skinnedHierarchy;
+	Quaternion CalCulateYawPitchRoll();
+
+public:
+	static float heightOffset;
+	static float SpringArmLength;
+private:
+
+	float  _yaw = 0;
+	float _pitch = 0;
+	float _roll = 0;
+
+
+	bool _onBoard = false;
+
+
+
+	shared_ptr<Camera> _camera;
+	shared_ptr<SkinnedHierarchy> _skined;
 	std::weak_ptr<AnimationListComponent> _animationList;
 };
 

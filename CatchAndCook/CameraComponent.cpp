@@ -27,7 +27,6 @@ void CameraComponent::Init()
 	auto camera = std::static_pointer_cast<Camera>(GetCast<CameraComponent>());
 	_near = 0.1f;
 	_far = 2000.f;
-
 	CameraManager::main->AddCamera(_type, camera);
 	CameraManager::main->SetActiveCamera(_type);
 }

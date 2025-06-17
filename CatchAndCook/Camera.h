@@ -7,8 +7,10 @@ enum class CameraType
 {
     DebugCamera,
 	SeaCamera,
+    BoatCamera,
     UiCamera,
-    ComponentCamera
+    ComponentCamera,
+
 };
 
 
@@ -149,5 +151,16 @@ public:
     virtual void Update();
 
 };
+
+class BoatCamera : public Camera
+{
+
+public:
+    BoatCamera();
+    virtual ~BoatCamera();
+    virtual void Update();
+
+};
+
 
 

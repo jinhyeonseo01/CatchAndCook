@@ -11,8 +11,6 @@ Camera::Camera(CameraType type)
 void Camera::Update()
 {
     Calculate();
-
-
 }
 
 Vector3 Camera::GetScreenToWorldPosition(Vector2 mousePosition)
@@ -245,4 +243,16 @@ void UiCamera::Update()
     Camera::Update();
 }
 
+BoatCamera::BoatCamera()
+{
+    _type = CameraType::BoatCamera;
+}
 
+BoatCamera::~BoatCamera()
+{
+}
+
+void BoatCamera::Update()
+{
+    Camera::Update();
+}

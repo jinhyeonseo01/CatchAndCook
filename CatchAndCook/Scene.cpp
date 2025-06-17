@@ -637,19 +637,28 @@ void Scene::CameraControl()
 	{
 		type = CameraType::DebugCamera;
         Input::main->SetMouseLock(false);
+        CameraManager::main->Setting(type);
 	}
 
     if (Input::main->GetKeyDown(KeyCode::F2))
     {
 		type = CameraType::ComponentCamera;
+        CameraManager::main->Setting(type);
     }
 
     if (Input::main->GetKeyDown(KeyCode::F3))
     {
         type = CameraType::SeaCamera;
+        CameraManager::main->Setting(type);
     }
 
-	CameraManager::main->Setting(type);
+    if (Input::main->GetKeyDown(KeyCode::F4))
+    {
+        type = CameraType::BoatCamera;
+        CameraManager::main->Setting(type);
+    }
+
+
 }
 
 void Scene::AddDestroyQueue(const std::shared_ptr<GameObject>& gameObject)

@@ -13,6 +13,7 @@
 #include "LightComponent.h"
 #include "PathFinder.h"
 #include "Volumetric.h"
+#include "BoatController.h"
 unique_ptr<ImguiManager> ImguiManager::main;
 
 ImguiManager::~ImguiManager()
@@ -60,6 +61,13 @@ void ImguiManager::Render()
         ImGui::SliderFloat("playerForwardOffset", playerForwardOffset,-6.0f, 6.0f);
 		ImGui::SliderFloat("cameraPitchOffset", cameraPitchOffset, -90.0f, 90.0f);
         ImGui::SliderFloat("cameraYawOffset", cameraYawOffset, -10.0f, 10.0f);
+    }
+
+    if (SceneManager::main->GetCurrentScene()->GetSceneType()==SceneType::TestScene2)
+    {
+        ImGui::SliderFloat("heightOffset", &BoatController::heightOffset, 0.0f, 50.0f);
+        ImGui::SliderFloat("SpringArmLength", &BoatController::SpringArmLength, 0, 50.0f);
+
     }
 
 	ImGui::Render();

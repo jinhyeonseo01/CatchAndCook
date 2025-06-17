@@ -80,6 +80,7 @@ void Game::Init(HWND hwnd)
 	CameraManager::main->AddCamera(CameraType::DebugCamera, make_shared<DebugCamera>());
 	CameraManager::main->AddCamera(CameraType::UiCamera, make_shared<UiCamera>());
 	CameraManager::main->AddCamera(CameraType::SeaCamera, make_shared<SeaCamera>());
+	CameraManager::main->AddCamera(CameraType::BoatCamera, make_shared<BoatCamera>());
 	CameraManager::main->SetActiveCamera(CameraType::DebugCamera);
 
 	LightManager::main = make_unique<LightManager>();

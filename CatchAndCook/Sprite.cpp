@@ -13,7 +13,7 @@ Sprite::~Sprite()
 
 void Sprite::Init()
 {
-	cout << "호출됨 INIT" << endl;
+
 
 	_firstWindowSize = vec2(WINDOW_WIDTH, WINDOW_HEIGHT);
 }
@@ -21,7 +21,6 @@ void Sprite::Init()
 void Sprite::Start()
 {
 
-	cout << "호출됨 Start" << endl;
 
 	if (auto& renderer = GetOwner()->GetRenderer())
 	{

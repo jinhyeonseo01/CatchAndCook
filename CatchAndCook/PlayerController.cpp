@@ -15,6 +15,7 @@
 #include "Transform.h"
 #include "AnimationListComponent.h"
 #include "InGameMainField.h"
+#include "BoatController.h"
 
 
 COMPONENT(PlayerController)
@@ -342,6 +343,7 @@ void PlayerController::MoveControl()
 
 void PlayerController::Update2()
 {
+
 	if (_onBoard)
 		return;
 
@@ -395,14 +397,19 @@ void PlayerController::Destroy()
 
 void PlayerController::SetOnBoard()
 {
+	_onBoard = true;
+
+	auto playerShip =SceneManager::main->GetCurrentScene()->Find(L"PlayerShip");
+	playerShip->GetComponent<BoatController>()->SetOnBaord();
+
 	auto boatSeat = SceneManager::main->GetCurrentScene()->Find(L"BoatSeat");
 	GetOwner()->GetRoot()->SetParent(boatSeat);
 	GetOwner()->_transform->SetLocalPosition(vec3(0, 0, 0));
+	GetOwner()->_transform->SetLocalRotation(vec3(0, 0, 0));
 
 }
 
 void PlayerController::SetOFFBoard()
 {
-
 	_onBoard = false;
 }
