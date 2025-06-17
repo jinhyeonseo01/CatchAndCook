@@ -94,11 +94,12 @@ void TestScene_jin::Init()
 	sceneLoader->Load(GetCast<Scene>());
 
 	{
-
 		auto& object = SceneManager::main->GetCurrentScene()->Find(L"OnBoardEvent");
-		auto& eventComponent=  object->GetComponent<EventComponent>();
-		eventComponent->BindOnCollisionBegin([]() {cout << "hello" << endl; });
-		eventComponent->BindOnCollisionEnd([]() {cout << "Bye" << endl; });
+		auto& eventComponent = object->GetComponent<EventComponent>();
+		eventComponent->SetBindTag(GameObjectTag::Player);
+		eventComponent->BindOnCollisionBegin([](shared_ptr<Collider>& collider) {wcout << "충돌중"<< collider->GetOwner()->GetRoot()->GetName() << endl; });
+		eventComponent->BindOnCollisionEnd([](shared_ptr<Collider>& collider) {wcout << "충돌해제"<< collider->GetOwner()->GetRoot()->GetName() << endl; });
+		eventComponent->BindOnUpdate([](shared_ptr<Collider>& collider) {wcout << "OnUpdate" << collider->GetOwner()->GetRoot()->GetName() << endl; });
 	}
 
 }

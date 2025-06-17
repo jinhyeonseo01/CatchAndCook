@@ -24,14 +24,19 @@ public:
 public:
 	void SetOneTimeEventCall(const bool& call) { _oneTimeEventCall = call; }
 public:
-	void BindOnUpdateEvent(const std::function<void()>& func) { _OnUpdateEvents.push_back(func); }
-	void BindOnCollisionBegin(const std::function<void()>& func) { _OnCollisionBegins.push_back(func); }
-	void BindOnCollisionEnd(const std::function<void()>& func) { _OnCollisionEnds.push_back(func); }
+	void SetBindTag(GameObjectTag tag) { bindTag = tag; }
+	void BindOnUpdate(const std::function<void(std::shared_ptr<Collider>)>& func) { _OnUpdate.push_back(func); }
+	void BindOnCollisionBegin(const std::function<void(std::shared_ptr<Collider>)>& func) { _OnCollisionBegins.push_back(func); }
+	void BindOnCollisionEnd(const std::function<void(std::shared_ptr<Collider>)>& func) { _OnCollisionEnds.push_back(func); }
 
 private:
-	vector<std::function<void()>> _OnUpdateEvents;
-	vector<std::function<void()>> _OnCollisionBegins;
-	vector<std::function<void()>> _OnCollisionEnds;
+	vector<std::function<void(shared_ptr<Collider>)>> _OnUpdate;
+	vector<std::function<void(shared_ptr<Collider>)>> _OnCollisionBegins;
+	vector<std::function<void(shared_ptr<Collider>)>> _OnCollisionEnds;
+
+	shared_ptr<Collider> _otherCashing;
+
+	GameObjectTag bindTag = GameObjectTag::Defualt;
 
 	bool _Oncollision=false;
 	bool _oneTimeEventCall = true;

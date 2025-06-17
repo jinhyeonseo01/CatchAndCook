@@ -30,6 +30,11 @@ inline GameObjectTag& operator|=(GameObjectTag& a, GameObjectTag b) {
 	return a;
 }
 
+inline GameObjectTag operator|(GameObjectTag a, GameObjectTag b) {
+	return static_cast<GameObjectTag>(
+		static_cast<std::uint64_t>(a) | static_cast<std::uint64_t>(b));
+}
+
 inline GameObjectTag operator&(GameObjectTag& a, GameObjectTag b) {
 	return static_cast<GameObjectTag>(
 		static_cast<uint64>(a) & static_cast<uint64>(b));
@@ -38,6 +43,9 @@ inline GameObjectTag operator&(GameObjectTag& a, GameObjectTag b) {
 inline bool HasTag(GameObjectTag tag, GameObjectTag flag) {
 	return (static_cast<uint64>(tag) & static_cast<uint64>(flag)) != 0;
 }
+
+
+
 
 
 enum class GameObjectType

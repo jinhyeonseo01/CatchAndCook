@@ -86,13 +86,12 @@ void Collider::Start()
 		groupRootObject = obj->GetOwner();
 	}
 
-	//if (GetOwner()->GetType() == GameObjectType::Static && GetOwner()->GetActive())
-	//{
-	//	CalculateBounding();
-	//	ColliderManager::main->AddCollider(GetCast<Collider>());
-	//}
-	CalculateBounding();
-	ColliderManager::main->AddCollider(GetCast<Collider>());
+	if (GetOwner()->GetType() == GameObjectType::Static && GetOwner()->GetActive())
+	{
+		CalculateBounding();
+		ColliderManager::main->AddCollider(GetCast<Collider>());
+	}
+
 }
 
 void Collider::Update()
@@ -119,7 +118,6 @@ void Collider::Enable()
 	if (GetOwner()->GetType() == GameObjectType::Static)
 		CalculateBounding();
 	
-
 	groupId = PhysicsComponent::GetPhysicsGroupID(GetOwner());
 	if (auto obj = GetOwner()->GetComponentWithParents<PhysicsComponent>()) {
 		groupRootObject = obj->GetOwner();

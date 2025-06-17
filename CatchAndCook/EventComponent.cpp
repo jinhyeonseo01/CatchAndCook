@@ -1,12 +1,14 @@
 ﻿#include "pch.h"
 #include "EventComponent.h"
-
+#include "Collider.h"
 
 COMPONENT(EventComponent)
 
 void EventComponent::Init()
 {
-	cout << "히히" << endl;
+
+
+
 }
 
 void EventComponent::Start()
@@ -17,14 +19,18 @@ void EventComponent::Start()
 
 void EventComponent::Update()
 {
-	for (auto& func : _OnUpdateEvents)
-	{
-		func();
-	}
+
 }
 
 void EventComponent::Update2()
 {
+	if (_Oncollision)
+	{
+		for (auto& func : _OnUpdate)
+		{
+			func(_otherCashing);
+		}
+	}
 }
 
 void EventComponent::Enable()
@@ -47,32 +53,38 @@ void EventComponent::RenderEnd()
 
 void EventComponent::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
 {
-
 	if (_oneTimeEventCall && _Oncollision)
 		return;
 
+	if (HasTag(bindTag, other->GetOwner()->GetTag()) == false)
+		return;
 
 	_Oncollision = true;
+	_otherCashing = other;
 
 	for (auto& func : _OnCollisionBegins)
 	{
-		func();
+		func(other);
 	}
 
 }
 
 void EventComponent::CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
 {
-
 	if (_oneTimeEventCall && _Oncollision==false)
 		return;
 
+	if (HasTag(bindTag, other->GetOwner()->GetTag()) == false)
+		return;
+
 	_Oncollision = false;
+	_otherCashing = nullptr;
 
 	for (auto& func : _OnCollisionEnds)
 	{
-		func();
+		func(other);
 	}
+
 }
 
 void EventComponent::ChangeParent(const std::shared_ptr<GameObject>& prev, const std::shared_ptr<GameObject>& current)

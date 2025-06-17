@@ -72,6 +72,7 @@ void Scene::Update()
         current->Start();
         _startQueue.pop();
     }
+
     Profiler::Fin();
 
     Profiler::Set("Logic_Update1");
