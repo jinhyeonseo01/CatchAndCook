@@ -95,11 +95,11 @@ void TestScene_jin::Init()
 
 
 	{
-		shared_ptr<GameObject> root = CreateGameObject(L"SpriteTest");
-		auto& renderer = root->AddComponent<MeshRenderer>();
+		shared_ptr<GameObject> BoardText = CreateGameObject(L"BoardText");
+		auto& renderer = BoardText->AddComponent<MeshRenderer>();
 
-		auto& sprite = root->AddComponent<TextSprite>();
-		sprite->SetLocalPos(vec3(0 + 400.0f, 300.0f, 0.000001f));
+		auto& sprite = BoardText->AddComponent<TextSprite>();
+		sprite->SetLocalPos(vec3(500.0f, 600.0f, 0.000001f));
 		sprite->SetSize(vec2(300, 300));
 		sprite->SetText(L"Press F To Board");
 		sprite->CreateObject(512, 256, L"Arial", FontColor::WHITE, 60);
@@ -109,17 +109,40 @@ void TestScene_jin::Init()
 		material->SetPass(RENDER_PASS::UI);
 
 		renderer->AddMaterials({ material });
-
+		BoardText->SetActiveSelf(false);
 	};
 
 	{
 		auto& object = SceneManager::main->GetCurrentScene()->Find(L"OnBoardEvent");
 		auto& eventComponent = object->GetComponent<EventComponent>();
 		eventComponent->SetBindTag(GameObjectTag::Player);
-		eventComponent->BindOnCollisionBegin([](shared_ptr<Collider>& collider) {wcout << "충돌중"<< collider->GetOwner()->GetRoot()->GetName() << endl; });
-		eventComponent->BindOnCollisionEnd([](shared_ptr<Collider>& collider) {wcout << "충돌해제"<< collider->GetOwner()->GetRoot()->GetName() << endl; });
-		eventComponent->BindOnUpdate([](shared_ptr<Collider>& collider) {wcout << "OnUpdate" << collider->GetOwner()->GetRoot()->GetName() << endl; });
+		eventComponent->BindOnCollisionBegin([](shared_ptr<Collider>& collider) 
+			{
+			 auto object= SceneManager::main->GetCurrentScene()->Find(L"BoardText");
+			 if (object)
+			 {
+				 object->SetActiveSelf(true);
+			 }
+			});
+		eventComponent->BindOnCollisionEnd([](shared_ptr<Collider>& collider) 
+			{
+				auto object = SceneManager::main->GetCurrentScene()->Find(L"BoardText");
+				if (object)
+				{
+					object->SetActiveSelf(false);
+
+				}
+			});
+		eventComponent->BindOnUpdate([](shared_ptr<Collider>& collider) {
+			if (Input::main->GetKeyDown(KeyCode::F))
+			{
+				auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
+
+				player->GetComponent<PlayerController>()->SetOnBoard();
+			}
+			});
 	}
+
 
 }
 

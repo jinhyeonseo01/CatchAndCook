@@ -38,8 +38,8 @@ void GameObject::Init()
 
 void GameObject::Start()
 {
-    if (_active_total)
-    {
+    //if (_active_total)
+    //{
         for (size_t i = 0; i < _components.size(); ++i) {
             auto component = _components[i];
             if (component->_first) {
@@ -47,7 +47,7 @@ void GameObject::Start()
                 component->_first = false;
             }
         }
-    }
+    /*}*/
 }
 
 void GameObject::Update()
@@ -326,6 +326,7 @@ bool GameObject::SetParent(const std::shared_ptr<GameObject>& nextParentObj)
 {
     if (nextParentObj != nullptr && nextParentObj.get() == this)
         return false;
+
     if (this->IsDestroy())
         return false;
 
@@ -341,6 +342,7 @@ bool GameObject::SetParent(const std::shared_ptr<GameObject>& nextParentObj)
         prevParentObj->RemoveChild(thisObj);
         this->ActiveUpdateChain(true);
     }
+
     this->parent.reset(); // null
     this->rootParent = thisObj;
 
@@ -351,6 +353,7 @@ bool GameObject::SetParent(const std::shared_ptr<GameObject>& nextParentObj)
         this->ActiveUpdateChain(nextParentObj->GetActive());
         nextParentObj->AddChild(thisObj);
     }
+
     if (prevRootParent.lock() != this->rootParent.lock()) //root ����
         SetRootParent(this->rootParent.lock());
 

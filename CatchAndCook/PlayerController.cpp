@@ -57,11 +57,17 @@ void PlayerController::Start()
 
 void PlayerController::Update()
 {
+	if (_onBoard)
+		return;
+
+
 	Component::Update();
 	ColliderManager::main->UpdateDynamicCells();
 
 	if (Input::main->IsMouseLock())
 		CameraControl();
+
+
 	MoveControl();
 
 
@@ -326,15 +332,22 @@ void PlayerController::MoveControl()
 		GetOwner()->_transform->SetWorldPosition(cameraPos);
 
 	}
+
+	if (Input::main->GetKeyDown(KeyCode::J))
+	{
+		SetOnBoard();
+	}
 }
 
 
 void PlayerController::Update2()
 {
+	if (_onBoard)
+		return;
+
 	Component::Update2();
 
 	camera.lock()->Calculate();
-
 
 	CameraManager::main->Setting();
 }
@@ -378,4 +391,18 @@ void PlayerController::SetDestroy()
 void PlayerController::Destroy()
 {
 	Component::Destroy();
+}
+
+void PlayerController::SetOnBoard()
+{
+	auto boatSeat = SceneManager::main->GetCurrentScene()->Find(L"BoatSeat");
+	GetOwner()->GetRoot()->SetParent(boatSeat);
+	GetOwner()->_transform->SetLocalPosition(vec3(0, 0, 0));
+
+}
+
+void PlayerController::SetOFFBoard()
+{
+
+	_onBoard = false;
 }

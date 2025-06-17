@@ -176,6 +176,7 @@
     <ClCompile Include="AnimationListComponent.cpp" />
     <ClCompile Include="AnimationNode.cpp" />
     <ClCompile Include="Animator.cpp" />
+    <ClCompile Include="BoatController.cpp" />
     <ClCompile Include="Bone.cpp" />
     <ClCompile Include="BufferManager.cpp" />
     <ClCompile Include="BufferPool.cpp" />
@@ -321,6 +322,7 @@
     <ClInclude Include="AnimationListComponent.h" />
     <ClInclude Include="AnimationNode.h" />
     <ClInclude Include="Animator.h" />
+    <ClInclude Include="BoatController.h" />
     <ClInclude Include="Bone.h" />
     <ClInclude Include="BufferManager.h" />
     <ClInclude Include="BufferPool.h" />

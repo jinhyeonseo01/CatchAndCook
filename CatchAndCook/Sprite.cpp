@@ -13,11 +13,16 @@ Sprite::~Sprite()
 
 void Sprite::Init()
 {
-	
+	cout << "호출됨 INIT" << endl;
+
+	_firstWindowSize = vec2(WINDOW_WIDTH, WINDOW_HEIGHT);
 }
 
 void Sprite::Start()
 {
+
+	cout << "호출됨 Start" << endl;
+
 	if (auto& renderer = GetOwner()->GetRenderer())
 	{
 		renderer->AddCbufferSetter(static_pointer_cast<Sprite>(shared_from_this()));
@@ -106,7 +111,7 @@ void Sprite::CalculateWorldPos()
 		worldPos += sprite->_screenLocalPos;
 	}
 
-	_spriteWorldParam.ndcPos = vec3(worldPos.x / WINDOW_WIDTH , worldPos.y / WINDOW_HEIGHT, worldPos.z);
+	_spriteWorldParam.ndcPos = vec3(worldPos.x / _firstWindowSize.x, worldPos.y / _firstWindowSize.y, worldPos.z);
 	_ndcWorldPos = _spriteWorldParam.ndcPos;
 }
 
@@ -119,8 +124,8 @@ void Sprite::SetTexture(shared_ptr<Texture> texture)
 
 void Sprite::SetSize(const vec2& size)
 {
-	_spriteWorldParam.ndcScale.x = size.x / WINDOW_WIDTH;
-	_spriteWorldParam.ndcScale.y = size.y / WINDOW_HEIGHT;
+	_spriteWorldParam.ndcScale.x = size.x / _firstWindowSize.x;
+	_spriteWorldParam.ndcScale.y = size.y / _firstWindowSize.y;
 
 	_ndcSize = _spriteWorldParam.ndcScale;
 	_screenSize = size;
@@ -376,7 +381,6 @@ void AnimationSprite::RenderBegin()
 
 void AnimationSprite::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
 {
-
 }
 
 void AnimationSprite::CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
