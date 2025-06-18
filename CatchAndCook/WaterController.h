@@ -55,6 +55,7 @@ public:
 
     virtual void SetData(Material* material = nullptr);
     void Setting(const wstring& colorPath, const wstring& movementPath);
+    static SeaParam _seaParam;
 private:
     shared_ptr<Texture> _textures;
     shared_ptr<Texture> _bump;
@@ -62,7 +63,7 @@ private:
 
 	CBufferContainer* _cbufferContainer;
 
-    SeaParam _seaParam;
+
 
 };
 

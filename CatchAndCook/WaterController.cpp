@@ -2,6 +2,9 @@
 #include "WaterController.h"
 #include "RendererBase.h"
 
+
+ SeaParam WaterController::_seaParam;
+
 WaterController::~WaterController()
 {
 }

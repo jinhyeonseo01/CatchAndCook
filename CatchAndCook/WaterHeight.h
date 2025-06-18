@@ -3,13 +3,7 @@
 
 #define PI 3.14159f
 
-struct WaveParams 
-{
-    float amplitude;
-    float wavelength;
-    float speed;
-    vec2 direction;
-};
+
 
 
 class WaterHeight : public Component
@@ -34,14 +28,8 @@ public:
 
 private:
 
-    float _offset=0;
+    float _offset=-3.0f;
 
-    WaveParams waves[3] =
-    {
-        {11.0f,500.0f,0.5f,vec2(1.0f,0.2f)},
-        {9.0f,300.0f,1.0f,vec2(0.3f,-1.0f)},
-        {7.0f,200.0f,0.8f,vec2(-0.5f,0.7f)}
-    };
 
 };
 
