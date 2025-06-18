@@ -67,6 +67,8 @@ void ImguiManager::Render()
     {
         ImGui::SliderFloat("heightOffset", &BoatController::heightOffset, 0.0f, 50.0f);
         ImGui::SliderFloat("SpringArmLength", &BoatController::SpringArmLength, 0, 50.0f);
+        ImGui::SliderFloat3("boatPitch", &BoatController::_pitch, 0, 360.0f);
+
 
     }
 

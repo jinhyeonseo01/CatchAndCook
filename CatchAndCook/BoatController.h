@@ -33,11 +33,12 @@ private:
 public:
 	static float heightOffset;
 	static float SpringArmLength;
+	static float  _yaw;
+	static float _pitch;
+	static float _roll;
 private:
 
-	float  _yaw = 0;
-	float _pitch = 0;
-	float _roll = 0;
+
 
 
 	bool _onBoard = false;

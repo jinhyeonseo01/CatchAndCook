@@ -8,6 +8,9 @@ COMPONENT(BoatController)
 
 float BoatController::heightOffset=15.0f;
 float BoatController::SpringArmLength=30.0f;
+float  BoatController::_yaw=0.0f;
+float BoatController::_pitch=0.0f;
+float BoatController::_roll=0.0f;
 
 BoatController::~BoatController()
 {
@@ -35,8 +38,9 @@ void BoatController::Update()
 
 	float dt =Time::main->GetDeltaTimeNow();
 	 Quaternion quat =  CalCulateYawPitchRoll();
+	 Quaternion yawOnlyQuat = Quaternion::CreateFromYawPitchRoll(_yaw * D2R, 0, 0); 
 
-	 GetOwner()->_transform->SetLocalRotation(quat);
+	 GetOwner()->_transform->SetLocalRotation(yawOnlyQuat);
 
 	 if (Input::main->GetKey(KeyCode::W))
 	 {
@@ -108,8 +112,6 @@ void BoatController::SetOnBaord()
 
 }
 
-
-
 Quaternion BoatController::CalCulateYawPitchRoll()
 {
 	if (Input::main->IsMouseLock() == false)
@@ -126,7 +128,6 @@ Quaternion BoatController::CalCulateYawPitchRoll()
 		vec2 delta = (currentMousePos - lastMousePos) * 0.1f;
 
 		_yaw += delta.x;
-		_roll = 0;
 
 		lastMousePos = currentMousePos;
 	}
@@ -137,7 +138,7 @@ Quaternion BoatController::CalCulateYawPitchRoll()
 		vec2 delta = (currentMousePos - centerPos) * 0.1f;
 
 		_yaw += delta.x;
-		_roll = 0;
+
 
 		POINT center;
 		center.x = static_cast<LONG>(WINDOW_WIDTH / 2);
@@ -146,5 +147,5 @@ Quaternion BoatController::CalCulateYawPitchRoll()
 		SetCursorPos(center.x, center.y);
 	}
 
-	return Quaternion::CreateFromYawPitchRoll(_yaw * D2R, 0 , 0);
+	return Quaternion::CreateFromYawPitchRoll(_yaw * D2R, _pitch * D2R , _roll * D2R);
 }
