@@ -33,7 +33,7 @@ void WaterHeight::Update()
     if(auto transform = GetOwner()->_transform)
     {
         vec3 pos = transform->GetLocalPosition();
-        pos.y = GetWaveHeight(pos.x,pos.z,Time::main->GetTime()) + _offset;
+        pos.y = GetWaveHeight(pos.x,pos.z, Time::main->GetTime()) + _offset;
         transform->SetLocalPosition(pos);
     }
 }

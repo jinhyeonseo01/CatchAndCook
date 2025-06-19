@@ -26,8 +26,12 @@ public:
 
 	void SetOnBaord();
 
+	
 
 private:
+	bool _dive = false;
+	void Diving();
+
 	Quaternion CalCulateYawPitchRoll();
 
 public:

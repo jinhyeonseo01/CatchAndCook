@@ -29,6 +29,8 @@ void BoatController::Init()
 
 void BoatController::Start()
 {
+
+
 }
 
 void BoatController::Update()
@@ -36,33 +38,49 @@ void BoatController::Update()
 	if (_onBoard == false)
 		return;
 
-	float dt =Time::main->GetDeltaTimeNow();
-	 Quaternion quat =  CalCulateYawPitchRoll();
-	 Quaternion yawOnlyQuat = Quaternion::CreateFromYawPitchRoll(_yaw * D2R, 0, 0); 
+	if (_dive == false)
+	{
 
-	 GetOwner()->_transform->SetLocalRotation(yawOnlyQuat);
+		float dt = Time::main->GetDeltaTime();
+		Quaternion quat = CalCulateYawPitchRoll();
+		Quaternion yawOnlyQuat = Quaternion::CreateFromYawPitchRoll(_yaw * D2R, 0, 0);
 
-	 if (Input::main->GetKey(KeyCode::W))
-	 {
+		GetOwner()->_transform->SetLocalRotation(yawOnlyQuat);
 
-		 vec3 pos = GetOwner()->_transform->GetLocalPosition();
-		 GetOwner()->_transform->SetLocalPosition(pos + GetOwner()->_transform->GetForward() * dt * 3000.0f);
-	 }
+		if (Input::main->GetKey(KeyCode::W))
+		{
 
-	 auto ray = ColliderManager::main->RayCastForMyCell({ GetOwner()->_transform->GetLocalPosition(), GetOwner()->_transform->GetForward()}, 1.0f, GetOwner());
+			vec3 pos = GetOwner()->_transform->GetLocalPosition();
+			GetOwner()->_transform->SetLocalPosition(pos + GetOwner()->_transform->GetForward() * dt * 50.0f);
+		}
 
-	 if (ray.isHit)
-	 {
-		 vec3 normal = ray.normal;
+		auto ray = ColliderManager::main->RayCastForMyCell({ GetOwner()->_transform->GetLocalPosition(), GetOwner()->_transform->GetForward() }, 1.0f, GetOwner());
 
-		 float penetrationBuffer = 0.05f;
-		 GetOwner()->_transform->SetLocalPosition(GetOwner()->_transform->GetLocalPosition()+ normal * penetrationBuffer);
-	 }
+		if (ray.isHit)
+		{
+			vec3 normal = ray.normal;
+
+			float penetrationBuffer = 0.05f;
+			GetOwner()->_transform->SetLocalPosition(GetOwner()->_transform->GetLocalPosition() + normal * penetrationBuffer);
+		}
 
 
-	_camera->SetCameraPos(GetOwner()->_transform->GetWorldPosition() - GetOwner()->_transform->GetForward()* SpringArmLength + vec3(0,heightOffset,0));
-	_camera->SetCameraRotation(quat);
-	CameraManager::main->Setting();
+		_camera->SetCameraPos(GetOwner()->_transform->GetWorldPosition() - GetOwner()->_transform->GetForward() * SpringArmLength + vec3(0, heightOffset, 0));
+		_camera->SetCameraRotation(quat);
+		//CameraManager::main->Setting();
+	}
+
+
+	if (Input::main->GetKeyDown(KeyCode::F))
+	{
+
+		_dive = true;
+	}
+
+	if (_dive)
+	{
+		Diving();
+	}
 
 }
 
@@ -112,8 +130,35 @@ void BoatController::SetOnBaord()
 
 }
 
+void BoatController::Diving()
+{
+	auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
+
+	static bool turnRight = true;
+	static auto right = player->_transform->GetRight();
+
+	vec3 forward = player->_transform->GetForward();
+
+	if (turnRight)
+	{
+		player->_transform->LookUpSmooth(right, vec3::UnitY, 10.0f);
+	};
+
+	if ((right - forward).Length() < 0.0001f)
+	{
+
+		turnRight = false;
+		auto& pos = player->_transform->GetWorldPosition();
+		player->_transform->SetWorldPosition(pos + player->_transform->GetForward() * Time::main->GetDeltaTime() * 1.0f);
+	}
+
+
+}
+
 Quaternion BoatController::CalCulateYawPitchRoll()
 {
+
+
 	if (Input::main->IsMouseLock() == false)
 	{
 		static vec2 lastMousePos = Input::main->GetMousePosition();

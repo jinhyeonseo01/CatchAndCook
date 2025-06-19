@@ -658,6 +658,7 @@ void Scene::CameraControl()
         CameraManager::main->Setting(type);
     }
 
+    CameraManager::main->Setting();
 
 }
 
