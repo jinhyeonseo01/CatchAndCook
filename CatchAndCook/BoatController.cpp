@@ -35,7 +35,6 @@ void BoatController::Start()
 	_animation = player->GetComponent<AnimationListComponent>()->GetAnimations();
 	_skined = player->GetComponent<SkinnedHierarchy>();
 
-
 }
 
 void BoatController::Update()

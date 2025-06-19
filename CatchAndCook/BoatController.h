@@ -39,6 +39,7 @@ public:
 
 private:
 	void DivingSequnce();
+
 	Sequnce _seq = Sequnce::Driving;
 	Quaternion CalCulateYawPitchRoll();
 
