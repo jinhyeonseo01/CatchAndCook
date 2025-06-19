@@ -4,6 +4,8 @@
 #include "Camera.h"
 #include "Transform.h"
 #include "ColliderManager.h"
+#include "AnimationListComponent.h"
+#include "SkinnedHierarchy.h"
 COMPONENT(BoatController)
 
 float BoatController::heightOffset=15.0f;
@@ -29,6 +31,9 @@ void BoatController::Init()
 
 void BoatController::Start()
 {
+	auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
+	_animation = player->GetComponent<AnimationListComponent>()->GetAnimations();
+	_skined = player->GetComponent<SkinnedHierarchy>();
 
 
 }
@@ -38,7 +43,18 @@ void BoatController::Update()
 	if (_onBoard == false)
 		return;
 
-	if (_dive == false)
+
+	if (Input::main->GetKeyDown(KeyCode::F))
+	{
+		_seq = Sequnce::turnRight;
+		
+		if (_animation.find("walk") != _animation.end())
+		{
+			_skined->Play(_animation["walk"], 0.5f);
+		};
+	};
+
+	if (_seq == Sequnce::Driving)
 	{
 
 		float dt = Time::main->GetDeltaTime();
@@ -70,17 +86,16 @@ void BoatController::Update()
 		//CameraManager::main->Setting();
 	}
 
-
-	if (Input::main->GetKeyDown(KeyCode::F))
+	else
 	{
-
-		_dive = true;
+		DivingSequnce();
 	}
 
-	if (_dive)
-	{
-		Diving();
-	}
+
+
+
+
+	
 
 }
 
@@ -130,30 +145,59 @@ void BoatController::SetOnBaord()
 
 }
 
-void BoatController::Diving()
+void BoatController::DivingSequnce()
 {
 	auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
 
-	static bool turnRight = true;
-	static auto right = player->_transform->GetRight();
 
+	static auto right = player->_transform->GetRight();
 	vec3 forward = player->_transform->GetForward();
 
-	if (turnRight)
+	if (_seq == Sequnce::turnRight)
 	{
 		player->_transform->LookUpSmooth(right, vec3::UnitY, 10.0f);
+
+		if ((right - forward).Length() < 0.0001f)
+		{
+			_seq = Sequnce::Walk;
+		}
 	};
 
-	if ((right - forward).Length() < 0.0001f)
-	{
 
-		turnRight = false;
-		auto& pos = player->_transform->GetWorldPosition();
-		player->_transform->SetWorldPosition(pos + player->_transform->GetForward() * Time::main->GetDeltaTime() * 1.0f);
+	if (_seq == Sequnce::Walk)
+	{
+		static float moveLange = 50.0f;
+
+		if (moveLange >= 0.0f)
+		{
+			vec3& pos = player->_transform->GetWorldPosition();
+			player->_transform->SetWorldPosition(pos + player->_transform->GetForward() * Time::main->GetDeltaTime() * 1.0f);
+			moveLange -= Time::main->GetDeltaTime() * 30.0f;
+		}
+		else
+		{
+			_seq = Sequnce::Dive;
+			moveLange = 50.0f;
+		}
 	}
 
 
-}
+	if (_seq == Sequnce::Dive)
+	{
+
+	}
+
+
+
+
+
+
+
+
+
+
+
+};
 
 Quaternion BoatController::CalCulateYawPitchRoll()
 {

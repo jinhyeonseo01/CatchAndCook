@@ -5,6 +5,15 @@ class AnimationListComponent;
 class SkinnedHierarchy;
 class CameraComponent;
 
+enum Sequnce
+{
+	Driving,
+	turnRight,
+	Walk,
+	Dive,
+	Reset
+};
+
 class BoatController :public Component
 {
 
@@ -29,10 +38,10 @@ public:
 	
 
 private:
-	bool _dive = false;
-	void Diving();
-
+	void DivingSequnce();
+	Sequnce _seq = Sequnce::Driving;
 	Quaternion CalCulateYawPitchRoll();
+
 
 public:
 	static float heightOffset;
@@ -41,16 +50,10 @@ public:
 	static float _pitch;
 	static float _roll;
 private:
-
-
-
-
 	bool _onBoard = false;
-
-
 
 	shared_ptr<Camera> _camera;
 	shared_ptr<SkinnedHierarchy> _skined;
-	std::weak_ptr<AnimationListComponent> _animationList;
+	std::unordered_map<string, std::shared_ptr<Animation>>  _animation;
 };
 
