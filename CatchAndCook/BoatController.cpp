@@ -6,6 +6,8 @@
 #include "ColliderManager.h"
 #include "AnimationListComponent.h"
 #include "SkinnedHierarchy.h"
+#include "Animation.h"
+#include "PlayerController.h"
 COMPONENT(BoatController)
 
 float BoatController::heightOffset=15.0f;
@@ -35,6 +37,22 @@ void BoatController::Start()
 	_animation = player->GetComponent<AnimationListComponent>()->GetAnimations();
 	_skined = player->GetComponent<SkinnedHierarchy>();
 
+	if (_animation.find("right_turn") != _animation.end())
+	{
+		_animation.find("right_turn")->second->_isLoop = false;
+	}
+
+	if (_animation.find("dive") != _animation.end())
+	{
+		auto temp = _animation.find("dive")->second;
+		temp->_isLoop= false;
+		temp->_speedMultiplier = 1.0f;
+
+	}
+
+	_GenPos = GetOwner()->_transform->GetWorldPosition();
+	_GenRotate = GetOwner()->_transform->GetWorldRotation();
+
 }
 
 void BoatController::Update()
@@ -43,13 +61,16 @@ void BoatController::Update()
 		return;
 
 
+
 	if (Input::main->GetKeyDown(KeyCode::F))
 	{
+		auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
 		_seq = Sequnce::turnRight;
+		_right = player->_transform->GetRight();
 		
-		if (_animation.find("walk") != _animation.end())
+		if (_animation.find("right_turn") != _animation.end())
 		{
-			_skined->Play(_animation["walk"], 0.5f);
+			_skined->Play(_animation["right_turn"], 0.1f);
 		};
 	};
 
@@ -148,16 +169,14 @@ void BoatController::DivingSequnce()
 {
 	auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
 
-
-	static auto right = player->_transform->GetRight();
 	vec3 forward = player->_transform->GetForward();
 
 	if (_seq == Sequnce::turnRight)
 	{
-		player->_transform->LookUpSmooth(right, vec3::UnitY, 10.0f);
-
-		if ((right - forward).Length() < 0.0001f)
+		if (_skined->_isPlaying == false)
 		{
+			player->_transform->LookUp(_right, vec3::Up);
+			_skined->Play(_animation["walk"], 0.1f);
 			_seq = Sequnce::Walk;
 		}
 	};
@@ -165,7 +184,7 @@ void BoatController::DivingSequnce()
 
 	if (_seq == Sequnce::Walk)
 	{
-		static float moveLange = 50.0f;
+		static float moveLange = 40.0f;
 
 		if (moveLange >= 0.0f)
 		{
@@ -175,14 +194,61 @@ void BoatController::DivingSequnce()
 		}
 		else
 		{
+			_skined->Play(_animation["dive"], 0.5f);
 			_seq = Sequnce::Dive;
-			moveLange = 50.0f;
+			moveLange = 40.0f;
 		}
 	}
 
 
+
 	if (_seq == Sequnce::Dive)
 	{
+
+		static bool up = true;
+		static float upTime = 0.5f;
+
+		vec3& pos = player->_transform->GetWorldPosition();
+
+		if (up)
+		{
+			vec3 worldPos = pos + player->_transform->GetForward() * Time::main->GetDeltaTime() * 4.0f + vec3(0, 1, 0) * Time::main->GetDeltaTime() * 4.0f;
+			player->_transform->SetWorldPosition(worldPos);
+
+			upTime -= Time::main->GetDeltaTime();
+
+			if (upTime <= 0)
+			{
+				upTime = 0.5f;
+				up = false;
+			}
+		}
+
+
+		else
+		{
+			vec3 worldPos = pos + player->_transform->GetForward() * Time::main->GetDeltaTime() * 4.0f + vec3(0, -1, 0) * Time::main->GetDeltaTime() * 7.0f;
+			auto& currentPos = player->_transform->SetWorldPosition(worldPos);
+
+
+			if (currentPos.y < 35.0f)
+			{
+				_onBoard = false;
+				player->GetComponent<PlayerController>()->SetOFFBoard();
+
+				GetOwner()->_transform->SetLocalPosition(_GenPos);
+				GetOwner()->_transform->SetLocalRotation(_GenRotate);
+
+				_seq = Sequnce::Driving;
+				up = true;
+
+			}
+
+		}
+
+
+		
+
 
 	}
 

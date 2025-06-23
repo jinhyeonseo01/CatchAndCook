@@ -81,6 +81,7 @@ private:
 	bool isGround = true;
 	bool _onBoard = false;
 public:
-
+	vec3 _GenPos{};
+	Quaternion _GenRotate{};
 };
 

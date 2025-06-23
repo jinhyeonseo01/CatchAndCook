@@ -40,6 +40,8 @@ void Transform::Start()
     {
         GetOwner()->GetRenderer()->AddStructuredSetter(static_pointer_cast<Transform>(shared_from_this()), BufferType::TransformParam);
     }
+
+
  
 }
 

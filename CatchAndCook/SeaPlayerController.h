@@ -80,6 +80,7 @@ private:
 	const float _resistance = 2.5f;
 	const float _playerRadius = 10.0f;
 
+
 private:
 
 

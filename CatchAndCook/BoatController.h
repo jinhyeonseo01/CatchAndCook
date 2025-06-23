@@ -43,6 +43,8 @@ private:
 	Sequnce _seq = Sequnce::Driving;
 	Quaternion CalCulateYawPitchRoll();
 
+	vec3		_GenPos{};
+	Quaternion  _GenRotate{};
 
 public:
 	static float heightOffset;
@@ -50,6 +52,8 @@ public:
 	static float  _yaw;
 	static float _pitch;
 	static float _roll;
+	
+	vec3 _right{};
 private:
 	bool _onBoard = false;
 

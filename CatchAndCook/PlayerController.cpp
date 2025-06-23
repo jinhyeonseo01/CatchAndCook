@@ -54,6 +54,10 @@ void PlayerController::Start()
 		auto run = animationList->GetAnimations()["run"];
 		run->_speedMultiplier = 1.15f;
 	}
+
+
+	_GenPos = GetOwner()->_transform->GetWorldPosition();
+	_GenRotate = GetOwner()->_transform->GetWorldRotation();
 }
 
 void PlayerController::Update()
@@ -338,6 +342,17 @@ void PlayerController::MoveControl()
 	{
 		SetOnBoard();
 	}
+
+	//if (Input::main->GetKeyDown(KeyCode::Space))
+	//{
+
+	//	if (auto skinnedHierarchy = _skinnedHierarchy.lock())
+	//	{
+	//		auto right_turn = _animationList.lock()->GetAnimations()["right_turn"];
+
+	//		skinnedHierarchy->Play(right_turn, 0.25);
+	//	}
+	//}
 }
 
 
@@ -403,7 +418,7 @@ void PlayerController::SetOnBoard()
 	playerShip->GetComponent<BoatController>()->SetOnBaord();
 
 	auto boatSeat = SceneManager::main->GetCurrentScene()->Find(L"BoatSeat");
-	GetOwner()->GetRoot()->SetParent(boatSeat);
+	GetOwner()->SetParent(boatSeat);
 	GetOwner()->_transform->SetLocalPosition(vec3(0, 0, 0));
 	GetOwner()->_transform->SetLocalRotation(vec3(0, 0, 0));
 
@@ -412,4 +427,7 @@ void PlayerController::SetOnBoard()
 void PlayerController::SetOFFBoard()
 {
 	_onBoard = false;
+	GetOwner()->SetParent(nullptr);
+	GetOwner()->_transform->SetWorldPosition(vec3(407.26, 45.25, 120.89));
+
 }
