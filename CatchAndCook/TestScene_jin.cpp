@@ -101,8 +101,8 @@ void TestScene_jin::Init()
 		auto& sprite = BoardText->AddComponent<TextSprite>();
 		sprite->SetLocalPos(vec3(500.0f, 600.0f, 0.000001f));
 		sprite->SetSize(vec2(300, 300));
-		sprite->SetText(L"Press F To Board");
-		sprite->CreateObject(512, 256, L"Arial", FontColor::WHITE, 60);
+		sprite->SetText(L"배를 타시려면 F를 누르게나");
+		sprite->CreateObject(750, 256, L"Arial", FontColor::WHITE, 60);
 
 		shared_ptr<Material> material = make_shared<Material>();
 		material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));

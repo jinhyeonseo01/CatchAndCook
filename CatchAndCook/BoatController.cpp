@@ -87,17 +87,15 @@ void BoatController::Update()
 		{
 
 			vec3 pos = GetOwner()->_transform->GetLocalPosition();
-			GetOwner()->_transform->SetLocalPosition(pos + GetOwner()->_transform->GetForward() * dt * 50.0f);
+			GetOwner()->_transform->SetLocalPosition(pos + GetOwner()->_transform->GetForward() * dt * 20.0f);
 		}
 
 		auto ray = ColliderManager::main->RayCastForMyCell({ GetOwner()->_transform->GetLocalPosition(), GetOwner()->_transform->GetForward() }, 1.0f, GetOwner());
 
 		if (ray.isHit)
 		{
-			vec3 normal = ray.normal;
-
-			float penetrationBuffer = 0.05f;
-			GetOwner()->_transform->SetLocalPosition(GetOwner()->_transform->GetLocalPosition() + normal * penetrationBuffer);
+			float penetrationBuffer = 0.2f;
+			GetOwner()->_transform->SetLocalPosition(GetOwner()->_transform->GetLocalPosition() + ray.normal * penetrationBuffer);
 		}
 
 		_camera->SetCameraPos(GetOwner()->_transform->GetWorldPosition() - GetOwner()->_transform->GetForward() * SpringArmLength + vec3(0, heightOffset, 0));

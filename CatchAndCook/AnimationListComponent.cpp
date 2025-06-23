@@ -26,7 +26,6 @@ void AnimationListComponent::Start()
 {
 	Component::Start();
 
-	if (SceneManager::main->GetCurrentScene()->GetSceneType() == SceneType::Sea01)
 	if (auto hieracy = GetOwner()->GetComponent<SkinnedHierarchy>())
 	{
 		if (!_animations.empty())
