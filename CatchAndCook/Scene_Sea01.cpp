@@ -38,6 +38,8 @@ void Scene_Sea01::Init()
 	lopeTexture = make_shared<Texture>();
 	lopeTexture->Init(L"../Resources/Textures/start.jpg");
 
+	ColliderManager::main->SetCellSize(100);
+
 	//Volumetric::main = make_unique<Volumetric>();
 	//Volumetric::main->Init();
 
@@ -273,7 +275,8 @@ void Scene_Sea01::Init()
 
 void Scene_Sea01::Update()
 {
-	
+
+	ColliderManager::main->SetCellSize(100);
 
 	Scene::Update();
 

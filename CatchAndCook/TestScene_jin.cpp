@@ -87,7 +87,6 @@ void TestScene_jin::Init()
 
 	};
 
-	
 	ColliderManager::main->SetCellSize(5);
 	ResourceManager::main->Load<SceneLoader>(L"test", L"../Resources/Datas/Scenes/MainField2.json");
 	auto sceneLoader = ResourceManager::main->Get<SceneLoader>(L"test");
@@ -150,7 +149,7 @@ void TestScene_jin::Init()
 
 void TestScene_jin::Update()
 {
-
+	ColliderManager::main->SetCellSize(5);
 
 	Scene::Update();
 
@@ -163,13 +162,7 @@ void TestScene_jin::RenderBegin()
 
 void TestScene_jin::Rendering()
 {
-	static bool _first = false;
 
-	if (_first == false)
-	{
-		ColliderManager::main->DebugPrint();
-		_first = true;
-	}
 
 	Scene::Rendering();
 }

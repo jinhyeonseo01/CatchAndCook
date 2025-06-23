@@ -65,7 +65,7 @@ public:
 
 	void AddRenderer(Material* material, Mesh* mesh, RendererBase* renderBase);
 	void AddRenderer(Mesh* mesh, RendererBase* renderBase, RENDER_PASS::PASS pass);
-	SceneType GetSceneType() { return _type; }
+	SceneType& GetSceneType() { return _type; }
 
 	void Release();
 	friend class SceneManager;
