@@ -61,7 +61,6 @@ void BoatController::Update()
 		return;
 
 
-
 	if (Input::main->GetKeyDown(KeyCode::F))
 	{
 		auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
@@ -99,7 +98,6 @@ void BoatController::Update()
 			float penetrationBuffer = 0.05f;
 			GetOwner()->_transform->SetLocalPosition(GetOwner()->_transform->GetLocalPosition() + normal * penetrationBuffer);
 		}
-
 
 		_camera->SetCameraPos(GetOwner()->_transform->GetWorldPosition() - GetOwner()->_transform->GetForward() * SpringArmLength + vec3(0, heightOffset, 0));
 		_camera->SetCameraRotation(quat);
@@ -160,6 +158,8 @@ void BoatController::Destroy()
 void BoatController::SetOnBaord()
 {
 	_onBoard = true;
+
+	_skined->Play(_animation["idle"], 0.5f);
 
 	CameraManager::main->SetActiveCamera(CameraType::BoatCamera);
 
