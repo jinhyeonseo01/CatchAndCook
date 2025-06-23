@@ -61,7 +61,7 @@ void TestScene_jin::Init()
 
 		shared_ptr<Material> material = make_shared<Material>();
 
-		shared_ptr<GameObject> gameObject = CreateGameObject(L"grid_orgin");
+		shared_ptr<GameObject> gameObject = CreateGameObject(L"sea");
 		auto meshRenderer = gameObject->AddComponent<MeshRenderer>();
 		auto a = gameObject->AddComponent<WaterController>();
 		a->Setting(L"sea_color_real.bin", L"sea_move_real.bin");

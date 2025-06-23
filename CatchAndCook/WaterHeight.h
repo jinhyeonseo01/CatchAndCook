@@ -27,6 +27,8 @@ public:
     void  SetOffset(float offset) {_offset =offset;}
 
 private:
+    SeaParam* _seaParam;
+
 
     float _offset=-3.0f;
 

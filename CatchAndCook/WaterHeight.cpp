@@ -24,8 +24,7 @@ void WaterHeight::Init()
 
 void WaterHeight::Start()
 {
-
-
+    _seaParam = &SceneManager::main->GetCurrentScene()->Find(L"sea")->GetComponent<WaterController>()->_seaParam;
 }
 
 void WaterHeight::Update()
@@ -72,16 +71,17 @@ float WaterHeight::GetWaveHeight(float x,float z,float time)
 
     float height = 0.0f;
 
-    for(int i = 0; i < WaterController::_seaParam.wave_count; i++)
+
+    for(int i = 0; i < _seaParam->wave_count; i++)
     {
-        float frequency = 2 * PI / WaterController::_seaParam.waves[i].wavelength;
-        float phase = WaterController::_seaParam.waves[i].speed * time;
-        vec2 direction = WaterController::_seaParam.waves[i].direction;
+        float frequency = 2 * PI / _seaParam->waves[i].wavelength;
+        float phase = _seaParam->waves[i].speed * time;
+        vec2 direction = _seaParam->waves[i].direction;
 
         float dotProduct = x * direction.x + z * direction.y;
         float wave = sin(dotProduct * frequency + phase);
 
-        height += WaterController::_seaParam.waves[i].amplitude * wave;
+        height += _seaParam->waves[i].amplitude * wave;
     }
 
     return height;

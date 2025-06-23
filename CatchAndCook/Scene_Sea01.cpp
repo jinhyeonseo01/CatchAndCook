@@ -40,19 +40,7 @@ void Scene_Sea01::Init()
 
 	ColliderManager::main->SetCellSize(100);
 
-	//Volumetric::main = make_unique<Volumetric>();
-	//Volumetric::main->Init();
 
-	//vector<wstring> paths;
-	//paths.reserve(240);
-
-	//std::wstring orginPath = L"../Resources/Textures/Caustics/";
-	//std::wstring path = L"../Resources/Textures/Caustics/";
-
-	//for (const auto& entry : fs::directory_iterator(path))
-	//{
-	//	paths.push_back(orginPath + entry.path().filename().wstring());
-	//}
 
 
 	{
@@ -94,7 +82,7 @@ void Scene_Sea01::Init()
 
 		shared_ptr<Material> material = make_shared<Material>();
 
-		shared_ptr<GameObject> gameObject = CreateGameObject(L"grid_orgin");
+		shared_ptr<GameObject> gameObject = CreateGameObject(L"grid_orgins");
 		auto meshRenderer = gameObject->AddComponent<MeshRenderer>();
 		auto a = gameObject->AddComponent<WaterController>();
 		a->Setting(L"sea_color_sea.bin", L"sea_move_real.bin");
@@ -119,105 +107,25 @@ void Scene_Sea01::Init()
 
 
 
-	std::shared_ptr<Light> light = std::make_shared<Light>();
-	light->onOff = 1;
-	light->direction = vec3(-0.024f, 1.0f, 0.899f);
-	light->position = vec3(769.f, 1282.f, 750.0f);
-	light->direction.Normalize();
-
-	light->material.ambient = vec3(0.4f, 0.4f, 0.4f);
-	light->material.diffuse = vec3(1.0f, 1.0f, 1.0f);
-	light->material.specular = vec3(0, 0, 0);
-	light->material.shininess = 32.0f;
-	light->material.lightType = static_cast<int32>(LIGHT_TYPE::DIRECTIONAL_LIGHT);
-	light->strength = vec3(1.0f, 1.0f, 1.0f);
-	LightManager::main->PushLight(light,SceneType::Sea01);
-	LightManager::main->_lightParmas.mainLight = *light.get();
-
-#pragma region DebugXYZ
 	{
+		std::shared_ptr<Light> light = std::make_shared<Light>();
+		light->onOff = 1;
+		light->direction = vec3(-0.024f, 1.0f, 0.899f);
+		light->position = vec3(769.f, 1282.f, 750.0f);
+		light->direction.Normalize();
 
-		ShaderInfo info;
-		info._zTest = true;
-		info._stencilTest = false;
-
-		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"color", L"color.hlsl", ColorProp,
-			ShaderArg{}, info);
-
-		shared_ptr<Material> material = make_shared<Material>();
-
-		shared_ptr<GameObject> root = CreateGameObject(L"X");
-
-		root->_transform->SetLocalPosition(vec3(3000.0f, 0, 0.0f));
-		root->_transform->SetLocalScale(vec3(3000.0f, 1.0f, 1.0f));
-		auto meshRenderer = root->AddComponent<MeshRenderer>();
-
-		material = make_shared<Material>();
-		material->SetShader(shader);
-		material->SetPass(RENDER_PASS::NoEffectPostProcessing);
-
-		meshRenderer->AddMaterials({ material });
-
-		meshRenderer->AddMesh(GeoMetryHelper::LoadRectangleBoxWithColor(1.0f, vec4(1, 0, 0, 0)));
-
-
+		light->material.ambient = vec3(0.4f, 0.4f, 0.4f);
+		light->material.diffuse = vec3(1.0f, 1.0f, 1.0f);
+		light->material.specular = vec3(0, 0, 0);
+		light->material.shininess = 32.0f;
+		light->material.lightType = static_cast<int32>(LIGHT_TYPE::DIRECTIONAL_LIGHT);
+		light->strength = vec3(1.0f, 1.0f, 1.0f);
+		LightManager::main->PushLight(light, SceneType::Sea01);
+		LightManager::main->_lightParmas.mainLight = *light.get();
 	}
 
-	{
-
-
-		ShaderInfo info;
-		info._zTest = true;
-		info._stencilTest = false;
-
-		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"color", L"color.hlsl", ColorProp,
-			ShaderArg{}, info);
-
-		shared_ptr<Material> material = make_shared<Material>();
-
-		shared_ptr<GameObject> root = CreateGameObject(L"Y");
-
-		root->_transform->SetLocalPosition(vec3(0, 0, 3000.0f));
-		root->_transform->SetLocalScale(vec3(1.0f, 1.0f, 3000.0f));
-		auto meshRenderer = root->AddComponent<MeshRenderer>();
-
-		material = make_shared<Material>();
-		material->SetShader(shader);
-		material->SetPass(RENDER_PASS::NoEffectPostProcessing);
-
-		meshRenderer->AddMaterials({ material });
-		meshRenderer->AddMesh(GeoMetryHelper::LoadRectangleBoxWithColor(1.0f, vec4(0, 1, 0, 0)));
-	}
-
-	{
-
-
-		ShaderInfo info;
-		info._zTest = true;
-		info._stencilTest = false;
-
-		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"color", L"color.hlsl", ColorProp,
-			ShaderArg{}, info);
-
-		shared_ptr<Material> material = make_shared<Material>();
-
-		shared_ptr<GameObject> root = CreateGameObject(L"Z");
-
-		root->_transform->SetLocalPosition(vec3(0, 3000.0f, 0.0f));
-		root->_transform->SetLocalScale(vec3(1.0f, 3000.0f, 1.0f));
-		auto meshRenderer = root->AddComponent<MeshRenderer>();
-
-		material = make_shared<Material>();
-		material->SetShader(shader);
-		material->SetPass(RENDER_PASS::NoEffectPostProcessing);
-
-		meshRenderer->AddMaterials({ material });
-		meshRenderer->AddMesh(GeoMetryHelper::LoadRectangleBoxWithColor(1.0f, vec4(0, 0, 1, 0)));
-	}
-#pragma endregion
 
 	ColliderManager::main->SetCellSize(100);
-
 
 	ResourceManager::main->LoadAlway<SceneLoader>(L"test2", L"../Resources/Datas/Scenes/sea2.json");
 	auto sceneLoader = ResourceManager::main->Get<SceneLoader>(L"test2");
@@ -242,10 +150,6 @@ void Scene_Sea01::Init()
 		}
 
 	}
-
-
-
-	
 
 	{
 		auto plant = Find(L"2");

@@ -3,7 +3,6 @@
 #include "RendererBase.h"
 
 
- SeaParam WaterController::_seaParam;
 
 WaterController::~WaterController()
 {
@@ -38,8 +37,10 @@ void WaterController::Init()
 	_dudv->Init(L"../Resources/Textures/sea/dudv2.png");
 
 	
-	ImguiManager::main->_seaParam = &_seaParam;
-
+	if (ImguiManager::main->_seaParam == nullptr)
+	{
+		ImguiManager::main->_seaParam = &_seaParam;
+	}
  
   
 
