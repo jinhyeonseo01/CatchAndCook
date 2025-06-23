@@ -62,10 +62,7 @@ void GameObject::Update()
         }
     }
 
-    if (Input::main->GetKeyDown(KeyCode::M))
-    {
-        SetDestroy();
-    }
+
 
 }
 

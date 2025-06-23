@@ -237,11 +237,11 @@ void BoatController::DivingSequnce()
 				if (GenParticle == false)
 				{
 					GenParticle = true;
-					ParticleManager::main->GenParticle(2.0f, 500, 1, player->_transform->GetWorldPosition(), ParticleMoveType::RadialSpread, ParticleColorType::White);
+					ParticleManager::main->GenParticle(1.5f, 500, 1.0, player->_transform->GetWorldPosition(), ParticleMoveType::RadialSpread, ParticleColorType::Random);
 				}
 			}
 
-			if (currentPos.y < 20.0f)
+			if (currentPos.y < 35.0f)
 			{
 				_onBoard = false;
 				GenParticle = false;
