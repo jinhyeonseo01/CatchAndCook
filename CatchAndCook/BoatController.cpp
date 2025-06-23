@@ -242,8 +242,8 @@ void BoatController::DivingSequnce()
 				_seq = Sequnce::Driving;
 				up = true;
 
-				SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::Sea01), false, false);
-
+				Scene::_changeScene = true;
+				CameraManager::main->SetActiveCamera(CameraType::SeaCamera);
 			}
 
 		}

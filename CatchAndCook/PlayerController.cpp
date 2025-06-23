@@ -338,21 +338,11 @@ void PlayerController::MoveControl()
 
 	}
 
-	if (Input::main->GetKeyDown(KeyCode::J))
-	{
-		SetOnBoard();
-	}
-
-	//if (Input::main->GetKeyDown(KeyCode::Space))
+	//if (Input::main->GetKeyDown(KeyCode::J))
 	//{
-
-	//	if (auto skinnedHierarchy = _skinnedHierarchy.lock())
-	//	{
-	//		auto right_turn = _animationList.lock()->GetAnimations()["right_turn"];
-
-	//		skinnedHierarchy->Play(right_turn, 0.25);
-	//	}
+	//	SetOnBoard();
 	//}
+
 }
 
 
@@ -418,7 +408,7 @@ void PlayerController::SetOnBoard()
 	playerShip->GetComponent<BoatController>()->SetOnBaord();
 
 	auto boatSeat = SceneManager::main->GetCurrentScene()->Find(L"BoatSeat");
-	GetOwner()->SetParent(boatSeat);
+	GetOwner()->GetRoot()->SetParent(boatSeat);
 	GetOwner()->_transform->SetLocalPosition(vec3(0, 0, 0));
 	GetOwner()->_transform->SetLocalRotation(vec3(0, 0, 0));
 

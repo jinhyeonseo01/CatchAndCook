@@ -23,6 +23,8 @@
 #include "TerrainManager.h"
 #include "Volumetric.h"
 
+ bool Scene::_changeScene=false;
+
 void Scene::AddFrontGameObject(const std::shared_ptr<GameObject>& gameObject)
 {
     gameObject->SetScene(GetCast<Scene>());
@@ -570,6 +572,8 @@ void Scene::Finish()
     Scene::ExecuteDestroyGameObjects();
     PathFinder::ClearDebugDraw();
     GameObject::ExecuteDestroyComponents();
+
+   
 }
 
 void Scene::ExecuteDestroyGameObjects()

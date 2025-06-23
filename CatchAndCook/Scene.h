@@ -67,6 +67,8 @@ public:
 	void AddRenderer(Mesh* mesh, RendererBase* renderBase, RENDER_PASS::PASS pass);
 	SceneType& GetSceneType() { return _type; }
 
+	static bool _changeScene;
+
 	void Release();
 	friend class SceneManager;
 	friend class SceneLoader;

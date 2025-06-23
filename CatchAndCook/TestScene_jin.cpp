@@ -16,6 +16,7 @@
 #include "EventComponent.h"
 #include "TextManager.h"
 
+
 void TestScene_jin::Init()
 {
 	Scene::Init();
@@ -143,8 +144,6 @@ void TestScene_jin::Init()
 	}
 
 
-
-
 }
 
 void TestScene_jin::Update()
@@ -181,10 +180,19 @@ void TestScene_jin::Finish()
 {
 	Scene::Finish();
 
-	if (Input::main->GetKeyDown(KeyCode::F6))
+	/*if (Input::main->GetKeyDown(KeyCode::F6))
 	{
 		SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::Sea01), false, false);
+	}*/
+
+	if (Scene::_changeScene)
+	{
+		Scene::_changeScene = false;
+		SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::Sea01), false, false);
+
 	}
+
+
 }
 
 TestScene_jin::~TestScene_jin()

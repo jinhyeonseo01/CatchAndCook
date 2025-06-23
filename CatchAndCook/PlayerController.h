@@ -9,7 +9,6 @@ class SkinnedHierarchy;
 class CameraComponent;
 
 
-
 struct ControlInfo
 {
 	float cameraRotationSmooth = 40;

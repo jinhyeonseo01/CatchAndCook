@@ -56,7 +56,7 @@ public:
 
     bool IsMouseLock() { return _isMouseLock; }
     void SetMouseLock(bool isMouseLock);
-    bool _isMouseLock = false;
+    bool _isMouseLock = true;
     void SetCursor(const Vector2& pos);
 
 private:
