@@ -41,7 +41,7 @@ public:
 	void RemoveCollider(const std::shared_ptr<Collider>& collider);
 	void Update();
 
-	/*bool CollisionCheckDirect(CollisionType type, BoundingUnion bound);*/
+	bool CollisionCheckDirect(CollisionType type, BoundingUnion bound);
 	bool CollisionCheckDirect(CollisionType type, BoundingUnion bound, std::shared_ptr<Collider>& collider);
 	bool CollisionChecksDirect(CollisionType type, BoundingUnion bound, std::vector<std::shared_ptr<Collider>>& colliders);
 

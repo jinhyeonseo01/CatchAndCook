@@ -399,11 +399,11 @@ void ColliderManager::UpdateDynamicCells()
 	}
 }
 
-//bool ColliderManager::CollisionCheckDirect(CollisionType type, BoundingUnion bound)
-//{
-//	std::shared_ptr<Collider> collider;
-//	return CollisionCheckDirect(type, bound, collider);
-//}
+bool ColliderManager::CollisionCheckDirect(CollisionType type, BoundingUnion bound)
+{
+	std::shared_ptr<Collider> collider;
+	return CollisionCheckDirect(type, bound, collider);
+}
 
 bool ColliderManager::CollisionCheckDirect(CollisionType type, BoundingUnion bound, std::shared_ptr<Collider>& collider)
 {
