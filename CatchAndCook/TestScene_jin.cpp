@@ -89,7 +89,7 @@ void TestScene_jin::Init()
 
 	
 	ColliderManager::main->SetCellSize(5);
-	ResourceManager::main->LoadAlway<SceneLoader>(L"test", L"../Resources/Datas/Scenes/MainField2.json");
+	ResourceManager::main->Load<SceneLoader>(L"test", L"../Resources/Datas/Scenes/MainField2.json");
 	auto sceneLoader = ResourceManager::main->Get<SceneLoader>(L"test");
 	sceneLoader->Load(GetCast<Scene>());
 
@@ -144,10 +144,14 @@ void TestScene_jin::Init()
 	}
 
 
+
+
 }
 
 void TestScene_jin::Update()
 {
+
+
 	Scene::Update();
 
 }
@@ -159,6 +163,14 @@ void TestScene_jin::RenderBegin()
 
 void TestScene_jin::Rendering()
 {
+	static bool _first = false;
+
+	if (_first == false)
+	{
+		ColliderManager::main->DebugPrint();
+		_first = true;
+	}
+
 	Scene::Rendering();
 }
 
@@ -178,7 +190,7 @@ void TestScene_jin::Finish()
 
 	if (Input::main->GetKeyDown(KeyCode::F6))
 	{
-		SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::Sea01), true, true);
+		SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::Sea01), false, false);
 	}
 }
 

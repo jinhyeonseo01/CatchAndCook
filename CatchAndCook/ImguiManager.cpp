@@ -308,10 +308,13 @@ void ImguiManager::LightController()
 {
     if (ImGui::TreeNode("Lighting"))
     {
-        size_t size = LightManager::main->_lights.size();
+        auto& lights = LightManager::main->GetLights();
+
+        size_t size = lights.size();
+
         for (size_t i = 0; i < size; i++)
         {
-            auto light = LightManager::main->_lights[i];
+            auto light = lights[i];
 
             if (ImGui::TreeNode((std::string("Light ") + std::to_string(i)).c_str()))
             {

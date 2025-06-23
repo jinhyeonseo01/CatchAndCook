@@ -129,7 +129,7 @@ void Scene_Sea01::Init()
 	light->material.shininess = 32.0f;
 	light->material.lightType = static_cast<int32>(LIGHT_TYPE::DIRECTIONAL_LIGHT);
 	light->strength = vec3(1.0f, 1.0f, 1.0f);
-	LightManager::main->PushLight(light);
+	LightManager::main->PushLight(light,SceneType::Sea01);
 	LightManager::main->_lightParmas.mainLight = *light.get();
 
 #pragma region DebugXYZ
@@ -269,11 +269,6 @@ void Scene_Sea01::Init()
 		return a->GetName() < b->GetName();
 		});
 
-
-
-
-
-
 }
 
 void Scene_Sea01::Update()
@@ -351,6 +346,14 @@ void Scene_Sea01::DebugRendering()
 
 void Scene_Sea01::RenderEnd()
 {
+	static bool _first = false;
+
+	if (_first == false)
+	{
+		ColliderManager::main->DebugPrint();
+		_first = true;
+	}
+
 	Scene::RenderEnd();
 }
 
@@ -358,10 +361,10 @@ void Scene_Sea01::Finish()
 {
 	Scene::Finish();
 
-	/*if (Input::main->GetKeyDown(KeyCode::F6))
+	if (Input::main->GetKeyDown(KeyCode::F6))
 	{
-		SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::TestScene2), true, true);
-	}*/
+		SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::TestScene2), false, false);
+	}
 }
 
 void Scene_Sea01::SetSeaGlobalData()

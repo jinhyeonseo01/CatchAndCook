@@ -43,7 +43,7 @@ void TestScene::Init()
 	light->material.shininess = 32.0f;
 	light->material.lightType = static_cast<int32>(LIGHT_TYPE::DIRECTIONAL_LIGHT);
 	light->strength = vec3(1.0f, 1.0f, 1.0f);
-	LightManager::main->PushLight(light);
+	LightManager::main->PushLight(light,SceneType::TestScene);
 	LightManager::main->_lightParmas.mainLight = *light.get();
 
 	CameraManager::main->GetCamera(CameraType::DebugCamera)->SetCameraLook(vec3(0.316199, 0.743145, -0.589706));

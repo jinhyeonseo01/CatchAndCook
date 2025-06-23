@@ -264,6 +264,64 @@ std::unordered_set<std::shared_ptr<Collider>> ColliderManager::GetPotentialColli
 	return potentialCollisions;
 }
 
+void ColliderManager::DebugPrint()
+{
+	
+	static int count = 0;
+
+	{
+
+		for (auto& [pos, vec] : _staticColliderGrids)
+		{
+			count += vec.size();
+		}
+		cout << "_staticColliderGrids : " << count << endl;
+		count = 0;
+	}
+
+
+	{
+
+		for (auto& [pos, vec] : _dynamicColliderGrids)
+		{
+			count += vec.size();
+
+		}
+		cout << "_dynamicColliderGrids : " << count << endl;
+		count = 0;
+	}
+
+	{
+
+		for (auto& [pos, vec] : _dynamicColliderCashing)
+		{
+			count += vec.size();
+		}
+		cout << "_dynamicColliderCashing : " << count << endl;
+		count = 0;
+	}
+
+	{
+
+		
+		count += _dynamicColliderList.size();
+		cout << "_dynamicColliderList : " << count << endl;
+		count = 0;
+	}
+
+	{
+
+		for (auto& [pos, vec] : _colliderLinkTable)
+		{
+			count += vec.size();
+		}
+		cout << "_colliderLinkTable : " << count << endl;
+		count = 0;
+	}
+
+
+}
+
 void ColliderManager::Update()
 {
 	if (HasGizmoFlag(Gizmo::main->_flags, GizmoFlags::DivideSpace))
@@ -341,11 +399,11 @@ void ColliderManager::UpdateDynamicCells()
 	}
 }
 
-bool ColliderManager::CollisionCheckDirect(CollisionType type, BoundingUnion bound)
-{
-	std::shared_ptr<Collider> collider;
-	return CollisionCheckDirect(type, bound, collider);
-}
+//bool ColliderManager::CollisionCheckDirect(CollisionType type, BoundingUnion bound)
+//{
+//	std::shared_ptr<Collider> collider;
+//	return CollisionCheckDirect(type, bound, collider);
+//}
 
 bool ColliderManager::CollisionCheckDirect(CollisionType type, BoundingUnion bound, std::shared_ptr<Collider>& collider)
 {
@@ -438,8 +496,6 @@ void ColliderManager::VisualizeOccupiedCells(const vec3& cell, const shared_ptr<
 
 	}
 }
-
-
 
 void ColliderManager::CallBackBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
 {

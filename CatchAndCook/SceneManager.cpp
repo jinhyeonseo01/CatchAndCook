@@ -55,6 +55,29 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 
 	Core::main->FenceCurrentFrame();
 
+	//if (currentScene)
+	//{
+	//	for (auto& ele : currentScene->_gameObjects)
+	//	{
+	//		auto& vec = ele->GetComponentAll();
+
+	//		for (auto& eele : vec)
+	//		{
+	//			eele->Disable();
+	//		}
+	//	}
+	//}
+
+	//for (auto& ele : nextScene->_gameObjects)
+	//{
+	//	auto& vec = ele->GetComponentAll();
+
+	//	for (auto& eele : vec)
+	//	{
+	//		eele->Enable();
+	//	}
+	//}
+
 	if (currentScene != nullptr)
 	{
 		for (auto& obj : prevScene->_dont_destroy_gameObjects)
@@ -75,7 +98,10 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 		if (removeExecute)
 			currentScene->Release();
 	}
+
+
 	_currentScene = nextScene;
+
 	if (initExecute)
 		_currentScene->Init();
 }

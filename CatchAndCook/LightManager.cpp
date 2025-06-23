@@ -14,17 +14,21 @@ void LightManager::Init()
 
 }
 
-void LightManager::PushLight(const std::shared_ptr<Light>& light)
+void LightManager::PushLight(const std::shared_ptr<Light>& light, const SceneType& sceneType)
 {
-	if (std::ranges::find(_lights, light) == _lights.end())
-		_lights.push_back(light);
+	vector<std::shared_ptr<Light>>& lightVec = _lightsSceneCollector[sceneType];
+
+	if (std::ranges::find(lightVec, light) == lightVec.end())
+		lightVec.push_back(light);
 }
 
-void LightManager::RemoveLight(const std::shared_ptr<Light>& light)
+void LightManager::RemoveLight(const std::shared_ptr<Light>& light, const SceneType& sceneType)
 {
-	auto it = std::ranges::find(_lights, light);
-	if (it != _lights.end())
-		_lights.erase(it);
+	vector<std::shared_ptr<Light>>& lightVec = _lightsSceneCollector[sceneType];
+
+	auto it = std::ranges::find(lightVec, light);
+	if (it != lightVec.end())
+		lightVec.erase(it);
 }
 
 void LightManager::SetData()
@@ -47,11 +51,14 @@ void LightManager::SetData()
 
 void LightManager::Clear()
 {
-	_lights.clear();
+	_lightsSceneCollector.clear();
 }
 
 std::shared_ptr<Light> LightManager::GetMainLight()
 {
+
+	vector<std::shared_ptr<Light>>& _lights = _lightsSceneCollector[SceneManager::main->GetCurrentScene()->GetSceneType()];
+
 	for (auto& light : _lights)
 	{
 		if (light->material.lightType == 0)
@@ -63,36 +70,23 @@ std::shared_ptr<Light> LightManager::GetMainLight()
 	return _mainLights;
 }
 
+std::vector<std::shared_ptr<Light>>& LightManager::GetLights()
+{
+	vector<std::shared_ptr<Light>>& _lights = _lightsSceneCollector[SceneManager::main->GetCurrentScene()->GetSceneType()];
+
+	return _lights;
+}
+
 
 void LightManager::Update()
 {
+
+	vector<std::shared_ptr<Light>>& _lights = _lightsSceneCollector[SceneManager::main->GetCurrentScene()->GetSceneType()];
+
 	_lightParmas.eyeWorldPos = CameraManager::main->GetActiveCamera()->GetCameraPos();
 	_lightParmas.lightCount = _lights.size();
 	_lightParmas.mainLight = *GetMainLight().get();
 
-	/*_lightParmas.lightCount = 0;
-	for (auto& light : _lights)
-		if (light->onOff == 1 && light->material.lightType == 0)
-		{
-			_lightParmas.light[_lightParmas.lightCount++] = *light.get();
-			break;
-		}
-	std::vector<std::shared_ptr<Light>> _lightSorts;
-	_lightSorts.reserve(LightManager::main->_lights.size());
-	_lightSorts.insert(_lightSorts.end(), LightManager::main->_lights.begin(), LightManager::main->_lights.end());
-	std::ranges::sort(_lightSorts, [&](const std::shared_ptr<Light>& light1, const std::shared_ptr<Light>& light2) {
-		return (light1->position - _lightParmas.eyeWorldPos).LengthSquared() < (light2->position - _lightParmas.eyeWorldPos).LengthSquared();
-		});
-	for (auto& light : _lightSorts)
-	{
-		if (light->onOff == 1 && light->material.lightType != 0)
-		{
-			if (_lightParmas.light.size() <= _lightParmas.lightCount)
-				break;
-			_lightParmas.light[_lightParmas.lightCount] = *light.get();
-			_lightParmas.lightCount++;
-		}
-	}*/
 	for (auto& ele : _lights)
 	{
 		if (ele) 
