@@ -35,7 +35,7 @@ void ParticleRenderer::Init()
 		_particleRenderingShader = make_shared<Shader>();
 
 		_particleRenderingShader->Init(L"ParticleRenderingShader.hlsl", {}, ShaderArg{ {{"PS_Main","ps"},{"VS_Main","vs"},{"GS_Main","gs"}} }, info);
-		_particleRenderingShader->SetPass(RENDER_PASS::NoEffectPostProcessing);
+		_particleRenderingShader->SetPass(RENDER_PASS::ParticlePass);
 
 	}
 

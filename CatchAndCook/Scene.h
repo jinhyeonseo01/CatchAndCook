@@ -4,7 +4,7 @@
 #include "IGuid.h"
 #include "RendererBase.h"
 #include "SceneType.h"
-
+class ParticleComponent;
 class RendererBase;
 class GameObject;
 

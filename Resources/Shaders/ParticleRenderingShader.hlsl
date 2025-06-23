@@ -10,7 +10,7 @@ struct ParticleData
     int life;
 
     float3 worldPos;
-    float p1;
+    float size;
 
     float3 dir;
     float velocity;
@@ -21,6 +21,7 @@ struct VS_OUT
     float4 pos : SV_POSITION;
     float2 uv : TEXCOORD0;
     float3 color : COLOR;
+    float size : SIZE;
 };
 
 struct GS_OUT
@@ -41,6 +42,7 @@ VS_OUT VS_Main(uint id : SV_InstanceID)
     output.pos = float4(data.worldPos, 1.0f);
     output.pos = mul(output.pos, ViewMatrix);
     output.color = data.color;
+    output.size = data.size;
     
     return output;
 }
@@ -54,7 +56,7 @@ void GS_Main(point VS_OUT input[1], inout TriangleStream<GS_OUT> outputStream)
     };
 
 
-    float scale = 1.0f;
+    float scale = input[0].size;
 
     output[0].pos = input[0].pos + float4(-scale, scale, 0.f, 0.f);
     output[1].pos = input[0].pos + float4(scale, scale, 0.f, 0.f);

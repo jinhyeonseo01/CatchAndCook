@@ -12,6 +12,9 @@ void ParticleComponent::Init()
 
 void ParticleComponent::Start()
 {
+
+
+
 }
 
 void ParticleComponent::Update()
@@ -69,10 +72,9 @@ void ParticleComponent::Destroy()
 	ParticleManager::main->RecycleParticleBuffer(_strBuffer);
 }
 
-void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, float autoDestroyTime, int particleCount, vec3 worldPos, ParticleMoveType moveType, ParticleColorType colorType)
+void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, float autoDestroyTime, int particleCount, float size ,vec3 worldPos, ParticleMoveType moveType, ParticleColorType colorType)
 {
 	assert(particleCount <= 500);
-
 
 	_strBuffer = strBuffer;
 	_autoDestroyTime = autoDestroyTime;
@@ -87,6 +89,8 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 	{
 
 		ParticleData data;
+
+		data.size = size;
 
 		switch (moveType)
 		{

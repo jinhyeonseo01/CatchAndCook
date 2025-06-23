@@ -8,6 +8,7 @@
 #include "SkinnedHierarchy.h"
 #include "Animation.h"
 #include "PlayerController.h"
+#include "ParticleManager.h"
 COMPONENT(BoatController)
 
 float BoatController::heightOffset=15.0f;
@@ -229,11 +230,21 @@ void BoatController::DivingSequnce()
 		{
 			vec3 worldPos = pos + player->_transform->GetForward() * Time::main->GetDeltaTime() * 4.0f + vec3(0, -1, 0) * Time::main->GetDeltaTime() * 7.0f;
 			auto& currentPos = player->_transform->SetWorldPosition(worldPos);
+			static bool GenParticle = false;
 
+			if (currentPos.y <= 45.0f)
+			{
+				if (GenParticle == false)
+				{
+					GenParticle = true;
+					ParticleManager::main->GenParticle(2.0f, 500, 1, player->_transform->GetWorldPosition(), ParticleMoveType::RadialSpread, ParticleColorType::White);
+				}
+			}
 
-			if (currentPos.y < 35.0f)
+			if (currentPos.y < 20.0f)
 			{
 				_onBoard = false;
+				GenParticle = false;
 				player->GetComponent<PlayerController>()->SetOFFBoard();
 
 				GetOwner()->_transform->SetLocalPosition(_GenPos);

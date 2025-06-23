@@ -572,7 +572,7 @@ void Scene::Finish()
     Scene::ExecuteDestroyGameObjects();
     PathFinder::ClearDebugDraw();
     GameObject::ExecuteDestroyComponents();
-
+    
    
 }
 
@@ -670,9 +670,6 @@ void Scene::AddDestroyQueue(const std::shared_ptr<GameObject>& gameObject)
 {
 	_destroyQueue.push(gameObject);
 }
-
-
-
 
 std::shared_ptr<GameObject> Scene::Find(const std::wstring& name, bool includeDestroy)
 {

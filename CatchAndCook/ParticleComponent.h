@@ -6,7 +6,7 @@ struct ParticleData
 	int life=1.0f;
 
 	vec3 worldPos{};
-	float p1{};
+	float size{};
 
 	vec3 dir{};
 	float velocity{};
@@ -50,7 +50,7 @@ public:
 
 private:
 	void SetParticle(shared_ptr<StructuredBuffer> strBuffer,
-		float autoDestroyTime,int particleCount,vec3 worldPos,ParticleMoveType moveType, ParticleColorType colorType);
+		float autoDestroyTime,int particleCount,float size , vec3 worldPos,ParticleMoveType moveType, ParticleColorType colorType);
 
 private:
 	int _particleCount = 0;

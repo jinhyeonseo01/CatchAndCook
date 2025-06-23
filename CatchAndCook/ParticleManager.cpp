@@ -17,14 +17,14 @@ void ParticleManager::Init()
 
 }
 
-shared_ptr<GameObject> ParticleManager::GenParticle(float autodestroyTime, int particleCount, vec3 worldPos, ParticleMoveType moveType, ParticleColorType colorType)
+shared_ptr<GameObject> ParticleManager::GenParticle(float autodestroyTime, int particleCount,float particleSize, vec3 worldPos, ParticleMoveType moveType, ParticleColorType colorType)
 {
 	shared_ptr<StructuredBuffer> buffer =AllocParticleBuffer();
 
 	shared_ptr<GameObject> object = SceneManager::main->GetCurrentScene()->CreateGameObject(L"Particle");
 
 	auto& particleComponent = object->AddComponent<ParticleComponent>();
-	particleComponent->SetParticle(buffer, autodestroyTime, particleCount, worldPos, moveType, colorType);
+	particleComponent->SetParticle(buffer, autodestroyTime, particleCount, particleSize, worldPos, moveType, colorType);
 
 	object->AddComponent<ParticleRenderer>();
 
