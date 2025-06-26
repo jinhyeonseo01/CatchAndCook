@@ -151,23 +151,14 @@ void Scene_Sea01::Init()
 
 	}
 
+	
 	{
-		auto plant = Find(L"2");
+		auto plant = Find(L"ray");
 
 		if (plant)
 		{
 			auto finder = plant->AddComponent<FishMonster>();
-			finder->ReadPathFile(L"TutleMove");
-		}
-	}
-
-	{
-		auto plant = Find(L"shark");
-
-		if (plant)
-		{
-			auto finder = plant->AddComponent<FishMonster>();
-			finder->ReadPathFile(L"SharkMove");
+			finder->ReadPathFile(L"rayPath");
 		}
 	}
 

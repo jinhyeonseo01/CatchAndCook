@@ -76,8 +76,6 @@ PS_OUT PS_Main(VS_OUT input) : SV_Target
     
     float rim = 1 - dot(output.normal.xyz, toEye);
     
-    //rim = smoothstep(0.0, 1.0, rim);
-    
     rim = pow(abs(rim), rimPower);
     
     output.color += rim * float4(0, 1, 0, 0) * rimStrength;

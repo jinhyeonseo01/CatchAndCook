@@ -5,8 +5,11 @@
 #include "AnimationListComponent.h"
 #include "SkinnedHierarchy.h"
 
+unordered_map<wstring, FishPath> FishMonster::_pathList;
+
 FishMonster::FishMonster()
 {
+
 }
 
 FishMonster::~FishMonster()
@@ -20,11 +23,9 @@ void FishMonster::Init()
 void FishMonster::Start()
 {
 	_firstQuat = GetOwner()->_transform->GetWorldRotation();
-
-	std::unordered_map<string, std::shared_ptr<Animation>> aniList;
-
-
-
+	_animations = GetOwner()->GetComponent<AnimationListComponent>()->GetAnimations();
+	_skined = GetOwner()->GetComponent<SkinnedHierarchy>();
+    _player = SceneManager::main->GetCurrentScene()->Find(L"seaPlayer");
 }
 
 void FishMonster::Update()
@@ -127,68 +128,92 @@ void FishMonster::Idle(float dt)
 void FishMonster::Move(float dt)
 {
 
-	const vector<vec3>& myPath = _fishPath;
+    if (_pathList.find(_pathName) == _pathList.end())
+    {
+        cout << "리턴됨" << endl;
+        return;
+    }
 
-	int nextIndex = _forward ? _currentIndex + 1 : _currentIndex - 1;
+    const vector<vec3>& myPath = _pathList[_pathName].path;
+    int nextIndex = _forward ? _currentIndex + 1 : _currentIndex - 1;
+    vec3 start = myPath[_currentIndex] ;
+    vec3 end = myPath[nextIndex] ;
 
-	const vec3& start = myPath[_currentIndex];
-	const vec3& end = myPath[nextIndex];
+    if (_segmentLength < 0.0001f)
+        _segmentLength = (end - start).Length();
 
-	if (_segmentLength < 0.0001f)
-		_segmentLength = (end - start).Length();
+    _distanceMoved += _moveSpeed * Time::main->GetDeltaTime();
+    float t = std::clamp(_distanceMoved / _segmentLength, 0.0f, 1.0f);
+    vec3 targetPos = vec3::Lerp(start, end, t);
 
-	_distanceMoved += Time::main->GetDeltaTime() * _moveSpeed;
+    vec3 currentPos = GetOwner()->_transform->GetWorldPosition();
 
-	float t = std::clamp(_distanceMoved / _segmentLength, 0.0f, 1.0f);
-	vec3 pos = vec3::Lerp(start, end, t);
-	vec3 currentPos = GetOwner()->_transform->SetWorldPosition(pos);
+    vec3 toTarget = targetPos - currentPos;
+    toTarget.Normalize();
 
-	vec3 dir = end - start;
+    vec3 desiredVel = toTarget * _moveSpeed;
 
-	if (dir.LengthSquared() > 0.0001f)
-	{
-		dir.Normalize();
-		GetOwner()->_transform->LookUpSmooth(dir, vec3::Up, 6.0f, _firstQuat);
-	}
+    vec3 avoidanceVel(0, 0, 0);
+    const float detectionRadius = 200.f;
+    const float predictTime = 1.0f;
+    auto player = _player.lock();
 
-	if (t >= 1.0f)
-	{
-		_distanceMoved = 0.0f;
-		_segmentLength = 0.0f;
+    if (player)
+    {
+        vec3 playerPos = player->_transform->GetWorldPosition();
 
-		if (_forward)
-		{
-			_currentIndex += 1;
+        vec3 futurePos = currentPos + desiredVel * predictTime;
+        float distFuture = (playerPos - futurePos).Length();
 
-			if (_currentIndex >= myPath.size()-1)
-			{
-				_forward = false;
-				return;
-			}
-		}
+        if (distFuture < detectionRadius)
+        {
+            vec3 away = (currentPos - playerPos);
+            away.Normalize();
+            float strength = (detectionRadius - distFuture) / detectionRadius;
+            avoidanceVel = away * detectionRadius * strength;
+        }
 
-		else
-		{
-			_currentIndex -= 1;
-
-			if (_currentIndex <= 0)
-			{
-				_forward = true;
-				return;
-			}
-
-		}
-	}
-
-	//for (size_t i = 0; i < myPath.size() - 1; ++i)
-	//{
-	//	Gizmo::main->Line(myPath[i], myPath[i + 1], vec4(1, 1, 0, 1));
-	//}
-
-	//cout << "Current Index: " << _currentIndex << ", Next: " << nextIndex << endl;
-	//cout << "Forward: " << _forward << ", t: " << t << ", DistanceMoved: " << _distanceMoved << endl;
+    }
 
 
+    vec3 velocity = desiredVel + avoidanceVel;
+    vec3 newPos = currentPos + velocity * Time::main->GetDeltaTime();
+    GetOwner()->_transform->SetWorldPosition(newPos);
+    velocity.Normalize();
+    GetOwner()->_transform->LookUpSmooth(velocity, vec3::Up, 3.0f, _firstQuat);
+
+
+    if (t >= 1.0f)
+    {
+        _distanceMoved = 0.0f;
+        _segmentLength = 0.0f;
+
+        if (_forward)
+        {
+            _currentIndex++;
+            if (_currentIndex >= myPath.size() - 1) { _forward = false; return; }
+        }
+        else
+        {
+            _currentIndex--;
+            if (_currentIndex <= 0) { _forward = true; return; }
+        }
+    }
+
+
+    if (HasGizmoFlag(Gizmo::main->_flags, GizmoFlags::DrawPath))
+    {
+
+            for (size_t i = 0; i + 1 < myPath.size(); ++i)
+            {
+                vec3 c = _pathList[_pathName]._pathColor;
+                Gizmo::main->Line(
+                    myPath[i], myPath[i + 1],
+                    vec4(c.x, c.y, c.z, 1.0f)
+                );
+            }
+
+    }
 
 }
 
@@ -202,36 +227,40 @@ void FishMonster::Die(float dt)
 
 void FishMonster::Hit(float dt)
 {
+
 }
 
 void FishMonster::ReadPathFile(const std::wstring& fileName)
 {
-	const wstring path = L"../Resources/Graph/";;
+    const wstring path = L"../Resources/Graph/";;
 
-	_pathName = fileName;
-
-	std::ifstream file(path+fileName);
-
-	if (!file.is_open())
-	{
-		std::wcout << L"Failed to open file: " << fileName << std::endl;
-		return;
-	}
+    std::ifstream file(path + fileName);
+    if (!file.is_open())
+    {
+        std::wcout << L"Failed to open file: " << fileName << std::endl;
+        return;
+    }
 
 
-	std::string line;
+    std::string line;
 
-	while (std::getline(file, line))
-	{
-		if (line.empty()) continue;
+    while (std::getline(file, line))
+    {
+        if (line.empty()) continue;
 
-		std::istringstream ss(line);
-		float x, y, z;
-		ss >> x >> y >> z;
-		vec3 point(x, y, z);
-		_fishPath.push_back(point);
-	}
+        std::istringstream ss(line);
+        float x, y, z;
+        ss >> x >> y >> z;
+        vec3 point(x, y, z);
+        _pathList[fileName].path.push_back(point);
+    }
 
-	file.close();
+    file.close();
+
+    _pathName = fileName;
+
+    size_t h = std::hash<wstring>{}(fileName);
+    float hue = float(h % 360) / 360.f;
+    _pathList[fileName]._pathColor = vec3(hue, hue, hue);
 	//cout << "라인 데이터: " << _fishPath.size() << "개 읽음." << std::endl;
 }

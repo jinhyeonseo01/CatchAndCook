@@ -2,8 +2,10 @@
 #include "Component.h"
 #include "PathFinder.h"
 
-
 class AnimationListComponent;
+class SkinnedHierarchy;
+class Animation;
+
 
 enum class FishMonsterState
 {
@@ -13,7 +15,6 @@ enum class FishMonsterState
 	Die,
 	Hit,
 };
-
 
 class FishMonster :public Component
 {
@@ -46,17 +47,19 @@ private:
 	void Hit(float dt);
 
 private:
-	vector<vec3> _fishPath;
+	static unordered_map<wstring, FishPath> _pathList;
 	bool _forward =true;
 	int _currentIndex = 0;
 	float _moveSpeed = 100.0f;
 	float _distanceMoved = 0.0f;
 	float _segmentLength = 0.0f;
 	wstring _pathName = L"Null";
+	weak_ptr<GameObject> _player;
 	Quaternion _firstQuat;
 
 private:
-	shared_ptr<AnimationListComponent> _animList;
+	shared_ptr<SkinnedHierarchy> _skined;
+	std::unordered_map<string, std::shared_ptr<Animation>> _animations;
 	FishMonsterState _state = FishMonsterState::Move;
 };
 

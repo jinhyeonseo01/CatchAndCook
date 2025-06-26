@@ -58,9 +58,9 @@ private:
 	shared_ptr<Camera> _camera;
 	shared_ptr<Collider> _collider;
 	shared_ptr<Terrain> _terrian;
-	shared_ptr<SkinnedHierarchy> _skined;
 	shared_ptr<Weapon> _weapons;
 
+	shared_ptr<SkinnedHierarchy> _skined;
 	std::unordered_map<string, std::shared_ptr<Animation>> _animations;
 private:
 	weak_ptr<GameObject> _other;
