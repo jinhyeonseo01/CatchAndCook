@@ -602,6 +602,7 @@ RayHit ColliderManager::RayCastForMyCell(const Ray& ray, const float& dis, share
 	for (const auto& collider : potencialColliders)
 	{
 		if (collider == Mycollider) continue;
+		if (collider->isTrigger) continue;
 
 		RayHit currentHit;
 		currentHit.distance = dis;
