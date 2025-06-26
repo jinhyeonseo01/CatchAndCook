@@ -397,6 +397,7 @@
     <ClCompile Include="EventComponent.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
+    <ClCompile Include="BoatController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -743,6 +744,7 @@
     <ClInclude Include="EventComponent.h">
       <Filter>03.Component</Filter>
     </ClInclude>
+    <ClInclude Include="BoatController.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath_LH.inl">
@@ -949,6 +951,9 @@
     </FxCompile>
     <FxCompile Include="..\Resources\Shaders\ParticleRenderingShader.hlsl">
       <Filter>998.HLSL\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\DeferredRim.hlsl">
+      <Filter>998.HLSL\Graphics\KSH</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

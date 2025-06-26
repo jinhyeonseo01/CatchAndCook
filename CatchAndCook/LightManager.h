@@ -46,15 +46,13 @@ struct LightHelperParams
 	vec3 eyeWorldPos{};
 	int lightCount = 0;
 	Light mainLight;
-	/*std::array<Light, 60> light;
 
-	int useRim = 1;
-	vec3 rimColor = vec3(0,1.0f,0);
+	float rimPower =6.0f;
+	float rimStrength= 6.0f;
 
-	float rimPower = 23.0f;
-	float rimStrength = 500.0f;
-	float dummy1 = 0;
-	float dummy2 = 0;*/
+	float padding1;
+	float padding2;
+
 };
 
 //struct ForwardLightParams

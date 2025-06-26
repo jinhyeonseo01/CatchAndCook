@@ -129,6 +129,21 @@ void ResourceManager::CreateDefaultShaderKSH()
 		ShaderInfo info;
 		info.renderTargetCount = 4;
 
+		info.RTVForamts[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		info.RTVForamts[1] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		info.RTVForamts[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		info.RTVForamts[3] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"DeferredRim", L"DeferredRim.hlsl", StaticProp,
+			ShaderArg{}, info);
+
+		shader->SetPass(RENDER_PASS::Deferred);
+	}
+
+	{
+		ShaderInfo info;
+		info.renderTargetCount = 4;
+
 	
 		info.RTVForamts[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		info.RTVForamts[1] = DXGI_FORMAT_R32G32B32A32_FLOAT;

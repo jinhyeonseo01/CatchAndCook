@@ -103,7 +103,7 @@ void ImguiManager::Debug()
         LightController();
         BoidMove();
         Sky();
-        VolumetricTest();
+        LimLightControl();
       
     };
 
@@ -548,22 +548,14 @@ void ImguiManager::Test2()
     }
 }
 
-void ImguiManager::VolumetricTest()
+void ImguiManager::LimLightControl()
 {
-    if (_volumetricData != nullptr)
-    {
-        if (ImGui::TreeNode("_volumetricData"))
+        if (ImGui::TreeNode("RimLightController"))
         {
-            ImGui::SliderFloat("Absorption", &_volumetricData->absorption, 0.0f, 10.0f);
-            ImGui::SliderFloat3("color", &_volumetricData->fogColor.x, 0, 1.0f);
-            ImGui::SliderInt("numSlice", &_volumetricData->numSlices, 0.0f, 50);
-            ImGui::SliderFloat("phase", &_volumetricData->phaseG, 0.0f, 10.0f);
-            ImGui::SliderFloat("waterHeight", &_volumetricData->waterHeight, 0.0f, 3000.0f);
-            ImGui::SliderInt("numstep", &_volumetricData->numSteps, 0.0f, 300);
-            ImGui::SliderFloat("stepSize", &_volumetricData->stepSize, 0.0f, 3.0f);
+            ImGui::SliderFloat("rimPower", &LightManager::main->_lightParmas.rimPower, 0.0f, 64.0f);
+            ImGui::SliderFloat("rimStrength", &LightManager::main->_lightParmas.rimStrength, 0.0f, 64.0f);
             ImGui::TreePop();
-        }
-    }
+        }   
 }
 
 void ImguiManager::Test()

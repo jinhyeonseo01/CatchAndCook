@@ -42,7 +42,7 @@ private:
 
 	void Test2();
 
-	void VolumetricTest();
+	void LimLightControl();
 
 
 public:
@@ -53,7 +53,7 @@ public:
 	UnderWaterParam* _underWaterParam;
 	SeaParam* _seaParam;
 	ScatteringData* _scatteringData;
-	VolumetricData* _volumetricData;
+
 
 	bool* _ssaoOnOff;
 	bool* _colorGradingOnOff;
