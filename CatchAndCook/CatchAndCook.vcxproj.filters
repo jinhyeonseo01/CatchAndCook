@@ -955,6 +955,9 @@
     <FxCompile Include="..\Resources\Shaders\DeferredRim.hlsl">
       <Filter>998.HLSL\Graphics\KSH</Filter>
     </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\DeferredSeaSkinnedRim.hlsl">
+      <Filter>998.HLSL\Graphics\KSH</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\Direct12-Project-Scene\Assets\Models\Objects\Sea\Terrian_Seed\New Folder\2023-11-23T113343Z.png">
