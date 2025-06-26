@@ -70,6 +70,7 @@ void BoatController::Update()
 			_seq = Sequnce::turnRight;
 			_right = player->_transform->GetRight();
 
+			if (_animation.find("right_turn") != _animation.end())
 			{
 				_skined->Play(_animation["right_turn"], 0.1f);
 			};
