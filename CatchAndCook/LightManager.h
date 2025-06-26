@@ -47,8 +47,8 @@ struct LightHelperParams
 	int lightCount = 0;
 	Light mainLight;
 
-	float rimPower =6.0f;
-	float rimStrength= 6.0f;
+	float rimPower =256.0f;
+	float rimStrength= 256.0f;
 
 	float padding1;
 	float padding2;

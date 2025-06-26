@@ -552,8 +552,8 @@ void ImguiManager::LimLightControl()
 {
         if (ImGui::TreeNode("RimLightController"))
         {
-            ImGui::SliderFloat("rimPower", &LightManager::main->_lightParmas.rimPower, 0.0f, 64.0f);
-            ImGui::SliderFloat("rimStrength", &LightManager::main->_lightParmas.rimStrength, 0.0f, 64.0f);
+            ImGui::SliderFloat("rimPower", &LightManager::main->_lightParmas.rimPower, 0.0f, 256.0f);
+            ImGui::SliderFloat("rimStrength", &LightManager::main->_lightParmas.rimStrength, 0.0f, 256.0f);
             ImGui::TreePop();
         }   
 }
