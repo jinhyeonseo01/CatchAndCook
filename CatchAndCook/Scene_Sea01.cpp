@@ -24,8 +24,8 @@
 #include <filesystem>
 #include "WaterController.h"
 #include "Volumetric.h"
-
-
+#include "EventComponent.h"
+#include "TextManager.h"
 void Scene_Sea01::Init()
 {
 	namespace fs = std::filesystem;
@@ -151,7 +151,7 @@ void Scene_Sea01::Init()
 
 	}
 
-	
+
 	{
 		auto plant = Find(L"ray");
 
@@ -159,6 +159,56 @@ void Scene_Sea01::Init()
 		{
 			auto finder = plant->AddComponent<FishMonster>();
 			finder->ReadPathFile(L"rayPath");
+		}
+	}
+	{
+
+		{
+			shared_ptr<GameObject> BoardText = CreateGameObject(L"EsacpeText");
+			auto& renderer = BoardText->AddComponent<MeshRenderer>();
+			auto& sprite = BoardText->AddComponent<TextSprite>();
+			sprite->SetLocalPos(vec3(500.0f, 600.0f, 0.000001f));
+			sprite->SetSize(vec2(300, 300));
+			sprite->SetText(L"Press F To Esacpe");
+			sprite->CreateObject(550, 256, L"Arial", FontColor::WHITE, 60);
+			shared_ptr<Material> material = make_shared<Material>();
+			material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
+			material->SetPass(RENDER_PASS::UI);
+			renderer->AddMaterials({ material });
+			BoardText->SetActiveSelf(false);
+		};
+
+		{
+			auto& object = SceneManager::main->GetCurrentScene()->Find(L"EsacpeEvent");
+
+			auto& eventComponent = object->GetComponent<EventComponent>();
+			eventComponent->SetBindTag(GameObjectTag::Player);
+			eventComponent->BindOnCollisionBegin([](shared_ptr<Collider>& collider)
+				{
+					auto object = SceneManager::main->GetCurrentScene()->Find(L"EsacpeText");
+					if (object)
+					{
+						object->SetActiveSelf(true);
+		
+					}
+				});
+
+			eventComponent->BindOnCollisionEnd([](shared_ptr<Collider>& collider)
+				{
+					auto object = SceneManager::main->GetCurrentScene()->Find(L"EsacpeText");
+					if (object)
+					{
+						object->SetActiveSelf(false);
+					}
+				});
+
+			eventComponent->BindOnUpdate([](shared_ptr<Collider>& collider) 
+				{
+				if (Input::main->GetKeyDown(KeyCode::F))
+				{
+					Scene::_changeScene = true;
+				}
+				});
 		}
 	}
 
@@ -259,11 +309,14 @@ void Scene_Sea01::Finish()
 {
 	Scene::Finish();
 
-	if (Input::main->GetKeyDown(KeyCode::F6))
+	if (_changeScene)
 	{
-		SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::TestScene2), false, false);
+		_changeScene = false;
 		CameraManager::main->SetActiveCamera(CameraType::ComponentCamera);
+		SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::TestScene2), false, false);
 	}
+
+
 }
 
 void Scene_Sea01::SetSeaGlobalData()
@@ -438,6 +491,7 @@ void Scene_Sea01::UiPass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdL
 
 		for (auto& [shader, vec] : targets)
 		{
+	
 			cmdList->SetPipelineState(shader->_pipelineState.Get());
 
 			for (auto& renderStructure : vec)

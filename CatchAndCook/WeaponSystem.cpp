@@ -51,7 +51,7 @@ void WeaponSystem::RenderBegin()
 
 void WeaponSystem::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
 {
-    std::wcout << collider->GetOwner()->GetRoot()->GetName();
+    //std::wcout << collider->GetOwner()->GetRoot()->GetName();
 
 }
 
