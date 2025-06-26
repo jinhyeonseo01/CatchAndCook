@@ -64,14 +64,16 @@ void BoatController::Update()
 
 	if (Input::main->GetKeyDown(KeyCode::F))
 	{
-		auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
-		_seq = Sequnce::turnRight;
-		_right = player->_transform->GetRight();
-		
-		if (_animation.find("right_turn") != _animation.end())
+		if (_seq == Sequnce::Driving)
 		{
-			_skined->Play(_animation["right_turn"], 0.1f);
-		};
+			auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
+			_seq = Sequnce::turnRight;
+			_right = player->_transform->GetRight();
+
+			{
+				_skined->Play(_animation["right_turn"], 0.1f);
+			};
+		}
 	};
 
 	if (_seq == Sequnce::Driving)
