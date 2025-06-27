@@ -2,16 +2,11 @@
 #include "Component.h"
 #include "SeaPlayerController.h"
 
-struct Gun
+struct weapon
 {
 	wstring GunName =L"NULL";
-	shared_ptr<GameObject> body{};
-	shared_ptr<GameObject> hook{};
+	shared_ptr<GameObject> gun{};
 	shared_ptr<GameObject> weaponSlot{};
-
-	vec3 _backToPos;
-	float _power{};
-	float _range =300.0f;
 	float _speed =800.0f;
 };
 
@@ -27,9 +22,9 @@ public:
 public:
 	
 	void SetCurrentWeapon(const wstring& weaponName);
-	void AddWeapon(const wstring& weaponName, const wstring& bodyName, const wstring& hookName, const wstring& weaponSlot );
-	void AddWeapon(shared_ptr<Gun> gun);
-	shared_ptr<Gun> GetCurrentWeapon() { return _currentWeapon; }
+	void AddWeapon(const wstring& gunName,const wstring& slotName ,float speed);
+
+	shared_ptr<weapon> GetCurrentWeapon() { return _currentWeapon; }
 
 	void Shot();
 	void Reload();
@@ -42,10 +37,9 @@ public:
 
 private:
 	SeaPlayerController* _controller;
-	float _moveDist = 0;
-	shared_ptr<Gun> _currentWeapon;
+	shared_ptr<weapon> _currentWeapon;
 	shared_ptr<GameObject> _targetHud;
-	unordered_map<wstring, shared_ptr<Gun>> _weapons;
+	unordered_map<wstring, shared_ptr<weapon>> _weapons;
 
 };
 

@@ -390,7 +390,6 @@
     <ClCompile Include="InGameMainField.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
-    <ClCompile Include="WeaponSystem.cpp" />
     <ClCompile Include="ParticleComponent.cpp" />
     <ClCompile Include="ParticleManager.cpp" />
     <ClCompile Include="ParticleRenderer.cpp" />
@@ -737,7 +736,6 @@
     <ClInclude Include="InGameMainField.h">
       <Filter>03.Component</Filter>
     </ClInclude>
-    <ClInclude Include="WeaponSystem.h" />
     <ClInclude Include="ParticleComponent.h" />
     <ClInclude Include="ParticleManager.h" />
     <ClInclude Include="ParticleRenderer.h" />

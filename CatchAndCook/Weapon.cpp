@@ -6,7 +6,6 @@
 #include "CameraManager.h"
 #include "Camera.h"
 #include "Collider.h"
-#include "WeaponSystem.h"
 #include "Mesh.h"
 Weapon::Weapon()
 {
@@ -24,13 +23,13 @@ void Weapon::Init(SeaPlayerController* contorller)
 	auto& sprite = _targetHud->AddComponent<Sprite>();
 	sprite->SetLocalPos(vec3(300, 0, 0));
 	sprite->SetSize(vec2(10, 10));
-
 	sprite->SetTexture(ResourceManager::main->Load<Texture>(L"targetHud", L"Textures/targetHud.png"));
 
 	shared_ptr<Material> material = make_shared<Material>();
 	material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
 	material->SetPass(RENDER_PASS::UI);
 	renderer->AddMaterials({ material });
+
 	_controller = contorller;
 };
 
@@ -42,7 +41,7 @@ void Weapon::SetTargetHudPos()
 	if (_currentWeapon == nullptr)
 		return;
 
-	auto& cameraParams = CameraManager::main->GetCamera(CameraType::SeaCamera)->GetCameraParam();
+	/*auto& cameraParams = CameraManager::main->GetCamera(CameraType::SeaCamera)->GetCameraParam();
 
 	vec2 screenPos{ 0, 0 };
 
@@ -61,7 +60,7 @@ void Weapon::SetTargetHudPos()
 	screenPos.x = (ndc.x * 0.5f + 0.5f) * w;
 	screenPos.y = (1.0f - (ndc.y * 0.5f + 0.5f)) * h;
 
-	_targetHud->GetComponent<Sprite>()->SetLocalPos(vec3(screenPos.x-5.0f, screenPos.y-5.0f, 0.0f));
+	_targetHud->GetComponent<Sprite>()->SetLocalPos(vec3(screenPos.x-5.0f, screenPos.y-5.0f, 0.0f));*/
 }
 void Weapon::SetCurrentWeapon(const wstring& weaponName)
 {
@@ -78,108 +77,39 @@ void Weapon::SetCurrentWeapon(const wstring& weaponName)
 
 	if (_currentWeapon)
 	{
-		_currentWeapon->body->SetActiveSelf(false);
-		_currentWeapon->hook->SetActiveSelf(false);
+		_currentWeapon->gun->SetActiveSelf(false);
+		_currentWeapon->gun->SetActiveSelf(false);
 	}
 
 	_currentWeapon = it->second;
 
-	_currentWeapon->body->SetActiveSelf(true);
-	_currentWeapon->hook->SetActiveSelf(true);
+	_currentWeapon->gun->SetActiveSelf(true);
+	_currentWeapon->gun->SetActiveSelf(true);
 
 }
 
-void Weapon::AddWeapon(const wstring& weaponName, const wstring& bodyName, const wstring& hookName, const wstring& weaponSlot)
+void Weapon::AddWeapon(const wstring& gunName, const wstring& slotName , float speed)
 {
-	shared_ptr<Gun> gun = make_shared<Gun>();
-	gun->body = SceneManager::main->GetCurrentScene()->Find(bodyName);
-	gun->hook = SceneManager::main->GetCurrentScene()->Find(hookName);
-	gun->weaponSlot = SceneManager::main->GetCurrentScene()->Find(weaponSlot);
-	if (gun->body == nullptr || gun->hook == nullptr || gun->weaponSlot ==nullptr )
+	shared_ptr<weapon> weaPon = make_shared<weapon>();
+	weaPon->_speed = speed;
+	weaPon->gun = SceneManager::main->GetCurrentScene()->Find(gunName);
+	weaPon->weaponSlot = SceneManager::main->GetCurrentScene()->Find(slotName);
+
+	if (weaPon->gun == nullptr  || weaPon->weaponSlot == nullptr)
 	{
 		cout << "Weapon Not Found" << endl;
 		return;
 	}
 
-	shared_ptr<Mesh> mesh = make_shared<Mesh>();
-	mesh->SetDrawCall(1, 1);
-	mesh->SetTopolgy(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
-	shared_ptr<Shader> shader = ResourceManager::main->Get<Shader>(L"HookShader");
-	shared_ptr<Material> material = make_shared<Material>();
-	material->SetPass(RENDER_PASS::NoEffectPostProcessing);
-	material->SetShader(shader);
-	auto& meshrender = gun->hook->GetComponent<MeshRenderer>();
-	meshrender->AddMesh(mesh);
-	meshrender->SetCulling(false);
-	meshrender->SetInstancing(false);
-	meshrender->AddMaterial(material);
-
-	auto weaponSystem =  gun->hook->AddComponent<WeaponSystem>();
-	weaponSystem->SetController(_controller);
-	weaponSystem->SetSlot(gun->weaponSlot.get());
-
-	gun->_backToPos = gun->hook->_transform->GetLocalPosition();
-	gun->GunName = weaponName;
-	_currentWeapon = gun;
-	_weapons[weaponName] = gun;
-
+	weaPon->GunName = gunName;
+	_currentWeapon = weaPon;
+	_weapons[gunName] = weaPon;
 }
 
-void Weapon::AddWeapon(shared_ptr<Gun> gun)
-{
-	auto it = _weapons.find(gun->GunName);
-
-	if (it != _weapons.end())
-	{
-		cout << "Weapon Already Exist" << endl;
-		return;
-	}
-
-	_weapons[gun->GunName] = gun;
-}
 
 void Weapon::Shot()
 {
-	const float speed = _currentWeapon->_speed;
-	vec3 currentPos = _currentWeapon->hook->_transform->GetWorldPosition();
-	vec3 forward = _currentWeapon->hook->_transform->GetForward();
-	_currentWeapon->hook->_transform->SetWorldPosition(currentPos + forward * _currentWeapon->_speed * Time::main->GetDeltaTime());
-	_moveDist += speed * Time::main->GetDeltaTime();
 
-	if (_moveDist >= _currentWeapon->_range)
-	{
-		_moveDist = 0;
-		_controller->SetState(SeaPlayerState::Reload);
-	}
-
-	SetTargetHudPos();
-
-	/*Gizmo::main->Width(0.2f);
-	Gizmo::main->Line(_currentWeapon->weaponSlot->_transform->GetWorldPosition(), _currentWeapon->hook->_transform->GetWorldPosition(), vec4(0.545f, 0.27f, 0.075f, 1));*/
-}
-
-void Weapon::Reload()
-{
-	const float speed = _currentWeapon->_speed;
-	vec3 slotPos = _currentWeapon->weaponSlot->_transform->GetWorldPosition();
-	vec3 currentHookPos = _currentWeapon->hook->_transform->GetWorldPosition();
-	vec3 dir = slotPos - currentHookPos;
-	dir.Normalize();
-
-	_currentWeapon->hook->_transform->SetWorldPosition(currentHookPos + dir * speed * Time::main->GetDeltaTime());
-	_moveDist += speed * Time::main->GetDeltaTime();
-
-	SetTargetHudPos();
-
-	//Gizmo::main->Width(0.2f);
-	//Gizmo::main->Line(_currentWeapon->weaponSlot->_transform->GetWorldPosition(), _currentWeapon->hook->_transform->GetWorldPosition(), vec4(0.545f, 0.27f, 0.075f, 1));
-
-	if (_moveDist >= _currentWeapon->_range)
-	{
-		_moveDist = 0;
-		_currentWeapon->hook->_transform->SetLocalPosition(_currentWeapon->_backToPos);
-		_controller->SetState(SeaPlayerState::Aiming);
-	}
 }
 
 

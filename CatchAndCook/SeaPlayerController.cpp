@@ -11,7 +11,6 @@
 #include "SkinnedHierarchy.h"
 #include "Animation.h"
 #include "Weapon.h"
-#include "WeaponSystem.h"
 #include "ParticleManager.h"
 
 SeaPlayerController::SeaPlayerController()
@@ -56,8 +55,8 @@ void SeaPlayerController::Start()
 		cout << animation.first << endl;
 	}
 
-    _weapons->AddWeapon(L"test", L"Gun", L"Harpoon",L"HarpoonSlot");
-    _weapons->SetCurrentWeapon(L"test");
+    _weapons->AddWeapon(L"Gun", L"Slot",800.0f);
+    _weapons->SetCurrentWeapon(L"Gun");
 }
 
 void SeaPlayerController::Update()
@@ -169,19 +168,14 @@ void SeaPlayerController::KeyUpdate(vec3& inputDir, Quaternion& rotation, float 
 
     if (Input::main->GetMouseDown(KeyCode::RightMouse))
     {
+        if (_state == SeaPlayerState::Idle)
+        {
+            SetState(SeaPlayerState::Aiming);
+        }
+
         if (_state == SeaPlayerState::Aiming)
         {
-            if (_state == SeaPlayerState::Shot || _state == SeaPlayerState::Reload)
-                return;
-
             SetState(SeaPlayerState::Idle);
-        }
-        else
-        {
-            if (_state == SeaPlayerState::Shot || _state == SeaPlayerState::Reload)
-                return;
-
-            SetState(SeaPlayerState::Aiming);
         }
     }
 
@@ -337,10 +331,6 @@ void SeaPlayerController::UpdateState(float dt)
     case SeaPlayerState::Shot:
         _weapons->SetTargetHudPos();
         _weapons->Shot();
-        break;
-    case SeaPlayerState::Reload:
-        _weapons->SetTargetHudPos();
-        _weapons->Reload();
         break;
     case SeaPlayerState::Die:
         break;

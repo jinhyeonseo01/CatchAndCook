@@ -11,7 +11,6 @@ enum class SeaPlayerState
 	Idle,
 	Aiming,
 	Shot,
-	Reload,
 	PushBack,
 	Die,
 	Hit,
