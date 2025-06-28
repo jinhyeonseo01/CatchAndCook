@@ -56,19 +56,17 @@ void SeaPlayerController::Start()
         _animations.find("shot")->second->_speedMultiplier = 3.0f;
     }
 
-	for (auto& animation : _animations)
-	{
-		cout << animation.first << endl;
-	}
-
+   
     _weapons->AddWeapon(L"Gun", L"Slot",800.0f);
     _weapons->SetCurrentWeapon(L"Gun");
+
+    SetState(SeaPlayerState::Idle);
 }
 
 void SeaPlayerController::Update()
 {
+ 
 
-    cout << _skined->_isPlaying << endl;
 
     if (CameraManager::main->GetCameraType() == CameraType::DebugCamera)
     {
@@ -371,8 +369,12 @@ void SeaPlayerController::UpdateState(float dt)
 }
 void SeaPlayerController::SetState(SeaPlayerState state)
 {
+    if (_state == state)
+        return;
 
 	_state = state;
+
+    cout << (int)_state << endl;
 
 	switch (_state)
 	{
@@ -398,16 +400,17 @@ void SeaPlayerController::SetState(SeaPlayerState state)
 		break;
     case SeaPlayerState::Shot:
         _weapons->SetTargetHudVisible(true);
-
+        cout << "shot" << endl;
         if (_animations.find("shot") != _animations.end())
         {
             _skined->Play(_animations["shot"], 0.5f);
         };
 
 
+
+
         break;
 	case SeaPlayerState::Die:
-
 		break;
 	case SeaPlayerState::Hit:
 
