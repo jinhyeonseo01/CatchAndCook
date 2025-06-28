@@ -17,14 +17,16 @@ class Weapon
 public:
 	Weapon();
 	~Weapon();
-	void SetTargetHudPos();
 	void Init(SeaPlayerController* contorller);
 public:
 	
 	void SetCurrentWeapon(const wstring& weaponName);
 	void AddWeapon(const wstring& gunName,const wstring& slotName ,float speed);
+	void SetTargetHudSize();
 
 	shared_ptr<weapon> GetCurrentWeapon() { return _currentWeapon; }
+
+
 
 	void Shot();
 
@@ -33,6 +35,8 @@ public:
 		if (_targetHud)
 			_targetHud->SetActiveSelf(onOff);
 	}
+
+
 
 private:
 	SeaPlayerController* _controller;

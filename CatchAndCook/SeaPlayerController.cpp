@@ -56,9 +56,13 @@ void SeaPlayerController::Start()
         _animations.find("shot")->second->_speedMultiplier = 3.0f;
     }
 
-    _weapons->AddWeapon(L"Gun", L"Slot",800.0f);
+    _weapons->AddWeapon(L"Gun", L"GunSlot",800.0f);
     _weapons->SetCurrentWeapon(L"Gun");
-    SetState(SeaPlayerState::Idle);
+    _weapons->SetTargetHudVisible(false);
+    if (_animations.find("idle") != _animations.end())
+    {
+        _skined->Play(_animations["idle"], 0.5f);
+    };
 
 
 }
@@ -172,14 +176,17 @@ void SeaPlayerController::KeyUpdate(vec3& inputDir, Quaternion& rotation, float 
 
     if (Input::main->GetMouseDown(KeyCode::RightMouse))
     {
-        if (_state == SeaPlayerState::Idle)
+        if (_skined->_blendEnd)
         {
-            SetState(SeaPlayerState::Aiming);
-        }
+            if (_state == SeaPlayerState::Idle)
+            {
+                SetState(SeaPlayerState::Aiming);
+            }
 
-        else if(_state == SeaPlayerState::Aiming)
-        {
-            SetState(SeaPlayerState::Idle);
+            else if (_state == SeaPlayerState::Aiming)
+            {
+                SetState(SeaPlayerState::Idle);
+            }
         }
     }
 
@@ -328,15 +335,17 @@ Quaternion SeaPlayerController::CalCulateYawPitchRoll()
 void SeaPlayerController::UpdateState(float dt)
 {
 
+    _weapons->SetTargetHudSize();
+
     switch (_state)
     {
     case SeaPlayerState::Idle:
+        _weapons->SetTargetHudVisible(false);
         break;
     case SeaPlayerState::Aiming:
-        _weapons->SetTargetHudPos();
+        _weapons->SetTargetHudVisible(true);
         break;
     case SeaPlayerState::Shot:
-        _weapons->SetTargetHudPos();
         if (_skined->_isPlaying==false)
         {
             SetState(SeaPlayerState::Aiming);
@@ -381,7 +390,7 @@ void SeaPlayerController::SetState(SeaPlayerState state)
 	{
     case SeaPlayerState::Idle:
     {
-        _weapons->SetTargetHudVisible(false);
+
         if (_animations.find("idle") != _animations.end())
         {
             _skined->Play(_animations["idle"], 0.5f);
@@ -390,7 +399,7 @@ void SeaPlayerController::SetState(SeaPlayerState state)
 		break;
     case SeaPlayerState::Aiming:
     {
-        _weapons->SetTargetHudVisible(true);
+  
         if (_animations.find("aiming") != _animations.end())
         {
             _skined->Play(_animations["aiming"], 0.5f);
@@ -398,16 +407,12 @@ void SeaPlayerController::SetState(SeaPlayerState state)
     }
 		break;
     case SeaPlayerState::Shot:
-        _weapons->SetTargetHudVisible(true);
         _weapons->Shot();
         cout << "shot" << endl;
         if (_animations.find("shot") != _animations.end())
         {
             _skined->Play(_animations["shot"], 0.5f);
         };
-
-
-
 
         break;
 	case SeaPlayerState::Die:

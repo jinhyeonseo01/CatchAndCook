@@ -298,12 +298,26 @@ void ResourceManager::CreateDefaultShaderKSH()
 		ShaderInfo info;
 		info._zTest = false;
 		info._stencilTest = false;
-		info._blendEnable = true;
+		info._blendEnable = false;
 
 		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->SetPass(RENDER_PASS::Forward);
+		shader->SetPass(RENDER_PASS::UI);
 		shader->Init(L"SpriteShader.hlsl", ColorProp, ShaderArg{}, info);
 		Add<Shader>(L"SpriteShader", shader);
+	}
+
+	{
+
+		ShaderInfo info;
+		info._zTest = false;
+		info._stencilTest = false;
+		info._blendEnable = true;
+		info._blendType[0] = BlendType::Add;
+
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->SetPass(RENDER_PASS::UI);
+		shader->Init(L"SpriteShader.hlsl", ColorProp, ShaderArg{}, info);
+		Add<Shader>(L"SpriteShaderBlend", shader);
 	}
 
 

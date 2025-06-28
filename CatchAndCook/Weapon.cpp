@@ -19,14 +19,15 @@ Weapon::~Weapon()
 void Weapon::Init(SeaPlayerController* contorller)
 {
 	_targetHud = SceneManager::main->GetCurrentScene()->CreateGameObject(L"Sprite1");
+
 	auto& renderer = _targetHud->AddComponent<MeshRenderer>();
 	auto& sprite = _targetHud->AddComponent<Sprite>();
-	sprite->SetLocalPos(vec3(300, 0, 0));
-	sprite->SetSize(vec2(10, 10));
-	sprite->SetTexture(ResourceManager::main->Load<Texture>(L"targetHud", L"Textures/targetHud.png"));
 
+	sprite->SetLocalPos(vec3(0.5f, 0.5f, 0.0f));
+
+	sprite->SetTexture(ResourceManager::main->Load<Texture>(L"targetHud", L"Textures/targetHud.png"));
 	shared_ptr<Material> material = make_shared<Material>();
-	material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
+	material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShaderBlend"));
 	material->SetPass(RENDER_PASS::UI);
 	renderer->AddMaterials({ material });
 
@@ -35,33 +36,6 @@ void Weapon::Init(SeaPlayerController* contorller)
 
 
 
-
-void Weapon::SetTargetHudPos() 
-{
-	if (_currentWeapon == nullptr)
-		return;
-
-	/*auto& cameraParams = CameraManager::main->GetCamera(CameraType::SeaCamera)->GetCameraParam();
-
-	vec2 screenPos{ 0, 0 };
-
-	vec4 worldPos = _currentWeapon->weaponSlot->_transform->GetWorldPosition() + _currentWeapon->hook->_transform->GetForward() * _currentWeapon->_range;
-	worldPos.w = 1.0f;
-
-	Matrix vp = cameraParams.VPMatrix;   
-
-	vec4 clipPos = vec4::Transform(worldPos, vp);
-
-	vec3 ndc = vec3(clipPos) / clipPos.w;
-
-	float w = static_cast<float>(WINDOW_WIDTH);
-	float h = static_cast<float>(WINDOW_HEIGHT);
-
-	screenPos.x = (ndc.x * 0.5f + 0.5f) * w;
-	screenPos.y = (1.0f - (ndc.y * 0.5f + 0.5f)) * h;
-
-	_targetHud->GetComponent<Sprite>()->SetLocalPos(vec3(screenPos.x-5.0f, screenPos.y-5.0f, 0.0f));*/
-}
 void Weapon::SetCurrentWeapon(const wstring& weaponName)
 {
 	if (_currentWeapon && _currentWeapon->GunName == weaponName)
@@ -104,6 +78,16 @@ void Weapon::AddWeapon(const wstring& gunName, const wstring& slotName , float s
 	weaPon->GunName = gunName;
 	_currentWeapon = weaPon;
 	_weapons[gunName] = weaPon;
+}
+
+void Weapon::SetTargetHudSize()
+{
+	float aspect = static_cast<float>(WINDOW_WIDTH) / static_cast<float>(WINDOW_HEIGHT);
+	float height = 0.02f; 
+	vec2 size(height / aspect, height); 
+	auto& sprite = _targetHud->GetComponent<Sprite>();
+	sprite->SetSize(size);
+	sprite->SetLocalPos(vec3(0.5f-size.x*0.5f,0.5f-size.y*0.5f, 0.0f));
 }
 
 

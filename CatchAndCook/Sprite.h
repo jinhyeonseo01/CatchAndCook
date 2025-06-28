@@ -72,7 +72,6 @@ protected:
 
 	vec2 _ndcSize;
 
-
 	shared_ptr<Texture> _spriteImage;
 
 	friend class ActionFunc;
