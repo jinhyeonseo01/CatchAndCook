@@ -24,11 +24,11 @@ void Weapon::Init(SeaPlayerController* contorller)
 	auto& sprite = _targetHud->AddComponent<Sprite>();
 
 	sprite->SetLocalPos(vec3(0.5f, 0.5f, 0.0f));
-
+	sprite->SetClipingColor(vec4(0, 0, 0, 0));
 	sprite->SetTexture(ResourceManager::main->Load<Texture>(L"targetHud", L"Textures/targetHud.png"));
 	shared_ptr<Material> material = make_shared<Material>();
 	material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
-	material->SetBlendFactor({ 0.3f,0.3f,0.3f,0.3f });
+	material->SetBlendFactor({ 0.6f,0.6f,0.6f,0.6f });
 	material->SetPass(RENDER_PASS::UI);
 	renderer->AddMaterials({ material });
 
@@ -84,7 +84,7 @@ void Weapon::AddWeapon(const wstring& gunName, const wstring& slotName , float s
 void Weapon::SetTargetHudSize()
 {
 	float aspect = static_cast<float>(WINDOW_WIDTH) / static_cast<float>(WINDOW_HEIGHT);
-	float height = 0.02f; 
+	float height = 0.05f; 
 	vec2 size(height / aspect, height); 
 	auto& sprite = _targetHud->GetComponent<Sprite>();
 	sprite->SetSize(size);
