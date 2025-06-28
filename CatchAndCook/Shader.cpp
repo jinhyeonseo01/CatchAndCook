@@ -267,6 +267,13 @@ void Shader::InitPipeLine(const std::vector<VertexProp>& vertexProp)
                 blendDesc.DestBlend = D3D12_BLEND_INV_DEST_COLOR;
                 blendDesc.BlendOp = D3D12_BLEND_OP_ADD;
                 break;
+            case BlendType::BlendFactor:
+                blendDesc.BlendEnable = TRUE;  // 블렌드 활성화
+                blendDesc.LogicOpEnable = FALSE;  // 논리 연산 사용 안 함
+                blendDesc.SrcBlend = D3D12_BLEND_BLEND_FACTOR;
+                blendDesc.DestBlend = D3D12_BLEND_INV_BLEND_FACTOR;
+                blendDesc.BlendOp = D3D12_BLEND_OP_ADD;  // 블렌드 연산은 더하기
+                blendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
             }
         }
         else

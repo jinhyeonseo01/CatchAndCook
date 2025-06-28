@@ -41,6 +41,7 @@ enum class BlendType
     ColorDodge, //FinalColor = DestColor / (1 - SrcColor)
     Subtract, //FinalColor = DestColor - SrcColor
     Screen, // FinalColor = 1 - (1 - SrcColor) * (1 - DestColor)
+    BlendFactor,
 };
 
 struct ShaderStructPropertyInfo

@@ -499,6 +499,11 @@ void Scene_Sea01::UiPass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdL
 			for (auto& renderStructure : vec)
 			{
 				auto& [material, mesh, target] = renderStructure;
+
+				const std::array<float, 4>& blendFactor =material->GetBlendFactor();
+
+				cmdList->OMSetBlendFactor(blendFactor.data());
+
 				target->Rendering(material, mesh);
 			}
 		}

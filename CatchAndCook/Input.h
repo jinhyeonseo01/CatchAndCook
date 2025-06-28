@@ -31,7 +31,7 @@ public:
     ~Input();
 
     void Update();
-
+    void MouseCursorOnOff() { _isMouseLock = !_isMouseLock; ShowCursor(_isMouseLock);}
 
 public:
 
@@ -56,11 +56,10 @@ public:
 
     bool IsMouseLock() { return _isMouseLock; }
     void SetMouseLock(bool isMouseLock);
-    bool _isMouseLock = true;
     void SetCursor(const Vector2& pos);
 
 private:
-
+    bool _isMouseLock = true;
     bool DataUpdate(const InputEvent& event);
     void DataBeginUpdate();
 

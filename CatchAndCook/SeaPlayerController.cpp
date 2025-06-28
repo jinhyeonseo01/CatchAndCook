@@ -291,6 +291,7 @@ Quaternion SeaPlayerController::CalCulateYawPitchRoll()
 		if (Input::main->GetKeyDown(KeyCode::BackQoute))
 		{
 			lastMousePos = Input::main->GetMousePosition();
+           
 		}
 	
 		vec2 currentMousePos = Input::main->GetMousePosition();
@@ -305,6 +306,7 @@ Quaternion SeaPlayerController::CalCulateYawPitchRoll()
 		_roll = 0;
 
 		lastMousePos = currentMousePos;
+  
 	}
 
 	else
@@ -325,6 +327,7 @@ Quaternion SeaPlayerController::CalCulateYawPitchRoll()
 		center.y = static_cast<LONG>(WINDOW_HEIGHT/2);
 		ClientToScreen(Core::main->GetHandle(), &center);
 		SetCursorPos(center.x, center.y);
+  
 	
 	}
 
