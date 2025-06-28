@@ -410,6 +410,9 @@ void Scene::UiPass(ComPtr<ID3D12GraphicsCommandList>& cmdList)
             {
                 auto& [material, mesh, target] = renderStructure;
                 SettingPrevData(renderStructure, RENDER_PASS::PASS::UI);
+
+                cmdList->OMSetBlendFactor(material->GetBlendFactor().data());
+
                 target->Rendering(material, mesh);
             }
         }
@@ -640,7 +643,6 @@ void Scene::CameraControl()
 	if (Input::main->GetKeyDown(KeyCode::F1))
 	{
 		type = CameraType::DebugCamera;
-        Input::main->SetMouseLock(false);
         CameraManager::main->Setting(type);
 	}
 

@@ -27,7 +27,7 @@ void Weapon::Init(SeaPlayerController* contorller)
 
 	sprite->SetTexture(ResourceManager::main->Load<Texture>(L"targetHud", L"Textures/targetHud.png"));
 	shared_ptr<Material> material = make_shared<Material>();
-	material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShaderBlend"));
+	material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
 	material->SetBlendFactor({ 0.3f,0.3f,0.3f,0.3f });
 	material->SetPass(RENDER_PASS::UI);
 	renderer->AddMaterials({ material });

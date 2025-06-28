@@ -72,11 +72,11 @@ void Input::SetMouseLock(bool isMouseLock)
     {
         mousePos = prevMousePos = Vector2(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
         SetCursor(mousePos);
-		//ShowCursor(false);
+		ShowCursor(false);
     }
     else
     {
-		//ShowCursor(true);
+		ShowCursor(true);
     }
 
 }

@@ -117,10 +117,7 @@ void Game::PrevUpdate()
 	{
 		//SceneManager::main->Reload();
 	}
-	if (Input::main->GetKeyDown(KeyCode::BackQoute))
-	{
-		Input::main->MouseCursorOnOff();
-	}
+	
 
 	if (Input::main->GetKeyDown(KeyCode::F9))
 	{

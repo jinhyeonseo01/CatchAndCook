@@ -88,7 +88,7 @@ public:
 	}
 
 public:
-	std::array<float, 4> _blendFactor = { 0.5f, 0.5f, 0.5f, 0.5f };
+	std::array<float, 4> _blendFactor = { 0.8f, 0.8f, 0.8f, 0.8f };
 	uint32 _instanceID = 0;
 private:
 	shared_ptr<Shader> _shader;
