@@ -11,13 +11,11 @@ public:
 
 	void Init(std::shared_ptr<Animation> animation);
 
-
 	Matrix CalculateTransformMatrix(const double& time, bool xyLock = false) const;
 	Matrix CalculateTransformMatrixMapping(const std::shared_ptr<ModelNode>& _originModelNode, const std::shared_ptr<ModelNode>& _animModelNode, const double& time, bool xyLock = false) const;
 	Vector3 CalculatePosition(const double& time) const;
 	Quaternion CalculateRotation(const double& time) const;
 	Vector3 CalculateScale(const double& time) const;
-
 
 	Vector3 CalculateDeltaPosition(const double& prevTime, const double& time) const;
 	Quaternion CalculateDeltaRotation(const double& prevTime, const double& time) const;

@@ -42,7 +42,7 @@ void SeaPlayerController::Start()
 		_terrian = terrian->GetComponent<Terrain>();
 	}
 
-
+  
 	GetOwner()->_transform->SetForward(vec3(0.308061f, 0.164842f, 0.936977f));
 	_camera->SetCameraLook(vec3(0.308061f, 0.164842f, 0.936977f));
 	//GetOwner()->_transform->SetWorldPosition(vec3(0, 1000.0f, 1.0f));
@@ -56,18 +56,16 @@ void SeaPlayerController::Start()
         _animations.find("shot")->second->_speedMultiplier = 3.0f;
     }
 
-   
     _weapons->AddWeapon(L"Gun", L"Slot",800.0f);
     _weapons->SetCurrentWeapon(L"Gun");
-
     SetState(SeaPlayerState::Idle);
+
+
 }
 
 void SeaPlayerController::Update()
 {
  
-
-
     if (CameraManager::main->GetCameraType() == CameraType::DebugCamera)
     {
         Gizmo::Width(0.02f);
@@ -189,7 +187,10 @@ void SeaPlayerController::KeyUpdate(vec3& inputDir, Quaternion& rotation, float 
     {
         if (_state == SeaPlayerState::Aiming)
         {
-            SetState(SeaPlayerState::Shot);
+            if (_skined->_blendEnd)
+            {
+                SetState(SeaPlayerState::Shot);
+            }
         }
     }
 
@@ -224,6 +225,7 @@ void SeaPlayerController::KeyUpdate(vec3& inputDir, Quaternion& rotation, float 
 
 void SeaPlayerController::Update2()
 {
+ 
 }
 
 void SeaPlayerController::Enable()
@@ -240,25 +242,25 @@ void SeaPlayerController::RenderBegin()
 
 void SeaPlayerController::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
 {
-    if (auto& owner = other->GetOwner())
+    /*if (auto& owner = other->GetOwner())
     {
         if (owner->GetName() == L"2")
         {
 			_state = SeaPlayerState::PushBack;
 			_other = owner;
         }
-    }
+    }*/
 }
 
 void SeaPlayerController::CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
 {
-    if (auto& owner = other->GetOwner())
+ /*   if (auto& owner = other->GetOwner())
     {
         if (owner->GetName() == L"2")
         {
             _state = SeaPlayerState::Idle;
         }
-    }
+    }*/
 }
 
 void SeaPlayerController::ChangeParent(const std::shared_ptr<GameObject>& prev, const std::shared_ptr<GameObject>& current)
@@ -335,7 +337,6 @@ void SeaPlayerController::UpdateState(float dt)
         break;
     case SeaPlayerState::Shot:
         _weapons->SetTargetHudPos();
-        _weapons->Shot();
         if (_skined->_isPlaying==false)
         {
             SetState(SeaPlayerState::Aiming);
@@ -381,7 +382,6 @@ void SeaPlayerController::SetState(SeaPlayerState state)
     case SeaPlayerState::Idle:
     {
         _weapons->SetTargetHudVisible(false);
-
         if (_animations.find("idle") != _animations.end())
         {
             _skined->Play(_animations["idle"], 0.5f);
@@ -391,7 +391,6 @@ void SeaPlayerController::SetState(SeaPlayerState state)
     case SeaPlayerState::Aiming:
     {
         _weapons->SetTargetHudVisible(true);
-
         if (_animations.find("aiming") != _animations.end())
         {
             _skined->Play(_animations["aiming"], 0.5f);
@@ -400,6 +399,7 @@ void SeaPlayerController::SetState(SeaPlayerState state)
 		break;
     case SeaPlayerState::Shot:
         _weapons->SetTargetHudVisible(true);
+        _weapons->Shot();
         cout << "shot" << endl;
         if (_animations.find("shot") != _animations.end())
         {

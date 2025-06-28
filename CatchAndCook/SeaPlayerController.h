@@ -40,7 +40,7 @@ public:
 
 private:
 	Quaternion CalCulateYawPitchRoll();
-
+	
 private:
 	void UpdateState(float dt);
 
