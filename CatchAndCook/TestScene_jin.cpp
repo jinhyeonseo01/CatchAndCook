@@ -99,8 +99,8 @@ void TestScene_jin::Init()
 		auto& renderer = BoardText->AddComponent<MeshRenderer>();
 
 		auto& sprite = BoardText->AddComponent<TextSprite>();
-		sprite->SetLocalPos(vec3(500.0f, 600.0f, 0.000001f));
-		sprite->SetSize(vec2(300, 300));
+		sprite->SetLocalPos(vec3(0.4f, 0.8f, 0.000001f));
+		sprite->SetSize(vec2(0.3f, 0.3f));
 		sprite->SetText(L"배를 타시려면 F를 누르게나");
 		sprite->CreateObject(750, 256, L"Arial", FontColor::WHITE, 60);
 

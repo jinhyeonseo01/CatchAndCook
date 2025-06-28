@@ -70,10 +70,8 @@ protected:
 	vec3 _screenLocalPos;
 	vec3 _ndcWorldPos;
 
-	vec2 _screenSize;
 	vec2 _ndcSize;
 
-	vec2 _firstWindowSize;
 
 	shared_ptr<Texture> _spriteImage;
 

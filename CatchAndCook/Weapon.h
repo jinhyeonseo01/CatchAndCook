@@ -27,7 +27,6 @@ public:
 	shared_ptr<weapon> GetCurrentWeapon() { return _currentWeapon; }
 
 	void Shot();
-	void Reload();
 
 	void SetTargetHudVisible(bool onOff)
 	{

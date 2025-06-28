@@ -53,8 +53,8 @@ void ActionFunc::OnDragAction(KeyCode key, Sprite* sprite)
         vec2 pos = Input::main->GetMousePosition();
         vec2 delta = pos - _lastMousePos;
 
-        delta.x = delta.x * (_dragSprite->_firstWindowSize.x / WINDOW_WIDTH);
-        delta.y = delta.y * (_dragSprite->_firstWindowSize.y / WINDOW_HEIGHT);
+        delta.x = delta.x ;
+        delta.y = delta.y ;
 
         _dragSprite->SetLocalPos(vec3(_dragSprite->_screenLocalPos.x + delta.x,
             _dragSprite->_screenLocalPos.y + delta.y,

@@ -15,13 +15,10 @@ void Sprite::Init()
 {
 
 
-	_firstWindowSize = vec2(WINDOW_WIDTH, WINDOW_HEIGHT);
 }
 
 void Sprite::Start()
 {
-
-
 	if (auto& renderer = GetOwner()->GetRenderer())
 	{
 		renderer->AddCbufferSetter(static_pointer_cast<Sprite>(shared_from_this()));
@@ -110,7 +107,7 @@ void Sprite::CalculateWorldPos()
 		worldPos += sprite->_screenLocalPos;
 	}
 
-	_spriteWorldParam.ndcPos = vec3(worldPos.x / _firstWindowSize.x, worldPos.y / _firstWindowSize.y, worldPos.z);
+	_spriteWorldParam.ndcPos = vec3(worldPos.x, worldPos.y, worldPos.z);
 	_ndcWorldPos = _spriteWorldParam.ndcPos;
 }
 
@@ -123,11 +120,11 @@ void Sprite::SetTexture(shared_ptr<Texture> texture)
 
 void Sprite::SetSize(const vec2& size)
 {
-	_spriteWorldParam.ndcScale.x = size.x / _firstWindowSize.x;
-	_spriteWorldParam.ndcScale.y = size.y / _firstWindowSize.y;
+	_spriteWorldParam.ndcScale.x = size.x;
+	_spriteWorldParam.ndcScale.y = size.y;
 
 	_ndcSize = _spriteWorldParam.ndcScale;
-	_screenSize = size;
+
 }
 
 void Sprite::SetLocalPos(const vec3& screenPos)

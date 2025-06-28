@@ -370,6 +370,7 @@ void SeaPlayerController::SetState(SeaPlayerState state)
     case SeaPlayerState::Idle:
     {
         _weapons->SetTargetHudVisible(false);
+
         if (_animations.find("Swim_Idle") != _animations.end())
         {
             _skined->Play(_animations["Swim_Idle"], 0.5f);
