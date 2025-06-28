@@ -167,7 +167,7 @@ void Scene_Sea01::Init()
 			shared_ptr<GameObject> BoardText = CreateGameObject(L"EsacpeText");
 			auto& renderer = BoardText->AddComponent<MeshRenderer>();
 			auto& sprite = BoardText->AddComponent<TextSprite>();
-			sprite->SetLocalPos(vec3(0.4f, 0.8f, 0.000001f));
+			sprite->SetLocalPos(vec3(0.4f, 0.9f, 0.000001f));
 			sprite->SetSize(vec2(0.3f, 0.3f));
 			sprite->SetText(L"Press F To Esacpe");
 			sprite->CreateObject(550, 256, L"Arial", FontColor::WHITE, 60);

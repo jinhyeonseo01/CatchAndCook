@@ -50,6 +50,12 @@ void SeaPlayerController::Start()
     _animations = GetOwner()->GetComponent<AnimationListComponent>()->GetAnimations();
     _skined  =GetOwner()->GetComponent<SkinnedHierarchy>();
 
+    if (_animations.find("shot") != _animations.end())
+    {
+        _animations.find("shot")->second->_isLoop = false;
+        _animations.find("shot")->second->_speedMultiplier = 3.0f;
+    }
+
 	for (auto& animation : _animations)
 	{
 		cout << animation.first << endl;
@@ -61,6 +67,8 @@ void SeaPlayerController::Start()
 
 void SeaPlayerController::Update()
 {
+
+    cout << _skined->_isPlaying << endl;
 
     if (CameraManager::main->GetCameraType() == CameraType::DebugCamera)
     {
@@ -173,12 +181,11 @@ void SeaPlayerController::KeyUpdate(vec3& inputDir, Quaternion& rotation, float 
             SetState(SeaPlayerState::Aiming);
         }
 
-        if (_state == SeaPlayerState::Aiming)
+        else if(_state == SeaPlayerState::Aiming)
         {
             SetState(SeaPlayerState::Idle);
         }
     }
-
 
     if (Input::main->GetMouseDown(KeyCode::LeftMouse))
     {
@@ -331,6 +338,10 @@ void SeaPlayerController::UpdateState(float dt)
     case SeaPlayerState::Shot:
         _weapons->SetTargetHudPos();
         _weapons->Shot();
+        if (_skined->_isPlaying==false)
+        {
+            SetState(SeaPlayerState::Aiming);
+        }
         break;
     case SeaPlayerState::Die:
         break;
@@ -360,8 +371,6 @@ void SeaPlayerController::UpdateState(float dt)
 }
 void SeaPlayerController::SetState(SeaPlayerState state)
 {
-	if (_state == state)
-		return;
 
 	_state = state;
 
@@ -371,9 +380,9 @@ void SeaPlayerController::SetState(SeaPlayerState state)
     {
         _weapons->SetTargetHudVisible(false);
 
-        if (_animations.find("Swim_Idle") != _animations.end())
+        if (_animations.find("idle") != _animations.end())
         {
-            _skined->Play(_animations["Swim_Idle"], 0.5f);
+            _skined->Play(_animations["idle"], 0.5f);
         };
     }
 		break;
@@ -381,14 +390,21 @@ void SeaPlayerController::SetState(SeaPlayerState state)
     {
         _weapons->SetTargetHudVisible(true);
 
-        if (_animations.find("Swim_Run") != _animations.end())
+        if (_animations.find("aiming") != _animations.end())
         {
-            _skined->Play(_animations["Swim_Run"], 0.5f);
+            _skined->Play(_animations["aiming"], 0.5f);
         };
     }
 		break;
     case SeaPlayerState::Shot:
         _weapons->SetTargetHudVisible(true);
+
+        if (_animations.find("shot") != _animations.end())
+        {
+            _skined->Play(_animations["shot"], 0.5f);
+        };
+
+
         break;
 	case SeaPlayerState::Die:
 
