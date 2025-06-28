@@ -104,13 +104,14 @@ void GameObject::RenderEnd()
 
 void GameObject::Destroy()
 {
+    wcout << "GameObject Destory"<< GetName() << endl;
     for (int i = 0; i < _components.size(); ++i) 
     {
         auto& component = _components[i];
         component->Destroy();
     }
 
-    if (!parent.expired()) parent.lock()->RemoveChild(GetCast<GameObject>());
+    //if (!parent.expired()) parent.lock()->RemoveChild(GetCast<GameObject>());
 
 };
 
@@ -210,6 +211,7 @@ std::shared_ptr<GameObject> GameObject::GetChildByName(const std::wstring& name)
 int GameObject::GetChildAll(OUT std::vector<std::shared_ptr<GameObject>>& vec)
 {
     int count = 0;
+
     for (auto& child : _childs)
         if (!child.expired())
         {
@@ -288,7 +290,9 @@ bool GameObject::RemoveChild(const std::shared_ptr<GameObject>& obj)
     auto iter = std::find_if(_childs.begin(), _childs.end(), [&](const std::weak_ptr<GameObject>& element) {
             return element.lock() == obj;
         });
-    if (iter != _childs.end()) {
+
+    if (iter != _childs.end()) 
+    {
         _childs.erase(iter);
         return true;
     }

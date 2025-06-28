@@ -399,7 +399,6 @@ void SeaPlayerController::SetState(SeaPlayerState state)
 
 	_state = state;
 
-    cout << (int)_state << endl;
 
     switch (_state)
     {
@@ -440,8 +439,11 @@ void SeaPlayerController::SetState(SeaPlayerState state)
 
         if (ray.isHit)
         {
-            wcout << ray.gameObject->GetName() << endl;
-            SceneManager::main->GetCurrentScene()->AddDestroyQueue(ray.gameObject);
+            if (ray.gameObject->GetRoot())
+            {
+         /*       wcout << ray.gameObject->GetRoot()->GetName() << endl;*/
+                SceneManager::main->GetCurrentScene()->AddDestroyQueue(ray.gameObject->GetRoot());
+            }
         }
 
         if (_animations.find("shot") != _animations.end())

@@ -586,22 +586,55 @@ void Scene::ExecuteDestroyGameObjects()
         auto& gameObject = _destroyQueue.front();
         _destroyQueue.pop();
 
-        auto it = std::find(_gameObjects.begin(), _gameObjects.end(), gameObject);
+        std::vector<std::shared_ptr<GameObject>> vec;
+        gameObject->GetChildAll(vec);
 
-        if (it != _gameObjects.end())
+        wcout << gameObject->GetName() << endl;
+
+        for (auto& ele : vec)
         {
-            gameObject->Destroy();
-            _gameObjects.erase(it);
-        }
-        else
-        {
-            it = std::find(_gameObjects_deactivate.begin(), _gameObjects_deactivate.end(), gameObject);
-            if (it != _gameObjects_deactivate.end())
+            wcout << ele->GetName() << endl;
+
+            auto it = std::find(_gameObjects.begin(), _gameObjects.end(), ele);
+
+            if (it != _gameObjects.end())
             {
-                gameObject->Destroy();
-                _gameObjects_deactivate.erase(it);
+                ele->Destroy();
+                _gameObjects.erase(it);
+            }
+
+            else
+            {
+                it = std::find(_gameObjects_deactivate.begin(), _gameObjects_deactivate.end(), gameObject);
+                if (it != _gameObjects_deactivate.end())
+                {
+                    ele->Destroy();
+                    _gameObjects_deactivate.erase(it);
+                }
             }
         }
+
+        {
+            auto it = std::find(_gameObjects.begin(), _gameObjects.end(), gameObject);
+
+            if (it != _gameObjects.end())
+            {
+                gameObject->Destroy();
+                _gameObjects.erase(it);
+            }
+
+
+            else
+            {
+                it = std::find(_gameObjects_deactivate.begin(), _gameObjects_deactivate.end(), gameObject);
+                if (it != _gameObjects_deactivate.end())
+                {
+                    gameObject->Destroy();
+                    _gameObjects_deactivate.erase(it);
+                }
+            }
+        }
+
     }
 }
 

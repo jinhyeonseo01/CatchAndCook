@@ -206,7 +206,6 @@ void ColliderManager::RemoveCollider(const std::shared_ptr<Collider>& collider)
 	{
 
 		auto& list = _collidersForRay[SceneType];
-
 		list.erase(std::remove(list.begin(), list.end(), collider), list.end());
 	}
 
