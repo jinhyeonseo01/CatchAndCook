@@ -183,6 +183,8 @@ void Collider::SetDestroy()
 void Collider::Destroy()
 {
 	Component::Destroy();
+	ColliderManager::main->RemoveCollider(GetCast<Collider>());
+
 }
 
 vec3 Collider::GetCenter()
@@ -314,14 +316,13 @@ bool Collider::RayCast(const Ray& ray, const float& dis, RayHit& hit)
 {
 	hit.distance = dis;
 	hit.collider = this;
-	hit.gameObject = GetOwner().get();
+	hit.gameObject = GetOwner();
 
 	////// _bound.box를 지역 변수로 캐싱하여 반복 접근을 줄입니다.
 
 	if (_type == CollisionType::Box)
 	{
 		const auto& box = _bound.box;
-		// Ray와 박스 간의 충돌 여부를 테스트합니다.
 		if (ray.Intersects(box, hit.distance))
 		{
 			// 월드 좌표계에서 충돌 지점을 계산합니다.
@@ -363,6 +364,7 @@ bool Collider::RayCast(const Ray& ray, const float& dis, RayHit& hit)
 			return true;
 		}
 	}
+
 	if (_type == CollisionType::Sphere)
 	{
 		const auto& sphere = _bound.sphere;
@@ -380,7 +382,6 @@ bool Collider::RayCast(const Ray& ray, const float& dis, RayHit& hit)
 	}
 
 	hit.isHit = false;
-	// No intersection occurred.
 	return false;
 }
 

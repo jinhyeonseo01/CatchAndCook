@@ -196,7 +196,29 @@ void ColliderManager::RemoveCollider(const std::shared_ptr<Collider>& collider)
 		}
 		_colliderLinkTable[SceneType].erase(collider);
 	}
+
+	{
+		auto& list = _dynamicColliderList[SceneType];
+
+		list.erase(std::remove(list.begin(), list.end(), collider),list.end());
+
+	}
+	{
+
+		auto& list = _collidersForRay[SceneType];
+
+		list.erase(std::remove(list.begin(), list.end(), collider), list.end());
+	}
+
+	{
+		auto& list = _dynamicColliderCashing[SceneType];
+		list.erase(collider); 
+	}
+
+
 }
+
+
 
 std::unordered_set<std::shared_ptr<Collider>> ColliderManager::GetPotentialCollisions(std::shared_ptr<Collider>& collider) 
 {
@@ -546,7 +568,6 @@ RayHit ColliderManager::RayCast(const Ray& ray, const float& dis, shared_ptr<Gam
 {
 	RayHit closestHit;
 	closestHit.distance = dis;
-	bool hitFound = false;
 
 	const auto& SceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
 
@@ -556,32 +577,21 @@ RayHit ColliderManager::RayCast(const Ray& ray, const float& dis, shared_ptr<Gam
 
 		RayHit currentHit;
 		currentHit.distance = dis;  
+
 		if (collider->RayCast(ray, dis, currentHit))
 		{
 			if (currentHit.distance < closestHit.distance)
 			{
 				closestHit = currentHit;
-				hitFound = true;
 			}
 		}
 	}
 
-	///*for (auto& terrain : TerrainManager::main->_terrains)
-	//{
-	//	RayHit currentHit;
-	//	if (terrain->RayCast(ray, dis, currentHit))
-	//	{
-	//		if (currentHit.distance < closestHit.distance)
-	//		{
-	//			closestHit = currentHit;
-	//			hitFound = true;
-	//		}
-	//	}
-	//}*/
-
-
 	return closestHit;
 }
+
+
+
 
 RayHit ColliderManager::RayCastForMyCell(const Ray& ray, const float& dis, shared_ptr<GameObject>& owner) 
 {

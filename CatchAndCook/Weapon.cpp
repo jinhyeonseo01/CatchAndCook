@@ -28,7 +28,7 @@ void Weapon::Init(SeaPlayerController* contorller)
 	sprite->SetTexture(ResourceManager::main->Load<Texture>(L"targetHud", L"Textures/targetHud.png"));
 	shared_ptr<Material> material = make_shared<Material>();
 	material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
-	material->SetBlendFactor({ 0.6f,0.6f,0.6f,0.6f });
+	material->SetBlendFactor({ 0.7f,0.7f,0.7f,0.7f });
 	material->SetPass(RENDER_PASS::UI);
 	renderer->AddMaterials({ material });
 
@@ -89,6 +89,12 @@ void Weapon::SetTargetHudSize()
 	auto& sprite = _targetHud->GetComponent<Sprite>();
 	sprite->SetSize(size);
 	sprite->SetLocalPos(vec3(0.5f-size.x*0.5f,0.5f-size.y*0.5f, 0.0f));
+}
+
+vec3 Weapon::GetTaretPos()
+{
+	auto& sprite = _targetHud->GetComponent<Sprite>();
+	return sprite->GetTargetPos();
 }
 
 

@@ -69,7 +69,8 @@ void SeaPlayerController::Start()
 
 void SeaPlayerController::Update()
 {
- 
+
+
     if (CameraManager::main->GetCameraType() == CameraType::DebugCamera)
     {
         Gizmo::Width(0.02f);
@@ -98,8 +99,8 @@ void SeaPlayerController::Update()
 
     vec3 inputDir = vec3::Zero;
     KeyUpdate(inputDir, cameraRotation, dt);
-    UpdateState(dt);
     UpdatePlayerAndCamera(dt, playerRotation, cameraRotation);
+    UpdateState(dt);
 }
 
 void SeaPlayerController::UpdatePlayerAndCamera(float dt, Quaternion& playerRotation, Quaternion& cameraRotation)
@@ -143,6 +144,7 @@ void SeaPlayerController::UpdatePlayerAndCamera(float dt, Quaternion& playerRota
      // 최종 위치 적용
     _transform->SetWorldPosition(nextPos);
     _camera->SetCameraPos(nextHeadPos + _camera->GetCameraRight() * _cameraYawOffset );
+    _camera->Calculate();
     _velocity *= (1 - (_resistance * dt));
 
 }
@@ -223,8 +225,7 @@ void SeaPlayerController::KeyUpdate(vec3& inputDir, Quaternion& rotation, float 
     if (Input::main->GetKey(KeyCode::F1))
     {
         auto& camera = CameraManager::main->GetCamera(CameraType::DebugCamera);
-
-		_transform->SetWorldPosition(camera->GetCameraPos());
+        SetState(SeaPlayerState::Idle);
     }
 
 
@@ -232,7 +233,18 @@ void SeaPlayerController::KeyUpdate(vec3& inputDir, Quaternion& rotation, float 
 
 void SeaPlayerController::Update2()
 {
- 
+  
+    /*vec3 nearPlane = vec3(0.0f, 0.0f, 0.0f);
+    vec3 farPlane = vec3(0.0f, 0.0f, 1.0f);
+
+    vec3 worldNear = vec3::Transform(nearPlane, CameraManager::main->GetCamera(CameraType::SeaCamera)->_params.InvertVPMatrix);
+    vec3 worldFar = vec3::Transform(farPlane, CameraManager::main->GetCamera(CameraType::SeaCamera)->_params.InvertVPMatrix);
+
+    vec3 dir = worldFar - worldNear;
+    dir.Normalize();
+
+    Gizmo::main->Width(3.0f);
+    Gizmo::main->Line(worldNear, worldFar);*/
 }
 
 void SeaPlayerController::Enable()
@@ -389,8 +401,8 @@ void SeaPlayerController::SetState(SeaPlayerState state)
 
     cout << (int)_state << endl;
 
-	switch (_state)
-	{
+    switch (_state)
+    {
     case SeaPlayerState::Idle:
     {
 
@@ -399,25 +411,46 @@ void SeaPlayerController::SetState(SeaPlayerState state)
             _skined->Play(_animations["idle"], 0.5f);
         };
     }
-		break;
+    break;
     case SeaPlayerState::Aiming:
     {
-  
+
         if (_animations.find("aiming") != _animations.end())
         {
             _skined->Play(_animations["aiming"], 0.5f);
         };
     }
-		break;
+    break;
     case SeaPlayerState::Shot:
-        _weapons->Shot();
+    {
         cout << "shot" << endl;
+
+        vec3 nearPlane = vec3(0.0f, 0.0f, 0.0f);
+        vec3 farPlane = vec3(0.0f, 0.0f, 1.0f);
+
+        vec3 worldNear = vec3::Transform(nearPlane, CameraManager::main->GetCamera(CameraType::SeaCamera)->_params.InvertVPMatrix);
+        vec3 worldFar = vec3::Transform(farPlane, CameraManager::main->GetCamera(CameraType::SeaCamera)->_params.InvertVPMatrix);
+
+        vec3 dir = worldFar - worldNear;
+        dir.Normalize();
+
+        float maxDist = 1000000.0f;
+
+        auto ray = ColliderManager::main->RayCast({ worldNear, dir }, maxDist, GetOwner());
+
+        if (ray.isHit)
+        {
+            wcout << ray.gameObject->GetName() << endl;
+            SceneManager::main->GetCurrentScene()->AddDestroyQueue(ray.gameObject);
+        }
+
         if (_animations.find("shot") != _animations.end())
         {
             _skined->Play(_animations["shot"], 0.5f);
         };
 
         break;
+    }
 	case SeaPlayerState::Die:
 		break;
 	case SeaPlayerState::Hit:

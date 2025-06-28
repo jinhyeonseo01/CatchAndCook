@@ -63,6 +63,7 @@ public:
 	void SetClipingColor(const vec4& color);  // https://imagecolorpicker.com/
 	void AddAction(shared_ptr<ActionCommand> action) { _actions.emplace_back(action); };
 
+	vec3 GetTargetPos() { return _screenLocalPos; }
 protected:
 	SpriteWorldParam _spriteWorldParam;
 	SprtieTextureParam _sprtieTextureParam;

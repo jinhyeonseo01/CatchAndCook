@@ -63,7 +63,6 @@ public:
     void SetCameraUp(const vec3& up);
     void SetCameraRight(const vec3& right);
 
-
     vec3& GetCameraPos() { return _cameraPos; }
     vec3& GetCameraLook() { return _cameraLook; }
     vec3& GetCameraUp() { return _cameraUp; }

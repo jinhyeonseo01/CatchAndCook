@@ -441,7 +441,7 @@ bool Terrain::RayCast(const Ray& ray, const float& dis, RayHit& hit)
 
         hit.distance = reusltDis;
         hit.worldPos = localPos + GetOwner()->_transform->GetWorldPosition();
-        hit.gameObject = GetOwner().get();
+        hit.gameObject = GetOwner();
         hit.collider = nullptr;
         hit.isHit = true;
 

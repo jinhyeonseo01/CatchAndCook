@@ -20,10 +20,11 @@ public:
 	void Init(SeaPlayerController* contorller);
 public:
 	
+
 	void SetCurrentWeapon(const wstring& weaponName);
 	void AddWeapon(const wstring& gunName,const wstring& slotName ,float speed);
 	void SetTargetHudSize();
-
+	vec3 GetTaretPos();
 	shared_ptr<weapon> GetCurrentWeapon() { return _currentWeapon; }
 
 

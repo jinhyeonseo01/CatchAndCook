@@ -10,7 +10,7 @@ struct RayHit
 	Vector3 worldPos;
 	float distance = 1000000;
 	Collider* collider;
-	GameObject* gameObject;
+	shared_ptr<GameObject>gameObject;
 	bool isHit = false;
 
 	explicit operator bool() const
@@ -39,6 +39,7 @@ public:
 	void AddColliderForRay(const std::shared_ptr<Collider>& collider);
 	void RemoveAColliderForRay(const std::shared_ptr<Collider>& collider);
 	void RemoveCollider(const std::shared_ptr<Collider>& collider);
+
 	void Update();
 
 	bool CollisionCheckDirect(CollisionType type, BoundingUnion bound);
@@ -63,6 +64,8 @@ private:
 
 public:
 	RayHit RayCast(const Ray& ray, const float& dis, shared_ptr<GameObject>& owner) const;
+
+
 	RayHit RayCastForMyCell(const Ray& ray, const float& dis, shared_ptr<GameObject>& owner);
 	bool RayCastAll(const Ray& ray, const float& dis, std::vector<RayHit>& hitList) const;
 	bool RayCastAllForMyCell(const Ray& ray, const float& dis, std::vector<RayHit>& hitList, const shared_ptr<GameObject>& owner);
