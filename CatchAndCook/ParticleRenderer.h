@@ -21,6 +21,8 @@ public:
 	void CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other) override;
 	void SetDestroy() override;
 
+	void SetTexture(shared_ptr<Texture> texture) { _particleTexture = texture; }
+
 private:
 	virtual void Rendering(Material* material, Mesh* mesh, int instanceCount = 1);
 	virtual void DebugRendering();
@@ -31,7 +33,7 @@ private:
 	static shared_ptr<Shader> _particleComputeShader;
 	static shared_ptr<Shader> _particleRenderingShader;
 	shared_ptr<ParticleComponent> _particleComponent;
-	static shared_ptr<Texture> _particleTexture;
+	shared_ptr<Texture> _particleTexture;
 
 
 };

@@ -168,13 +168,6 @@ void SeaPlayerController::KeyUpdate(vec3& inputDir, Quaternion& rotation, float 
         inputDir += vec3::Right;
     }
 
-    if (Input::main->GetKeyDown(KeyCode::F5))
-    {
-        for (int i = 0; i < 20; ++i)
-        {
-            ParticleManager::main->GenParticle(10.0f, 256, 5,vec3(i*50,i*50, i * 100), ParticleMoveType::RadialSpread, ParticleColorType::Random);
-        }
-    }
 
     if (Input::main->GetMouseDown(KeyCode::RightMouse))
     {
@@ -441,7 +434,8 @@ void SeaPlayerController::SetState(SeaPlayerState state)
         {
             if (ray.gameObject->GetRoot())
             {
-         /*       wcout << ray.gameObject->GetRoot()->GetName() << endl;*/
+                ParticleManager::main->GenParticle(1.0f, 150, 5.0f, ray.worldPos, ray.normal, ParticleMoveType::RadialSpread, ParticleColorType::Red
+                    , ResourceManager::main->Get<Texture>(L"bubbleTexture"));
                 SceneManager::main->GetCurrentScene()->AddDestroyQueue(ray.gameObject->GetRoot());
             }
         }

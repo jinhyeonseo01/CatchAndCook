@@ -10,7 +10,9 @@ public:
 
 public:
 	void Init();
-	shared_ptr<GameObject> GenParticle(float autodestroyTime, int particleCount, float particleSize, vec3 worldPos, ParticleMoveType moveType, ParticleColorType colorType);
+	shared_ptr<GameObject> GenParticle(float autodestroyTime, int particleCount, float particleSize, const vec3& worldPos,const vec3& worldNormal, const ParticleMoveType& moveType, const ParticleColorType& colorType,
+		shared_ptr<Texture> texture =nullptr);
+
 	shared_ptr<StructuredBuffer> AllocParticleBuffer();
 	void RecycleParticleBuffer(shared_ptr<StructuredBuffer> buffer);
 

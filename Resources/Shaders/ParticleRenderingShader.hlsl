@@ -7,7 +7,7 @@
 struct ParticleData
 {
     float3 color;
-    int life;
+    int textureUse;
 
     float3 worldPos;
     float size;
@@ -22,6 +22,7 @@ struct VS_OUT
     float2 uv : TEXCOORD0;
     float3 color : COLOR;
     float size : SIZE;
+    float TextureUse : USE;
 };
 
 struct GS_OUT
@@ -29,6 +30,7 @@ struct GS_OUT
     float4 pos : SV_POSITION;
     float2 uv : TEXCOORD0;
     float3 color : COLOR;
+    float TextureUse : USE;
 };
 
 StructuredBuffer<ParticleData> ParticleDatas : register(t0);
@@ -43,6 +45,8 @@ VS_OUT VS_Main(uint id : SV_InstanceID)
     output.pos = mul(output.pos, ViewMatrix);
     output.color = data.color;
     output.size = data.size;
+    output.TextureUse = data.textureUse;
+    
     
     return output;
 }
@@ -77,6 +81,11 @@ void GS_Main(point VS_OUT input[1], inout TriangleStream<GS_OUT> outputStream)
     output[1].color = input[0].color;
     output[2].color = input[0].color;
     output[3].color = input[0].color;
+    
+    output[0].TextureUse = input[0].TextureUse;
+    output[1].TextureUse = input[0].TextureUse;
+    output[2].TextureUse = input[0].TextureUse;
+    output[3].TextureUse = input[0].TextureUse;
 
     outputStream.Append(output[0]);
     outputStream.Append(output[1]);
@@ -92,12 +101,17 @@ void GS_Main(point VS_OUT input[1], inout TriangleStream<GS_OUT> outputStream)
 float4 PS_Main(GS_OUT input) : SV_Target
 {
     
-    float4 color = _BaseMap.Sample(sampler_lerp, input.uv);
+
+    if(input.TextureUse)
+    {
+        float4 color = _BaseMap.Sample(sampler_lerp, input.uv);
+        
+        if (color.a == 0)
+            discard;
     
-    if (color.a == 0)
-        discard;
-    
-    return color;
+        return color;
+    }
+
     
     return float4(input.color, 1.0f);
 

@@ -17,32 +17,39 @@ void ParticleManager::Init()
 
 }
 
-shared_ptr<GameObject> ParticleManager::GenParticle(float autodestroyTime, int particleCount,float particleSize, vec3 worldPos, ParticleMoveType moveType, ParticleColorType colorType)
+shared_ptr<GameObject> ParticleManager::GenParticle(float autodestroyTime, int particleCount, float particleSize, const vec3& worldPos, const vec3& worldNormal, const ParticleMoveType& moveType, const ParticleColorType& colorType, shared_ptr<Texture> texture)
 {
-	shared_ptr<StructuredBuffer> buffer =AllocParticleBuffer();
+	shared_ptr<StructuredBuffer> buffer = AllocParticleBuffer();
 
 	shared_ptr<GameObject> object = SceneManager::main->GetCurrentScene()->CreateGameObject(L"Particle");
 
 	auto& particleComponent = object->AddComponent<ParticleComponent>();
-	particleComponent->SetParticle(buffer, autodestroyTime, particleCount, particleSize, worldPos, moveType, colorType);
+	particleComponent->SetParticle(buffer, autodestroyTime, particleCount, particleSize, worldPos,worldNormal ,moveType, colorType,texture);
 
-	object->AddComponent<ParticleRenderer>();
+	auto& particleRenderer = object->AddComponent<ParticleRenderer>();
+
+	if (texture)
+	{
+		particleRenderer->SetTexture(texture);
+	}
 
 	return object;
 }
 
-shared_ptr<StructuredBuffer> ParticleManager::AllocParticleBuffer() 
+shared_ptr<StructuredBuffer> ParticleManager::AllocParticleBuffer()
 {
 	if (_strBufferPool.empty())
 	{
-		cout << "버퍼 추가됨" <<"현재 풀갯수"<< _currentPoolCount << endl;
+		cout << "버퍼 추가됨" << "현재 풀갯수" << _currentPoolCount << endl;
 		Init();
 	}
 
-	shared_ptr<StructuredBuffer> buffer =  _strBufferPool.front();
+	shared_ptr<StructuredBuffer> buffer = _strBufferPool.front();
 	_strBufferPool.pop();
 	return buffer;
 }
+
+
 
 void ParticleManager::RecycleParticleBuffer(shared_ptr<StructuredBuffer> buffer)
 {

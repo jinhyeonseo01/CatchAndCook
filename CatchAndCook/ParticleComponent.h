@@ -3,7 +3,7 @@
 struct ParticleData
 {
 	vec3 color{};
-	int life=1.0f;
+	int textureUse=0;
 
 	vec3 worldPos{};
 	float size{};
@@ -50,7 +50,7 @@ public:
 
 private:
 	void SetParticle(shared_ptr<StructuredBuffer> strBuffer,
-		float autoDestroyTime,int particleCount,float size , vec3 worldPos,ParticleMoveType moveType, ParticleColorType colorType);
+		float autoDestroyTime,int particleCount,float size , const vec3& worldPos,const  vec3& worldNormal , const ParticleMoveType& moveType, const ParticleColorType& colorType, shared_ptr<Texture> texture);
 
 private:
 	int _particleCount = 0;

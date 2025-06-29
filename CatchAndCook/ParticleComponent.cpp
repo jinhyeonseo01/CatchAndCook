@@ -74,7 +74,7 @@ void ParticleComponent::Destroy()
 	ParticleManager::main->RecycleParticleBuffer(_strBuffer);
 }
 
-void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, float autoDestroyTime, int particleCount, float size ,vec3 worldPos, ParticleMoveType moveType, ParticleColorType colorType)
+void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, float autoDestroyTime, int particleCount, float size, const vec3& worldPos, const vec3& worldNormal, const ParticleMoveType& moveType, const ParticleColorType& colorType, shared_ptr<Texture> texture)
 {
 	assert(particleCount <= 500);
 
@@ -86,13 +86,18 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 
 	_particleCount = particleCount;
 	vector<ParticleData> vecData(particleCount);
-	
+
 	for (int i = 0; i < _particleCount; ++i)
 	{
 
 		ParticleData data;
 
 		data.size = size;
+
+		if (texture)
+		{
+			data.textureUse = 1;
+		}
 
 		switch (moveType)
 		{
@@ -105,30 +110,32 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 			break;
 		}
 
-		switch (colorType)
+		
+		if (texture == nullptr)
 		{
-		case ParticleColorType::Random:
-			data.color = vec3(dist(gen), dist(gen), dist(gen));
-			break;
-		case ParticleColorType::Black:
-			data.color = vec3(0, 0, 0);
-			break;
-		case ParticleColorType::White:
-			data.color = vec3(1, 1, 1);
-			break;
-		case ParticleColorType::Red:
-			data.color = vec3(1, 0, 0);
-			break;
-		default:
-			break;
+
+			switch (colorType)
+			{
+			case ParticleColorType::Random:
+				data.color = vec3(dist(gen), dist(gen), dist(gen));
+				break;
+			case ParticleColorType::Black:
+				data.color = vec3(0, 0, 0);
+				break;
+			case ParticleColorType::White:
+				data.color = vec3(1, 1, 1);
+				break;
+			case ParticleColorType::Red:
+				data.color = vec3(1, 0, 0);
+				break;
+			default:
+				break;
+			}
 		}
 
 		vecData[i] = data;
 	}
 
-
-
 	_strBuffer->CopyToDefaultHeap(vecData);
-
 }
 

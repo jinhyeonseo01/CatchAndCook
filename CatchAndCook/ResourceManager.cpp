@@ -952,6 +952,9 @@ void ResourceManager::CreateDefaultTexture()
 	_cubemap_skyTexture = Load<Texture>(L"cubemap_sky0", L"Textures/cubemap/Sky_0.png.dds", TextureType::CubeMap);
 	_cubemap_skyNTexture = Load<Texture>(L"cubemap_sky1", L"Textures/cubemap/Sky_1.png.dds", TextureType::CubeMap);
 	_cubemap_skyETexture = Load<Texture>(L"cubemap_sky2", L"Textures/cubemap/Sky_2.png.dds", TextureType::CubeMap);
+
+	Load<Texture>(L"bubbleTexture", L"Textures/particle.png");
+
 }
 
 void ResourceManager::CreateDefaultAnimation()
