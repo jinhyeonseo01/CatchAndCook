@@ -60,7 +60,7 @@ void SeaPlayerController::Start()
         _animations.find("shot")->second->_speedMultiplier = 3.0f;
     }
 
-    _weapons->AddWeapon(L"Gun", L"GunSlot",600.0f);
+    _weapons->AddWeapon(L"Gun", L"GunSlot",1200.0f);
     _weapons->SetCurrentWeapon(L"Gun");
     _weapons->SetTargetHudVisible(false);
     if (_animations.find("idle") != _animations.end())

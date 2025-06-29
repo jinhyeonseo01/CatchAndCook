@@ -45,14 +45,13 @@ void Weapon::Init(SeaPlayerController* contorller)
 void Weapon::CreateBullet()
 {
 	cout << "총알추가됨" << endl;
-
+	shared_ptr<Material> material = make_shared<Material>();
+	
 	for (int i = 0; i < 50; ++i)
 	{
-
 		auto& bullet = SceneManager::main->GetCurrentScene()->CreateGameObject(L"Bullet");
-
 		auto& meshRenderer = bullet->AddComponent<MeshRenderer>();
-		shared_ptr<Material> material = make_shared<Material>();
+	
 		material->SetShader(ResourceManager::main->Get<Shader>(L"D_SeaEnv"));
 		material->SetPass(RENDER_PASS::Deferred);
 		material->SetTexture("_BaseMap", ResourceManager::main->Get<Texture>(L"targetHud"));
@@ -143,10 +142,19 @@ void Weapon::Shot()
 
 	auto& bulletOBject = _bulletQueue.front();
 	_bulletQueue.pop();
+
 	bulletOBject->SetActiveSelf(true);
 	auto& projectileComponent = bulletOBject->GetComponent<ProjectileComponet>();
 	auto& slotPos = _currentWeapon->weaponSlot->_transform->GetWorldPosition();
-	projectileComponent->SetDir(_currentWeapon->weaponSlot->_transform->GetForward());
+
+	vec3 screenCenterFar = vec3(0.0f, 0.0f, 1.0f);
+	auto& cam = CameraManager::main->GetActiveCamera();
+	const Matrix& invVP = cam->_params.InvertVPMatrix;
+	vec3 worldFar = vec3::Transform(screenCenterFar, invVP);
+	vec3 dir = worldFar - slotPos;
+	dir.Normalize();
+	//projectileComponent->SetDir(_currentWeapon->weaponSlot->_transform->GetForward());
+	projectileComponent->SetDir(dir);
 	projectileComponent->SetSpeed(_currentWeapon->_speed);
 	bulletOBject->_transform->SetLocalPosition(slotPos);
 
