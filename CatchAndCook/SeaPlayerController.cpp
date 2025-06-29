@@ -348,10 +348,10 @@ void SeaPlayerController::UpdateState(float dt)
     switch (_state)
     {
     case SeaPlayerState::Idle:
-        _weapons->SetTargetHudVisible(false);
+      
         break;
     case SeaPlayerState::Aiming:
-        _weapons->SetTargetHudVisible(true);
+   
         break;
     case SeaPlayerState::Shot:
         if (_skined->_isPlaying==false)
@@ -400,6 +400,7 @@ void SeaPlayerController::SetState(SeaPlayerState state)
 
         if (_animations.find("idle") != _animations.end())
         {
+            _weapons->SetTargetHudVisible(false);
             _skined->Play(_animations["idle"], 0.5f);
         };
     }
@@ -409,6 +410,7 @@ void SeaPlayerController::SetState(SeaPlayerState state)
 
         if (_animations.find("aiming") != _animations.end())
         {
+            _weapons->SetTargetHudVisible(true);
             _skined->Play(_animations["aiming"], 0.5f);
         };
     }
