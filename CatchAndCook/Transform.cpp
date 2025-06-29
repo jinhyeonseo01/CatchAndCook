@@ -160,6 +160,7 @@ vec3 Transform::GetForward()
 {
     Quaternion quat = GetWorldRotation();
     _forward = vec3::Transform(vec3(0, 0, 1), quat);
+    _forward.Normalize();
     return _forward;
 }
 

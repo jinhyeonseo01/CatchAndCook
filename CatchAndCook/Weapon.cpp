@@ -7,6 +7,9 @@
 #include "Camera.h"
 #include "Collider.h"
 #include "Mesh.h"
+#include "ProjectileComponet.h"
+
+std::queue<shared_ptr<GameObject>> Weapon::_bulletQueue;
 Weapon::Weapon()
 {
 }
@@ -33,9 +36,36 @@ void Weapon::Init(SeaPlayerController* contorller)
 	renderer->AddMaterials({ material });
 
 	_controller = contorller;
+
+
+	CreateBullet();
+
 };
 
+void Weapon::CreateBullet()
+{
+	cout << "총알추가됨" << endl;
 
+	for (int i = 0; i < 50; ++i)
+	{
+
+		auto& bullet = SceneManager::main->GetCurrentScene()->CreateGameObject(L"Bullet");
+
+		auto& meshRenderer = bullet->AddComponent<MeshRenderer>();
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(ResourceManager::main->Get<Shader>(L"D_SeaEnv"));
+		material->SetPass(RENDER_PASS::Deferred);
+		material->SetTexture("_BaseMap", ResourceManager::main->Get<Texture>(L"targetHud"));
+		meshRenderer->AddMesh(GeoMetryHelper::LoadRectangleBox(0.1f));
+		meshRenderer->AddMaterial(material);
+
+		auto& projectileComponent = bullet->AddComponent<ProjectileComponet>();
+
+		bullet->SetActiveSelf(false);
+		_bulletQueue.push(bullet);
+	};
+
+};
 
 void Weapon::SetCurrentWeapon(const wstring& weaponName)
 {
@@ -100,9 +130,32 @@ vec3 Weapon::GetTaretPos()
 
 void Weapon::Shot()
 {
+	if (_currentWeapon == nullptr)
+	{
+		cout << "건없음" << endl;
+		return;
+	}
+
+	if (_bulletQueue.empty())
+	{
+		CreateBullet();
+	}
+
+	auto& bulletOBject = _bulletQueue.front();
+	_bulletQueue.pop();
+	bulletOBject->SetActiveSelf(true);
+	auto& projectileComponent = bulletOBject->GetComponent<ProjectileComponet>();
+	auto& slotPos = _currentWeapon->weaponSlot->_transform->GetWorldPosition();
+	projectileComponent->SetDir(_currentWeapon->weaponSlot->_transform->GetForward());
+	projectileComponent->SetSpeed(_currentWeapon->_speed);
+	bulletOBject->_transform->SetLocalPosition(slotPos);
 
 }
-
+void Weapon::RecycleBullet(const shared_ptr<GameObject>& bullet)
+{
+	bullet->SetActiveSelf(false);
+	_bulletQueue.push(bullet);
+};
 
 
 

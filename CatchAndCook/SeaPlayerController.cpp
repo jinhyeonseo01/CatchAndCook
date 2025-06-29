@@ -29,6 +29,10 @@ void SeaPlayerController::Init()
 
     _weapons = make_shared<Weapon>();
     _weapons->Init(this);
+
+ 
+ 
+
 }
 
 void SeaPlayerController::Start()
@@ -56,7 +60,7 @@ void SeaPlayerController::Start()
         _animations.find("shot")->second->_speedMultiplier = 3.0f;
     }
 
-    _weapons->AddWeapon(L"Gun", L"GunSlot",800.0f);
+    _weapons->AddWeapon(L"Gun", L"GunSlot",600.0f);
     _weapons->SetCurrentWeapon(L"Gun");
     _weapons->SetTargetHudVisible(false);
     if (_animations.find("idle") != _animations.end())
@@ -446,6 +450,8 @@ void SeaPlayerController::SetState(SeaPlayerState state)
         {
             _skined->Play(_animations["shot"], 0.5f);
         };
+
+        _weapons->Shot();
 
         break;
     }

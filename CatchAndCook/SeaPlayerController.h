@@ -59,6 +59,7 @@ private:
 	shared_ptr<Terrain> _terrian;
 	shared_ptr<Weapon> _weapons;
 
+
 	shared_ptr<SkinnedHierarchy> _skined;
 	std::unordered_map<string, std::shared_ptr<Animation>> _animations;
 private:

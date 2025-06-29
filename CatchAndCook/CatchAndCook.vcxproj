@@ -258,6 +258,7 @@
     <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="Profiler.cpp" />
     <ClCompile Include="PhysicsComponent.cpp" />
+    <ClCompile Include="ProjectileComponet.cpp" />
     <ClCompile Include="RendererBase.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
@@ -392,6 +393,7 @@
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="Profiler.h" />
     <ClInclude Include="PhysicsComponent.h" />
+    <ClInclude Include="ProjectileComponet.h" />
     <ClInclude Include="RendererBase.h" />
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="resource.h" />
