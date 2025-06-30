@@ -12,7 +12,7 @@
 #include "Animation.h"
 #include "Weapon.h"
 #include "ParticleManager.h"
-
+#include "AnimationSpriteComponent.h"
 SeaPlayerController::SeaPlayerController()
 {
 }
@@ -421,7 +421,7 @@ void SeaPlayerController::SetState(SeaPlayerState state)
             _skined->Play(_animations["aiming"], 0.5f);
         };
 
-        _fireEffect->SetActiveSelf(false);
+        //_fireEffect->SetActiveSelf(false);
 
     }
     break;
@@ -463,8 +463,7 @@ void SeaPlayerController::SetState(SeaPlayerState state)
 
         _weapons->Shot();
         _fireEffect->SetActiveSelf(true);
-
-
+        _fireEffect->GetComponent<AnimationSpriteComponent>()->Reset();
         break;
     }
 	case SeaPlayerState::Die:

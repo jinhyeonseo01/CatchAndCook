@@ -30,6 +30,9 @@ void AnimationSpriteComponent::Update()
 
 		if (_currentFrameIndex >= _maxFrameIndex)
 		{
+			if (_roop == false)
+				GetOwner()->SetActiveSelf(false);
+
 			_currentFrameIndex = 0;
 		}
 	}
@@ -105,4 +108,11 @@ void AnimationSpriteComponent::SetTextures(vector<shared_ptr<Texture>>& textures
 	_maxFrameIndex = textures.size();
 
 	cout << "스프라이트 애니메이션 갯수:" << textures.size() << endl;
+}
+
+void AnimationSpriteComponent::Reset()
+{
+	GetOwner()->SetActiveSelf(true);
+	_currentFrameIndex = 0;
+	_currentTime = 0;
 }

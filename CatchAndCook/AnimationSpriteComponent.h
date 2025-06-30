@@ -23,8 +23,11 @@ public:
 	virtual void SetData(Material* material = nullptr);
 	void SetFrameRate(float frameRate) { _frameRate = frameRate; }
 	void SetTextures(vector<shared_ptr<Texture>>& textures);
+	void Reset();
 
 private:
+	bool _roop = false;
+
 	unordered_map<int, shared_ptr<Texture>> _spriteImages;
 
 	float _frameRate{ 1.0f }; //  애니메이션 진행 속도

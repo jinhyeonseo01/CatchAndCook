@@ -219,7 +219,7 @@ void Scene_Sea01::Init()
 		fireEffect->GetComponent<MeshRenderer>()->GetMaterial(0)->SetPass(RENDER_PASS::NoEffectForwardPostProcessing);
 
 		auto& animationSpriteComponent = fireEffect->AddComponent<AnimationSpriteComponent>();
-		animationSpriteComponent->SetFrameRate(0.05f);
+		animationSpriteComponent->SetFrameRate(0.1f);
 		std::wstring path = L"../Resources/Textures/Sprite/1/";
 
 		vector<shared_ptr<Texture>> _textures;
