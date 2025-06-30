@@ -55,6 +55,7 @@ public:
 	virtual void RenderEnd();
 	virtual void Finish();
 
+
 	std::shared_ptr<GameObject> CreateGameObject(const std::wstring& name,GameObjectType type = GameObjectType::Dynamic);
 	std::shared_ptr<GameObject> Find(const std::wstring& name, bool includeDestroy = false);
 	int Finds(const std::wstring& name, std::vector<std::shared_ptr<GameObject>>& vec, bool includeDestroy = false);

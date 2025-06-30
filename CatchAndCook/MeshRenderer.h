@@ -33,6 +33,8 @@ public:
 
 	//MeshRenderer
 	void AddMesh(const std::shared_ptr<Mesh>& _mesh);
+	void SetMesh(const std::vector<std::shared_ptr<Mesh>>& mesh);
+	std::vector<std::shared_ptr<Mesh>>& GetMeshes() { return _mesh; }
 	void SetMaterials(const std::vector<std::shared_ptr<Material>>& _materials);
 	void AddMaterials(const std::vector<std::shared_ptr<Material>>& _materials);
 	void AddMaterial(shared_ptr<Material>& material);

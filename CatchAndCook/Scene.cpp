@@ -639,6 +639,9 @@ void Scene::ExecuteDestroyGameObjects()
 }
 
 
+
+
+
 std::shared_ptr<GameObject> Scene::CreateGameObject(const std::wstring& name, GameObjectType type)
 {
 	auto gameObject = std::make_shared<GameObject>(name);

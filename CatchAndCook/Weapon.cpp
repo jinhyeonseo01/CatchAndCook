@@ -44,19 +44,31 @@ void Weapon::Init(SeaPlayerController* contorller)
 
 void Weapon::CreateBullet()
 {
-	cout << "총알추가됨" << endl;
-	shared_ptr<Material> material = make_shared<Material>();
-	
+
+	auto object = SceneManager::main->GetCurrentScene()->Find(L"Bullet");
+
+	if (object == nullptr)
+	{
+		cout << "못찾음총알" << endl;
+		return;
+	}
+
+	object->SetActiveSelf(false);
+	auto& exmeshRenderer =object->GetComponent<MeshRenderer>();
+	auto& extransform = object->GetComponent<Transform>();
+
+	std::vector<std::shared_ptr<Material>>& materials = exmeshRenderer->GetMaterials();
+	std::vector<std::shared_ptr<Mesh>>& meshes = exmeshRenderer->GetMeshes();
+
 	for (int i = 0; i < 50; ++i)
 	{
-		auto& bullet = SceneManager::main->GetCurrentScene()->CreateGameObject(L"Bullet");
+		auto& bullet = SceneManager::main->GetCurrentScene()->CreateGameObject(L"MYBullet");
 		auto& meshRenderer = bullet->AddComponent<MeshRenderer>();
-	
-		material->SetShader(ResourceManager::main->Get<Shader>(L"D_SeaEnv"));
-		material->SetPass(RENDER_PASS::Deferred);
-		material->SetTexture("_BaseMap", ResourceManager::main->Get<Texture>(L"targetHud"));
-		meshRenderer->AddMesh(GeoMetryHelper::LoadRectangleBox(0.1f));
-		meshRenderer->AddMaterial(material);
+		meshRenderer->SetMesh(meshes);
+		meshRenderer->SetMaterials(materials);
+
+		auto& transform = bullet->GetComponent<Transform>();
+		transform->SetLocalScale(extransform->GetLocalScale());
 
 		auto& projectileComponent = bullet->AddComponent<ProjectileComponet>();
 
