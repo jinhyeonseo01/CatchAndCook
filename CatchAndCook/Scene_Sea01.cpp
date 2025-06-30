@@ -220,7 +220,8 @@ void Scene_Sea01::Init()
 
 		auto& animationSpriteComponent = fireEffect->AddComponent<AnimationSpriteComponent>();
 		animationSpriteComponent->SetFrameRate(0.05f);
-		std::wstring path = L"../Resources/Textures/Sprite/";
+		std::wstring path = L"../Resources/Textures/Sprite/1/";
+
 		vector<shared_ptr<Texture>> _textures;
 
 		for (const auto& entry : fs::directory_iterator(path))
