@@ -2,14 +2,13 @@
 
 class InGameGlobal
 {
-public:
+
+public:  
 	static unique_ptr<InGameGlobal> main;
 	void Init();
 	void InitMainField();
 
-public: // Main Field
+public: 
 	float skyTime = 0;
-
-
 };
 

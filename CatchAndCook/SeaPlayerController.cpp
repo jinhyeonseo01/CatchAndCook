@@ -440,9 +440,13 @@ void SeaPlayerController::SetState(SeaPlayerState state)
         {
             if (ray.gameObject->GetRoot())
             {
-                ParticleManager::main->GenParticle(1.0f, 150, 5.0f, ray.worldPos, ray.normal, ParticleMoveType::RadialSpread, ParticleColorType::Red
-                    , ResourceManager::main->Get<Texture>(L"bubbleTexture"));
-                SceneManager::main->GetCurrentScene()->AddDestroyQueue(ray.gameObject->GetRoot());
+                if (ray.gameObject->GetRoot()->HasTag(GameObjectTag::Monster))
+                {
+                    ParticleManager::main->GenParticle(1.0f, 150, 5.0f, ray.worldPos, ray.normal, ParticleMoveType::RadialSpread, ParticleColorType::Red
+                        , ResourceManager::main->Get<Texture>(L"bubbleTexture"));
+                    SceneManager::main->GetCurrentScene()->AddDestroyQueue(ray.gameObject->GetRoot());
+                }
+
             }
         }
 

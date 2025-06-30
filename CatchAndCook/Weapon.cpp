@@ -153,7 +153,7 @@ void Weapon::Shot()
 	vec3 worldFar = vec3::Transform(screenCenterFar, invVP);
 	vec3 dir = worldFar - slotPos;
 	dir.Normalize();
-	//projectileComponent->SetDir(_currentWeapon->weaponSlot->_transform->GetForward());
+
 	projectileComponent->SetDir(dir);
 	projectileComponent->SetSpeed(_currentWeapon->_speed);
 	bulletOBject->_transform->SetLocalPosition(slotPos);
