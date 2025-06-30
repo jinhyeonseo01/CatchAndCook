@@ -62,6 +62,11 @@ float4 PS_Main(VS_OUT input) : SV_TARGET
   
     float4 texColor = _BaseMap.Sample(sampler_lerp, input.uv);
     
+    if (length(texColor.rgb - clipingColor.rgb) < 0.001)
+    {
+        discard;
+    }
+    
     if (length(texColor.a - clipingColor.a) < 0.001)
     {
         discard;
