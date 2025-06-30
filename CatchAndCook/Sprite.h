@@ -14,8 +14,6 @@ struct SpriteWorldParam
 	vec2 padding = {};
 
 	vec4 clipingColor;
-
-	Matrix worldMatrix;
 };
 
 struct SprtieTextureParam
@@ -68,10 +66,10 @@ public:
 	void AddAction(shared_ptr<ActionCommand> action) { _actions.emplace_back(action); };
 	vec3 GetTargetPos() { return _screenLocalPos; }
 
-	void SetWorldSpace();
+
 
 protected:
-	bool _screenSpace = true;
+
 
 	SpriteWorldParam _spriteWorldParam;
 	SprtieTextureParam _sprtieTextureParam;

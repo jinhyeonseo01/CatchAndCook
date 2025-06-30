@@ -81,15 +81,7 @@ void Sprite::SetData(Material* material)
 
 	// SpriteWorldParam 
 	{
-		if (_screenSpace)
-		{
-			CalculateScreenSpacePos();
-		}
-		else
-		{
-			_spriteWorldParam.worldMatrix = GetOwner()->_transform->_localToWorldMatrix;
-		}
-
+		CalculateScreenSpacePos();
 		auto CbufferContainer = Core::main->GetBufferManager()->GetBufferPool(BufferType::SpriteWorldParam)->Alloc(1);
 		memcpy(CbufferContainer->ptr, (void*)&_spriteWorldParam, sizeof(SpriteWorldParam));
 		cmdList->SetGraphicsRootConstantBufferView(material->GetShader()->GetRegisterIndex("SPRITE_WORLD_PARAM"), CbufferContainer->GPUAdress);
@@ -168,10 +160,7 @@ void Sprite::SetClipingColor(const vec4& color)
 	_spriteWorldParam.clipingColor = color;
 }
 
-void Sprite::SetWorldSpace()
-{
-	_screenSpace = false;
-}
+
 
 /*****************************************************************
 *                                                                *
