@@ -242,7 +242,22 @@ void ResourceManager::CreateDefaultShaderKSH()
 	}
 
 
+	{
 
+		ShaderInfo info;
+		info._zTest = true;
+		info._zWrite = false;
+		info._stencilTest = false;
+		info._blendEnable = true;
+		info.renderTargetCount = 1;
+		info._blendType[0] = BlendType::AlphaBlend;
+		info.cullingType = CullingType::NONE;
+
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->SetPass(RENDER_PASS::Transparent);
+		shader->Init(L"GUISpriteShader.hlsl",StaticProp, ShaderArg{}, info);
+		Add<Shader>(L"GUISpriteShader", shader);
+	}
 
 
 

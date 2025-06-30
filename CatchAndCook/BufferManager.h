@@ -8,11 +8,13 @@ enum class BufferType
 {
 	GlobalParam,
 	TransformParam,
+	RectTransformParam,
 	MateriaParam,
 	BoneParam,
 	CameraParam,
 	MateriaSubParam,
 	SpriteWorldParam,
+	GUISpriteParam,
 	SpriteTextureParam,
 	TestParam,
 	DefaultMaterialParam,

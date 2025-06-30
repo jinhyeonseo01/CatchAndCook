@@ -208,6 +208,7 @@
     </ClCompile>
     <ClCompile Include="Global.cpp" />
     <ClCompile Include="guid_utility.cpp" />
+    <ClCompile Include="ImageRenderer.cpp" />
     <ClCompile Include="ImguiManager.cpp" />
     <ClCompile Include="InGameGlobal.cpp" />
     <ClCompile Include="InGameMainField.cpp" />
@@ -354,6 +355,7 @@
     </ClInclude>
     <ClInclude Include="Global.h" />
     <ClInclude Include="guid_utility.h" />
+    <ClInclude Include="ImageRenderer.h" />
     <ClInclude Include="ImguiManager.h" />
     <ClInclude Include="InGameGlobal.h" />
     <ClInclude Include="InGameMainField.h" />
@@ -474,6 +476,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\Resources\Shaders\colorGrading.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\GUISpriteShader.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>

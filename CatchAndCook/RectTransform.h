@@ -35,7 +35,7 @@ struct ComputedRect {
 	Matrix  worldMatrix = Matrix::Identity;      // 누적된 World TRS
 };
 
-class RectTransform : public Transform
+class RectTransform : public Transform, public RenderCBufferSetter
 {
 public:
 	void RenderEnd() override;
@@ -61,7 +61,7 @@ public:
 	static void TopDownCompute(const shared_ptr<Transform>& transform, const ComputedRect& parent);
 	static shared_ptr<RectTransform> ChangeTransToRectTrans(const shared_ptr<Transform>& transform);
 
-public:
+	void SetData(Material* material) override;
 
 	RectTransformData _rectTransformData;
 	ComputedRect _computedRect;

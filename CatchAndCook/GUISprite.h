@@ -1,10 +1,6 @@
 ﻿#pragma once
 
 
-struct GUISpriteParam
-{
-	Vector4 uvOffsetSize;
-};
 
 struct GUISpriteRenderPack;
 

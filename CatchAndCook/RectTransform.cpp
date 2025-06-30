@@ -2,6 +2,8 @@
 #include "RectTransform.h"
 
 #include "Gizmo.h"
+#include "ImageRenderer.h"
+#include "MeshRenderer.h"
 
 
 COMPONENT(RectTransform)
@@ -38,6 +40,8 @@ void RectTransform::Init()
 void RectTransform::Start()
 {
 	Transform::Start();
+    if (auto renderer = GetOwner()->GetComponent<MeshRenderer>())
+        renderer->AddCbufferSetter(GetCast<RectTransform>());
 }
 
 void RectTransform::Update()
@@ -55,9 +59,6 @@ void RectTransform::Update2()
             _computedRect = ComputeRectTransform(rect->_computedRect);
         else if (auto rect = GetOwner()->GetParent()->GetComponent<Transform>())
         {
-            //ComputedRect cr;
-            //rect->GetLocalToWorldMatrix_BottomUp(cr.worldMatrix);
-            std::cout << "1234" << "\n";
             auto rect2 = ChangeTransToRectTrans(rect);
             _computedRect = ComputeRectTransform(rect2->_computedRect);
         }
@@ -67,6 +68,7 @@ void RectTransform::Update2()
     else
         _computedRect = ComputeRectTransform({});
 
+    /*
 	auto min = _computedRect.relativeRect.min;
     auto max = _computedRect.relativeRect.max;
     Vector3 bl(min.x, min.y, 0.0f); // Bottom-Left
@@ -82,12 +84,12 @@ void RectTransform::Update2()
 
     // 4개 변을 순서대로 그려준다
     Gizmo::Width(0.02);
-    Gizmo::Sphere({ pos , 0.1}, Vector4(0,1,0,1));
-	Gizmo::Line(bl, tl);
-    Gizmo::Line(tl, tr);
-    Gizmo::Line(tr, br);
-    Gizmo::Line(br, bl);
+	Gizmo::Line(bl, tl, Vector4(0, 0, 0, 1));
+    Gizmo::Line(tl, tr, Vector4(0, 0, 0, 1));
+    Gizmo::Line(tr, br, Vector4(0, 0, 0, 1));
+    Gizmo::Line(br, bl, Vector4(0, 0, 0, 1));
     Gizmo::WidthRollBack();
+	*/
 }
 
 shared_ptr<RectTransform> RectTransform::ChangeTransToRectTrans(const shared_ptr<Transform>& transform)
@@ -112,6 +114,35 @@ shared_ptr<RectTransform> RectTransform::ChangeTransToRectTrans(const shared_ptr
         }
     }
     return newRectTrans;
+}
+
+void RectTransform::SetData(Material* material)
+{
+    auto min = _computedRect.relativeRect.min;
+    auto max = _computedRect.relativeRect.max;
+    Vector3 bl(min.x, min.y, 0.0f); // Bottom-Left
+    Vector3 tl(min.x, max.y, 0.0f); // Top-Left
+    Vector3 tr(max.x, max.y, 0.0f); // Top-Right
+    Vector3 br(max.x, min.y, 0.0f); // Bottom-Right
+    Vector3 pos(0, 0, 0); // Bottom-Right
+    Vector3::Transform(bl, _computedRect.worldMatrix, bl);
+    Vector3::Transform(tl, _computedRect.worldMatrix, tl);
+    Vector3::Transform(tr, _computedRect.worldMatrix, tr);
+    Vector3::Transform(br, _computedRect.worldMatrix, br);
+    Vector3::Transform(pos, _computedRect.worldMatrix, pos);
+
+
+    auto _rectCBuffer = Core::main->GetBufferManager()->GetBufferPool(BufferType::RectTransformParam)->Alloc(1);
+	RectTransformParam rectParam;
+    rectParam.localToWorld = _computedRect.worldMatrix;
+	rectParam.worldToLocal = _computedRect.worldMatrix.Invert();
+    rectParam.normalizeToLocal = _computedRect.rectTranslateMatrix;
+	rectParam.worldPos = Vector3::Transform(Vector3::Zero, _computedRect.worldMatrix);
+    memcpy(_rectCBuffer->ptr, &rectParam, sizeof(rectParam));
+
+    int index = material->GetShader()->GetRegisterIndex("RectTransformParam");
+    if (index != -1)
+        Core::main->GetCmdList()->SetGraphicsRootConstantBufferView(index, _rectCBuffer->GPUAdress);
 }
 
 void RectTransform::TopDownCompute(const shared_ptr<Transform>& transform, const ComputedRect& parent)
@@ -147,6 +178,9 @@ void RectTransform::Disable()
 void RectTransform::Destroy()
 {
 	Transform::Destroy();
+
+    if (auto renderer = GetOwner()->GetComponent<MeshRenderer>())
+		renderer->RemoveCbufferSetter(GetCast<RectTransform>());
 }
 
 void RectTransform::RenderBegin()

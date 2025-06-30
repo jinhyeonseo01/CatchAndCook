@@ -9,6 +9,7 @@
 #include "Collider.h"
 #include "Scene.h"
 #include "Component.h"
+#include "ImageRenderer.h"
 #include "InitComponent.h"
 #include "LightComponent.h"
 #include "Transform.h"
@@ -200,6 +201,11 @@ void SceneLoader::PrevProcessingComponent(json& data)
     if (type == L"AnimationList")
     {
         auto terr = CreateObject<AnimationListComponent>(guid);
+        component = terr;
+    }
+    if (type == L"Image")
+    {
+        auto terr = CreateObject<ImageRenderer>(guid);
         component = terr;
     }
 
@@ -761,6 +767,21 @@ void SceneLoader::LinkComponent(json& jsonData)
 
         for (auto it = scripts.begin(); it != scripts.end(); ++it) {
             compo->_animationKeys.emplace(it.key(), it.value());
+        }
+    }
+    if (type == L"Image")
+    {
+        auto compo = IGuid::FindObjectByGuid<ImageRenderer>(guid);
+        auto& scripts = jsonData["texturePath"];
+
+        auto sprite = std::make_shared<GUISprite>();
+        compo->SetSprite(sprite);
+
+        auto path = std::to_wstring(scripts.get<std::string>());
+        if ((path != L""))
+        {
+            auto texture = ResourceManager::main->Load<Texture>(path, path);
+            sprite->SetTexture(texture);
         }
     }
 }
