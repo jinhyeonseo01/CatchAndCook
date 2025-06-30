@@ -80,9 +80,7 @@ public:
 	bool IsLocalToWorldChanged() const { return _isLocalToWorldChanged; }
     void SetPivotOffset(const vec3& pivotOffset) { _pivotOffset = pivotOffset; }
 
-private:
-
-
+public:
 
 	vec3 _velocity = vec3::Zero;
     vec3 _pivotOffset = vec3::Zero;

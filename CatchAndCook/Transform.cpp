@@ -390,6 +390,7 @@ bool Transform::GetLocalSRTMatrix(Matrix& localSRT)
 		return true;
     }
 
+
     localSRT = _localSRTMatrix;
     return false;
 }
