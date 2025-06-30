@@ -202,6 +202,7 @@ void MeshRenderer::Rendering(Material* material, Mesh* mesh, int instanceCount)
 	if (material != nullptr)
 		material->SetData();
 
+
 	if (instanceCount <= 1 && HasInstanceBuffer())
 	{
 		cmdList->IASetVertexBuffers(1, 1, &_staticInstanceBuffer->_bufferView);

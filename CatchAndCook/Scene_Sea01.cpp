@@ -26,6 +26,7 @@
 #include "Volumetric.h"
 #include "EventComponent.h"
 #include "TextManager.h"
+#include "AnimationSpriteComponent.h"
 void Scene_Sea01::Init()
 {
 	namespace fs = std::filesystem;
@@ -189,7 +190,7 @@ void Scene_Sea01::Init()
 					if (object)
 					{
 						object->SetActiveSelf(true);
-		
+
 					}
 				});
 
@@ -202,15 +203,36 @@ void Scene_Sea01::Init()
 					}
 				});
 
-			eventComponent->BindOnUpdate([](shared_ptr<Collider>& collider) 
+			eventComponent->BindOnUpdate([](shared_ptr<Collider>& collider)
 				{
-				if (Input::main->GetKeyDown(KeyCode::F))
-				{
-					Scene::_changeScene = true;
-				}
+					if (Input::main->GetKeyDown(KeyCode::F))
+					{
+						Scene::_changeScene = true;
+					}
 				});
 		}
 	}
+
+
+	{
+		auto& fireEffect = SceneManager::main->GetCurrentScene()->Find(L"FireEffect");
+
+		auto& animationSpriteComponent = fireEffect->AddComponent<AnimationSpriteComponent>();
+
+		std::wstring path = L"../Resources/Textures/Sprite/";
+		vector<shared_ptr<Texture>> _textures;
+
+		for (const auto& entry : fs::directory_iterator(path))
+		{
+			shared_ptr<Texture> texture = make_shared<Texture>();
+			std::wstring& path2 = entry.path().filename().wstring();
+			texture->Init(path+ path2);
+			_textures.push_back(texture);
+		}
+
+		animationSpriteComponent->SetTextures(_textures);
+	}
+
 
 	std::ranges::sort(_gameObjects, [&](const auto& a, const auto& b) {
 		return a->GetName() < b->GetName();

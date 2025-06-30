@@ -175,6 +175,7 @@
     <ClCompile Include="AnimationKeyFrame.cpp" />
     <ClCompile Include="AnimationListComponent.cpp" />
     <ClCompile Include="AnimationNode.cpp" />
+    <ClCompile Include="AnimationSpriteComponent.cpp" />
     <ClCompile Include="Animator.cpp" />
     <ClCompile Include="BoatController.cpp" />
     <ClCompile Include="Bone.cpp" />
@@ -321,6 +322,7 @@
     <ClInclude Include="AnimationKeyFrame.h" />
     <ClInclude Include="AnimationListComponent.h" />
     <ClInclude Include="AnimationNode.h" />
+    <ClInclude Include="AnimationSpriteComponent.h" />
     <ClInclude Include="Animator.h" />
     <ClInclude Include="BoatController.h" />
     <ClInclude Include="Bone.h" />
@@ -486,6 +488,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\Resources\Shaders\DeferredRim.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\DeferredSeaClip.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
