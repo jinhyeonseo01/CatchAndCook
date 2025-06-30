@@ -63,6 +63,9 @@ void SeaPlayerController::Start()
     _weapons->AddWeapon(L"Gun", L"GunSlot",1000.0f);
     _weapons->SetCurrentWeapon(L"Gun");
     _weapons->SetTargetHudVisible(false);
+
+    _fireEffect = SceneManager::main->GetCurrentScene()->Find(L"FireEffect");
+
     if (_animations.find("idle") != _animations.end())
     {
         _skined->Play(_animations["idle"], 0.5f);
@@ -417,6 +420,9 @@ void SeaPlayerController::SetState(SeaPlayerState state)
             _weapons->SetTargetHudVisible(true);
             _skined->Play(_animations["aiming"], 0.5f);
         };
+
+        _fireEffect->SetActiveSelf(false);
+
     }
     break;
     case SeaPlayerState::Shot:
@@ -456,6 +462,8 @@ void SeaPlayerController::SetState(SeaPlayerState state)
         };
 
         _weapons->Shot();
+        _fireEffect->SetActiveSelf(true);
+
 
         break;
     }

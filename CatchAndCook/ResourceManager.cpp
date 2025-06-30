@@ -60,7 +60,7 @@ void ResourceManager::CreateDefaultShaderKSH()
 		shared_ptr<Shader> shader = make_shared<Shader>();
 
 		shader->Init(L"HookShader.hlsl", {}, ShaderArg{ {{"PS_Main","ps"},{"VS_Main","vs"},{"GS_Main","gs"}} }, info);
-		shader->SetPass(RENDER_PASS::NoEffectPostProcessing);
+		shader->SetPass(RENDER_PASS::NoEffectForwardPostProcessing);
 		Add<Shader>(L"HookShader", shader);
 
 
@@ -179,20 +179,15 @@ void ResourceManager::CreateDefaultShaderKSH()
 
 	{
 		ShaderInfo info;
-		info.renderTargetCount = 4;
-
+		info.renderTargetCount = 1;
 
 		info.RTVForamts[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		info.RTVForamts[1] = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		info.RTVForamts[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
-		info.RTVForamts[3] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 
-		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"D_SeaEnvClip", L"DeferredSeaClip.hlsl", StaticProp,
+		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"F_SeaEnvClip", L"ForwardSeaClip.hlsl", StaticProp,
 			ShaderArg{}, info);
 
 		shader->SetInjector({ BufferType::SeaDefaultMaterialParam });
-		//shader->SetInjector({ BufferType::DefaultMaterialParam });
-		shader->SetPass(RENDER_PASS::Deferred);
+		shader->SetPass(RENDER_PASS::NoEffectForwardPostProcessing);
 
 	}
 

@@ -216,9 +216,10 @@ void Scene_Sea01::Init()
 
 	{
 		auto& fireEffect = SceneManager::main->GetCurrentScene()->Find(L"FireEffect");
+		fireEffect->GetComponent<MeshRenderer>()->GetMaterial(0)->SetPass(RENDER_PASS::NoEffectForwardPostProcessing);
 
 		auto& animationSpriteComponent = fireEffect->AddComponent<AnimationSpriteComponent>();
-
+		animationSpriteComponent->SetFrameRate(0.05f);
 		std::wstring path = L"../Resources/Textures/Sprite/";
 		vector<shared_ptr<Texture>> _textures;
 
@@ -231,6 +232,7 @@ void Scene_Sea01::Init()
 		}
 
 		animationSpriteComponent->SetTextures(_textures);
+		fireEffect->SetActiveSelf(false);
 	}
 
 
@@ -449,7 +451,7 @@ void Scene_Sea01::ComputePass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>&
 void Scene_Sea01::NoEffectPass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList)
 {
 	{ // Forward
-		auto& targets = _passObjects[RENDER_PASS::ToIndex(RENDER_PASS::NoEffectPostProcessing)];
+		auto& targets = _passObjects[RENDER_PASS::ToIndex(RENDER_PASS::NoEffectForwardPostProcessing)];
 
 		for (auto& [shader, vec] : targets)
 		{

@@ -83,8 +83,6 @@ void AnimationSpriteComponent::Destroy()
 void AnimationSpriteComponent::SetData(Material* material)
 {
 	
-
-
 	auto it = _spriteImages.find(_currentFrameIndex);
 
 	if (it != _spriteImages.end())

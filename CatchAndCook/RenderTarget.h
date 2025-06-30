@@ -10,7 +10,7 @@ namespace RENDER_PASS
 		Forward = 1 << 2,
 		Transparent = 1 << 3,
 		PostProcessing = 1 << 4,
-		NoEffectPostProcessing = 1 << 5,
+		NoEffectForwardPostProcessing = 1 << 5,
 		UI = 1 << 6,
 		ParticlePass = 1<<7,
 		Debug = 1 << 8,
@@ -34,7 +34,7 @@ namespace RENDER_PASS
 		case Forward: return 2;
 		case Transparent: return 3;
 		case PostProcessing: return 4;
-		case NoEffectPostProcessing: return 5;
+		case NoEffectForwardPostProcessing: return 5;
 		case UI: return 6;
 		case ParticlePass: return 7;
 		case Debug: return 8;

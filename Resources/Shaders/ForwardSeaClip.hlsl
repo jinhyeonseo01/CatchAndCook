@@ -55,32 +55,17 @@ VS_OUT VS_Main(VS_IN input , uint id : SV_InstanceID)
     return output;
 }
 
-struct PS_OUT
-{
-    float4 position : SV_Target0;
-    float4 normal : SV_Target1;
-    float4 color : SV_Target2;
 
-};
-
-PS_OUT PS_Main(VS_OUT input) : SV_Target
+float4 PS_Main(VS_OUT input) : SV_Target
 {
-    PS_OUT output = (PS_OUT) 0;
-    
-    output.position = float4(input.worldPos, 1.0f);
-    float3 N = ComputeNormalMapping(input.worldNormal, input.worldTangent, _BumpMap.Sample(sampler_lerp, input.uv));
-    output.color = _BaseMap.Sample(sampler_lerp, input.uv) * color;
-    output.normal = float4(N, 1.0f);
-    
-    
-    
-    //output.color += ComputeCaustics(input.uv,1,input.worldPos);
-    
-    if (length(output.color.a - ClipingColor.a) < 0.001)
+  
+    float4 output = _BaseMap.Sample(sampler_lerp, input.uv) * color;
+ 
+    if (length(output.a - ClipingColor.a) < 0.001)
     {
         discard;
     }
 
-
+    
     return output;
 }

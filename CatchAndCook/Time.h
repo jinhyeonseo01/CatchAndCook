@@ -10,9 +10,10 @@ public:
 
 	uint32 GetFps() const { return _fps; }
 	double GetTime() const { return _time; }
-	double GetDeltaTime() const { return std::min(_deltaTime, 0.333); }
+	double GetDeltaTime() const { return _deltaTime; }
 	double GetClockNow() const;
 	double GetDeltaTimeNow() const;
+
 
 private:
 	uint64	_frequency = 0;
