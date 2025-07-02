@@ -360,7 +360,7 @@ void ResourceManager::CreateDefaultShaderJIN()
 		info._zTest = true;
 		info._zWrite = false;
 		info._stencilTest = false;
-		info.cullingType = CullingType::FRONT;
+		info.cullingType = CullingType::NONE;
 
 		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"Skybox", L"Skybox_Field.hlsl", GeoMetryProp,
 			ShaderArg{}, info);
