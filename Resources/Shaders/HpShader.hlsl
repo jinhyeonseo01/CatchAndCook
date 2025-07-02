@@ -61,7 +61,7 @@ VS_OUT VS_Main(VS_IN input , uint id : SV_InstanceID)
     output.worldNormal = mul(float4(input.normal, 0.0f), l2wMatrix);
     output.worldTangent = mul(float4(input.tangent, 0.0f), l2wMatrix);
     
-    output.localX = input.pos.x; // 이게 핵심!! (로컬 x 좌표 저장)
+    output.localX = input.pos.x; 
     
     return output;
 }
