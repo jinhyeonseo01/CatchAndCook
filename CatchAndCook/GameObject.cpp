@@ -104,7 +104,6 @@ void GameObject::RenderEnd()
 
 void GameObject::Destroy()
 {
-    wcout << "GameObject Destory"<< GetName() << endl;
     for (int i = 0; i < _components.size(); ++i) 
     {
         auto& component = _components[i];

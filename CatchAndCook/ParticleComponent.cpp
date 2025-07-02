@@ -23,7 +23,7 @@ void ParticleComponent::Update()
 
 	if (_autoDestroyTime <= _currTime)
 	{
-		cout << "반납함" << endl;
+	
 		SceneManager::main->GetCurrentScene()->AddDestroyQueue(GetOwner());
 
 	}
