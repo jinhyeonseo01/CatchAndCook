@@ -27,6 +27,7 @@
 #include "EventComponent.h"
 #include "TextManager.h"
 #include "AnimationSpriteComponent.h"
+#include "PercentComponent.h"
 void Scene_Sea01::Init()
 {
 	namespace fs = std::filesystem;
@@ -154,24 +155,45 @@ void Scene_Sea01::Init()
 
 
 	{
-		auto plant = Find(L"ray");
+		auto ray = Find(L"ray");
 
-		if (plant)
+		shared_ptr<FishMonster> finder;
+
+		if (ray)
 		{
-			auto finder = plant->AddComponent<FishMonster>();
+			finder = ray->AddComponent<FishMonster>();
 			finder->ReadPathFile(L"rayPath");
+		}
+
+		auto hpBar = Find(L"rayHpBar");
+
+		if (hpBar)
+		{
+			auto percentageBar = hpBar->GetComponent<PercentComponent>();
+			percentageBar->BindingPercentage(&finder->_hp);
 		}
 	}
 
 	{
-		auto plant = Find(L"redFish");
+		auto ray = Find(L"redFish");
 
-		if (plant)
+		shared_ptr<FishMonster> finder;
+
+		if (ray)
 		{
-			auto finder = plant->AddComponent<FishMonster>();
+			finder = ray->AddComponent<FishMonster>();
 			finder->ReadPathFile(L"rayPath");
 		}
+		
+		auto hpBar = Find(L"redFishHpBar");
+
+		if (hpBar)
+		{
+			auto percentageBar = hpBar->GetComponent<PercentComponent>();
+			percentageBar->BindingPercentage(&finder->_hp);
+		}
 	}
+
 
 	{
 

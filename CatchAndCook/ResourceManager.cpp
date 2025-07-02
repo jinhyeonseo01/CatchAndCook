@@ -48,6 +48,23 @@ void ResourceManager::CreateDefaultShader()
 
 void ResourceManager::CreateDefaultShaderKSH()
 {
+	{
+		ShaderInfo info;
+		info.renderTargetCount = 4;
+
+		info.RTVForamts[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		info.RTVForamts[1] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		info.RTVForamts[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		info.RTVForamts[3] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		info.cullingType = CullingType::NONE;
+
+		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"HpShader", L"HpShader.hlsl", StaticProp,
+			ShaderArg{}, info);
+
+		shader->SetPass(RENDER_PASS::Deferred);
+
+	}
+
 
 	{
 		ShaderInfo info;

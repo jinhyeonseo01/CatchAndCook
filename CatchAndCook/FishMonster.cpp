@@ -39,7 +39,7 @@ void FishMonster::Start()
         _animations["die"]->_speedMultiplier = 0.3f;
     }
 
-
+ 
 }
 
 void FishMonster::Update()

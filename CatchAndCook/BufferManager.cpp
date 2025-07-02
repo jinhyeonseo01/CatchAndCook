@@ -62,6 +62,7 @@ void BufferManager::Init()
 	/*	CreateStructuredBufferPool(BufferType::ForwardLightParam, "ForwardLightDatas", sizeof(ForwardLightParams), 10000);*/
 		CreateStructuredBufferPool(i, BufferType::LightDataParam, "g_lights", sizeof(Light), LightManager::_maxLight);
 		CreateStructuredBufferPool(i, BufferType::BoneParam, "BoneDatas", sizeof(Matrix), 2 * 256 * 1024);
+		CreateStructuredBufferPool(i, BufferType::HPData, "HPData", sizeof(float), 300);
 	}
 
 	for(int i=0; i < MAX_FRAME_COUNT; ++i)

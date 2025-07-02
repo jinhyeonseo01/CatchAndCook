@@ -29,6 +29,7 @@ enum class BufferType
 	ScatteringData,
 	VolumetricData,
 	HookData,
+	HPData,
 
 
 	PlayerMaterialParam,

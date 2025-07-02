@@ -403,6 +403,7 @@
       <Filter>03.Component</Filter>
     </ClCompile>
     <ClCompile Include="AnimationSpriteComponent.cpp" />
+    <ClCompile Include="PercentComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -755,6 +756,7 @@
       <Filter>03.Component</Filter>
     </ClInclude>
     <ClInclude Include="AnimationSpriteComponent.h" />
+    <ClInclude Include="PercentComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath_LH.inl">
@@ -969,6 +971,9 @@
       <Filter>998.HLSL\Graphics\KSH</Filter>
     </FxCompile>
     <FxCompile Include="..\Resources\Shaders\ForwardSeaClip.hlsl" />
+    <FxCompile Include="..\Resources\Shaders\HpShader.hlsl">
+      <Filter>998.HLSL\Graphics\KSH</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\Direct12-Project-Scene\Assets\Models\Objects\Sea\Terrian_Seed\New Folder\2023-11-23T113343Z.png">

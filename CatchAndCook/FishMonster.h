@@ -42,9 +42,6 @@ private:
 	void UpdateState(float dt);
 	void SetState(FishMonsterState state);
 
-
-	
-
 private:
 	static unordered_map<wstring, FishPath> _pathList;
 	bool _forward =true;
@@ -55,7 +52,7 @@ private:
 	wstring _pathName = L"Null";
 	weak_ptr<GameObject> _player;
 	Quaternion _firstQuat;
-private:
+public:
 	float _hp = 100.0f;
 
 private:
