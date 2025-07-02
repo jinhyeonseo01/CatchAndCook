@@ -69,7 +69,9 @@ void SeaPlayerController::Start()
 
     if (_animations.find("idle") != _animations.end())
     {
+        cout << "플레이 성공" << endl;
         _skined->Play(_animations["idle"], 0.5f);
+        SetState(SeaPlayerState::Idle);
     };
 
 
