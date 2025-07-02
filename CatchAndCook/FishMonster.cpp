@@ -5,6 +5,7 @@
 #include "AnimationListComponent.h"
 #include "SkinnedHierarchy.h"
 #include "Animation.h"
+#include "PercentComponent.h"
 unordered_map<wstring, FishPath> FishMonster::_pathList;
 
 FishMonster::FishMonster()
@@ -24,8 +25,8 @@ void FishMonster::Init()
 void FishMonster::Start()
 {
 	_firstQuat = GetOwner()->_transform->GetWorldRotation();
-	_animations = GetOwner()->GetComponent<AnimationListComponent>()->GetAnimations();
-	_skined = GetOwner()->GetComponent<SkinnedHierarchy>();
+	_animations = GetOwner()->GetComponentWithChilds<AnimationListComponent>()->GetAnimations();
+	_skined = GetOwner()->GetComponentWithChilds<SkinnedHierarchy>();
     _player = SceneManager::main->GetCurrentScene()->Find(L"seaPlayer");
 
     if (_animations.find("idle") != _animations.end())
@@ -39,12 +40,18 @@ void FishMonster::Start()
         _animations["die"]->_speedMultiplier = 0.3f;
     }
 
- 
+
+    auto& percentageComponet = GetOwner()->GetChildByName(L"HPBar")->GetComponent<PercentComponent>();
+
+    if (percentageComponet)
+    {
+        percentageComponet->BindingPercentage(&_hp);
+    }
 }
 
 void FishMonster::Update()
 {
-	float dt = Time::main->GetDeltaTime();
+	/*float dt = Time::main->GetDeltaTime();
 
     if (_state == FishMonsterState::Die)
         return;
@@ -134,7 +141,7 @@ void FishMonster::Update()
             );
         }
 
-    }
+    }*/
 
 
 }

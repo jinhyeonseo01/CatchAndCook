@@ -4,12 +4,15 @@
 #include "Light_b3.hlsl"
 #include "SeaGlobal.hlsl"
 
+Texture2D _BaseMap : register(t0);
 
 struct hpstruct
 {
     float g_hp;
+    float pp;
+    float pp2;
+    float pp3;
 };
-
 
 StructuredBuffer<hpstruct> HPData : register(t33);
 
@@ -75,18 +78,15 @@ PS_OUT PS_Main(VS_OUT input)
     output.normal = float4(input.worldNormal, 1.0f);
     
     float hpPercent = saturate(input.hp / 100.0f);
-    
-    if (input.uv.x <= hpPercent)
+
+    if (input.uv.x >= (1.0f - hpPercent))
     {
-        output.color = float4(0, 1.0f, 0.0f, 1.0f);
+        output.color = float4(0, 1.0f, 0.0f, 1.0f); 
     }
     else
     {
-        clip(-1);
+        output.color = float4(0.3f, 0.3f, 0.3f, 1.0f);
     }
     
-  
-    
-    //output.color += ComputeCaustics(input.uv,1,input.worldPos);
     return output;
 }

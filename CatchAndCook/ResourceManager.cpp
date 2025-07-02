@@ -56,6 +56,8 @@ void ResourceManager::CreateDefaultShaderKSH()
 		info.RTVForamts[1] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		info.RTVForamts[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		info.RTVForamts[3] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+
 		info.cullingType = CullingType::NONE;
 
 		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"HpShader", L"HpShader.hlsl", StaticProp,
@@ -358,7 +360,7 @@ void ResourceManager::CreateDefaultShaderJIN()
 		info._zTest = true;
 		info._zWrite = false;
 		info._stencilTest = false;
-		info.cullingType = CullingType::NONE;
+		info.cullingType = CullingType::BACK;
 
 		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"Skybox", L"Skybox_Field.hlsl", GeoMetryProp,
 			ShaderArg{}, info);

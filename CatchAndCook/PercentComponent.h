@@ -2,7 +2,13 @@
 #include "Component.h"
 #include "RendererBase.h"
 
-
+struct PercentageData
+{
+	float percentage;
+	float p1;
+	float p2;
+	float p3;
+};
 
 class PercentComponent :public Component , public  RenderStructuredSetter
 {

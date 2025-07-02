@@ -165,13 +165,15 @@ void Scene_Sea01::Init()
 			finder->ReadPathFile(L"rayPath");
 		}
 
-		auto hpBar = Find(L"rayHpBar");
+		//auto hpBar =ray->GetChildByName(L"rayHpBar");
 
-		if (hpBar)
-		{
-			auto percentageBar = hpBar->GetComponent<PercentComponent>();
-			percentageBar->BindingPercentage(&finder->_hp);
-		}
+		////auto hpBar = Find(L"rayHpBar");
+
+		//if (hpBar)
+		//{
+		//	auto percentageBar = hpBar->GetComponent<PercentComponent>();
+		//	percentageBar->BindingPercentage(&finder->_hp);
+		//}
 	}
 
 	{
@@ -185,13 +187,7 @@ void Scene_Sea01::Init()
 			finder->ReadPathFile(L"rayPath");
 		}
 		
-		auto hpBar = Find(L"redFishHpBar");
-
-		if (hpBar)
-		{
-			auto percentageBar = hpBar->GetComponent<PercentComponent>();
-			percentageBar->BindingPercentage(&finder->_hp);
-		}
+	
 	}
 
 

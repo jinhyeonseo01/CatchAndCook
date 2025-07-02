@@ -203,8 +203,10 @@ std::shared_ptr<GameObject> GameObject::GetChildByName(const std::wstring& name)
                 return false;
             return obj.lock()->GetName() == name;
         });
+
     if (iter == _childs.end())
         return nullptr;
+
     return iter->lock();
 }
 

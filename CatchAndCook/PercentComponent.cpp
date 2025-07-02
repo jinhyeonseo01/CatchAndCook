@@ -24,11 +24,9 @@ void PercentComponent::Start()
 
 void PercentComponent::Update()
 {
-	/*GetOwner()->_transform->SetForward(CameraManager::main->GetActiveCamera()->GetCameraLook() * -1.0f);*/
 
 	if (_percentagePtr == nullptr)
 	{
-		cout << "_percentagePtr NO Binding" << endl;
 		return;
 	}
 
@@ -48,6 +46,12 @@ void PercentComponent::Update()
 
 void PercentComponent::Update2()
 {
+	vec3 objPos = GetOwner()->_transform->GetWorldPosition();
+	vec3 camPos = CameraManager::main->GetActiveCamera()->GetCameraPos();
+
+	vec3 dirToCamera = (camPos - objPos);
+	dirToCamera.Normalize();
+	GetOwner()->_transform->LookUp(dirToCamera, vec3::Up);
 
 }
 
@@ -98,10 +102,8 @@ void PercentComponent::Destroy()
 
 void PercentComponent::SetData(StructuredBuffer* buffer, Material* material)
 {
-	if (_percentagePtr == nullptr)
-	{
-		return;
-	}
-
-	buffer->AddData(_displayPercentage);
+	PercentageData data;
+	data.percentage = _displayPercentage;
+	
+	buffer->AddData(data);
 }

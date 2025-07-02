@@ -52,8 +52,8 @@ void SeaPlayerController::Start()
 	_camera->SetCameraLook(vec3(0.308061f, 0.164842f, 0.936977f));
 	//GetOwner()->_transform->SetWorldPosition(vec3(0, 1000.0f, 1.0f));
 
-    _animations = GetOwner()->GetComponent<AnimationListComponent>()->GetAnimations();
-    _skined  =GetOwner()->GetComponent<SkinnedHierarchy>();
+    _animations = GetOwner()->GetComponentWithChilds<AnimationListComponent>()->GetAnimations();
+    _skined  =GetOwner()->GetComponentWithChilds<SkinnedHierarchy>();
 
     if (_animations.find("shot") != _animations.end())
     {
