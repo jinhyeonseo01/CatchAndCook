@@ -34,6 +34,8 @@ struct VS_OUT
     float3 worldTangent : TANGENT;
     float hp : HP;
     
+    float localX : TEXCOORD1; 
+    
 };
 
 VS_OUT VS_Main(VS_IN input , uint id : SV_InstanceID)
@@ -59,6 +61,8 @@ VS_OUT VS_Main(VS_IN input , uint id : SV_InstanceID)
     output.worldNormal = mul(float4(input.normal, 0.0f), l2wMatrix);
     output.worldTangent = mul(float4(input.tangent, 0.0f), l2wMatrix);
     
+    output.localX = input.pos.x; // 이게 핵심!! (로컬 x 좌표 저장)
+    
     return output;
 }
 
@@ -69,24 +73,25 @@ struct PS_OUT
     float4 color : SV_Target2;
 
 };
-
-PS_OUT PS_Main(VS_OUT input) 
+PS_OUT PS_Main(VS_OUT input)
 {
     PS_OUT output = (PS_OUT) 0;
-    
+
     output.position = float4(input.worldPos, 1.0f);
     output.normal = float4(input.worldNormal, 1.0f);
-    
+
     float hpPercent = saturate(input.hp / 100.0f);
 
-    if (input.uv.x >= (1.0f - hpPercent))
+    float x01 = saturate((input.localX + 1.0f) * 0.5f);
+
+    if (x01 >= (1.0f - hpPercent))
     {
-        output.color = float4(0, 1.0f, 0.0f, 1.0f); 
+        output.color = float4(0, 1.0f, 0.0f, 1.0f); // 초록색
     }
     else
     {
-        output.color = float4(0.3f, 0.3f, 0.3f, 1.0f);
+        output.color = float4(0.3f, 0.3f, 0.3f, 1.0f); // 회색 배경
     }
-    
+
     return output;
 }
