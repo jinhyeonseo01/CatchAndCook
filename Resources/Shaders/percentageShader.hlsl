@@ -8,7 +8,7 @@ Texture2D _BaseMap : register(t0);
 
 struct hpstruct
 {
-    float g_hp;
+    float g_percentage;
     float pp;
     float pp2;
     float pp3;
@@ -32,7 +32,7 @@ struct VS_OUT
     float3 worldNormal : NORMAL;
     float2 uv : TEXCOORD;
     float3 worldTangent : TANGENT;
-    float hp : HP;
+    float percentage : Percentage;
     
     float localX : TEXCOORD1; 
     
@@ -51,7 +51,7 @@ VS_OUT VS_Main(VS_IN input , uint id : SV_InstanceID)
     output.pos = mul(float4(input.pos, 1.0f), l2wMatrix);
     output.worldPos = output.pos.xyz;
     
-    output.hp = hpdata.g_hp;
+    output.percentage = hpdata.g_percentage;
     
     float4 clipPos = mul(output.pos, VPMatrix);
     output.pos = clipPos;
@@ -80,17 +80,17 @@ PS_OUT PS_Main(VS_OUT input)
     output.position = float4(input.worldPos, 1.0f);
     output.normal = float4(input.worldNormal, 1.0f);
 
-    float hpPercent = saturate(input.hp / 100.0f);
+    float percentage = saturate(input.percentage / 100.0f);
 
     float x01 = saturate((input.localX + 1.0f) * 0.5f);
 
-    if (x01 >= (1.0f - hpPercent))
+    if (x01 >= (1.0f - percentage))
     {
-        output.color = float4(0, 1.0f, 0.0f, 1.0f); // 초록색
+        output.color = float4(0, 1.0f, 0.0f, 1.0f); 
     }
     else
     {
-        output.color = float4(0.3f, 0.3f, 0.3f, 1.0f); // 회색 배경
+        output.color = float4(0.3f, 0.3f, 0.3f, 1.0f);
     }
 
     return output;

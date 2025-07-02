@@ -34,6 +34,11 @@ void FishMonster::Start()
         _skined->Play(_animations["idle"], 0.5f);
     }
 
+    else
+    {
+        wcout << GetOwner()->GetName() << "idle 못찾음" << endl;
+    }
+
     if (_animations.find("die") != _animations.end())
     {
         _animations["die"]->_isLoop = false;
@@ -51,7 +56,7 @@ void FishMonster::Start()
 
 void FishMonster::Update()
 {
-	/*float dt = Time::main->GetDeltaTime();
+	float dt = Time::main->GetDeltaTime();
 
     if (_state == FishMonsterState::Die)
         return;
@@ -141,7 +146,7 @@ void FishMonster::Update()
             );
         }
 
-    }*/
+    }
 
 
 }
