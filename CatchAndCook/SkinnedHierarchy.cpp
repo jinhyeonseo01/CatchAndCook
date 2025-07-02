@@ -11,7 +11,6 @@
 #include "Transform.h"
 
 
-
 std::unordered_map<std::string, std::string> SkinnedHierarchy::_boneNameToHumanMappingTable;
 
 SkinnedHierarchy::~SkinnedHierarchy()
@@ -312,7 +311,6 @@ Vector3 SkinnedHierarchy::BlendDeltaPosition(const std::string& name,const std::
 			}
 		}
 	}
-
 	return finalAnim_interpolatedPosition;
 }
 

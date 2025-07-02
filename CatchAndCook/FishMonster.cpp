@@ -4,7 +4,7 @@
 #include "Gizmo.h"
 #include "AnimationListComponent.h"
 #include "SkinnedHierarchy.h"
-
+#include "Animation.h"
 unordered_map<wstring, FishPath> FishMonster::_pathList;
 
 FishMonster::FishMonster()
@@ -18,6 +18,7 @@ FishMonster::~FishMonster()
 
 void FishMonster::Init()
 {
+
 }
 
 void FishMonster::Start()
@@ -26,107 +27,27 @@ void FishMonster::Start()
 	_animations = GetOwner()->GetComponent<AnimationListComponent>()->GetAnimations();
 	_skined = GetOwner()->GetComponent<SkinnedHierarchy>();
     _player = SceneManager::main->GetCurrentScene()->Find(L"seaPlayer");
+
+    if (_animations.find("idle") != _animations.end())
+    {
+        _skined->Play(_animations["idle"], 0.5f);
+    }
+
+    if (_animations.find("die") != _animations.end())
+    {
+        _animations["die"]->_isLoop = false;
+        _animations["die"]->_speedMultiplier = 0.3f;
+    }
+
+
 }
 
 void FishMonster::Update()
 {
 	float dt = Time::main->GetDeltaTime();
 
-	UpdateState(dt);
-}
-
-void FishMonster::Update2()
-{
-}
-
-void FishMonster::Enable()
-{
-}
-
-void FishMonster::Disable()
-{
-}
-
-void FishMonster::RenderBegin()
-{
-}
-
-void FishMonster::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
-{
-}
-
-void FishMonster::CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
-{
-}
-
-void FishMonster::ChangeParent(const std::shared_ptr<GameObject>& prev, const std::shared_ptr<GameObject>& current)
-{
-}
-
-void FishMonster::SetDestroy()
-{
-}
-
-void FishMonster::Destroy()
-{
-
-}
-
-
-void FishMonster::UpdateState(float dt)
-{
-	switch (_state)
-	{
-	case FishMonsterState::Idle:
-		Idle(dt);
-		break;
-	case FishMonsterState::Move:
-		Move(dt);
-		break;
-	case FishMonsterState::Attack:
-		Attack(dt);
-		break;
-	case FishMonsterState::Die:
-		Die(dt);
-		break;
-	case FishMonsterState::Hit:
-		Hit(dt);
-		break;
-	default:
-		break;
-	}
-}
-
-void FishMonster::SetState(FishMonsterState state)
-{
-	if (_state == state)
-		return;
-	_state = state;
-
-	switch (_state)
-	{
-	case FishMonsterState::Idle:
-		break;
-	case FishMonsterState::Move:
-		break;
-	case FishMonsterState::Attack:
-		break;
-	case FishMonsterState::Die:
-		break;
-	case FishMonsterState::Hit:
-		break;
-	default:
-		break;
-	}
-}
-
-void FishMonster::Idle(float dt)
-{
-
-}
-
-void FishMonster::Move(float dt)
-{
+    if (_state == FishMonsterState::Die)
+        return;
 
     if (_pathList.find(_pathName) == _pathList.end())
     {
@@ -136,8 +57,8 @@ void FishMonster::Move(float dt)
 
     const vector<vec3>& myPath = _pathList[_pathName].path;
     int nextIndex = _forward ? _currentIndex + 1 : _currentIndex - 1;
-    vec3 start = myPath[_currentIndex] ;
-    vec3 end = myPath[nextIndex] ;
+    vec3 start = myPath[_currentIndex];
+    vec3 end = myPath[nextIndex];
 
     if (_segmentLength < 0.0001f)
         _segmentLength = (end - start).Length();
@@ -204,31 +125,154 @@ void FishMonster::Move(float dt)
     if (HasGizmoFlag(Gizmo::main->_flags, GizmoFlags::DrawPath))
     {
 
-            for (size_t i = 0; i + 1 < myPath.size(); ++i)
-            {
-                vec3 c = _pathList[_pathName]._pathColor;
-                Gizmo::main->Line(
-                    myPath[i], myPath[i + 1],
-                    vec4(c.x, c.y, c.z, 1.0f)
-                );
-            }
+        for (size_t i = 0; i + 1 < myPath.size(); ++i)
+        {
+            vec3 c = _pathList[_pathName]._pathColor;
+            Gizmo::main->Line(
+                myPath[i], myPath[i + 1],
+                vec4(c.x, c.y, c.z, 1.0f)
+            );
+        }
 
+    }
+
+
+}
+
+void FishMonster::Update2()
+{
+    UpdateState(Time::main->GetDeltaTime());
+}
+
+void FishMonster::Enable()
+{
+}
+
+void FishMonster::Disable()
+{
+}
+
+void FishMonster::RenderBegin()
+{
+}
+
+void FishMonster::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
+{
+}
+
+void FishMonster::CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
+{
+}
+
+void FishMonster::ChangeParent(const std::shared_ptr<GameObject>& prev, const std::shared_ptr<GameObject>& current)
+{
+}
+
+void FishMonster::SetDestroy()
+{
+}
+
+void FishMonster::Destroy()
+{
+
+}
+
+
+void FishMonster::UpdateState(float dt)
+{
+
+    static float _hit_to_IdleTime = 0.0f;
+
+    switch (_state)
+    {
+    case FishMonsterState::Idle:
+     
+        break;
+    case FishMonsterState::Die:
+        if (_skined->IsPlay() == false)
+        {
+            _hit_to_IdleTime = 0;
+            GetOwner()->SetActiveSelf(false);
+        }
+		break;
+	case FishMonsterState::Hit:
+    {
+        _hit_to_IdleTime += dt;
+        constexpr float LimitTime = 15.0f;
+
+        if (_hit_to_IdleTime >= LimitTime)
+        {
+            _hit_to_IdleTime = 0;
+            SetState(FishMonsterState::Idle);
+        }
+    }
+		break;
+	default:
+		break;
+	}
+}
+
+void FishMonster::SetState(FishMonsterState state)
+{
+	if (_state == state)
+		return;
+
+	_state = state;
+
+	switch (_state)
+	{
+	case FishMonsterState::Idle:
+        _moveSpeed /= 4.0f;
+
+        if (_animations.find("idle") != _animations.end())
+        {
+            _skined->Play(_animations["idle"], 0.5f);
+        }
+        else
+        {
+            _skined->_speedMultiple = 1.0f;
+        }
+
+		break;
+	case FishMonsterState::Die:
+        //_moveSpeed = 0.0f;
+          /* SceneManager::main->GetCurrentScene()->AddDestroyQueue(ray.gameObject->GetRoot());*/
+        if (_animations.find("die") != _animations.end())
+        {
+            _skined->Play(_animations["die"], 0.5f);
+        }
+		break;
+	case FishMonsterState::Hit:
+        _moveSpeed *= 4.0f;
+        if (_animations.find("run") != _animations.end())
+        {
+            _skined->Play(_animations["run"], 0.5f);
+        }
+        else
+        {
+            _skined->_speedMultiple = 8.0f;
+        }
+		break;
+	default:
+		break;
+	}
+}
+
+void FishMonster::EventDamage(int damage)
+{
+    _hp -= damage;
+
+    if (_hp <= 0)
+    {
+        SetState(FishMonsterState::Die);
+    }
+    else
+    {
+        SetState(FishMonsterState::Hit);
     }
 
 }
 
-void FishMonster::Attack(float dt)
-{
-}
-
-void FishMonster::Die(float dt)
-{
-}
-
-void FishMonster::Hit(float dt)
-{
-
-}
 
 void FishMonster::ReadPathFile(const std::wstring& fileName)
 {

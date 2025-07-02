@@ -79,17 +79,7 @@ void PathFinder::Start()
 void PathFinder::Update()
 {
 
-    static bool coutPrintPathCount = false;
-
-    if (coutPrintPathCount == false)
-    {
-        for (auto& ele : _pathList)
-        {
-            wcout << "Path Name:" << ele.first << " ," << "갯수:" << ele.second.count << endl;
-        }
-
-        coutPrintPathCount = true;
-    }
+   
 
 
 
@@ -269,6 +259,18 @@ void PathFinder::ClearDebugDraw()
 	{
 		path.second.AreyouDraw = false;
 	}
+
+    static bool coutPrintPathCount = false;
+
+    if (coutPrintPathCount == false)
+    {
+        for (auto& ele : _pathList)
+        {
+            wcout << "Path Name:" << ele.first << " ," << "갯수:" << ele.second.count << endl;
+        }
+
+        coutPrintPathCount = true;
+    }
 }
 
 void PathFinder::SetPass(const wstring& path)

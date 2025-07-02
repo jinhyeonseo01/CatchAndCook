@@ -13,6 +13,7 @@
 #include "Weapon.h"
 #include "ParticleManager.h"
 #include "AnimationSpriteComponent.h"
+#include "FishMonster.h"
 SeaPlayerController::SeaPlayerController()
 {
 }
@@ -449,7 +450,11 @@ void SeaPlayerController::SetState(SeaPlayerState state)
                 {
                     ParticleManager::main->GenParticle(1.0f, 150, 5.0f, ray.worldPos, ray.normal, ParticleMoveType::RadialSpread, ParticleColorType::Red
                         , ResourceManager::main->Get<Texture>(L"bubbleTexture"));
-                    SceneManager::main->GetCurrentScene()->AddDestroyQueue(ray.gameObject->GetRoot());
+                 
+                    if (auto& fishMonster =ray.gameObject->GetRoot()->GetComponent<FishMonster>())
+                    {
+                        fishMonster->EventDamage(10.0f);
+                    }
                 }
 
             }

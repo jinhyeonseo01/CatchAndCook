@@ -162,6 +162,17 @@ void Scene_Sea01::Init()
 			finder->ReadPathFile(L"rayPath");
 		}
 	}
+
+	{
+		auto plant = Find(L"redFish");
+
+		if (plant)
+		{
+			auto finder = plant->AddComponent<FishMonster>();
+			finder->ReadPathFile(L"rayPath");
+		}
+	}
+
 	{
 
 		{

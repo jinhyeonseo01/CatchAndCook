@@ -10,8 +10,6 @@ class Animation;
 enum class FishMonsterState
 {
 	Idle,
-	Move,
-	Attack,
 	Die,
 	Hit,
 };
@@ -35,16 +33,17 @@ public:
 	virtual void Destroy();
 
 public:
+	void EventDamage(int damage);
+
+public:
 	void ReadPathFile(const std::wstring& fileName);
 
 private:
 	void UpdateState(float dt);
 	void SetState(FishMonsterState state);
-	void Idle(float dt);
-	void Move(float dt);
-	void Attack(float dt);
-	void Die(float dt);
-	void Hit(float dt);
+
+
+	
 
 private:
 	static unordered_map<wstring, FishPath> _pathList;
@@ -56,10 +55,12 @@ private:
 	wstring _pathName = L"Null";
 	weak_ptr<GameObject> _player;
 	Quaternion _firstQuat;
+private:
+	float _hp = 100.0f;
 
 private:
 	shared_ptr<SkinnedHierarchy> _skined;
 	std::unordered_map<string, std::shared_ptr<Animation>> _animations;
-	FishMonsterState _state = FishMonsterState::Move;
+	FishMonsterState _state = FishMonsterState::Idle;
 };
 
