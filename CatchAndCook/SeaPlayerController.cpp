@@ -427,8 +427,7 @@ void SeaPlayerController::SetState(SeaPlayerState state)
     break;
     case SeaPlayerState::Shot:
     {
-        cout << "shot" << endl;
-
+  
         vec3 nearPlane = vec3(0.0f, 0.0f, 0.0f);
         vec3 farPlane = vec3(0.0f, 0.0f, 1.0f);
 

@@ -74,11 +74,24 @@ void PathFinder::Start()
         _forward = false;
     }
 
-
     GetOwner()->_transform->SetWorldPosition(myPath[_currentIndex]);
 }
 void PathFinder::Update()
 {
+
+    static bool coutPrintPathCount = false;
+
+    if (coutPrintPathCount == false)
+    {
+        for (auto& ele : _pathList)
+        {
+            wcout << "Path Name:" << ele.first << " ," << "갯수:" << ele.second.count << endl;
+        }
+
+        coutPrintPathCount = true;
+    }
+
+
 
     if (_pathList.find(_pathName) == _pathList.end()) return;
 
@@ -265,6 +278,7 @@ void PathFinder::SetPass(const wstring& path)
         ReadPathFile(path);
     }
 
+    _pathList[path].count++;
     _pathName = path;
 }
 

@@ -1,7 +1,7 @@
 
 #include "Light_b3.hlsl"
 
-#define SHADOW_ON
+//#define SHADOW_ON
 
 SamplerState sampler_lerp : register(s0);
 SamplerState sampler_point : register(s1);

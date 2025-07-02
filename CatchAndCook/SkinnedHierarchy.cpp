@@ -312,6 +312,7 @@ Vector3 SkinnedHierarchy::BlendDeltaPosition(const std::string& name,const std::
 			}
 		}
 	}
+
 	return finalAnim_interpolatedPosition;
 }
 
