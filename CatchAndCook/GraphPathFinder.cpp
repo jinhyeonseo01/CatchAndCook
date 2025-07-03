@@ -6,20 +6,33 @@
 COMPONENT(GraphPathFinder)
 
 
-
-
 void GraphPathFinder::Init()
 {
 }
 
 void GraphPathFinder::Start()
 {
+    vec3& currentPos =GetOwner()->_transform->GetWorldPosition();
+
+    if (currentPos.x < 0)
+    {
+        _leftRight = LeftRight::Left;
+    }
+    else
+    {
+        _leftRight = LeftRight::Right;
+    }
+
     GetRamdomTarget();
+
+
 }
 
 void GraphPathFinder::Update()
 {
-	std::unordered_map<int, vec3>& data = GraphData::datas;
+    std::unordered_map<LeftRight, std::unordered_map<int, vec3>>& leftrightData = GraphData::datas;
+
+    auto& data = leftrightData[_leftRight];
 
     vec3& TargetPos = data[_currentTargetIndex];
     vec3 currentPos = GetOwner()->_transform->GetWorldPosition();
@@ -36,13 +49,13 @@ void GraphPathFinder::Update()
     if (hit)
     {
         GetRamdomTarget();
+        return;
     }
 
-
-
-    if ((TargetPos - currentPos).Length() < 0.1f)
+    if ((TargetPos - currentPos).LengthSquared() < 1.0f) // 거리 1 이하
     {
         GetRamdomTarget();
+        return;
     }
 
 }
@@ -91,17 +104,18 @@ void GraphPathFinder::Destroy()
 {
 }
 
-void GraphPathFinder::GetRamdomTarget()
+vec3 GraphPathFinder::GetRamdomTarget()
 {
-    auto& data = GraphData::datas;
+    LeftRight opposite = (_leftRight == LeftRight::Left) ? LeftRight::Right : LeftRight::Left;
+    auto& sideData = GraphData::datas[opposite];
 
-    if (data.empty())
-        return;
+    int newIndex;
 
-    static std::random_device rd;
-    static std::mt19937 gen(rd());
-    std::uniform_int_distribution<int> dist(0, static_cast<int>(data.size()) - 1);
+    do
+    {
+        newIndex = rand() % sideData.size();
+    } while (newIndex == _currentTargetIndex);
 
-    int randomIndex = dist(gen);
-    _currentTargetIndex = randomIndex;
-}
+    _currentTargetIndex = newIndex;
+    return sideData[_currentTargetIndex];
+};

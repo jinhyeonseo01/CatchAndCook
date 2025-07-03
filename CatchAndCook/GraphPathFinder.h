@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Component.h"
+#include "GraphData.h"
 class GraphPathFinder : public Component
 {
 public:
@@ -19,9 +20,10 @@ public:
 	virtual void Destroy();
 
 private:
+	LeftRight _leftRight;
 	int _currentTargetIndex{};
 
-	void GetRamdomTarget();
+	vec3 GetRamdomTarget();
 
 
 };

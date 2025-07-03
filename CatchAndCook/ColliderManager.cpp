@@ -593,6 +593,10 @@ bool ColliderManager::RayCastSpeed(const Ray& ray, float maxDist, shared_ptr<Gam
 {
 	const auto& sceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
 
+	if (ray.direction == vec3::Zero)
+		return false;
+
+
 	float dist = 0;
 
 	auto it = _collidersForRay.find(sceneType);
@@ -600,7 +604,7 @@ bool ColliderManager::RayCastSpeed(const Ray& ray, float maxDist, shared_ptr<Gam
 	if (it == _collidersForRay.end())
 		return false;
 
-	cout << it->second.size() << endl;
+	
 
 	for (const auto& collider : it->second)
 	{

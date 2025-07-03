@@ -1,4 +1,7 @@
 ﻿#pragma once
+
+enum class LeftRight { Left, Right };
+
 class GraphData
 {
 
@@ -7,7 +10,7 @@ public:
 
 
 public:
-	static std::unordered_map<int, vec3> datas;             
+	static std::unordered_map<LeftRight,std::unordered_map<int, vec3>> datas;
 
 };
 
