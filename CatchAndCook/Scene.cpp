@@ -589,7 +589,7 @@ void Scene::ExecuteDestroyGameObjects()
         std::vector<std::shared_ptr<GameObject>> vec;
         gameObject->GetChildAll(vec);
 
-        wcout << gameObject->GetName() << endl;
+       /* wcout << gameObject->GetName() << endl;*/
 
         for (auto& ele : vec)
         {
