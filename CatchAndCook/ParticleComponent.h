@@ -3,13 +3,22 @@
 struct ParticleData
 {
 	vec3 color{};
-	int textureUse=0;
+	int life{};
 
 	vec3 worldPos{};
 	float size{};
 
 	vec3 dir{};
 	float velocity{};
+};
+
+
+struct ParicleHelperParams
+{
+	int paricleCount{};
+	int textureUse = 0;
+	vec2 padding{};
+	vec4 clipingColor{};
 };
 
 
@@ -26,7 +35,7 @@ enum class ParticleColorType
 	Red,
 };
 
-class ParticleComponent : public Component
+class ParticleComponent : public Component 
 {
 
 public:
@@ -45,17 +54,21 @@ public:
 	virtual void SetDestroy() override;
 	virtual void Destroy();
 
-	int GetParicleCount() { return _particleCount; }
+	int GetParicleCount() { return _helperParams.paricleCount; }
+	const ParicleHelperParams& GetParicleHelperParams() { return _helperParams; }
 	shared_ptr<StructuredBuffer>& GetStructuredBuffer() { return _strBuffer; }
+
 
 private:
 	void SetParticle(shared_ptr<StructuredBuffer> strBuffer,
-		float autoDestroyTime,int particleCount,float size , const vec3& worldPos,const  vec3& worldNormal , const ParticleMoveType& moveType, const ParticleColorType& colorType, shared_ptr<Texture> texture);
+		float autoDestroyTime,int particleCount,float size , const vec3& worldPos,const  vec3& worldNormal , const ParticleMoveType& moveType, const ParticleColorType& colorType, shared_ptr<Texture> texture,
+		 const vec4& clipingColor);
 
 private:
-	int _particleCount = 0;
 	float _autoDestroyTime = 0;
 	float _currTime = 0;
+
+	ParicleHelperParams _helperParams{};
 	shared_ptr<StructuredBuffer> _strBuffer;
 
 	friend class ParticleManager;

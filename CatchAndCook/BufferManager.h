@@ -30,6 +30,7 @@ enum class BufferType
 	VolumetricData,
 	HookData,
 	HPData,
+	ParicleHelperParams,
 
 
 	PlayerMaterialParam,

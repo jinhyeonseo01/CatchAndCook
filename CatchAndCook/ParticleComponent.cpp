@@ -72,30 +72,35 @@ void ParticleComponent::Destroy()
 	ParticleManager::main->RecycleParticleBuffer(_strBuffer);
 }
 
-void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, float autoDestroyTime, int particleCount, float size, const vec3& worldPos, const vec3& worldNormal, const ParticleMoveType& moveType, const ParticleColorType& colorType, shared_ptr<Texture> texture)
+void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, float autoDestroyTime, int particleCount, float size, const vec3& worldPos, const vec3& worldNormal, const ParticleMoveType& moveType, const ParticleColorType& colorType, shared_ptr<Texture> texture,
+	 const vec4& clipingColor)
 {
 	assert(particleCount <= 500);
-
-	_strBuffer = strBuffer;
-	_autoDestroyTime = autoDestroyTime;
 
 	if (particleCount > 500)
 		cout << "파티클 갯수 잘못설정" << endl;
 
-	_particleCount = particleCount;
+	_helperParams.paricleCount = particleCount;
+	_helperParams.clipingColor = clipingColor;
+
+	if (texture)
+	{
+		_helperParams.textureUse = 1;
+	}
+
+	_strBuffer = strBuffer;
+	_autoDestroyTime = autoDestroyTime;
+
+
 	vector<ParticleData> vecData(particleCount);
 
-	for (int i = 0; i < _particleCount; ++i)
+	for (int i = 0; i < particleCount; ++i)
 	{
 
 		ParticleData data;
 
 		data.size = size;
 
-		if (texture)
-		{
-			data.textureUse = 1;
-		}
 
 		switch (moveType)
 		{
@@ -133,6 +138,7 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 
 		vecData[i] = data;
 	}
+
 
 	_strBuffer->CopyToDefaultHeap(vecData);
 }

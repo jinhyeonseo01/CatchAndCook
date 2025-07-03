@@ -95,6 +95,11 @@ void ParticleRenderer::Rendering(Material* material, Mesh* mesh, int instanceCou
 {
     auto& cmdList = Core::main->GetCmdList();
 
+	CBufferContainer* CbufferContainer = Core::main->GetBufferManager()->GetBufferPool(BufferType::ParicleHelperParams)->Alloc(1);
+	memcpy(CbufferContainer->ptr, (void*)&_particleComponent->GetParicleHelperParams(), sizeof(ParicleHelperParams));
+	cmdList->SetComputeRootConstantBufferView(4, CbufferContainer->GPUAdress);
+	cmdList->SetGraphicsRootConstantBufferView(4, CbufferContainer->GPUAdress);
+
 	//파티클 움직임 연산
 	{
 		cmdList->SetPipelineState(_particleComputeShader->_pipelineState.Get());
@@ -102,7 +107,6 @@ void ParticleRenderer::Rendering(Material* material, Mesh* mesh, int instanceCou
 		auto& table = Core::main->GetBufferManager()->GetTable();
 		_tableContainer = table->Alloc(10);
 		table->CopyHandle(_tableContainer.CPUHandle, _particleComponent->GetStructuredBuffer()->GetUAVHandle(), 5);
-
 		cmdList->SetComputeRootDescriptorTable(10, _tableContainer.GPUHandle);
 
 		uint32 groupCount = (_particleComponent->GetParicleCount() + 255) / 256;
@@ -116,7 +120,6 @@ void ParticleRenderer::Rendering(Material* material, Mesh* mesh, int instanceCou
 		cmdList->SetPipelineState(_particleRenderingShader->_pipelineState.Get());
 		auto& table = Core::main->GetBufferManager()->GetTable(); 
 		_tableContainer = table->Alloc(SRV_TABLE_REGISTER_COUNT);
-
 		table->CopyHandle(_tableContainer.CPUHandle, _particleComponent->GetStructuredBuffer()->GetSRVHandle(), 0);
 
 		if (_particleTexture)

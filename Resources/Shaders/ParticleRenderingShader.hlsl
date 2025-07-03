@@ -7,7 +7,7 @@
 struct ParticleData
 {
     float3 color;
-    int textureUse;
+    int life;
 
     float3 worldPos;
     float size;
@@ -16,13 +16,15 @@ struct ParticleData
     float velocity;
 };
 
+
+
+
 struct VS_OUT
 {
     float4 pos : SV_POSITION;
     float2 uv : TEXCOORD0;
     float3 color : COLOR;
     float size : SIZE;
-    float TextureUse : USE;
 };
 
 struct GS_OUT
@@ -30,7 +32,14 @@ struct GS_OUT
     float4 pos : SV_POSITION;
     float2 uv : TEXCOORD0;
     float3 color : COLOR;
-    float TextureUse : USE;
+};
+
+cbuffer ParicleHelperParams : register(b4)
+{
+    int g_paricleCount;
+    int g_textureUse;
+    float2 g_paddingvv;
+    float4 g_clipingColor;
 };
 
 StructuredBuffer<ParticleData> ParticleDatas : register(t0);
@@ -38,6 +47,7 @@ Texture2D _BaseMap : register(t1);
 
 VS_OUT VS_Main(uint id : SV_InstanceID)
 {
+
     VS_OUT output = (VS_OUT) 0;
     
     ParticleData data =ParticleDatas[id];
@@ -45,9 +55,7 @@ VS_OUT VS_Main(uint id : SV_InstanceID)
     output.pos = mul(output.pos, ViewMatrix);
     output.color = data.color;
     output.size = data.size;
-    output.TextureUse = data.textureUse;
-    
-    
+
     return output;
 }
 
@@ -82,11 +90,6 @@ void GS_Main(point VS_OUT input[1], inout TriangleStream<GS_OUT> outputStream)
     output[2].color = input[0].color;
     output[3].color = input[0].color;
     
-    output[0].TextureUse = input[0].TextureUse;
-    output[1].TextureUse = input[0].TextureUse;
-    output[2].TextureUse = input[0].TextureUse;
-    output[3].TextureUse = input[0].TextureUse;
-
     outputStream.Append(output[0]);
     outputStream.Append(output[1]);
     outputStream.Append(output[2]);
@@ -101,17 +104,20 @@ void GS_Main(point VS_OUT input[1], inout TriangleStream<GS_OUT> outputStream)
 float4 PS_Main(GS_OUT input) : SV_Target
 {
    
-    if(input.TextureUse)
+    if (g_textureUse)
     {
         float4 color = _BaseMap.Sample(sampler_lerp, input.uv);
         
-        if (color.a == 0)
+        if (color.a == g_clipingColor.a)
             discard;
-    
+        
+        //if (length(color.rgb - g_clipingColor.rgb) < 0.0001f)
+        //    discard;
+        
         return color;
     }
 
-    
+
     return float4(input.color, 1.0f);
 
 }

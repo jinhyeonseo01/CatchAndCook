@@ -17,7 +17,7 @@
 #include "Terrain.h"
 #include "SeaGrassComponent.h"
 #include "ShadowManager.h"
-
+#include "ParticleComponent.h"
 
 void BufferManager::Init()
 {
@@ -49,6 +49,7 @@ void BufferManager::Init()
 		CreateBufferPool(i, BufferType::SeaGrassParam, sizeof(SeaGrassParam), 10000);
 		CreateBufferPool(i, BufferType::ShadowCasterParams, sizeof(ShadowCasterParams), 5);
 		CreateBufferPool(i, BufferType::ShadowCascadeIndexParams, sizeof(ShadowCascadeIndexParams), 10);
+		CreateBufferPool(i, BufferType::ParicleHelperParams, sizeof(ParicleHelperParams), 100);
 	/*	CreateBufferPool(i, BufferType::SeaFIshParam, sizeof(FishInfo), 300);*/
 	}
 

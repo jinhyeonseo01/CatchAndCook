@@ -87,6 +87,7 @@ public:
 	std::queue<std::shared_ptr<GameObject>> _startQueue;
 	std::queue<std::pair<std::shared_ptr<GameObject>, GameObjectType>> _changeTypeQueue;
 
+
 	std::string _name;
 	SceneType _type;
 
