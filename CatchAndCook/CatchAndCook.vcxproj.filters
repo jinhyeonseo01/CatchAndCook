@@ -404,6 +404,7 @@
     </ClCompile>
     <ClCompile Include="AnimationSpriteComponent.cpp" />
     <ClCompile Include="PercentComponent.cpp" />
+    <ClCompile Include="GraphData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -757,6 +758,7 @@
     </ClInclude>
     <ClInclude Include="AnimationSpriteComponent.h" />
     <ClInclude Include="PercentComponent.h" />
+    <ClInclude Include="GraphData.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath_LH.inl">

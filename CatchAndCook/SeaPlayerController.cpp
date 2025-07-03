@@ -14,6 +14,7 @@
 #include "ParticleManager.h"
 #include "AnimationSpriteComponent.h"
 #include "FishMonster.h"
+#include "GraphData.h"
 SeaPlayerController::SeaPlayerController()
 {
 }
@@ -260,6 +261,19 @@ void SeaPlayerController::Disable()
 
 void SeaPlayerController::RenderBegin()
 {
+
+   auto& graphData= GraphData::datas;
+
+   for (size_t i = 0; i < graphData.size() - 1; ++i)
+   {
+       const auto& a = graphData[i];
+       const auto& b = graphData[i + 1];
+
+       Gizmo::main->Line(a, b);
+   }
+
+ 
+
 }
 
 void SeaPlayerController::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)

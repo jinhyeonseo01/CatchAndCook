@@ -195,6 +195,7 @@
     <ClCompile Include="GameObjectSetting.cpp" />
     <ClCompile Include="GeoMetryHelper.cpp" />
     <ClCompile Include="Gizmo.cpp" />
+    <ClCompile Include="GraphData.cpp" />
     <ClCompile Include="PercentComponent.cpp" />
     <ClCompile Include="ICBufferInjector.cpp" />
     <ClCompile Include="Component.cpp" />
@@ -344,6 +345,7 @@
     <ClInclude Include="GameObjectSetting.h" />
     <ClInclude Include="GeoMetryHelper.h" />
     <ClInclude Include="Gizmo.h" />
+    <ClInclude Include="GraphData.h" />
     <ClInclude Include="PercentComponent.h" />
     <ClInclude Include="ICBufferInjector.h" />
     <ClInclude Include="Component.h" />

@@ -28,6 +28,7 @@
 #include "TextManager.h"
 #include "AnimationSpriteComponent.h"
 #include "PercentComponent.h"
+#include "GraphData.h"
 void Scene_Sea01::Init()
 {
 	namespace fs = std::filesystem;
@@ -151,6 +152,23 @@ void Scene_Sea01::Init()
 			}
 		}
 
+	}
+
+
+	{
+		auto& object =Find(L"GraphData");
+
+		if (object)
+		{
+			object->SetActiveSelf(false);
+			auto& boxdata = object->GetComponent<Collider>()->GetBoundingData().bound.box;
+		
+			GraphData::GenVertices(boxdata.Center, boxdata.Extents, 30.0f);
+
+
+		}
+	
+	
 	}
 
 
