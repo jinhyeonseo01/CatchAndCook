@@ -21,7 +21,17 @@ void ParticleComponent::Update()
 {
 	_currTime += Time::main->GetDeltaTime();
 
-	if (_autoDestroyTime <= _currTime)
+	float fadeProgress = _currTime / _autoDestroyTime;
+	fadeProgress = std::clamp(fadeProgress, 0.0f, 1.0f);
+
+	float alpha = 0.5f * (1.0f - fadeProgress); 
+
+	for (int i = 0; i < 4; ++i)
+	{
+		_blendFactor[i] = alpha;
+	}
+
+	if (_currTime >= _autoDestroyTime)
 	{
 		SceneManager::main->GetCurrentScene()->AddDestroyQueue(GetOwner());
 	}
@@ -29,6 +39,7 @@ void ParticleComponent::Update()
 
 void ParticleComponent::Update2()
 {
+
 }
 
 void ParticleComponent::Enable()
@@ -109,6 +120,20 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 			data.dir = vec3(dist(gen), dist(gen), dist(gen));
 			data.velocity = speed;
 			break;
+
+		case ParticleMoveType::BloodUnderwater:
+		{
+			data.worldPos = worldPos;
+
+			float x = dist(gen) * 0.5f;  
+			float y = abs(dist(gen)) * 0.3f + 0.2f; 
+			float z = dist(gen) * 0.5f;
+
+			data.dir = vec3(x, y, z);
+			data.velocity = speed;
+			break;
+		}
+
 		default:
 			break;
 		}

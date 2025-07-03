@@ -56,6 +56,7 @@ void ParticleRenderer::Start()
 
 void ParticleRenderer::Update()
 {
+
 }
 
 void ParticleRenderer::Update2()
@@ -128,7 +129,7 @@ void ParticleRenderer::Rendering(Material* material, Mesh* mesh, int instanceCou
 			cmdList->SetGraphicsRootDescriptorTable(SRV_TABLE_INDEX, _tableContainer.GPUHandle);
 		}
  
-		cmdList->OMSetBlendFactor(_blendFactor.data());
+		cmdList->OMSetBlendFactor(_particleComponent->GetBlendFactor().data());
 		cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 		cmdList->DrawInstanced(1, _particleComponent->GetParicleCount(), 0, 0);
 	}

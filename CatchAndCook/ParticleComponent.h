@@ -25,6 +25,7 @@ struct ParicleHelperParams
 enum class ParticleMoveType
 {
 	RadialSpread,
+	BloodUnderwater,
 };
 
 enum class ParticleColorType
@@ -64,9 +65,16 @@ private:
 		float autoDestroyTime,int particleCount,float size ,float speed, const vec3& worldPos,const  vec3& worldNormal , const ParticleMoveType& moveType, const ParticleColorType& colorType, shared_ptr<Texture> texture,
 		 const vec4& clipingColor);
 
+public:
+	void SetBlendFactor(const std::array<float, 4>& factor) { _blendFactor = factor; }
+	const std::array<float, 4>& GetBlendFactor() const { return _blendFactor; }
+
+
 private:
 	float _autoDestroyTime = 0;
 	float _currTime = 0;
+
+	std::array<float, 4> _blendFactor = { 0.5f, 0.5f, 0.5f, 0.5f };
 
 	ParicleHelperParams _helperParams{};
 	shared_ptr<StructuredBuffer> _strBuffer;

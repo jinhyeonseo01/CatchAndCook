@@ -23,8 +23,7 @@ public:
 
 public:
 	void SetTexture(shared_ptr<Texture> texture) { _particleTexture = texture; }
-	void SetBlendFactor(const std::array<float, 4>& factor) { _blendFactor = factor; }
-	const std::array<float, 4>& GetBlendFactor() const { return _blendFactor; }
+
 
 private:
 	virtual void Rendering(Material* material, Mesh* mesh, int instanceCount = 1);
@@ -32,7 +31,7 @@ private:
 
 private:
 
-	std::array<float, 4> _blendFactor = { 0.1f, 0.1f, 0.1f, 0.1f };
+
 
 	TableContainer _tableContainer{};
 	static shared_ptr<Shader> _particleComputeShader;

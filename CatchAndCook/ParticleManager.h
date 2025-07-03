@@ -11,7 +11,7 @@ public:
 public:
 	void Init();
 	shared_ptr<GameObject> GenParticle(float autodestroyTime, int particleCount, float particleSize, float speed, const vec3& worldPos,const vec3& worldNormal, const ParticleMoveType& moveType, const ParticleColorType& colorType,
-		const vec4& clipingColor, shared_ptr<Texture> texture = nullptr, const array<float, 4>& blendFactor = {1.0f,1.0f,1.0f,1.0f});
+		const vec4& clipingColor, shared_ptr<Texture> texture = nullptr);
 
 
 	shared_ptr<StructuredBuffer> AllocParticleBuffer();
