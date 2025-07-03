@@ -72,10 +72,10 @@ void ParticleComponent::Destroy()
 	ParticleManager::main->RecycleParticleBuffer(_strBuffer);
 }
 
-void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, float autoDestroyTime, int particleCount, float size, const vec3& worldPos, const vec3& worldNormal, const ParticleMoveType& moveType, const ParticleColorType& colorType, shared_ptr<Texture> texture,
+void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, float autoDestroyTime, int particleCount, float size, float speed ,const vec3& worldPos, const vec3& worldNormal, const ParticleMoveType& moveType, const ParticleColorType& colorType, shared_ptr<Texture> texture,
 	 const vec4& clipingColor)
 {
-	assert(particleCount <= 500);
+	assert(particleCount < 500);
 
 	if (particleCount > 500)
 		cout << "파티클 갯수 잘못설정" << endl;
@@ -107,7 +107,7 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 		case ParticleMoveType::RadialSpread:
 			data.worldPos = worldPos;
 			data.dir = vec3(dist(gen), dist(gen), dist(gen));
-			data.velocity = 100.0f;
+			data.velocity = speed;
 			break;
 		default:
 			break;

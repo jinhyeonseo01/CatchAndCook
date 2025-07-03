@@ -61,7 +61,7 @@ public:
 
 private:
 	void SetParticle(shared_ptr<StructuredBuffer> strBuffer,
-		float autoDestroyTime,int particleCount,float size , const vec3& worldPos,const  vec3& worldNormal , const ParticleMoveType& moveType, const ParticleColorType& colorType, shared_ptr<Texture> texture,
+		float autoDestroyTime,int particleCount,float size ,float speed, const vec3& worldPos,const  vec3& worldNormal , const ParticleMoveType& moveType, const ParticleColorType& colorType, shared_ptr<Texture> texture,
 		 const vec4& clipingColor);
 
 private:
