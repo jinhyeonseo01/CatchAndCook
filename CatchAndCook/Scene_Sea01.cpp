@@ -163,8 +163,7 @@ void Scene_Sea01::Init()
 			object->SetActiveSelf(false);
 			auto& boxdata = object->GetComponent<Collider>()->GetBoundingData().bound.box;
 		
-			GraphData::GenVertices(boxdata.Center, boxdata.Extents, 30.0f);
-
+			GraphData::GenVertices(boxdata.Center, boxdata.Extents, 300.0f);
 
 		}
 	

@@ -19,4 +19,6 @@ void GraphData::GenVertices(const vec3& center, const vec3& extents, float spaci
             }
         }
     }
+
+    cout << "Graph Verices Count: " <<  datas.size() << endl;
 }

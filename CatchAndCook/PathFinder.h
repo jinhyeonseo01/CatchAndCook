@@ -16,7 +16,6 @@ struct FishInfo
 	float fishSpeed;
 	float boundsCenterZ;
 	float boundsSizeZ;
-
 };
 
 class RenderBase;

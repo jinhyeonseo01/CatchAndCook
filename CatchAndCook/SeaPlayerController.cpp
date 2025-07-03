@@ -262,15 +262,15 @@ void SeaPlayerController::Disable()
 void SeaPlayerController::RenderBegin()
 {
 
-   auto& graphData= GraphData::datas;
+   //auto& graphData= GraphData::datas;
 
-   for (size_t i = 0; i < graphData.size() - 1; ++i)
-   {
-       const auto& a = graphData[i];
-       const auto& b = graphData[i + 1];
+   //for (size_t i = 0; i < graphData.size() - 1; ++i)
+   //{
+   //    const auto& a = graphData[i];
+   //    const auto& b = graphData[i + 1];
 
-       Gizmo::main->Line(a, b);
-   }
+   //    Gizmo::main->Line(a, b);
+   //}
 
  
 

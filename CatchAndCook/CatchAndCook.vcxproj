@@ -196,6 +196,7 @@
     <ClCompile Include="GeoMetryHelper.cpp" />
     <ClCompile Include="Gizmo.cpp" />
     <ClCompile Include="GraphData.cpp" />
+    <ClCompile Include="GraphPathFinder.cpp" />
     <ClCompile Include="PercentComponent.cpp" />
     <ClCompile Include="ICBufferInjector.cpp" />
     <ClCompile Include="Component.cpp" />
@@ -346,6 +347,7 @@
     <ClInclude Include="GeoMetryHelper.h" />
     <ClInclude Include="Gizmo.h" />
     <ClInclude Include="GraphData.h" />
+    <ClInclude Include="GraphPathFinder.h" />
     <ClInclude Include="PercentComponent.h" />
     <ClInclude Include="ICBufferInjector.h" />
     <ClInclude Include="Component.h" />

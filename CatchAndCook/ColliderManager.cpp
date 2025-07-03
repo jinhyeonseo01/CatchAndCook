@@ -589,6 +589,57 @@ RayHit ColliderManager::RayCast(const Ray& ray, const float& dis, shared_ptr<Gam
 	return closestHit;
 }
 
+bool ColliderManager::RayCastSpeed(const Ray& ray, float maxDist, shared_ptr<GameObject>& owner) const
+{
+	const auto& sceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
+
+	float dist = 0;
+
+	auto it = _collidersForRay.find(sceneType);
+
+	if (it == _collidersForRay.end())
+		return false;
+
+	cout << it->second.size() << endl;
+
+	for (const auto& collider : it->second)
+	{
+		if (collider->GetOwner() == owner) continue;
+
+		switch (collider->GetType())
+		{
+		case CollisionType::Box:
+			if (ray.Intersects(collider->GetBoundUnion().box, dist))
+			{
+				if (dist < maxDist)
+				{
+					return true;
+				}
+			}
+
+			break;
+		case CollisionType::Sphere:
+			if (ray.Intersects(collider->GetBoundUnion().sphere, dist))
+			{
+				if (dist < maxDist)
+				{
+					return true;
+				}
+			}
+			break;
+
+		case CollisionType::Frustum:
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	return false;
+}
+
+
 
 
 
