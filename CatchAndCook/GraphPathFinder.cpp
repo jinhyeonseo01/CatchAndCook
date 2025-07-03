@@ -3,6 +3,8 @@
 #include "GraphData.h"
 #include "Transform.h"
 #include "ColliderManager.h"
+#include "MeshRenderer.h"
+
 COMPONENT(GraphPathFinder)
 
 
@@ -12,6 +14,42 @@ void GraphPathFinder::Init()
 
 void GraphPathFinder::Start()
 {
+    auto renderer = GetOwner()->GetRenderer();
+
+    if (renderer)
+    {
+        auto meshRdr = std::dynamic_pointer_cast<MeshRenderer>(renderer);
+        if (meshRdr)
+        {
+            renderer->AddStructuredSetter(
+                std::static_pointer_cast<PathFinder>(shared_from_this()),
+                BufferType::SeaFIshParam
+            );
+
+            const auto& materials = meshRdr->GetMaterials();
+
+            if (materials.empty())
+                return;
+
+            const auto& mat = materials[0];
+
+
+            _info.fishSpeed = mat->GetPropertyFloat("_Speed");
+            _info.fishWaveAmount = mat->GetPropertyFloat("_Power");
+            const BoundingBox& box = meshRdr->GetOriginBound();
+            _info.boundsSizeZ = box.Extents.z;
+            _info.boundsCenterZ = box.Center.z;
+
+        }
+        else
+        {
+            cout << "캐스팅실패" << endl;
+        }
+    }
+
+
+    ///////////////////////////////////////////////////////////
+
     vec3& currentPos =GetOwner()->_transform->GetWorldPosition();
 
     if (currentPos.x < 0)
@@ -30,44 +68,10 @@ void GraphPathFinder::Start()
 
 void GraphPathFinder::Update()
 {
-
-
-
-    std::unordered_map<LeftRight, std::unordered_map<int, vec3>>& leftrightData = GraphData::datas;
-
-    auto& data = leftrightData[_leftRight];
-
-    vec3& TargetPos = data[_currentTargetIndex];
-    vec3 currentPos = GetOwner()->_transform->GetWorldPosition();
-
-    vec3 toTargetDir = TargetPos - currentPos;
-    toTargetDir.Normalize();
-
-    currentPos = GetOwner()->_transform->SetWorldPosition(currentPos + toTargetDir * Time::main->GetDeltaTime() * 300.0f);
-
-    GetOwner()->_transform->LookUpSmooth(toTargetDir, vec3::Up, 3.0f);
-
-
-    auto hit = ColliderManager::main->RayCastSpeed({ currentPos, toTargetDir }, 50.0f, GetOwner());
-
-    static int i = 0;
-
-
-
-    if (hit)
-    {
-        GetRamdomTarget();
-        cout << " GetRamdomTarget RayCast 호출" << i++ << endl;
+    if (_autoPliot)
         return;
-    }
-
-    if ((TargetPos - currentPos).LengthSquared() < 1.0f) 
-    {
-        GetRamdomTarget();
-        cout << " GetRamdomTarget 목표도달 호출" << i++ << endl;
-        return;
-    }
-
+    
+    CalculatePath(300.0f);
 
 };
 
@@ -115,6 +119,7 @@ void GraphPathFinder::Destroy()
 {
 }
 
+
 vec3 GraphPathFinder::GetRamdomTarget()
 {
  
@@ -133,3 +138,49 @@ vec3 GraphPathFinder::GetRamdomTarget()
     _currentTargetIndex = newIndex;
     return sideData[_currentTargetIndex];
 };
+
+
+
+
+void GraphPathFinder::CalculatePath(float speed)
+{
+    std::unordered_map<LeftRight, std::unordered_map<int, vec3>>& leftrightData = GraphData::datas;
+
+    auto& data = leftrightData[_leftRight];
+
+    vec3& TargetPos = data[_currentTargetIndex];
+    vec3 currentPos = GetOwner()->_transform->GetWorldPosition();
+
+    vec3 toTargetDir = TargetPos - currentPos;
+    toTargetDir.Normalize();
+
+
+
+    currentPos = GetOwner()->_transform->SetWorldPosition(currentPos + toTargetDir * Time::main->GetDeltaTime() * speed);
+   
+    GetOwner()->_transform->LookUpSmooth(toTargetDir, vec3::Up, 3.0f);
+
+
+    auto hit = ColliderManager::main->RayCastSpeed({ currentPos, toTargetDir }, 50.0f, GetOwner());
+
+
+    if (hit)
+    {
+        GetRamdomTarget();
+        return;
+    }
+
+    if ((TargetPos - currentPos).LengthSquared() < 1.0f)
+    {
+        GetRamdomTarget();
+        return;
+    }
+
+}
+
+void GraphPathFinder::SetData(StructuredBuffer* buffer, Material* material)
+{
+    cout << "addData" << endl;
+
+    buffer->AddData(_info);
+}

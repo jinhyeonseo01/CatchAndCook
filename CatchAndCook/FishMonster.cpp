@@ -6,7 +6,9 @@
 #include "SkinnedHierarchy.h"
 #include "Animation.h"
 #include "PercentComponent.h"
-unordered_map<wstring, FishPath> FishMonster::_pathList;
+#include "GraphPathFinder.h"
+
+COMPONENT(FishMonster)
 
 FishMonster::FishMonster()
 {
@@ -24,16 +26,16 @@ void FishMonster::Init()
 
 void FishMonster::Start()
 {
-	_firstQuat = GetOwner()->_transform->GetWorldRotation();
+    cout << "호출됨" << endl;
+
 	_animations = GetOwner()->GetComponentWithChilds<AnimationListComponent>()->GetAnimations();
 	_skined = GetOwner()->GetComponentWithChilds<SkinnedHierarchy>();
-    _player = SceneManager::main->GetCurrentScene()->Find(L"seaPlayer");
+
 
     if (_animations.find("idle") != _animations.end())
     {
         _skined->Play(_animations["idle"], 0.5f);
     }
-
     else
     {
         wcout << GetOwner()->GetName() << "idle 못찾음" << endl;
@@ -45,13 +47,29 @@ void FishMonster::Start()
         _animations["die"]->_speedMultiplier = 0.3f;
     }
 
-
     auto& percentageComponet = GetOwner()->GetChildByName(L"HPBar")->GetComponent<PercentComponent>();
 
     if (percentageComponet)
     {
         percentageComponet->BindingPercentage(&_hp);
     }
+
+    else
+    {
+        cout << "percentageComponet" << "못찾음" << endl;
+    }
+
+     _pathFinder = GetOwner()->GetRoot()->GetComponent<GraphPathFinder>();
+
+     if (_pathFinder)
+     {
+         _pathFinder->SetAutoPliotMode(true);
+     }
+     else
+     {
+         cout << "GraphPathFinder" << "못찾음" << endl;
+     }
+
 }
 
 void FishMonster::Update()
@@ -61,94 +79,7 @@ void FishMonster::Update()
     if (_state == FishMonsterState::Die)
         return;
 
-    if (_pathList.find(_pathName) == _pathList.end())
-    {
-        cout << "리턴됨" << endl;
-        return;
-    }
-
-    const vector<vec3>& myPath = _pathList[_pathName].path;
-    int nextIndex = _forward ? _currentIndex + 1 : _currentIndex - 1;
-    vec3 start = myPath[_currentIndex];
-    vec3 end = myPath[nextIndex];
-
-    if (_segmentLength < 0.0001f)
-        _segmentLength = (end - start).Length();
-
-    _distanceMoved += _moveSpeed * Time::main->GetDeltaTime();
-    float t = std::clamp(_distanceMoved / _segmentLength, 0.0f, 1.0f);
-    vec3 targetPos = vec3::Lerp(start, end, t);
-
-    vec3 currentPos = GetOwner()->_transform->GetWorldPosition();
-
-    vec3 toTarget = targetPos - currentPos;
-    toTarget.Normalize();
-
-    vec3 desiredVel = toTarget * _moveSpeed;
-
-    vec3 avoidanceVel(0, 0, 0);
-    const float detectionRadius = 200.f;
-    const float predictTime = 1.0f;
-    auto player = _player.lock();
-
-    if (player)
-    {
-        vec3 playerPos = player->_transform->GetWorldPosition();
-
-        vec3 futurePos = currentPos + desiredVel * predictTime;
-        float distFuture = (playerPos - futurePos).Length();
-
-        if (distFuture < detectionRadius)
-        {
-            vec3 away = (currentPos - playerPos);
-            away.Normalize();
-            float strength = (detectionRadius - distFuture) / detectionRadius;
-            avoidanceVel = away * detectionRadius * strength;
-        }
-
-    }
-
-
-    vec3 velocity = desiredVel + avoidanceVel;
-    vec3 newPos = currentPos + velocity * Time::main->GetDeltaTime();
-    GetOwner()->_transform->SetWorldPosition(newPos);
-    velocity.Normalize();
-    GetOwner()->_transform->LookUpSmooth(velocity, vec3::Up, 3.0f, _firstQuat);
-
-
-    if (t >= 1.0f)
-    {
-        _distanceMoved = 0.0f;
-        _segmentLength = 0.0f;
-
-        if (_forward)
-        {
-            _currentIndex++;
-            if (_currentIndex >= myPath.size() - 1) { _forward = false; return; }
-        }
-        else
-        {
-            _currentIndex--;
-            if (_currentIndex <= 0) { _forward = true; return; }
-        }
-    }
-
-
-    if (HasGizmoFlag(Gizmo::main->_flags, GizmoFlags::DrawPath))
-    {
-
-        for (size_t i = 0; i + 1 < myPath.size(); ++i)
-        {
-            vec3 c = _pathList[_pathName]._pathColor;
-            Gizmo::main->Line(
-                myPath[i], myPath[i + 1],
-                vec4(c.x, c.y, c.z, 1.0f)
-            );
-        }
-
-    }
-
-
+    _pathFinder->CalculatePath(_moveSpeed);
 }
 
 void FishMonster::Update2()
@@ -286,37 +217,3 @@ void FishMonster::EventDamage(int damage)
 }
 
 
-void FishMonster::ReadPathFile(const std::wstring& fileName)
-{
-    const wstring path = L"../Resources/Graph/";;
-
-    std::ifstream file(path + fileName);
-    if (!file.is_open())
-    {
-        std::wcout << L"Failed to open file: " << fileName << std::endl;
-        return;
-    }
-
-
-    std::string line;
-
-    while (std::getline(file, line))
-    {
-        if (line.empty()) continue;
-
-        std::istringstream ss(line);
-        float x, y, z;
-        ss >> x >> y >> z;
-        vec3 point(x, y, z);
-        _pathList[fileName].path.push_back(point);
-    }
-
-    file.close();
-
-    _pathName = fileName;
-
-    size_t h = std::hash<wstring>{}(fileName);
-    float hue = float(h % 360) / 360.f;
-    _pathList[fileName]._pathColor = vec3(hue, hue, hue);
-	//cout << "라인 데이터: " << _fishPath.size() << "개 읽음." << std::endl;
-}

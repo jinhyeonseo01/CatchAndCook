@@ -5,6 +5,7 @@
 class AnimationListComponent;
 class SkinnedHierarchy;
 class Animation;
+class GraphPathFinder;
 
 
 enum class FishMonsterState
@@ -36,22 +37,16 @@ public:
 	void EventDamage(int damage);
 
 public:
-	void ReadPathFile(const std::wstring& fileName);
+
 
 private:
 	void UpdateState(float dt);
 	void SetState(FishMonsterState state);
 
 private:
-	static unordered_map<wstring, FishPath> _pathList;
-	bool _forward =true;
-	int _currentIndex = 0;
+	shared_ptr<GraphPathFinder> _pathFinder;
 	float _moveSpeed = 100.0f;
-	float _distanceMoved = 0.0f;
-	float _segmentLength = 0.0f;
-	wstring _pathName = L"Null";
-	weak_ptr<GameObject> _player;
-	Quaternion _firstQuat;
+
 public:
 	float _hp = 100.0f;
 

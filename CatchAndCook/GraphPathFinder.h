@@ -1,7 +1,10 @@
 ﻿#pragma once
 #include "Component.h"
 #include "GraphData.h"
-class GraphPathFinder : public Component
+#include "PathFinder.h"
+#include "RendererBase.h"
+
+class GraphPathFinder : public Component, public RenderStructuredSetter
 {
 public:
 	virtual void Init();
@@ -18,12 +21,19 @@ public:
 	virtual void ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene);
 	virtual void SetDestroy() override;
 	virtual void Destroy();
+	virtual void SetData(StructuredBuffer* buffer = nullptr, Material* material = nullptr);
+
+
+public:
+	void SetAutoPliotMode(bool mode){_autoPliot=mode;}
+	void CalculatePath(float speed);
 
 private:
+	bool _autoPliot = false;
 
+	FishInfo _info;
 	LeftRight _leftRight;
 	int _currentTargetIndex{};
-
 	vec3 GetRamdomTarget();
 
 

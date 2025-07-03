@@ -171,41 +171,41 @@ void Scene_Sea01::Init()
 	}
 
 
-	{
-		auto ray = Find(L"ray");
+	//{
+	//	auto ray = Find(L"ray");
 
-		shared_ptr<FishMonster> finder;
+	//	shared_ptr<FishMonster> finder;
 
-		if (ray)
-		{
-			finder = ray->AddComponent<FishMonster>();
-			finder->ReadPathFile(L"rayPath");
-		}
+	//	if (ray)
+	//	{
+	//		finder = ray->AddComponent<FishMonster>();
+	//		finder->ReadPathFile(L"rayPath");
+	//	}
 
-		//auto hpBar =ray->GetChildByName(L"rayHpBar");
+	//	//auto hpBar =ray->GetChildByName(L"rayHpBar");
 
-		////auto hpBar = Find(L"rayHpBar");
+	//	////auto hpBar = Find(L"rayHpBar");
 
-		//if (hpBar)
-		//{
-		//	auto percentageBar = hpBar->GetComponent<PercentComponent>();
-		//	percentageBar->BindingPercentage(&finder->_hp);
-		//}
-	}
+	//	//if (hpBar)
+	//	//{
+	//	//	auto percentageBar = hpBar->GetComponent<PercentComponent>();
+	//	//	percentageBar->BindingPercentage(&finder->_hp);
+	//	//}
+	//}
 
-	{
-		auto ray = Find(L"redFish");
+	//{
+	//	auto ray = Find(L"redFish");
 
-		shared_ptr<FishMonster> finder;
+	//	shared_ptr<FishMonster> finder;
 
-		if (ray)
-		{
-			finder = ray->AddComponent<FishMonster>();
-			finder->ReadPathFile(L"rayPath");
-		}
-		
-	
-	}
+	//	if (ray)
+	//	{
+	//		finder = ray->AddComponent<FishMonster>();
+	//		finder->ReadPathFile(L"rayPath");
+	//	}
+	//	
+	//
+	//}
 
 
 	{
