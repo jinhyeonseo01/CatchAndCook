@@ -100,8 +100,7 @@ void GS_Main(point VS_OUT input[1], inout TriangleStream<GS_OUT> outputStream)
 
 float4 PS_Main(GS_OUT input) : SV_Target
 {
-    
-
+   
     if(input.TextureUse)
     {
         float4 color = _BaseMap.Sample(sampler_lerp, input.uv);

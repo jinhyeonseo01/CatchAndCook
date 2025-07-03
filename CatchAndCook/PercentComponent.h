@@ -32,10 +32,10 @@ public:
 public:
 	virtual void SetData(StructuredBuffer* buffer = nullptr, Material* material = nullptr);
 public:
-	void BindingPercentage(float* ptr) { _percentagePtr = ptr;  _displayPercentage = *ptr; }
+	void BindingPercentage(float* ptr) { _percentagePtr = ptr;  _displayPercentage = *ptr-0.0001f; }
 
 private:
-	float _displayPercentage{};
+	float _displayPercentage = 100.0f;
 	float* _percentagePtr = nullptr;
 
 

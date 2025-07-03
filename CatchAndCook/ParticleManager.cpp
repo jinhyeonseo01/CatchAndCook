@@ -17,7 +17,8 @@ void ParticleManager::Init()
 
 }
 
-shared_ptr<GameObject> ParticleManager::GenParticle(float autodestroyTime, int particleCount, float particleSize, const vec3& worldPos, const vec3& worldNormal, const ParticleMoveType& moveType, const ParticleColorType& colorType, shared_ptr<Texture> texture)
+shared_ptr<GameObject> ParticleManager::GenParticle(float autodestroyTime, int particleCount, float particleSize, const vec3& worldPos, const vec3& worldNormal, const ParticleMoveType& moveType, const ParticleColorType& colorType, shared_ptr<Texture> texture,
+	const array<float, 4>& blendFactor)
 {
 	shared_ptr<StructuredBuffer> buffer = AllocParticleBuffer();
 
@@ -27,6 +28,7 @@ shared_ptr<GameObject> ParticleManager::GenParticle(float autodestroyTime, int p
 	particleComponent->SetParticle(buffer, autodestroyTime, particleCount, particleSize, worldPos,worldNormal ,moveType, colorType,texture);
 
 	auto& particleRenderer = object->AddComponent<ParticleRenderer>();
+	particleRenderer->SetBlendFactor(blendFactor);
 
 	if (texture)
 	{

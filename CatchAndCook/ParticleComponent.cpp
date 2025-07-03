@@ -23,9 +23,7 @@ void ParticleComponent::Update()
 
 	if (_autoDestroyTime <= _currTime)
 	{
-	
 		SceneManager::main->GetCurrentScene()->AddDestroyQueue(GetOwner());
-
 	}
 }
 

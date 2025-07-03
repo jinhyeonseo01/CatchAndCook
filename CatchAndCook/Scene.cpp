@@ -171,15 +171,15 @@ void Scene::Rendering()
 
 
     Profiler::Set("PASS : Transparent", BlockTag::CPU);
-    TransparentPass(cmdList); // Position,
+        TransparentPass(cmdList); // Position,
     Profiler::Fin();
 
     Profiler::Set("PASS : Compute", BlockTag::CPU);
-    ComputePass(cmdList);
+        ComputePass(cmdList);
     Profiler::Fin();
 
     Profiler::Set("PASS : UI", BlockTag::CPU);
-    UiPass(cmdList);
+        UiPass(cmdList);
     Profiler::Fin();
 
 }
@@ -593,7 +593,7 @@ void Scene::ExecuteDestroyGameObjects()
 
         for (auto& ele : vec)
         {
-            wcout << ele->GetName() << endl;
+   /*         wcout << ele->GetName() << endl;*/
 
             auto it = std::find(_gameObjects.begin(), _gameObjects.end(), ele);
 

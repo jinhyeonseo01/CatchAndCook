@@ -28,12 +28,13 @@ void ParticleRenderer::Init()
 		ShaderInfo info;
 		info.renderTargetCount = 1;
 		info._primitiveType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
+		info._blendEnable = true;
+		info._blendType[0] = BlendType::BlendFactor;
 		info.RTVForamts[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 		info.cullingType = CullingType::BACK;
 
 		_particleRenderingShader = make_shared<Shader>();
-
 		_particleRenderingShader->Init(L"ParticleRenderingShader.hlsl", {}, ShaderArg{ {{"PS_Main","ps"},{"VS_Main","vs"},{"GS_Main","gs"}} }, info);
 		_particleRenderingShader->SetPass(RENDER_PASS::ParticlePass);
 
@@ -121,9 +122,10 @@ void ParticleRenderer::Rendering(Material* material, Mesh* mesh, int instanceCou
 		if (_particleTexture)
 		{
 			table->CopyHandle(_tableContainer.CPUHandle, _particleTexture->GetSRVCpuHandle(), 1);
+			cmdList->SetGraphicsRootDescriptorTable(SRV_TABLE_INDEX, _tableContainer.GPUHandle);
 		}
-
-		cmdList->SetGraphicsRootDescriptorTable(SRV_TABLE_INDEX, _tableContainer.GPUHandle);
+ 
+		cmdList->OMSetBlendFactor(_blendFactor.data());
 		cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 		cmdList->DrawInstanced(1, _particleComponent->GetParicleCount(), 0, 0);
 	}

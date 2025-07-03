@@ -21,7 +21,10 @@ public:
 	void CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other) override;
 	void SetDestroy() override;
 
+public:
 	void SetTexture(shared_ptr<Texture> texture) { _particleTexture = texture; }
+	void SetBlendFactor(const std::array<float, 4>& factor) { _blendFactor = factor; }
+	const std::array<float, 4>& GetBlendFactor() const { return _blendFactor; }
 
 private:
 	virtual void Rendering(Material* material, Mesh* mesh, int instanceCount = 1);
@@ -29,11 +32,14 @@ private:
 
 private:
 
+	std::array<float, 4> _blendFactor = { 0.1f, 0.1f, 0.1f, 0.1f };
+
 	TableContainer _tableContainer{};
 	static shared_ptr<Shader> _particleComputeShader;
 	static shared_ptr<Shader> _particleRenderingShader;
 	shared_ptr<ParticleComponent> _particleComponent;
 	shared_ptr<Texture> _particleTexture;
+
 
 
 };

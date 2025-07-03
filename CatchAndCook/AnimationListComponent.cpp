@@ -37,6 +37,10 @@ void AnimationListComponent::Start()
 				hieracy->SetAnimation(firstAnimation);
 			}
 		}
+		else
+		{
+			cout << "호잇" << endl;
+		}
 	}
 
 }

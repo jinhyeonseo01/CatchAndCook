@@ -33,12 +33,12 @@ void PercentComponent::Update()
 	if (_displayPercentage > *_percentagePtr)
 	{
 		float diff = _displayPercentage - *_percentagePtr;
-		float speed = diff * 4.0f; 
+		float speed = diff * 8.0f; 
 		_displayPercentage -= speed * Time::main->GetDeltaTime();
 
 		if (_displayPercentage < *_percentagePtr)
 		{
-			_displayPercentage = *_percentagePtr;
+			_displayPercentage = *_percentagePtr- 0.0001f;
 		}
 	}
 }

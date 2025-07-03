@@ -459,6 +459,12 @@ void SeaPlayerController::SetState(SeaPlayerState state)
                     }
                 }
 
+                if (ray.gameObject->HasTag(GameObjectTag::Defualt) && !ray.gameObject->HasTag(GameObjectTag::EVENT))
+                {
+                    ParticleManager::main->GenParticle(3.0f, 500, 10.0f, ray.worldPos, ray.normal, ParticleMoveType::RadialSpread, ParticleColorType::Red
+                        , ResourceManager::main->Get<Texture>(L"smokeTexture"), {0.3f,0.3f,0.3f,0.3f});
+                }
+
             }
         }
 
