@@ -20,6 +20,7 @@ public:
 	virtual void Destroy();
 
 private:
+
 	LeftRight _leftRight;
 	int _currentTargetIndex{};
 

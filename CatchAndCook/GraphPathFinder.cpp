@@ -30,6 +30,9 @@ void GraphPathFinder::Start()
 
 void GraphPathFinder::Update()
 {
+
+
+
     std::unordered_map<LeftRight, std::unordered_map<int, vec3>>& leftrightData = GraphData::datas;
 
     auto& data = leftrightData[_leftRight];
@@ -40,25 +43,33 @@ void GraphPathFinder::Update()
     vec3 toTargetDir = TargetPos - currentPos;
     toTargetDir.Normalize();
 
-    currentPos = GetOwner()->_transform->SetWorldPosition(currentPos + toTargetDir * Time::main->GetDeltaTime() * 1000.0f);
+    currentPos = GetOwner()->_transform->SetWorldPosition(currentPos + toTargetDir * Time::main->GetDeltaTime() * 300.0f);
 
     GetOwner()->_transform->LookUpSmooth(toTargetDir, vec3::Up, 3.0f);
 
-    auto hit = ColliderManager::main->RayCastSpeed({ currentPos, toTargetDir }, 5.0f, GetOwner());
+
+    auto hit = ColliderManager::main->RayCastSpeed({ currentPos, toTargetDir }, 50.0f, GetOwner());
+
+    static int i = 0;
+
+
 
     if (hit)
     {
         GetRamdomTarget();
+        cout << " GetRamdomTarget RayCast 호출" << i++ << endl;
         return;
     }
 
-    if ((TargetPos - currentPos).LengthSquared() < 1.0f) // 거리 1 이하
+    if ((TargetPos - currentPos).LengthSquared() < 1.0f) 
     {
         GetRamdomTarget();
+        cout << " GetRamdomTarget 목표도달 호출" << i++ << endl;
         return;
     }
 
-}
+
+};
 
 void GraphPathFinder::Update2()
 {
@@ -106,6 +117,8 @@ void GraphPathFinder::Destroy()
 
 vec3 GraphPathFinder::GetRamdomTarget()
 {
+ 
+
     LeftRight opposite = (_leftRight == LeftRight::Left) ? LeftRight::Right : LeftRight::Left;
     auto& sideData = GraphData::datas[opposite];
 
@@ -116,6 +129,7 @@ vec3 GraphPathFinder::GetRamdomTarget()
         newIndex = rand() % sideData.size();
     } while (newIndex == _currentTargetIndex);
 
+    _leftRight = opposite;
     _currentTargetIndex = newIndex;
     return sideData[_currentTargetIndex];
 };
