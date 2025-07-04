@@ -589,7 +589,7 @@ RayHit ColliderManager::RayCast(const Ray& ray, const float& dis, shared_ptr<Gam
 	return closestHit;
 }
 
-bool ColliderManager::RayCastSpeed(const Ray& ray, float maxDist, shared_ptr<GameObject>& owner) const
+bool ColliderManager::RayCastSpeed(const Ray& ray, float maxDist, shared_ptr<GameObject>& owner, GameObjectTag tag) const
 {
 	const auto& sceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
 
@@ -606,6 +606,7 @@ bool ColliderManager::RayCastSpeed(const Ray& ray, float maxDist, shared_ptr<Gam
 	for (const auto& collider : it->second)
 	{
 		if (collider->GetOwner() == owner) continue;
+		if (collider->GetOwner()->GetRoot()->HasTag(tag)) continue;
 
 		switch (collider->GetType())
 		{

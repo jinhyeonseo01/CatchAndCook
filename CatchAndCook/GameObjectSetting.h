@@ -2,7 +2,7 @@
 //[wall] <-> [player][molgogi]
 enum class GameObjectTag : uint64
 {
-	Defualt = 1 << 0,
+	NONE = 1 << 0,
 	Player = 1 << 1,
 	Monster = 1 << 2,
 	Wall = 1 << 3,
@@ -14,7 +14,7 @@ enum class GameObjectTag : uint64
 
 static unordered_map<string, GameObjectTag> GameObjectTagMap =
 {
-	{ "Defualt", GameObjectTag::Defualt },
+	{ "Defualt", GameObjectTag::NONE },
 	{ "Player", GameObjectTag::Player },
 	{ "Monster", GameObjectTag::Monster },
 	{ "NPC", GameObjectTag::NPC },

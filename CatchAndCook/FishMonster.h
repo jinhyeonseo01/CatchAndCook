@@ -46,7 +46,7 @@ private:
 private:
 	shared_ptr<GraphPathFinder> _pathFinder;
 	float _moveSpeed = 100.0f;
-
+	float _hit_to_IdleTime = 0.0f;
 public:
 	float _hp = 100.0f;
 

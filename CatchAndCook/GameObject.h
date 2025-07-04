@@ -332,7 +332,7 @@ public:
 	void SetType(const GameObjectType& type) { _type = type; };
 	GameObjectType GetType() const { return  _type; };
 
-	GameObjectTag _tag = GameObjectTag::Defualt;
+	GameObjectTag _tag = GameObjectTag::NONE;
 	GameObjectType _type = GameObjectType::Dynamic;
 
 	std::shared_ptr<Transform> _transform;

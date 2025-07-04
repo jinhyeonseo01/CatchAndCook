@@ -152,7 +152,7 @@ void GraphPathFinder::CalculatePath(float speed)
    
     GetOwner()->_transform->LookUpSmooth(toTargetDir, vec3::Up, 3.0f);
 
-    bool hit = ColliderManager::main->RayCastSpeed({ currentPos, toTargetDir }, 100.0f, GetOwner());
+    bool hit = ColliderManager::main->RayCastSpeed({ currentPos, toTargetDir }, 100.0f, GetOwner(),GameObjectTag::Monster);
 
     if (hit)
     {

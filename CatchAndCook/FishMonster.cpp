@@ -76,6 +76,9 @@ void FishMonster::Start()
          cout << "GraphPathFinder" << "못찾음" << endl;
      }
 
+
+
+
 }
 
 void FishMonster::Update()
@@ -130,7 +133,7 @@ void FishMonster::Destroy()
 void FishMonster::UpdateState(float dt)
 {
 
-    static float _hit_to_IdleTime = 0.0f;
+
 
     switch (_state)
     {
@@ -210,6 +213,7 @@ void FishMonster::SetState(FishMonsterState state)
 void FishMonster::EventDamage(int damage)
 {
     _hp -= damage;
+    _hit_to_IdleTime = 0;
 
     if (_hp <= 0)
     {

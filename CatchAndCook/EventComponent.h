@@ -36,7 +36,7 @@ private:
 
 	shared_ptr<Collider> _otherCashing;
 
-	GameObjectTag bindTag = GameObjectTag::Defualt;
+	GameObjectTag bindTag = GameObjectTag::NONE;
 
 	bool _Oncollision=false;
 	bool _oneTimeEventCall = true;
