@@ -31,7 +31,7 @@ void ParticleRenderer::Init()
 		info._blendEnable = true;
 		info._blendType[0] = BlendType::BlendFactor;
 		info.RTVForamts[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-		info._zWrite = false;
+
 
 		info.cullingType = CullingType::BACK;
 
@@ -127,9 +127,9 @@ void ParticleRenderer::Rendering(Material* material, Mesh* mesh, int instanceCou
 		if (_particleTexture)
 		{
 			table->CopyHandle(_tableContainer.CPUHandle, _particleTexture->GetSRVCpuHandle(), 1);
-			cmdList->SetGraphicsRootDescriptorTable(SRV_TABLE_INDEX, _tableContainer.GPUHandle);
 		}
- 
+
+		cmdList->SetGraphicsRootDescriptorTable(SRV_TABLE_INDEX, _tableContainer.GPUHandle);
 		cmdList->OMSetBlendFactor(_particleComponent->GetBlendFactor().data());
 		cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 		cmdList->DrawInstanced(1, _particleComponent->GetParicleCount(), 0, 0);
