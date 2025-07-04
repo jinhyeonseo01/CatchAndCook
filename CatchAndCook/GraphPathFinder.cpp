@@ -60,6 +60,10 @@ void GraphPathFinder::Start()
 
     GetRamdomTarget();
 
+    _player = SceneManager::main->GetCurrentScene()->Find(L"seaPlayer");
+
+
+
 
 }
 
@@ -152,7 +156,35 @@ void GraphPathFinder::CalculatePath(float speed)
    
     GetOwner()->_transform->LookUpSmooth(toTargetDir, vec3::Up, 3.0f);
 
-    bool hit = ColliderManager::main->RayCastSpeed({ currentPos, toTargetDir }, 100.0f, GetOwner(),GameObjectTag::Monster);
+
+    if (_player)
+    {
+        vec3 avoidanceVel(0, 0, 0);
+        const float detectionRadius = 100.f;
+        const float predictTime = 1.0f;
+
+        vec3 playerPos = _player->_transform->GetWorldPosition();
+
+        float distFuture = (playerPos - currentPos).Length();
+
+        if (distFuture < detectionRadius)
+        {
+            vec3 away = (currentPos - playerPos);
+            away.Normalize();
+            float strength = (detectionRadius - distFuture) / detectionRadius;
+            avoidanceVel = away * detectionRadius * strength;
+
+            vec3 velocity = avoidanceVel;
+            vec3 newPos = currentPos + velocity * Time::main->GetDeltaTime();
+            GetOwner()->_transform->SetWorldPosition(newPos);
+            velocity.Normalize();
+            GetOwner()->_transform->LookUpSmooth(velocity, vec3::Up, 3.0f);
+        }
+
+    }
+
+
+    bool hit = ColliderManager::main->RayCastSpeed({ currentPos, toTargetDir }, 500.0f, GetOwner(), GameObjectTag::Monster);
 
     if (hit)
     {

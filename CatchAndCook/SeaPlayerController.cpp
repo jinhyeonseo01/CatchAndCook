@@ -50,8 +50,8 @@ void SeaPlayerController::Start()
 		_terrian = terrian->GetComponent<Terrain>();
 	}
 
-	GetOwner()->_transform->SetForward(vec3(0.308061f, 0.164842f, 0.936977f));
-	_camera->SetCameraLook(vec3(0.308061f, 0.164842f, 0.936977f));
+	//GetOwner()->_transform->SetForward(vec3(0.308061f, 0.164842f, 0.936977f));
+	//_camera->SetCameraLook(vec3(0.308061f, 0.164842f, 0.936977f));
 	//GetOwner()->_transform->SetWorldPosition(vec3(0, 1000.0f, 1.0f));
 
     _animations = GetOwner()->GetComponentWithChilds<AnimationListComponent>()->GetAnimations();
@@ -85,7 +85,6 @@ void SeaPlayerController::Start()
 
 void SeaPlayerController::Update()
 {
-
 
     if (CameraManager::main->GetCameraType() == CameraType::DebugCamera)
     {

@@ -110,6 +110,7 @@ void PathFinder::Update()
     const float predictTime = 1.0f;
     auto player = _player.lock();
 
+
     if (player)
     {
         vec3 playerPos = player->_transform->GetWorldPosition();

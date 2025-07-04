@@ -29,6 +29,7 @@ public:
 	void CalculatePath(float speed);
 
 private:
+	shared_ptr<GameObject> _player;
 	bool _autoPliot = false;
 	float _speed{};
 	FishInfo _info;
