@@ -974,8 +974,13 @@
     <FxCompile Include="..\Resources\Shaders\DeferredSeaEmission.hlsl">
       <Filter>998.HLSL\Graphics\KSH</Filter>
     </FxCompile>
-    <FxCompile Include="..\Resources\Shaders\ForwardSeaClip.hlsl" />
     <FxCompile Include="..\Resources\Shaders\percentageShader.hlsl">
+      <Filter>998.HLSL\Graphics\KSH</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\DeferredSeaClip.hlsl">
+      <Filter>998.HLSL\Graphics\KSH</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\ForwardSeaClip.hlsl">
       <Filter>998.HLSL\Graphics\KSH</Filter>
     </FxCompile>
   </ItemGroup>
