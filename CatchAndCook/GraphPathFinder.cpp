@@ -4,49 +4,46 @@
 #include "Transform.h"
 #include "ColliderManager.h"
 #include "MeshRenderer.h"
-
+#include "SkinnedMeshRenderer.h"
 COMPONENT(GraphPathFinder)
+
+static random_device dre;
+static mt19937 gen(dre());
+static uniform_real_distribution<float> randomMoveSpeed(100.0f, 150.0f);
 
 
 void GraphPathFinder::Init()
 {
+    _speed = randomMoveSpeed(dre);
 }
 
 void GraphPathFinder::Start()
 {
-    auto renderer = GetOwner()->GetRenderer();
+    auto& skinedrenderer = GetOwner()->GetComponentWithChilds<SkinnedMeshRenderer>();
 
-    if (renderer)
+    if (skinedrenderer ==nullptr)
     {
-        auto meshRdr = std::dynamic_pointer_cast<MeshRenderer>(renderer);
-        if (meshRdr)
-        {
-            renderer->AddStructuredSetter(
-                std::static_pointer_cast<PathFinder>(shared_from_this()),
-                BufferType::SeaFIshParam
-            );
+        auto& meshrenderer = GetOwner()->GetComponentWithChilds<MeshRenderer>();
 
-            const auto& materials = meshRdr->GetMaterials();
+        meshrenderer->AddStructuredSetter(
+            std::static_pointer_cast<GraphPathFinder>(shared_from_this()),
+            BufferType::SeaFIshParam
+        );
 
-            if (materials.empty())
-                return;
+        const auto& materials = meshrenderer->GetMaterials();
 
-            const auto& mat = materials[0];
+        if (materials.empty())
+            return;
 
+        const auto& mat = materials[0];
 
-            _info.fishSpeed = mat->GetPropertyFloat("_Speed");
-            _info.fishWaveAmount = mat->GetPropertyFloat("_Power");
-            const BoundingBox& box = meshRdr->GetOriginBound();
-            _info.boundsSizeZ = box.Extents.z;
-            _info.boundsCenterZ = box.Center.z;
-
-        }
-        else
-        {
-            cout << "캐스팅실패" << endl;
-        }
+        _info.fishSpeed = mat->GetPropertyFloat("_Speed");
+        _info.fishWaveAmount = mat->GetPropertyFloat("_Power");
+        const BoundingBox& box = meshrenderer->GetOriginBound();
+        _info.boundsSizeZ = box.Extents.z;
+        _info.boundsCenterZ = box.Center.z;
     }
-
+ 
 
     ///////////////////////////////////////////////////////////
 
@@ -71,7 +68,7 @@ void GraphPathFinder::Update()
     if (_autoPliot)
         return;
     
-    CalculatePath(300.0f);
+    CalculatePath(_speed);
 
 };
 
@@ -139,9 +136,6 @@ vec3 GraphPathFinder::GetRamdomTarget()
     return sideData[_currentTargetIndex];
 };
 
-
-
-
 void GraphPathFinder::CalculatePath(float speed)
 {
     std::unordered_map<LeftRight, std::unordered_map<int, vec3>>& leftrightData = GraphData::datas;
@@ -154,15 +148,11 @@ void GraphPathFinder::CalculatePath(float speed)
     vec3 toTargetDir = TargetPos - currentPos;
     toTargetDir.Normalize();
 
-
-
     currentPos = GetOwner()->_transform->SetWorldPosition(currentPos + toTargetDir * Time::main->GetDeltaTime() * speed);
    
     GetOwner()->_transform->LookUpSmooth(toTargetDir, vec3::Up, 3.0f);
 
-
-    auto hit = ColliderManager::main->RayCastSpeed({ currentPos, toTargetDir }, 50.0f, GetOwner());
-
+    bool hit = ColliderManager::main->RayCastSpeed({ currentPos, toTargetDir }, 100.0f, GetOwner());
 
     if (hit)
     {
@@ -180,7 +170,5 @@ void GraphPathFinder::CalculatePath(float speed)
 
 void GraphPathFinder::SetData(StructuredBuffer* buffer, Material* material)
 {
-    cout << "addData" << endl;
-
     buffer->AddData(_info);
 }

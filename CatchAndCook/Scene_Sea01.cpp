@@ -296,7 +296,7 @@ void Scene_Sea01::Update()
 
 	Scene::Update();
 
-	PathStamp::main->Run();
+	/*PathStamp::main->Run();*/
 }
 
 void Scene_Sea01::RenderBegin()

@@ -596,15 +596,12 @@ bool ColliderManager::RayCastSpeed(const Ray& ray, float maxDist, shared_ptr<Gam
 	if (ray.direction == vec3::Zero)
 		return false;
 
-
 	float dist = 0;
 
 	auto it = _collidersForRay.find(sceneType);
 
 	if (it == _collidersForRay.end())
 		return false;
-
-	
 
 	for (const auto& collider : it->second)
 	{

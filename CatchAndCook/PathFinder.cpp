@@ -32,6 +32,7 @@ void PathFinder::Start()
     _firstQuat = GetOwner()->_transform->GetWorldRotation();
 
 	auto renderer = GetOwner()->GetRenderer();
+
 	if (!renderer)
 		return;
 

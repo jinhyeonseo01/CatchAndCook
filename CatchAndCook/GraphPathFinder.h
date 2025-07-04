@@ -30,7 +30,7 @@ public:
 
 private:
 	bool _autoPliot = false;
-
+	float _speed{};
 	FishInfo _info;
 	LeftRight _leftRight;
 	int _currentTargetIndex{};
