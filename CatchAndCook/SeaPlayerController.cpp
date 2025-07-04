@@ -50,7 +50,6 @@ void SeaPlayerController::Start()
 		_terrian = terrian->GetComponent<Terrain>();
 	}
 
-  
 	GetOwner()->_transform->SetForward(vec3(0.308061f, 0.164842f, 0.936977f));
 	_camera->SetCameraLook(vec3(0.308061f, 0.164842f, 0.936977f));
 	//GetOwner()->_transform->SetWorldPosition(vec3(0, 1000.0f, 1.0f));
@@ -60,7 +59,6 @@ void SeaPlayerController::Start()
 
     if (_skined == nullptr)
     {
-        cout << "NULL" << endl;
         _skined = GetOwner()->AddComponent<SkinnedHierarchy>();
     }
 

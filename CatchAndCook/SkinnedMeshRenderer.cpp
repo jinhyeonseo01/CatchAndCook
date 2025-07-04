@@ -60,7 +60,6 @@ void SkinnedMeshRenderer::Start()
 			_hierarchy = root->AddComponent<SkinnedHierarchy>();
 		_hierarchy.lock()->SetModel(_model);
 	}
-
 	else
 	{
 		cout << "퍽킹" << endl;
