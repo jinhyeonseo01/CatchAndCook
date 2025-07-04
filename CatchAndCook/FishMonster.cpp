@@ -26,15 +26,22 @@ void FishMonster::Init()
 
 void FishMonster::Start()
 {
+    wcout << " 호출스택:" << debug_test++ << " 이름:" << GetOwner()->GetRoot()->GetName() << "FishMonster" << endl;
 
 	_animations = GetOwner()->GetComponentWithChilds<AnimationListComponent>()->GetAnimations();
-	_skined = GetOwner()->GetComponentWithChilds<SkinnedHierarchy>();
 
+	_skined = GetOwner()->GetRoot()->GetComponentWithChilds<SkinnedHierarchy>();
+
+    if (_skined == nullptr)
+    {
+        _skined = GetOwner()->AddComponent<SkinnedHierarchy>();
+    }
 
     if (_animations.find("idle") != _animations.end())
     {
         _skined->Play(_animations["idle"], 0.5f);
     }
+
     else
     {
         wcout << GetOwner()->GetName() << "idle 못찾음" << endl;

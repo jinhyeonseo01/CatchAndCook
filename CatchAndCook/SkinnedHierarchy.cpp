@@ -35,8 +35,6 @@ void SkinnedHierarchy::Start()
 {
 	Component::Start();
 
-
-
 	//for (auto& renderer : GetOwner()->GetComponentsWithChilds<SkinnedMeshRenderer>())
 	//	renderer->AddCbufferSetter(GetCast<SkinnedHierarchy>());
 	for (auto& renderer : GetOwner()->GetComponentsWithChilds<SkinnedMeshRenderer>())
