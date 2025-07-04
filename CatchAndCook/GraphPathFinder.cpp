@@ -149,6 +149,7 @@ void GraphPathFinder::CalculatePath(float speed)
     vec3& TargetPos = data[_currentTargetIndex];
     vec3 currentPos = GetOwner()->_transform->GetWorldPosition();
 
+
     vec3 toTargetDir = TargetPos - currentPos;
     toTargetDir.Normalize();
 
@@ -161,7 +162,6 @@ void GraphPathFinder::CalculatePath(float speed)
     {
         vec3 avoidanceVel(0, 0, 0);
         const float detectionRadius = 100.f;
-        const float predictTime = 1.0f;
 
         vec3 playerPos = _player->_transform->GetWorldPosition();
 
@@ -184,7 +184,7 @@ void GraphPathFinder::CalculatePath(float speed)
     }
 
 
-    bool hit = ColliderManager::main->RayCastSpeed({ currentPos, toTargetDir }, 500.0f, GetOwner(), GameObjectTag::Monster);
+    bool hit = ColliderManager::main->RayCastSpeed({ currentPos, toTargetDir }, 90.0f, GetOwner(), GameObjectTag::Monster);
 
     if (hit)
     {
