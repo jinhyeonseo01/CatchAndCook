@@ -130,7 +130,7 @@ void Scene_Sea01::Init()
 
 	ColliderManager::main->SetCellSize(100);
 
-	ResourceManager::main->LoadAlway<SceneLoader>(L"test2", L"../Resources/Datas/Scenes/sea2.json");
+	ResourceManager::main->Load<SceneLoader>(L"test2", L"../Resources/Datas/Scenes/sea2.json");
 	auto sceneLoader = ResourceManager::main->Get<SceneLoader>(L"test2");
 	sceneLoader->Load(GetCast<Scene>());
 	auto player = Find(L"seaPlayer");
@@ -169,43 +169,6 @@ void Scene_Sea01::Init()
 	
 	
 	}
-
-
-	//{
-	//	auto ray = Find(L"ray");
-
-	//	shared_ptr<FishMonster> finder;
-
-	//	if (ray)
-	//	{
-	//		finder = ray->AddComponent<FishMonster>();
-	//		finder->ReadPathFile(L"rayPath");
-	//	}
-
-	//	//auto hpBar =ray->GetChildByName(L"rayHpBar");
-
-	//	////auto hpBar = Find(L"rayHpBar");
-
-	//	//if (hpBar)
-	//	//{
-	//	//	auto percentageBar = hpBar->GetComponent<PercentComponent>();
-	//	//	percentageBar->BindingPercentage(&finder->_hp);
-	//	//}
-	//}
-
-	//{
-	//	auto ray = Find(L"redFish");
-
-	//	shared_ptr<FishMonster> finder;
-
-	//	if (ray)
-	//	{
-	//		finder = ray->AddComponent<FishMonster>();
-	//		finder->ReadPathFile(L"rayPath");
-	//	}
-	//	
-	//
-	//}
 
 
 	{
