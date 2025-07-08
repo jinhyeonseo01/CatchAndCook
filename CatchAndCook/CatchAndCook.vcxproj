@@ -279,6 +279,7 @@
     <ClCompile Include="simple_mesh_LH.cpp" />
     <ClCompile Include="SkinnedHierarchy.cpp" />
     <ClCompile Include="SkinnedMeshRenderer.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="SpriteAction.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="StatePattern.cpp" />
@@ -420,6 +421,7 @@
     <ClInclude Include="simple_mesh_LH.h" />
     <ClInclude Include="SkinnedHierarchy.h" />
     <ClInclude Include="SkinnedMeshRenderer.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="SpriteAction.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="StatePattern.h" />

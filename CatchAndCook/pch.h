@@ -51,10 +51,11 @@ using namespace Microsoft::WRL;
 #pragma comment(lib, "DXGI.lib")
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "D3D12.lib")
-#pragma comment( lib, "d3d11.lib" )
+#pragma comment(lib, "d3d11.lib" )
 #pragma comment(lib, "D3DCompiler.lib")
 #pragma comment(lib, "d2d1.lib")
 #pragma comment(lib, "dwrite.lib")
+#pragma comment(lib, "Fmod/fmod_vc.lib")
 
 #ifdef _DEBUG
 #pragma comment(lib, "DirectXTex\\DirectXTex_Debug.lib")
@@ -94,7 +95,6 @@ using namespace Microsoft::WRL;
 #include "SimpleMath_LH.inl"
 
 #include "nlohmann/json.hpp"
-
 
 #include "NVApi/nvapi.h"
 #pragma comment(lib, "NVApi/nvapi64.lib")

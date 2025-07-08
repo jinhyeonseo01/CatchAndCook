@@ -30,6 +30,7 @@
 #include "PathStamp.h"
 #include "ShadowManager.h"
 #include "ParticleManager.h"
+#include "SoundManager.h"
 void Game::Init(HWND hwnd)
 {
 	IGuid::StaticInit();
@@ -97,6 +98,9 @@ void Game::Init(HWND hwnd)
 	ParticleManager::main = make_unique<ParticleManager>();
 	ParticleManager::main->Init();
 
+	Sound::main = make_unique<Sound>();
+	Sound::main->Init();
+
 	SceneManager::main->AddScene(SceneType::TestScene2, false);
 	SceneManager::main->AddScene(SceneType::Sea01, true);
 	SceneManager::main->ChangeScene(nullptr, SceneManager::main->FindScene(SceneType::Sea01), false, false);
@@ -112,11 +116,7 @@ void Game::PrevUpdate()
 		_quit = true;
 		return;
 	}
-	if(Input::main->GetKeyDown(KeyCode::F5))
-	{
-		//SceneManager::main->Reload();
-	}
-	
+
 
 	if (Input::main->GetKeyDown(KeyCode::F9))
 	{
@@ -171,7 +171,25 @@ void Game::Run()
 
 	Input::main->Update();
 	Time::main->Update();
-		PrevUpdate();
+	Sound::main->Play("endsong",0.1f);
+	Sound::main->Update();
+
+	if (Input::main->GetKeyDown(KeyCode::P))
+	{
+		Sound::main->Pause("endsong");
+	}
+
+	if (Input::main->GetKeyDown(KeyCode::K))
+	{
+		Sound::main->Play("endsong");
+	}
+
+	if (Input::main->GetKeyDown(KeyCode::S))
+	{
+		Sound::main->Stop("endsong");
+	}
+
+	PrevUpdate();
 
 	if (_quit)
 		return;

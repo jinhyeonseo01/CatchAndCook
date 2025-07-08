@@ -365,7 +365,6 @@
     <ClCompile Include="ShadowManager.cpp">
       <Filter>07.Manager</Filter>
     </ClCompile>
-    <ClCompile Include="InGameGlobal.cpp" />
     <ClCompile Include="NPCComponent.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
@@ -390,22 +389,40 @@
     <ClCompile Include="InGameMainField.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
-    <ClCompile Include="ParticleManager.cpp" />
-    <ClCompile Include="ParticleRenderer.cpp" />
     <ClCompile Include="EventComponent.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
-    <ClCompile Include="BoatController.cpp" />
     <ClCompile Include="ProjectileComponet.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
     <ClCompile Include="ParticleComponent.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
-    <ClCompile Include="AnimationSpriteComponent.cpp" />
-    <ClCompile Include="PercentComponent.cpp" />
-    <ClCompile Include="GraphData.cpp" />
-    <ClCompile Include="GraphPathFinder.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
+    <ClCompile Include="AnimationSpriteComponent.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="BoatController.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphPathFinder.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphData.cpp">
+      <Filter>997.Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="InGameGlobal.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleRenderer.cpp">
+      <Filter>03.Component\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="PercentComponent.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleManager.cpp">
+      <Filter>07.Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -720,7 +737,6 @@
     <ClInclude Include="EffectComponent.h">
       <Filter>03.Component</Filter>
     </ClInclude>
-    <ClInclude Include="InGameGlobal.h" />
     <ClInclude Include="NPCComponent.h">
       <Filter>03.Component</Filter>
     </ClInclude>
@@ -745,22 +761,40 @@
     <ClInclude Include="InGameMainField.h">
       <Filter>03.Component</Filter>
     </ClInclude>
-    <ClInclude Include="ParticleManager.h" />
-    <ClInclude Include="ParticleRenderer.h" />
     <ClInclude Include="EventComponent.h">
       <Filter>03.Component</Filter>
     </ClInclude>
-    <ClInclude Include="BoatController.h" />
     <ClInclude Include="ProjectileComponet.h">
       <Filter>03.Component</Filter>
     </ClInclude>
     <ClInclude Include="ParticleComponent.h">
       <Filter>03.Component</Filter>
     </ClInclude>
-    <ClInclude Include="AnimationSpriteComponent.h" />
-    <ClInclude Include="PercentComponent.h" />
-    <ClInclude Include="GraphData.h" />
-    <ClInclude Include="GraphPathFinder.h" />
+    <ClInclude Include="SoundManager.h" />
+    <ClInclude Include="AnimationSpriteComponent.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="BoatController.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphPathFinder.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphData.h">
+      <Filter>997.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="InGameGlobal.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleRenderer.h">
+      <Filter>03.Component\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="PercentComponent.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleManager.h">
+      <Filter>07.Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath_LH.inl">
@@ -958,7 +992,6 @@
     <FxCompile Include="..\Resources\Shaders\UnderwaterVolumetric.hlsl">
       <Filter>998.HLSL\Graphics\KSH</Filter>
     </FxCompile>
-    <FxCompile Include="..\Resources\Shaders\HookShader.hlsl" />
     <FxCompile Include="..\Resources\Shaders\ParticleComputeShader.hlsl">
       <Filter>998.HLSL\Particle</Filter>
     </FxCompile>
@@ -981,6 +1014,9 @@
       <Filter>998.HLSL\Graphics\KSH</Filter>
     </FxCompile>
     <FxCompile Include="..\Resources\Shaders\ForwardSeaClip.hlsl">
+      <Filter>998.HLSL\Graphics\KSH</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\HookShader.hlsl">
       <Filter>998.HLSL\Graphics\KSH</Filter>
     </FxCompile>
   </ItemGroup>

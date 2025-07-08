@@ -26,7 +26,7 @@ void FishMonster::Init()
 
 void FishMonster::Start()
 {
-    wcout << " 호출스택:" << debug_test++ << " 이름:" << GetOwner()->GetRoot()->GetName() << "FishMonster" << endl;
+   /* wcout << " 호출스택:" << debug_test++ << " 이름:" << GetOwner()->GetRoot()->GetName() << "FishMonster" << endl;*/
 
 	_animations = GetOwner()->GetComponentWithChilds<AnimationListComponent>()->GetAnimations();
 

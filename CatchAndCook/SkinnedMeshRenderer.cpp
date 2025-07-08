@@ -32,7 +32,7 @@ void SkinnedMeshRenderer::Start()
 {
 	Component::Start();
 
-	wcout << " 호출스택:" << debug_test++ << " 이름:" << GetOwner()->GetRoot()->GetName() << "SkinnedMeshRenderer" << endl;
+	/*wcout << " 호출스택:" << debug_test++ << " 이름:" << GetOwner()->GetRoot()->GetName() << "SkinnedMeshRenderer" << endl;*/
 
 	//AddStructuredSetter(_setter_ForwardLight, BufferType::ForwardLightParam);
 	if (auto objectSettingComponent = GetOwner()->GetComponentWithParents<ObjectSettingComponent>())

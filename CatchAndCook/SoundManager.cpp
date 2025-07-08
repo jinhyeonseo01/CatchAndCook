@@ -1,0 +1,188 @@
+﻿#include "pch.h"
+#include "SoundManager.h"
+#include <Fmod/fmod_errors.h>
+std::unique_ptr<Sound> Sound::main = nullptr;
+
+
+
+void Sound::Init()
+{
+    auto result = FMOD::System_Create(&_system);
+
+    ERRCHECK(result);
+
+    result = _system->init(128, FMOD_INIT_NORMAL, nullptr);
+
+    ERRCHECK(result);
+
+    {
+        std::string path = "../Resources/Sound/noneRoop/";
+
+        for (const auto& entry : fs::directory_iterator(path))
+        {
+            std::string filename = entry.path().filename().string();        
+            std::string key = fs::path(filename).stem().string();           
+
+            LoadSound(path + filename, key, false);
+        }
+    }
+
+    {
+        std::string path = "../Resources/Sound/roop/";
+
+        for (const auto& entry : fs::directory_iterator(path))
+        {
+            std::string filename = entry.path().filename().string();
+            std::string key = fs::path(filename).stem().string();
+
+            LoadSound(path + filename, key, true);
+        }
+    }
+
+}
+
+void Sound::Update()
+{
+    _system->update();
+
+    for (auto& [name,soundData] : _soundDatas)
+    {
+        if (soundData.channel)
+        {
+            soundData.channel->isPlaying(&soundData._isPlaying);
+        }
+    }
+}
+
+void Sound::Play(const string& name, float volume, bool overlapped)
+{
+    auto it = _soundDatas.find(name);
+
+    if (it == _soundDatas.end())
+    {
+        cerr << "Sound \"" << name << "\" not loaded!" << endl;
+        return;
+    }
+
+    SoundData& data = it->second;
+
+
+    cout << (int)data.state << endl;
+ 
+    switch (data.state)
+    {
+    case SoundState::NONE:
+    {
+        FMOD_RESULT result = _system->playSound(data.sound, nullptr, false, &data.channel);
+        ERRCHECK(result);
+        data.state = SoundState::PLAYING;  
+        break;
+    }
+    case SoundState::PLAYING:
+    {
+        if (overlapped)
+        {
+            FMOD_RESULT result = _system->playSound(data.sound, nullptr, false, &data.channel);
+            ERRCHECK(result);
+        }
+        break;
+    }
+    case SoundState::STOP:
+    {
+        FMOD_RESULT result = _system->playSound(data.sound, nullptr, false, &data.channel);
+        ERRCHECK(result);
+        break;
+    }
+    case SoundState::PAUSED:
+    {
+        FMOD::Channel* channel = data.channel;
+        if (channel)
+        {
+            channel->setPaused(false);    
+            data.state = SoundState::PLAYING;
+        }
+
+        break;
+    }
+
+    default:
+        break;
+    }
+
+    if (data.channel)
+        data.channel->setVolume(volume);
+
+}
+
+void Sound::Stop(const string& name)
+{
+    auto it = _soundDatas.find(name);
+
+    if (it != _soundDatas.end())
+    {
+        FMOD::Channel* channel = it->second.channel;
+
+        if (channel)
+        {
+            channel->stop();
+        }
+
+        it->second.state = SoundState::STOP;
+    }
+
+   
+}
+
+void Sound::Pause(const string& name)
+{
+    auto it = _soundDatas.find(name);
+    if (it != _soundDatas.end())
+    {
+        FMOD::Channel* channel = it->second.channel;
+
+        if (channel)
+        {
+            bool paused = false;
+            channel->getPaused(&paused);
+            channel->setPaused(!paused);
+        }
+
+        it->second.state = SoundState::PAUSED;
+    }
+
+};
+
+
+void Sound::LoadSound(const string& path, const string& name, bool loop)
+{
+  
+    FMOD::Sound* sound = nullptr;
+    FMOD_RESULT result;
+
+     if (loop)
+     {
+         result = _system->createSound(path.c_str(), FMOD_LOOP_NORMAL, 0, &sound);
+     }
+     else
+     {
+         result = _system->createSound(path.c_str(), FMOD_LOOP_OFF, 0, &sound);
+     }
+
+     ERRCHECK(result);
+
+     SoundData data;
+     data.name = name;
+     data.sound = sound;
+     data.channel = nullptr;
+     _soundDatas[name] = data;
+
+}
+
+void Sound::ERRCHECK(FMOD_RESULT result)
+{
+    if (result != FMOD_OK)
+    {
+        cerr << "FMOD Error: " << FMOD_ErrorString(result) << endl;
+        exit(-1);
+    };
+}

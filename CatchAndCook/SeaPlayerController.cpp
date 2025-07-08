@@ -39,7 +39,7 @@ void SeaPlayerController::Init()
 
 void SeaPlayerController::Start()
 {
-    wcout << " 호출스택:"<< debug_test++ << " 이름:" << GetOwner()->GetRoot()->GetName() << "SeaPlayerController" << endl;
+   /* wcout << " 호출스택:"<< debug_test++ << " 이름:" << GetOwner()->GetRoot()->GetName() << "SeaPlayerController" << endl;*/
 
 	_camera = CameraManager::main->GetCamera(CameraType::SeaCamera);
 	_transform = GetOwner()->_transform;
