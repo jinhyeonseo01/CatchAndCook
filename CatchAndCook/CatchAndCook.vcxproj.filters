@@ -398,7 +398,6 @@
     <ClCompile Include="ParticleComponent.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
-    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="AnimationSpriteComponent.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
@@ -421,6 +420,9 @@
       <Filter>03.Component</Filter>
     </ClCompile>
     <ClCompile Include="ParticleManager.cpp">
+      <Filter>07.Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundManager.cpp">
       <Filter>07.Manager</Filter>
     </ClCompile>
   </ItemGroup>
@@ -770,7 +772,6 @@
     <ClInclude Include="ParticleComponent.h">
       <Filter>03.Component</Filter>
     </ClInclude>
-    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="AnimationSpriteComponent.h">
       <Filter>03.Component</Filter>
     </ClInclude>
@@ -793,6 +794,9 @@
       <Filter>03.Component</Filter>
     </ClInclude>
     <ClInclude Include="ParticleManager.h">
+      <Filter>07.Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundManager.h">
       <Filter>07.Manager</Filter>
     </ClInclude>
   </ItemGroup>

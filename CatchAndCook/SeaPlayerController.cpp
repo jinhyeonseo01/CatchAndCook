@@ -460,7 +460,7 @@ void SeaPlayerController::SetState(SeaPlayerState state)
         vec3 dir = worldFar - worldNear;
         dir.Normalize();
 
-        float maxDist = 1000000.0f;
+        float maxDist = 10000.0f;
 
         auto ray = ColliderManager::main->RayCast({ worldNear, dir }, maxDist, GetOwner());
 
@@ -481,7 +481,7 @@ void SeaPlayerController::SetState(SeaPlayerState state)
 
                 else if (ray.gameObject->HasTag(GameObjectTag::NONE) && !ray.gameObject->HasTag(GameObjectTag::EVENT))
                 {
-                    ParticleManager::main->GenParticle(2.5f, 500, 3.5f,20.0f, ray.worldPos, ray.normal, ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
+                    ParticleManager::main->GenParticle(2.5f, 500, 5.5f,40.0f, ray.worldPos, ray.normal, ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
                         , ResourceManager::main->Get<Texture>(L"smokeTexture"));
                 }
 

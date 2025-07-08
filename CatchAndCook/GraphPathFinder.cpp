@@ -121,23 +121,13 @@ void GraphPathFinder::Destroy()
 }
 
 
-vec3 GraphPathFinder::GetRamdomTarget()
+void GraphPathFinder::GetRamdomTarget()
 {
- 
-
     LeftRight opposite = (_leftRight == LeftRight::Left) ? LeftRight::Right : LeftRight::Left;
     auto& sideData = GraphData::datas[opposite];
-
-    int newIndex;
-
-    do
-    {
-        newIndex = rand() % sideData.size();
-    } while (newIndex == _currentTargetIndex);
-
+    int newIndex = rand() % sideData.size();
     _leftRight = opposite;
-    _currentTargetIndex = newIndex;
-    return sideData[_currentTargetIndex];
+    _targetPos = sideData[newIndex];
 };
 
 void GraphPathFinder::CalculatePath(float speed)
@@ -146,9 +136,8 @@ void GraphPathFinder::CalculatePath(float speed)
 
     auto& data = leftrightData[_leftRight];
 
-    vec3& TargetPos = data[_currentTargetIndex];
+    vec3& TargetPos = _targetPos;
     vec3 currentPos = GetOwner()->_transform->GetWorldPosition();
-
 
     vec3 toTargetDir = TargetPos - currentPos;
     toTargetDir.Normalize();
@@ -184,7 +173,7 @@ void GraphPathFinder::CalculatePath(float speed)
     }
 
 
-    bool hit = ColliderManager::main->RayCastSpeed({ currentPos, toTargetDir }, 90.0f, GetOwner(), GameObjectTag::Monster);
+    bool hit = ColliderManager::main->RayCastSpeed({ currentPos, toTargetDir }, 200.0f, GetOwner(), GameObjectTag::Monster);
 
     if (hit)
     {

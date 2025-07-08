@@ -34,8 +34,8 @@ private:
 	float _speed{};
 	FishInfo _info;
 	LeftRight _leftRight;
-	int _currentTargetIndex{};
-	vec3 GetRamdomTarget();
+	vec3 _targetPos;
+	void GetRamdomTarget();
 
 
 };

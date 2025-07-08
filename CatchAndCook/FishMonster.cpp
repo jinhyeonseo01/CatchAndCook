@@ -150,13 +150,14 @@ void FishMonster::UpdateState(float dt)
 	case FishMonsterState::Hit:
     {
         _hit_to_IdleTime += dt;
-        constexpr float LimitTime = 15.0f;
+        constexpr float LimitTime = 5.0f;
 
         if (_hit_to_IdleTime >= LimitTime)
         {
             _hit_to_IdleTime = 0;
             SetState(FishMonsterState::Idle);
         }
+
     }
 		break;
 	default:

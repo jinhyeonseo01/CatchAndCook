@@ -7,7 +7,6 @@ std::unique_ptr<Sound> Sound::main = nullptr;
 
 Sound::~Sound()
 {
-
     for (auto& [key, data] : _soundDatas)
     {
 
