@@ -210,8 +210,6 @@ void SeaPlayerController::KeyUpdate(vec3& inputDir, Quaternion& rotation, float 
             }
         }
 
-        ParticleManager::main->GenParticle(5.0f, 15, 0.1f, 20.0f, vec3(0,-1.0f,0),vec3(0,0,0), ParticleMoveType::ScreenSpaceBubble, ParticleColorType::Red, {0,0,0,0}
-        , ResourceManager::main->Get<Texture>(L"bubble"),true);
     }
 
     if (Input::main->GetKey(KeyCode::Space))

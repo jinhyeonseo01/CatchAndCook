@@ -16,6 +16,8 @@ struct SoundData
 class Sound
 {
 public:
+	Sound() = default;
+	~Sound();
 	void Init();
 	void Update();
 	void Play(const string& name, float volume =1.0f, bool overlapped=false);

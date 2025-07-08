@@ -5,6 +5,29 @@ std::unique_ptr<Sound> Sound::main = nullptr;
 
 
 
+Sound::~Sound()
+{
+
+    for (auto& [key, data] : _soundDatas)
+    {
+
+        if (data.sound)
+        {
+            data.sound->release();
+            data.sound = nullptr;
+        }
+    }
+
+    _soundDatas.clear();
+
+    if (_system)
+    {
+        _system->close();
+        _system->release();
+        _system = nullptr;
+    }
+}
+
 void Sound::Init()
 {
     auto result = FMOD::System_Create(&_system);
