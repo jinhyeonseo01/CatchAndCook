@@ -17,7 +17,7 @@ void ParticleManager::Init()
 
 }
 
-shared_ptr<GameObject> ParticleManager::GenParticle(float autodestroyTime, int particleCount, float particleSize, float speed, const vec3& worldPos, const vec3& worldNormal, const ParticleMoveType& moveType, const ParticleColorType& colorType, const vec4& clipingColor,shared_ptr<Texture> texture)
+shared_ptr<GameObject> ParticleManager::GenParticle(float autodestroyTime, int particleCount, float particleSize, float speed, const vec3& worldPos, const vec3& worldNormal, const ParticleMoveType& moveType, const ParticleColorType& colorType, const vec4& clipingColor,shared_ptr<Texture> texture , bool screenSapce)
 {
 	shared_ptr<StructuredBuffer> buffer = AllocParticleBuffer();
 
@@ -32,6 +32,8 @@ shared_ptr<GameObject> ParticleManager::GenParticle(float autodestroyTime, int p
 	{
 		particleRenderer->SetTexture(texture);
 	}
+
+	particleRenderer->SetScreenSpace(screenSapce);
 
 	return object;
 }

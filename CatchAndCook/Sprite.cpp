@@ -387,6 +387,7 @@ void AnimationSprite::CollisionEnd(const std::shared_ptr<Collider>& collider, co
 
 void AnimationSprite::SetDestroy()
 {
+
 }
 
 void AnimationSprite::Destroy()

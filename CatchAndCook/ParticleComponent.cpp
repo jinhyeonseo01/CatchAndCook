@@ -5,7 +5,7 @@
 static std::random_device rd;
 static std::mt19937 gen(rd());
 static std::uniform_real_distribution<float> dist(0.0f, 1.0f);
-
+static std::uniform_real_distribution<float> dist2(-0.1f, 0.1f);
 void ParticleComponent::Init()
 {
 }
@@ -125,8 +125,8 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 		{
 			data.worldPos = worldPos;
 
-			float x = dist(gen) * 0.5f;  
-			float y = abs(dist(gen)) * 0.3f + 0.2f; 
+			float x = dist(gen) * 0.5f;
+			float y = dist(gen) * 0.3f + 0.2f;
 			float z = dist(gen) * 0.5f;
 
 			data.dir = vec3(x, y, z);
@@ -134,6 +134,16 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 			break;
 		}
 
+		case ParticleMoveType::ScreenSpaceBubble:
+		{
+			data.worldPos = worldPos;
+			data.worldPos.x += dist2(gen);
+			data.worldPos.y += dist2(gen);
+			float y = (dist(gen)) * 0.3f + 0.1f;
+			data.dir = vec3(0, y, 0);
+			data.velocity = speed;
+		}
+		break;
 		default:
 			break;
 		}

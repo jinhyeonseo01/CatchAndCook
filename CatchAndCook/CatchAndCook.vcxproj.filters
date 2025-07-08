@@ -1019,6 +1019,9 @@
     <FxCompile Include="..\Resources\Shaders\HookShader.hlsl">
       <Filter>998.HLSL\Graphics\KSH</Filter>
     </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\ParticleRenderingShader2D.hlsl">
+      <Filter>998.HLSL\Particle</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\Direct12-Project-Scene\Assets\Models\Objects\Sea\Terrian_Seed\New Folder\2023-11-23T113343Z.png">

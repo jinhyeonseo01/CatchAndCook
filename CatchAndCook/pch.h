@@ -137,9 +137,8 @@ namespace fs = std::filesystem;
 #include "SceneManager.h"
 #include "SpriteAction.h"
 #include "Vertex.h"
-
 #include "InGameGlobal.h"
-
+#include "SoundManager.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "Imgui/imgui.h"

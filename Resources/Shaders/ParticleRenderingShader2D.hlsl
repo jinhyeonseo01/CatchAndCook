@@ -17,6 +17,8 @@ struct ParticleData
 };
 
 
+
+
 struct VS_OUT
 {
     float4 pos : SV_POSITION;
@@ -50,7 +52,6 @@ VS_OUT VS_Main(uint id : SV_InstanceID)
     
     ParticleData data =ParticleDatas[id];
     output.pos = float4(data.worldPos, 1.0f);
-    output.pos = mul(output.pos, ViewMatrix);
     output.color = data.color;
     output.size = data.size;
 
@@ -72,11 +73,6 @@ void GS_Main(point VS_OUT input[1], inout TriangleStream<GS_OUT> outputStream)
     output[1].pos = input[0].pos + float4(scale, scale, 0.f, 0.f);
     output[2].pos = input[0].pos + float4(scale, -scale, 0.f, 0.f);
     output[3].pos = input[0].pos + float4(-scale, -scale, 0.f, 0.f);
-
-    output[0].pos = mul(output[0].pos, ProjectionMatrix);
-    output[1].pos = mul(output[1].pos, ProjectionMatrix);
-    output[2].pos = mul(output[2].pos, ProjectionMatrix);
-    output[3].pos = mul(output[3].pos, ProjectionMatrix);
 
     output[0].uv = float2(0.f, 0.f);
     output[1].uv = float2(1.f, 0.f);
@@ -109,6 +105,8 @@ float4 PS_Main(GS_OUT input) : SV_Target
         if (color.a == g_clipingColor.a)
             discard;
         
+        //if (length(color.rgb - g_clipingColor.rgb) < 0.0001f)
+        //    discard;
         
         return color;
     }

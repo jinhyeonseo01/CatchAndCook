@@ -250,6 +250,10 @@ void Scene_Sea01::Init()
 		return a->GetName() < b->GetName();
 		});
 
+
+
+
+	Sound::main->Play("underwater2",0.1f);
 }
 
 void Scene_Sea01::Update()

@@ -4,7 +4,7 @@
 
 shared_ptr<Shader> ParticleRenderer::_particleComputeShader = nullptr;
 shared_ptr<Shader> ParticleRenderer::_particleRenderingShader = nullptr;
-
+shared_ptr<Shader> ParticleRenderer::_particleRenderingShader2D = nullptr;
 bool ParticleRenderer::IsExecuteAble()
 {
     return false;
@@ -38,6 +38,24 @@ void ParticleRenderer::Init()
 		_particleRenderingShader = make_shared<Shader>();
 		_particleRenderingShader->Init(L"ParticleRenderingShader.hlsl", {}, ShaderArg{ {{"PS_Main","ps"},{"VS_Main","vs"},{"GS_Main","gs"}} }, info);
 		_particleRenderingShader->SetPass(RENDER_PASS::ParticlePass);
+	}
+
+	if (_particleRenderingShader2D == nullptr)
+	{
+
+		ShaderInfo info;
+		info.renderTargetCount = 1;
+		info._primitiveType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
+		info._blendEnable = true;
+		info._blendType[0] = BlendType::BlendFactor;
+		info.RTVForamts[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		info._zWrite = false;
+
+		info.cullingType = CullingType::BACK;
+
+		_particleRenderingShader2D = make_shared<Shader>();
+		_particleRenderingShader2D->Init(L"ParticleRenderingShader2D.hlsl", {}, ShaderArg{ {{"PS_Main","ps"},{"VS_Main","vs"},{"GS_Main","gs"}} }, info);
+		_particleRenderingShader2D->SetPass(RENDER_PASS::ParticlePass);
 
 	}
 
@@ -119,7 +137,14 @@ void ParticleRenderer::Rendering(Material* material, Mesh* mesh, int instanceCou
 
 	//파티클 렌더링
 	{
-		cmdList->SetPipelineState(_particleRenderingShader->_pipelineState.Get());
+		if (_screenSpace == false)
+		{
+			cmdList->SetPipelineState(_particleRenderingShader->_pipelineState.Get());
+		}
+		else
+		{
+			cmdList->SetPipelineState(_particleRenderingShader2D->_pipelineState.Get());
+		}
 		auto& table = Core::main->GetBufferManager()->GetTable(); 
 		_tableContainer = table->Alloc(SRV_TABLE_REGISTER_COUNT);
 		table->CopyHandle(_tableContainer.CPUHandle, _particleComponent->GetStructuredBuffer()->GetSRVHandle(), 0);

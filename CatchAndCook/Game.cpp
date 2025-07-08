@@ -171,23 +171,8 @@ void Game::Run()
 
 	Input::main->Update();
 	Time::main->Update();
-	Sound::main->Play("endsong",0.1f);
 	Sound::main->Update();
 
-	if (Input::main->GetKeyDown(KeyCode::P))
-	{
-		Sound::main->Pause("endsong");
-	}
-
-	if (Input::main->GetKeyDown(KeyCode::K))
-	{
-		Sound::main->Play("endsong");
-	}
-
-	if (Input::main->GetKeyDown(KeyCode::S))
-	{
-		Sound::main->Stop("endsong");
-	}
 
 	PrevUpdate();
 
