@@ -66,49 +66,14 @@ void Sound::Play(const string& name, float volume, bool overlapped)
 
     SoundData& data = it->second;
 
-
-    cout << (int)data.state << endl;
- 
-    switch (data.state)
+    if (overlapped == false && data._isPlaying)
     {
-    case SoundState::NONE:
-    {
-        FMOD_RESULT result = _system->playSound(data.sound, nullptr, false, &data.channel);
-        ERRCHECK(result);
-        data.state = SoundState::PLAYING;  
-        break;
-    }
-    case SoundState::PLAYING:
-    {
-        if (overlapped)
-        {
-            FMOD_RESULT result = _system->playSound(data.sound, nullptr, false, &data.channel);
-            ERRCHECK(result);
-        }
-        break;
-    }
-    case SoundState::STOP:
-    {
-        FMOD_RESULT result = _system->playSound(data.sound, nullptr, false, &data.channel);
-        ERRCHECK(result);
-        break;
-    }
-    case SoundState::PAUSED:
-    {
-        FMOD::Channel* channel = data.channel;
-        if (channel)
-        {
-            channel->setPaused(false);    
-            data.state = SoundState::PLAYING;
-        }
-
-        break;
+        return;
     }
 
-    default:
-        break;
-    }
-
+    FMOD_RESULT result = _system->playSound(data.sound, nullptr, false, &data.channel);
+    ERRCHECK(result);
+    
     if (data.channel)
         data.channel->setVolume(volume);
 
@@ -126,11 +91,7 @@ void Sound::Stop(const string& name)
         {
             channel->stop();
         }
-
-        it->second.state = SoundState::STOP;
     }
-
-   
 }
 
 void Sound::Pause(const string& name)
@@ -146,10 +107,7 @@ void Sound::Pause(const string& name)
             channel->getPaused(&paused);
             channel->setPaused(!paused);
         }
-
-        it->second.state = SoundState::PAUSED;
     }
-
 };
 
 

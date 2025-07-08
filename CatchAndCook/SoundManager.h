@@ -2,18 +2,11 @@
 
 #include "Fmod/fmod.hpp"
 
-enum class SoundState
-{
-	NONE,
-	PLAYING,
-	STOP,
-	PAUSED,
-};
+
 
 struct SoundData
 {
 	string name;
-	SoundState state = SoundState::NONE;
 	FMOD::Channel* channel = nullptr;
 	FMOD::Sound* sound = nullptr;
 	bool _isPlaying = false;
