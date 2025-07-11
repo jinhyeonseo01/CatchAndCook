@@ -95,7 +95,11 @@ void SkinnedMeshRenderer::Start()
 		SetOriginBound(localBox);
 	}
 
-	SetSpecialMaterials();
+	if (SceneManager::main->GetCurrentScene()->GetSceneType() != SceneType::Sea01)
+	{
+		SetSpecialMaterials();
+	}
+
 }
 
 void SkinnedMeshRenderer::Update()

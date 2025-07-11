@@ -411,7 +411,7 @@ void SeaPlayerController::SetState(SeaPlayerState state)
         vec3 dir = worldFar - worldNear;
         dir.Normalize();
 
-        float maxDist = 10000.0f;
+        float maxDist = 1000.0f;
 
         auto ray = ColliderManager::main->RayCast({ worldNear, dir }, maxDist, GetOwner());
 
