@@ -116,6 +116,21 @@ void Sound::Stop(const string& name)
     }
 }
 
+void Sound::StopAll()
+{
+   
+    for (auto& ele : _soundDatas)
+    {
+
+        FMOD::Channel* channel = ele.second.channel;
+
+        if (channel)
+        {
+            channel->stop();
+        }
+    }
+}
+
 void Sound::Pause(const string& name)
 {
     auto it = _soundDatas.find(name);

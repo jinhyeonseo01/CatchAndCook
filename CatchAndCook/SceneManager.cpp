@@ -55,28 +55,17 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 
 	Core::main->FenceCurrentFrame();
 
-	//if (currentScene)
-	//{
-	//	for (auto& ele : currentScene->_gameObjects)
-	//	{
-	//		auto& vec = ele->GetComponentAll();
+	Sound::main->StopAll();
 
-	//		for (auto& eele : vec)
-	//		{
-	//			eele->Disable();
-	//		}
-	//	}
-	//}
-
-	//for (auto& ele : nextScene->_gameObjects)
-	//{
-	//	auto& vec = ele->GetComponentAll();
-
-	//	for (auto& eele : vec)
-	//	{
-	//		eele->Enable();
-	//	}
-	//}
+	switch (nextScene->GetSceneType())
+	{
+	case SceneType::TestScene2:
+		break;
+	case SceneType::Sea01:
+		Sound::main->Play("underwater2", 0.1f);
+	default:
+		break;
+	}
 
 	if (currentScene != nullptr)
 	{

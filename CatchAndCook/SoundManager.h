@@ -22,6 +22,7 @@ public:
 	void Update();
 	void Play(const string& name, float volume =1.0f, bool overlapped=false);
 	void Stop(const string& name);
+	void StopAll();
 	void Pause(const string& name);
 
 

@@ -28,6 +28,7 @@ void FishMonster::Init()
 
 void FishMonster::Start()
 {
+
    /* wcout << " 호출스택:" << debug_test++ << " 이름:" << GetOwner()->GetRoot()->GetName() << "FishMonster" << endl;*/
 
 	_animations = GetOwner()->GetComponentWithChilds<AnimationListComponent>()->GetAnimations();
@@ -79,7 +80,13 @@ void FishMonster::Start()
      }
 
 
-
+     if (GetOwner()->GetName().find(L"ray") == 0)
+     {
+         if (_animations.find("idle") != _animations.end())
+         {
+             _animations["idle"]->_speedMultiplier = 2.0f;
+         }
+     }
 
 }
 
@@ -171,7 +178,6 @@ void FishMonster::UpdateState(float dt)
                 auto collider = itemBox->AddComponent<Collider>();
                 collider->SetBoundingBox(vec3(0, 0.09795811f, 0), vec3(0.1711108f/2, 0.1970621f/2, 0.1503567f/2));
                 collider->SetTrigger(true);
-
                 itemBox->AddComponent<itemBoxComponent>();
             }
 
