@@ -7,7 +7,9 @@
 #include "Animation.h"
 #include "PercentComponent.h"
 #include "GraphPathFinder.h"
-
+#include "MeshRenderer.h"
+#include "Collider.h"
+#include "itemBoxComponent.h"
 COMPONENT(FishMonster)
 
 FishMonster::FishMonster()
@@ -133,19 +135,48 @@ void FishMonster::Destroy()
 void FishMonster::UpdateState(float dt)
 {
 
-
-
     switch (_state)
     {
     case FishMonsterState::Idle:
      
         break;
     case FishMonsterState::Die:
+    
         if (_skined->IsPlay() == false)
         {
             _hit_to_IdleTime = 0;
             GetOwner()->SetActiveSelf(false);
+            //아이템스폰.
+            auto& object = SceneManager::main->GetCurrentScene()->Find(L"itemBox");
+           
+            if (object)
+            {
+                object->SetActiveSelf(false);
+
+                auto& exmeshRenderer = object->GetComponent<MeshRenderer>();
+                auto& extransform = object->GetComponent<Transform>();
+
+                std::vector<std::shared_ptr<Material>>& materials = exmeshRenderer->GetMaterials();
+                std::vector<std::shared_ptr<Mesh>>& meshes = exmeshRenderer->GetMeshes();
+
+                auto& itemBox = SceneManager::main->GetCurrentScene()->CreateGameObject(L"itemBox");
+                auto& meshRenderer = itemBox->AddComponent<MeshRenderer>();
+                meshRenderer->SetMesh(meshes);
+                meshRenderer->SetMaterials(materials);
+
+                auto& transform = itemBox->GetComponent<Transform>();
+                transform->SetLocalScale(extransform->GetLocalScale());
+                transform->SetLocalPosition(GetOwner()->_transform->GetWorldPosition());
+
+                auto collider = itemBox->AddComponent<Collider>();
+                collider->SetBoundingBox(vec3(0, 0.09795811f, 0), vec3(0.1711108f/2, 0.1970621f/2, 0.1503567f/2));
+                collider->SetTrigger(true);
+
+                itemBox->AddComponent<itemBoxComponent>();
+            }
+
         }
+
 		break;
 	case FishMonsterState::Hit:
     {
@@ -188,15 +219,15 @@ void FishMonster::SetState(FishMonsterState state)
 
 		break;
 	case FishMonsterState::Die:
-        //_moveSpeed = 0.0f;
-          /* SceneManager::main->GetCurrentScene()->AddDestroyQueue(ray.gameObject->GetRoot());*/
         if (_animations.find("die") != _animations.end())
         {
             _skined->Play(_animations["die"], 0.5f);
         }
+
 		break;
 	case FishMonsterState::Hit:
         _moveSpeed *= 4.0f;
+
         if (_animations.find("run") != _animations.end())
         {
             _skined->Play(_animations["run"], 0.5f);

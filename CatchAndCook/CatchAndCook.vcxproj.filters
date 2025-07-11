@@ -425,6 +425,9 @@
     <ClCompile Include="SoundManager.cpp">
       <Filter>07.Manager</Filter>
     </ClCompile>
+    <ClCompile Include="itemBoxComponent.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -798,6 +801,9 @@
     </ClInclude>
     <ClInclude Include="SoundManager.h">
       <Filter>07.Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="itemBoxComponent.h">
+      <Filter>03.Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

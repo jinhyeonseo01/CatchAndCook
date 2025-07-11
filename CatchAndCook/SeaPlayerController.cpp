@@ -133,13 +133,15 @@ void SeaPlayerController::UpdatePlayerAndCamera(float dt, Quaternion& playerRota
 
     if (ray.isHit)
     {
+        
         vec3 normal = ray.normal;
 
         _velocity = _velocity - _velocity.Dot(normal) * normal;
 
-        float penetrationBuffer = 0.05f;
-        nextPos += normal * penetrationBuffer;
-        nextHeadPos += normal * penetrationBuffer;
+         float penetrationBuffer = 0.05f;
+         nextPos += normal * penetrationBuffer;
+         nextHeadPos += normal * penetrationBuffer;
+        
     }
 
 
@@ -317,58 +319,7 @@ void SeaPlayerController::Destroy()
 {
 }
 
-Quaternion SeaPlayerController::CalCulateYawPitchRoll()
-{
-	if (Input::main->IsMouseLock() == false)
-	{
-		static vec2 lastMousePos = Input::main->GetMousePosition();
 
-		if (Input::main->GetKeyDown(KeyCode::BackQoute))
-		{
-			lastMousePos = Input::main->GetMousePosition();
-           
-		}
-	
-		vec2 currentMousePos = Input::main->GetMousePosition();
-
-		vec2 delta = (currentMousePos - lastMousePos) * 0.1f;
-
-		_yaw += delta.x;
-		_pitch += delta.y;
-        float minPitch = -90.0f - _cameraPitchOffset;
-        float maxPitch = 90.0f - _cameraPitchOffset;
-        _pitch = std::clamp(_pitch, minPitch, maxPitch);
-		_roll = 0;
-
-		lastMousePos = currentMousePos;
-  
-	}
-
-	else
-	{
-		vec2 currentMousePos = Input::main->GetMousePosition();
-		vec2 centerPos = vec2(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
-		vec2 delta = (currentMousePos - centerPos) * 0.1f;
-
-		_yaw += delta.x;
-		_pitch += delta.y;
-        float minPitch = -90.0f - _cameraPitchOffset;
-        float maxPitch = 90.0f - _cameraPitchOffset;
-        _pitch = std::clamp(_pitch, minPitch, maxPitch);
-		_roll = 0;
-
-		POINT center;
-		center.x = static_cast<LONG>(WINDOW_WIDTH/2);
-		center.y = static_cast<LONG>(WINDOW_HEIGHT/2);
-		ClientToScreen(Core::main->GetHandle(), &center);
-		SetCursorPos(center.x, center.y);
-  
-	
-	}
-
-
-    return  Quaternion::CreateFromYawPitchRoll(_yaw * D2R, _pitch * D2R, 0);
-}
 
 void SeaPlayerController::UpdateState(float dt)
 {
@@ -521,3 +472,57 @@ void SeaPlayerController::Attack(float dt)
 {
 
 };
+
+
+Quaternion SeaPlayerController::CalCulateYawPitchRoll()
+{
+    if (Input::main->IsMouseLock() == false)
+    {
+        static vec2 lastMousePos = Input::main->GetMousePosition();
+
+        if (Input::main->GetKeyDown(KeyCode::BackQoute))
+        {
+            lastMousePos = Input::main->GetMousePosition();
+
+        }
+
+        vec2 currentMousePos = Input::main->GetMousePosition();
+
+        vec2 delta = (currentMousePos - lastMousePos) * 0.1f;
+
+        _yaw += delta.x;
+        _pitch += delta.y;
+        float minPitch = -90.0f - _cameraPitchOffset;
+        float maxPitch = 90.0f - _cameraPitchOffset;
+        _pitch = std::clamp(_pitch, minPitch, maxPitch);
+        _roll = 0;
+
+        lastMousePos = currentMousePos;
+
+    }
+
+    else
+    {
+        vec2 currentMousePos = Input::main->GetMousePosition();
+        vec2 centerPos = vec2(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+        vec2 delta = (currentMousePos - centerPos) * 0.1f;
+
+        _yaw += delta.x;
+        _pitch += delta.y;
+        float minPitch = -90.0f - _cameraPitchOffset;
+        float maxPitch = 90.0f - _cameraPitchOffset;
+        _pitch = std::clamp(_pitch, minPitch, maxPitch);
+        _roll = 0;
+
+        POINT center;
+        center.x = static_cast<LONG>(WINDOW_WIDTH / 2);
+        center.y = static_cast<LONG>(WINDOW_HEIGHT / 2);
+        ClientToScreen(Core::main->GetHandle(), &center);
+        SetCursorPos(center.x, center.y);
+
+
+    }
+
+
+    return  Quaternion::CreateFromYawPitchRoll(_yaw * D2R, _pitch * D2R, 0);
+}
