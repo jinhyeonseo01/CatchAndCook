@@ -60,6 +60,7 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 	switch (nextScene->GetSceneType())
 	{
 	case SceneType::TestScene2:
+		Sound::main->Play("chrismas", 0.1f);
 		break;
 	case SceneType::Sea01:
 		Sound::main->Play("underwater2", 0.1f);

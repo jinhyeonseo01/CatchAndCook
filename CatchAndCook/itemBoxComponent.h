@@ -1,5 +1,8 @@
 ﻿#pragma once
 #include "Component.h"
+
+
+
 class itemBoxComponent : public Component
 {
 public:
@@ -18,10 +21,10 @@ public:
 	virtual void SetDestroy() override;
 	virtual void Destroy();
 
+
 private:
 	float _rotate = 0.0f;
 	float _orginY = 0.0f;
-
 
 
 };

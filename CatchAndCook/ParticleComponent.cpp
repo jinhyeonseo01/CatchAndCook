@@ -86,7 +86,7 @@ void ParticleComponent::Destroy()
 void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, float autoDestroyTime, int particleCount, float size, float speed ,const vec3& worldPos, const vec3& worldNormal, const ParticleMoveType& moveType, const ParticleColorType& colorType, shared_ptr<Texture> texture,
 	 const vec4& clipingColor)
 {
-	assert(particleCount < 500);
+	assert(particleCount <= 500);
 
 	if (particleCount > 500)
 		cout << "파티클 갯수 잘못설정" << endl;

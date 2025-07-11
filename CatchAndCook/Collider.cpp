@@ -183,7 +183,6 @@ void Collider::SetDestroy()
 void Collider::Destroy()
 {
 	Component::Destroy();
-	cout << "collider Destory" << endl;
 	ColliderManager::main->RemoveCollider(GetCast<Collider>());
 
 }

@@ -383,9 +383,6 @@
     <ClCompile Include="Inventory.cpp">
       <Filter>04.Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Item.cpp">
-      <Filter>04.Resource</Filter>
-    </ClCompile>
     <ClCompile Include="InGameMainField.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
@@ -758,9 +755,6 @@
       <Filter>03.Component</Filter>
     </ClInclude>
     <ClInclude Include="Inventory.h">
-      <Filter>04.Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Item.h">
       <Filter>04.Resource</Filter>
     </ClInclude>
     <ClInclude Include="InGameMainField.h">

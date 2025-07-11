@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "itemBoxComponent.h"
 #include "Transform.h"
+#include "InGameGlobal.h"
 void itemBoxComponent::Init()
 {
 }
@@ -50,6 +51,8 @@ void itemBoxComponent::CollisionBegin(const std::shared_ptr<Collider>& collider,
 {
 
     Sound::main->Play("itemGet");
+
+    InGameGlobal::main->AddItem(GetOwner()->GetName());
 	GetOwner()->SetDestroy();
 }
 

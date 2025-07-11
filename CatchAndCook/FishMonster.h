@@ -1,11 +1,13 @@
 ﻿#pragma once
 #include "Component.h"
 #include "PathFinder.h"
+#include "itemBoxComponent.h"
 
 class AnimationListComponent;
 class SkinnedHierarchy;
 class Animation;
 class GraphPathFinder;
+
 
 
 enum class FishMonsterState
@@ -44,6 +46,7 @@ private:
 	void SetState(FishMonsterState state);
 
 private:
+
 	shared_ptr<GraphPathFinder> _pathFinder;
 	float _originMoveSpeed = 100.0f;
 	float _moveSpeed = 100.0f;

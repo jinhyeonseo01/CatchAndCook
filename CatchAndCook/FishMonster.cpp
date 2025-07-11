@@ -86,6 +86,13 @@ void FishMonster::Start()
          {
              _animations["idle"]->_speedMultiplier = 2.0f;
          }
+
+         GetOwner()->SetName(L"ray");
+     }
+
+     if (GetOwner()->GetName().find(L"redFish") == 0)
+     {
+         GetOwner()->SetName(L"redFish");
      }
 
 }
@@ -153,7 +160,7 @@ void FishMonster::UpdateState(float dt)
         {
             _hit_to_IdleTime = 0;
             GetOwner()->SetActiveSelf(false);
-            //아이템스폰.
+
             auto& object = SceneManager::main->GetCurrentScene()->Find(L"itemBox");
            
             if (object)
@@ -166,7 +173,7 @@ void FishMonster::UpdateState(float dt)
                 std::vector<std::shared_ptr<Material>>& materials = exmeshRenderer->GetMaterials();
                 std::vector<std::shared_ptr<Mesh>>& meshes = exmeshRenderer->GetMeshes();
 
-                auto& itemBox = SceneManager::main->GetCurrentScene()->CreateGameObject(L"itemBox");
+                auto& itemBox = SceneManager::main->GetCurrentScene()->CreateGameObject(GetOwner()->GetName());
                 auto& meshRenderer = itemBox->AddComponent<MeshRenderer>();
                 meshRenderer->SetMesh(meshes);
                 meshRenderer->SetMaterials(materials);
@@ -178,7 +185,8 @@ void FishMonster::UpdateState(float dt)
                 auto collider = itemBox->AddComponent<Collider>();
                 collider->SetBoundingBox(vec3(0, 0.09795811f, 0), vec3(0.1711108f/2, 0.1970621f/2, 0.1503567f/2));
                 collider->SetTrigger(true);
-                itemBox->AddComponent<itemBoxComponent>();
+                auto itemboxComponent  = itemBox->AddComponent<itemBoxComponent>();
+                
             }
 
         }

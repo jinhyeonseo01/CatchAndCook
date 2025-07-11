@@ -222,7 +222,6 @@
     <ClCompile Include="input_module.cpp" />
     <ClCompile Include="InstancingManager.cpp" />
     <ClCompile Include="Inventory.cpp" />
-    <ClCompile Include="Item.cpp" />
     <ClCompile Include="IType.cpp" />
     <ClCompile Include="IUnit.cpp" />
     <ClCompile Include="LightComponent.cpp" />
@@ -378,7 +377,6 @@
     <ClInclude Include="input_module.h" />
     <ClInclude Include="InstancingManager.h" />
     <ClInclude Include="Inventory.h" />
-    <ClInclude Include="Item.h" />
     <ClInclude Include="IType.h" />
     <ClInclude Include="IUnit.h" />
     <ClInclude Include="LightComponent.h" />
