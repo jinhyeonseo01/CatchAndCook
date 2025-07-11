@@ -71,7 +71,7 @@ void GraphPathFinder::Update()
 {
     if (_autoPliot)
         return;
-    
+
     CalculatePath(_speed);
 
 };
@@ -128,6 +128,7 @@ void GraphPathFinder::GetRamdomTarget()
     int newIndex = rand() % sideData.size();
     _leftRight = opposite;
     _targetPos = sideData[newIndex];
+ 
 };
 
 void GraphPathFinder::CalculatePath(float speed)
@@ -136,16 +137,13 @@ void GraphPathFinder::CalculatePath(float speed)
 
     auto& data = leftrightData[_leftRight];
 
-    vec3& TargetPos = _targetPos;
     vec3 currentPos = GetOwner()->_transform->GetWorldPosition();
-
-    vec3 toTargetDir = TargetPos - currentPos;
+    vec3 toTargetDir = _targetPos - currentPos;
     toTargetDir.Normalize();
 
-    currentPos = GetOwner()->_transform->SetWorldPosition(currentPos + toTargetDir * Time::main->GetDeltaTime() * speed);
-   
+    GetOwner()->_transform->SetWorldPosition(currentPos + toTargetDir * Time::main->GetDeltaTimeNow() * speed);
+    currentPos = GetOwner()->_transform->GetWorldPosition();
     GetOwner()->_transform->LookUpSmooth(toTargetDir, vec3::Up, 3.0f);
-
 
     if (_player)
     {
@@ -164,8 +162,8 @@ void GraphPathFinder::CalculatePath(float speed)
             avoidanceVel = away * detectionRadius * strength;
 
             vec3 velocity = avoidanceVel;
-            vec3 newPos = currentPos + velocity * Time::main->GetDeltaTime();
-            GetOwner()->_transform->SetWorldPosition(newPos);
+            vec3 newPos = currentPos + avoidanceVel * Time::main->GetDeltaTime();
+            currentPos= GetOwner()->_transform->SetWorldPosition(newPos);
             velocity.Normalize();
             GetOwner()->_transform->LookUpSmooth(velocity, vec3::Up, 3.0f);
         }
@@ -173,16 +171,19 @@ void GraphPathFinder::CalculatePath(float speed)
     }
 
 
+
     bool hit = ColliderManager::main->RayCastSpeed({ currentPos, toTargetDir }, 200.0f, GetOwner(), GameObjectTag::Monster);
 
     if (hit)
     {
+   
         GetRamdomTarget();
         return;
     }
 
-    if ((TargetPos - currentPos).LengthSquared() < 1.0f)
+    if ((_targetPos - currentPos).LengthSquared() < 1.0f)
     {
+    
         GetRamdomTarget();
         return;
     }
@@ -191,5 +192,5 @@ void GraphPathFinder::CalculatePath(float speed)
 
 void GraphPathFinder::SetData(StructuredBuffer* buffer, Material* material)
 {
-    buffer->AddData(_info);
+    //buffer->AddData(_info);
 }
