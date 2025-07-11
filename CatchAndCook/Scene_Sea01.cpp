@@ -265,7 +265,6 @@ void Scene_Sea01::Init()
 
 void Scene_Sea01::Update()
 {
-	cout << _gameObjects.size() << endl;
 
 	ColliderManager::main->SetCellSize(100);
 

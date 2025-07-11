@@ -151,10 +151,8 @@ void FishMonster::Reset()
     SetState(FishMonsterState::Idle);
     _hp = 100.0f;
     _hit_to_IdleTime = 0.0f;
-
     
 }
-
 
 void FishMonster::UpdateState(float dt)
 {

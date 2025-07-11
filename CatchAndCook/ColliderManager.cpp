@@ -380,7 +380,7 @@ void ColliderManager::Update()
 
 		for (auto& collider : colliders)
 		{
-			if (collider == nullptr) continue;
+		/*	if (collider == nullptr) continue;*/
 
 			VisualizeOccupiedCells(cell,collider);
 
