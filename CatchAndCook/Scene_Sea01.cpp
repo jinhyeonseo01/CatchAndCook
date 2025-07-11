@@ -216,6 +216,15 @@ void Scene_Sea01::Init()
 				{
 					if (Input::main->GetKeyDown(KeyCode::F))
 					{
+
+						for (auto& ele : SceneManager::main->GetCurrentScene()->_gameObjects)
+						{
+							if (ele)
+							{
+								ele->Reset();
+							}
+						}
+
 						Scene::_changeScene = true;
 					}
 				});
@@ -256,6 +265,7 @@ void Scene_Sea01::Init()
 
 void Scene_Sea01::Update()
 {
+	cout << _gameObjects.size() << endl;
 
 	ColliderManager::main->SetCellSize(100);
 

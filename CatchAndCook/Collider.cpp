@@ -187,6 +187,7 @@ void Collider::Destroy()
 
 }
 
+
 vec3 Collider::GetCenter()
 {
 	if (_type == CollisionType::Box)

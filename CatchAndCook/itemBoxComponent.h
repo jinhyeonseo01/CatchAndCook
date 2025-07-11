@@ -21,6 +21,8 @@ public:
 	virtual void SetDestroy() override;
 	virtual void Destroy();
 
+	void Reset() override;
+
 
 private:
 	float _rotate = 0.0f;

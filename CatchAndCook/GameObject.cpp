@@ -102,6 +102,17 @@ void GameObject::RenderEnd()
     }
 }
 
+void GameObject::Reset()
+{
+    for (auto& component : _components) 
+    {
+         component->Reset();
+    }
+
+}
+
+
+
 void GameObject::Destroy()
 {
     for (int i = 0; i < _components.size(); ++i) 

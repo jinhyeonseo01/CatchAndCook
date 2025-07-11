@@ -99,6 +99,11 @@ void PercentComponent::Destroy()
 
 }
 
+void PercentComponent::Reset()
+{
+	_displayPercentage = 100.0f;
+}
+
 void PercentComponent::SetData(StructuredBuffer* buffer, Material* material)
 {
 	PercentageData data;

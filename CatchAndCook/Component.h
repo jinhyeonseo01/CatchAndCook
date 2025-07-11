@@ -32,8 +32,13 @@ public:
 	virtual void CollisionEnd(const std::shared_ptr<Collider>& collider,const std::shared_ptr<Collider>& other);
 	virtual void ChangeParent(const std::shared_ptr<GameObject>& prev,const std::shared_ptr<GameObject>& current);
 	virtual void ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene);
-	virtual void SetDestroy() override;
+	virtual void SetDestroy();
 	virtual void Destroy();
+
+
+	virtual void Reset();
+
+
 private:
 	int _order = 0;
 	std::weak_ptr<GameObject> _owner;

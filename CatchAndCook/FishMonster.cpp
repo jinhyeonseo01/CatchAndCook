@@ -145,6 +145,16 @@ void FishMonster::Destroy()
 
 }
 
+void FishMonster::Reset()
+{
+    GetOwner()->SetActiveSelf(true);
+    SetState(FishMonsterState::Idle);
+    _hp = 100.0f;
+    _hit_to_IdleTime = 0.0f;
+
+    
+}
+
 
 void FishMonster::UpdateState(float dt)
 {
@@ -160,7 +170,6 @@ void FishMonster::UpdateState(float dt)
         {
             _hit_to_IdleTime = 0;
             GetOwner()->SetActiveSelf(false);
-
             auto& object = SceneManager::main->GetCurrentScene()->Find(L"itemBox");
            
             if (object)
@@ -220,7 +229,7 @@ void FishMonster::SetState(FishMonsterState state)
 	switch (_state)
 	{
 	case FishMonsterState::Idle:
-        _moveSpeed /= 4.0f;
+        _moveSpeed = _originMoveSpeed;
 
         if (_animations.find("idle") != _animations.end())
         {
@@ -240,7 +249,7 @@ void FishMonster::SetState(FishMonsterState state)
 
 		break;
 	case FishMonsterState::Hit:
-        _moveSpeed *= 4.0f;
+        _moveSpeed *= 3.0f;
 
         if (_animations.find("run") != _animations.end())
         {

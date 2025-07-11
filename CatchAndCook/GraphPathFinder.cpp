@@ -141,14 +141,14 @@ void GraphPathFinder::CalculatePath(float speed)
     vec3 toTargetDir = _targetPos - currentPos;
     toTargetDir.Normalize();
 
-    GetOwner()->_transform->SetWorldPosition(currentPos + toTargetDir * Time::main->GetDeltaTimeNow() * speed);
+    GetOwner()->_transform->SetWorldPosition(currentPos + toTargetDir * Time::main->GetDeltaTime() * speed);
     currentPos = GetOwner()->_transform->GetWorldPosition();
     GetOwner()->_transform->LookUpSmooth(toTargetDir, vec3::Up, 3.0f);
 
     if (_player)
     {
         vec3 avoidanceVel(0, 0, 0);
-        const float detectionRadius = 100.f;
+        const float detectionRadius = 150.f;
 
         vec3 playerPos = _player->_transform->GetWorldPosition();
 

@@ -53,6 +53,8 @@ public:
 	void Destroy() override;
 
 
+
+
 public:
 	CollisionType GetType() { return _type; }
 	int GetGroupID() const { return groupId; }

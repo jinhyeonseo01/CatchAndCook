@@ -375,10 +375,13 @@ void ColliderManager::Update()
 
 	for (auto& [cell, colliders] : _dynamicColliderGrids[SceneType])
 	{
+	
 		if (colliders.size() <= 1  && _staticColliderGrids[SceneType][cell].size() ==0 ) continue;
 
 		for (auto& collider : colliders)
 		{
+			if (collider == nullptr) continue;
+
 			VisualizeOccupiedCells(cell,collider);
 
 			auto potentialCollisions = GetPotentialCollisions(collider);

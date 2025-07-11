@@ -589,12 +589,8 @@ void Scene::ExecuteDestroyGameObjects()
         std::vector<std::shared_ptr<GameObject>> vec;
         gameObject->GetChildAll(vec);
 
-       /* wcout << gameObject->GetName() << endl;*/
-
         for (auto& ele : vec)
         {
-   /*         wcout << ele->GetName() << endl;*/
-
             auto it = std::find(_gameObjects.begin(), _gameObjects.end(), ele);
 
             if (it != _gameObjects.end())
