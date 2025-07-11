@@ -601,7 +601,7 @@ void Scene::ExecuteDestroyGameObjects()
 
             else
             {
-                it = std::find(_gameObjects_deactivate.begin(), _gameObjects_deactivate.end(), gameObject);
+                it = std::find(_gameObjects_deactivate.begin(), _gameObjects_deactivate.end(), ele);
                 if (it != _gameObjects_deactivate.end())
                 {
                     ele->Destroy();
