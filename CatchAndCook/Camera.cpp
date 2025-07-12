@@ -222,7 +222,7 @@ void SeaCamera::Update()
 }
 /*************************
 *                        *
-*     BoatCamera           *
+*     BoatCamera         *
 *                        *
 **************************/
 

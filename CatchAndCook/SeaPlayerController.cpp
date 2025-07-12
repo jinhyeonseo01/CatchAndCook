@@ -185,6 +185,30 @@ void SeaPlayerController::KeyUpdate(vec3& inputDir, Quaternion& rotation, float 
         inputDir += vec3::Right;
     }
 
+    if (Input::main->GetKeyDown(KeyCode::Shift))
+    {
+        _maxSpeed = 2500.0f;
+
+        if (_animations.find("idle") != _animations.end())
+        {
+            if (_animations.find("idle") != _animations.end())
+            {
+                _animations["idle"]->_speedMultiplier = 1.8f;
+            };
+        };
+    }
+
+    if (Input::main->GetKeyUp(KeyCode::Shift))
+    {
+        cout << "호롤롤" << endl;
+        _maxSpeed = 800.0f;
+
+        if (_animations.find("idle") != _animations.end())
+        {
+            _animations["idle"]->_speedMultiplier = 1.0f;
+        };
+    }
+
 
     if (Input::main->GetMouseDown(KeyCode::RightMouse))
     {

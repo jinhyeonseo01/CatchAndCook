@@ -155,7 +155,6 @@ void ImguiManager::Render()
 
             if (ImGui::Combo("Select Camera", &currentIndex, cameraNames.data(), (int)cameraNames.size()))
             {
-                cout << "호로롤" << endl;
                 selectedCameraType = cameraKeys[currentIndex];
                 CameraManager::main->SetActiveCamera(selectedCameraType);
             }

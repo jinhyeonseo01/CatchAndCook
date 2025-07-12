@@ -55,7 +55,6 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 	std::vector<std::shared_ptr<GameObject>> dontObj;
 
 	Core::main->FenceCurrentFrame();
-
 	Sound::main->StopAll();
 
 	switch (nextScene->GetSceneType())
