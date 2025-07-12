@@ -669,6 +669,33 @@ bool Scene::RemoveAtGameObject(int index)
 
 void Scene::CameraControl()
 {
+    static CameraType type = CameraType::DebugCamera;
+
+    if (Input::main->GetKeyDown(KeyCode::F1))
+    {
+        type = CameraType::DebugCamera;
+        CameraManager::main->Setting(type);
+    }
+
+    if (Input::main->GetKeyDown(KeyCode::F2))
+    {
+        type = CameraType::ComponentCamera;
+        CameraManager::main->Setting(type);
+    }
+
+    if (Input::main->GetKeyDown(KeyCode::F3))
+    {
+        type = CameraType::SeaCamera;
+        CameraManager::main->Setting(type);
+    }
+
+    if (Input::main->GetKeyDown(KeyCode::F4))
+    {
+        type = CameraType::BoatCamera;
+        CameraManager::main->Setting(type);
+    }
+
+ 
     CameraManager::main->Setting();
 }
 

@@ -233,6 +233,50 @@ void Scene_Sea01::Init()
 
 
 	{
+		auto& object = SceneManager::main->GetCurrentScene()->Find(L"EventEat");
+
+		auto& eventComponent = object->GetComponent<EventComponent>();
+		eventComponent->SetBindTag(GameObjectTag::Player);
+		eventComponent->BindOnCollisionBegin([](shared_ptr<Collider>& collider)
+			{
+				auto object = SceneManager::main->GetCurrentScene()->Find(L"EsacpeText");
+				if (object)
+				{
+					object->SetActiveSelf(true);
+
+				}
+			});
+
+		eventComponent->BindOnCollisionEnd([](shared_ptr<Collider>& collider)
+			{
+				auto object = SceneManager::main->GetCurrentScene()->Find(L"EsacpeText");
+				if (object)
+				{
+					object->SetActiveSelf(false);
+				}
+			});
+
+		eventComponent->BindOnUpdate([](shared_ptr<Collider>& collider)
+			{
+				if (Input::main->GetKeyDown(KeyCode::F))
+				{
+
+					for (auto& ele : SceneManager::main->GetCurrentScene()->_gameObjects)
+					{
+						if (ele)
+						{
+							ele->Reset();
+						}
+					}
+
+					Scene::_changeScene = true;
+				}
+			});
+	}
+	
+
+
+	{
 		auto& fireEffect = SceneManager::main->GetCurrentScene()->Find(L"FireEffect");
 		fireEffect->GetComponent<MeshRenderer>()->GetMaterial(0)->SetPass(RENDER_PASS::NoEffectForwardPostProcessing);
 
@@ -246,13 +290,13 @@ void Scene_Sea01::Init()
 		{
 			shared_ptr<Texture> texture = make_shared<Texture>();
 			std::wstring& path2 = entry.path().filename().wstring();
-			texture->Init(path+ path2);
+			texture->Init(path + path2);
 			_textures.push_back(texture);
 		}
 
 		animationSpriteComponent->SetTextures(_textures);
 		fireEffect->SetActiveSelf(false);
-	}
+	};
 
 
 	std::ranges::sort(_gameObjects, [&](const auto& a, const auto& b) {
