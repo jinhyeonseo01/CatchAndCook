@@ -1,0 +1,149 @@
+﻿#include "pch.h"
+#include "InteractiveComponent.h"
+#include "EventComponent.h"
+#include "Sprite.h"
+#include "Collider.h"
+#include "MeshRenderer.h"
+#include "TextManager.h"
+
+COMPONENT(InteractiveComponent)
+
+void InteractiveComponent::Init()
+{
+}
+
+void InteractiveComponent::Start()
+{
+	{
+		shared_ptr<GameObject> text = SceneManager::main->GetCurrentScene()->CreateGameObject(L"textMessage");
+		auto& renderer = text->AddComponent<MeshRenderer>();
+		auto& sprite = text->AddComponent<TextSprite>();
+		sprite->SetLocalPos(vec3(0.4f, 0.9f, 0.1f));
+		sprite->SetSize(vec2(0.3f, 0.3f));
+		sprite->SetText(GetOwner()->GetName());
+		sprite->CreateObject(550, 256, L"Arial", FontColor::WHITE, 60);
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
+		material->SetPass(RENDER_PASS::UI);
+		renderer->AddMaterials({ material });
+		text->SetActiveSelf(false);
+		_text = text;
+	};
+	
+}
+
+void InteractiveComponent::Update()
+{
+	if (_state == InteractiveState::ONCOLLISION)
+	{
+		if (Input::main->GetKeyDown(KeyCode::F))
+		{
+			_state = InteractiveState::GAMEON;
+		}
+	}
+}
+
+void InteractiveComponent::Update2()
+{
+}
+
+void InteractiveComponent::Enable()
+{
+}
+
+void InteractiveComponent::Disable()
+{
+}
+
+void InteractiveComponent::RenderBegin()
+{
+}
+
+void InteractiveComponent::RenderEnd()
+{
+}
+
+void InteractiveComponent::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
+{
+	if (collider->IsTrigger() && other->GetOwner()->HasTag(GameObjectTag::Player))
+	{
+		if (auto object = _text.lock())
+		{
+			SetState(InteractiveState::ONCOLLISION);
+			object->SetActiveSelf(true);
+		}
+	}
+}
+
+void InteractiveComponent::CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
+{
+	if (collider->IsTrigger() && other->GetOwner()->HasTag(GameObjectTag::Player))
+	{
+		if (auto object = _text.lock())
+		{
+			SetState(InteractiveState::NONE);
+			object->SetActiveSelf(false);
+		}
+	}
+}
+
+void InteractiveComponent::ChangeParent(const std::shared_ptr<GameObject>& prev, const std::shared_ptr<GameObject>& current)
+{
+}
+
+void InteractiveComponent::ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene)
+{
+}
+
+void InteractiveComponent::SetDestroy()
+{
+}
+
+void InteractiveComponent::Destroy()
+{
+}
+
+void InteractiveComponent::UpdateState()
+{
+	switch (_state)
+	{
+	case InteractiveState::NONE:
+		break;
+	case InteractiveState::ONCOLLISION:
+		if (Input::main->GetKeyDown(KeyCode::F))
+		{
+			SetState(InteractiveState::GAMEON);
+		}
+		break;
+	case InteractiveState::GAMEON:
+
+		break;
+	case InteractiveState::SUCCESS:
+		break;
+	default:
+		break;
+	}
+
+}
+
+void InteractiveComponent::SetState(InteractiveState state)
+{
+	if (_state == state)
+		return;
+
+	_state = state;
+
+	switch (_state)
+	{
+	case InteractiveState::NONE:
+		break;
+	case InteractiveState::ONCOLLISION:
+		break;
+	case InteractiveState::GAMEON:
+		break;
+	case InteractiveState::SUCCESS:
+		break;
+	default:
+		break;
+	}
+}

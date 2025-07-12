@@ -177,6 +177,7 @@
     <ClCompile Include="AnimationNode.cpp" />
     <ClCompile Include="AnimationSpriteComponent.cpp" />
     <ClCompile Include="Animator.cpp" />
+    <ClCompile Include="BilboardComponent.cpp" />
     <ClCompile Include="BoatController.cpp" />
     <ClCompile Include="Bone.cpp" />
     <ClCompile Include="BufferManager.cpp" />
@@ -197,6 +198,7 @@
     <ClCompile Include="Gizmo.cpp" />
     <ClCompile Include="GraphData.cpp" />
     <ClCompile Include="GraphPathFinder.cpp" />
+    <ClCompile Include="InteractiveComponent.cpp" />
     <ClCompile Include="itemBoxComponent.cpp" />
     <ClCompile Include="PercentComponent.cpp" />
     <ClCompile Include="ICBufferInjector.cpp" />
@@ -328,6 +330,7 @@
     <ClInclude Include="AnimationNode.h" />
     <ClInclude Include="AnimationSpriteComponent.h" />
     <ClInclude Include="Animator.h" />
+    <ClInclude Include="BilboardComponent.h" />
     <ClInclude Include="BoatController.h" />
     <ClInclude Include="Bone.h" />
     <ClInclude Include="BufferManager.h" />
@@ -349,6 +352,7 @@
     <ClInclude Include="Gizmo.h" />
     <ClInclude Include="GraphData.h" />
     <ClInclude Include="GraphPathFinder.h" />
+    <ClInclude Include="InteractiveComponent.h" />
     <ClInclude Include="itemBoxComponent.h" />
     <ClInclude Include="PercentComponent.h" />
     <ClInclude Include="ICBufferInjector.h" />

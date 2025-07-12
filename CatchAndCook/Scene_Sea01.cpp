@@ -178,7 +178,6 @@ void Scene_Sea01::Init()
 			auto eventComponent = object->GetComponent<EventComponent>();
 			eventComponent->SetBindTag(GameObjectTag::Player);
 			eventComponent->SetBindMessage(L"Press F To Escape", vec3(0.4f, 0.9f, 0.1f), vec2(0.3f, 0.3f),false);
-
 			eventComponent->BindOnCollisionBegin([=](shared_ptr<Collider>& collider)
 				{
 					eventComponent->ShowEventMessage(true);
@@ -207,6 +206,8 @@ void Scene_Sea01::Init()
 				});
 		}
 	}
+
+	
 
 
 

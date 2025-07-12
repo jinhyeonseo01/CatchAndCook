@@ -45,12 +45,7 @@ void PercentComponent::Update()
 
 void PercentComponent::Update2()
 {
-	vec3 objPos = GetOwner()->_transform->GetWorldPosition();
-	vec3 camPos = CameraManager::main->GetActiveCamera()->GetCameraPos();
-
-	vec3 dirToCamera = (camPos - objPos);
-	dirToCamera.Normalize();
-	GetOwner()->_transform->LookUp(dirToCamera, vec3::Up);
+	
 
 }
 

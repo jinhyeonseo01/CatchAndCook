@@ -57,9 +57,6 @@ void ResourceManager::CreateDefaultShaderKSH()
 		info.RTVForamts[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		info.RTVForamts[3] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 
-
-		info.cullingType = CullingType::FRONT;
-
 		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"percentageShader", L"percentageShader.hlsl", StaticProp,
 			ShaderArg{}, info);
 
