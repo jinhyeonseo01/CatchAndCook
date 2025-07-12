@@ -174,42 +174,19 @@ void Scene_Sea01::Init()
 	{
 
 		{
-			shared_ptr<GameObject> BoardText = CreateGameObject(L"EsacpeText");
-			auto& renderer = BoardText->AddComponent<MeshRenderer>();
-			auto& sprite = BoardText->AddComponent<TextSprite>();
-			sprite->SetLocalPos(vec3(0.4f, 0.9f, 0.1f));
-			sprite->SetSize(vec2(0.3f, 0.3f));
-			sprite->SetText(L"Press F To Esacpe");
-			sprite->CreateObject(550, 256, L"Arial", FontColor::WHITE, 60);
-			shared_ptr<Material> material = make_shared<Material>();
-			material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
-			material->SetPass(RENDER_PASS::UI);
-			renderer->AddMaterials({ material });
-			BoardText->SetActiveSelf(false);
-		};
-
-		{
-			auto& object = SceneManager::main->GetCurrentScene()->Find(L"EsacpeEvent");
-
-			auto& eventComponent = object->GetComponent<EventComponent>();
+			auto object = SceneManager::main->GetCurrentScene()->Find(L"EscapeEvent");
+			auto eventComponent = object->GetComponent<EventComponent>();
 			eventComponent->SetBindTag(GameObjectTag::Player);
-			eventComponent->BindOnCollisionBegin([](shared_ptr<Collider>& collider)
-				{
-					auto object = SceneManager::main->GetCurrentScene()->Find(L"EsacpeText");
-					if (object)
-					{
-						object->SetActiveSelf(true);
+			eventComponent->SetBindMessage(L"Press F To Escape", vec3(0.4f, 0.9f, 0.1f), vec2(0.3f, 0.3f),false);
 
-					}
+			eventComponent->BindOnCollisionBegin([=](shared_ptr<Collider>& collider)
+				{
+					eventComponent->ShowEventMessage(true);
 				});
 
-			eventComponent->BindOnCollisionEnd([](shared_ptr<Collider>& collider)
+			eventComponent->BindOnCollisionEnd([=](shared_ptr<Collider>& collider)
 				{
-					auto object = SceneManager::main->GetCurrentScene()->Find(L"EsacpeText");
-					if (object)
-					{
-						object->SetActiveSelf(false);
-					}
+					eventComponent->ShowEventMessage(false);
 				});
 
 			eventComponent->BindOnUpdate([](shared_ptr<Collider>& collider)
@@ -232,48 +209,7 @@ void Scene_Sea01::Init()
 	}
 
 
-	{
-		auto& object = SceneManager::main->GetCurrentScene()->Find(L"EventEat");
 
-		auto& eventComponent = object->GetComponent<EventComponent>();
-		eventComponent->SetBindTag(GameObjectTag::Player);
-		eventComponent->BindOnCollisionBegin([](shared_ptr<Collider>& collider)
-			{
-				auto object = SceneManager::main->GetCurrentScene()->Find(L"EsacpeText");
-				if (object)
-				{
-					object->SetActiveSelf(true);
-
-				}
-			});
-
-		eventComponent->BindOnCollisionEnd([](shared_ptr<Collider>& collider)
-			{
-				auto object = SceneManager::main->GetCurrentScene()->Find(L"EsacpeText");
-				if (object)
-				{
-					object->SetActiveSelf(false);
-				}
-			});
-
-		eventComponent->BindOnUpdate([](shared_ptr<Collider>& collider)
-			{
-				if (Input::main->GetKeyDown(KeyCode::F))
-				{
-
-					for (auto& ele : SceneManager::main->GetCurrentScene()->_gameObjects)
-					{
-						if (ele)
-						{
-							ele->Reset();
-						}
-					}
-
-					Scene::_changeScene = true;
-				}
-			});
-	}
-	
 
 
 	{

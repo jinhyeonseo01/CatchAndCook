@@ -92,54 +92,39 @@ void TestScene_jin::Init()
 	sceneLoader->Load(GetCast<Scene>());
 
 
-	{
-		shared_ptr<GameObject> BoardText = CreateGameObject(L"BoardText");
-		auto& renderer = BoardText->AddComponent<MeshRenderer>();
-
-		auto& sprite = BoardText->AddComponent<TextSprite>();
-		sprite->SetLocalPos(vec3(0.3f, 0.8f, 0.000001f));
-		sprite->SetSize(vec2(0.3f, 0.3f));
-		sprite->SetText(L"배를 타시려면 F를 누르게나");
-		sprite->CreateObject(750, 256, L"Arial", FontColor::WHITE, 60);
-
-		shared_ptr<Material> material = make_shared<Material>();
-		material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
-		material->SetPass(RENDER_PASS::UI);
-
-		renderer->AddMaterials({ material });
-		BoardText->SetActiveSelf(false);
-	};
 
 	{
-		auto& object = SceneManager::main->GetCurrentScene()->Find(L"OnBoardEvent");
-		auto& eventComponent = object->GetComponent<EventComponent>();
-		eventComponent->SetBindTag(GameObjectTag::Player);
-		eventComponent->BindOnCollisionBegin([](shared_ptr<Collider>& collider) 
-			{
-			 auto object= SceneManager::main->GetCurrentScene()->Find(L"BoardText");
-			 if (object)
-			 {
-				 object->SetActiveSelf(true);
-			 }
-			});
-		eventComponent->BindOnCollisionEnd([](shared_ptr<Collider>& collider) 
-			{
-				auto object = SceneManager::main->GetCurrentScene()->Find(L"BoardText");
-				if (object)
+
+		{
+			auto object = SceneManager::main->GetCurrentScene()->Find(L"OnBoardEvent");
+			auto eventComponent = object->GetComponent<EventComponent>();
+			eventComponent->SetBindTag(GameObjectTag::Player);
+
+	/*		sprite->SetLocalPos(vec3(0.3f, 0.8f, 0.000001f));
+			sprite->SetSize(vec2(0.3f, 0.3f));*/
+
+			eventComponent->SetBindMessage(L"Press F To Board", vec3(0.4f, 0.9f, 0.1f), vec2(0.3f, 0.3f), false);
+
+			eventComponent->BindOnCollisionBegin([=](shared_ptr<Collider>& collider)
 				{
-					object->SetActiveSelf(false);
+					eventComponent->ShowEventMessage(true);
+				});
 
-				}
-			});
+			eventComponent->BindOnCollisionEnd([=](shared_ptr<Collider>& collider)
+				{
+					eventComponent->ShowEventMessage(false);
+				});
 
-		eventComponent->BindOnUpdate([](shared_ptr<Collider>& collider) {
-			if (Input::main->GetKeyDown(KeyCode::F))
-			{
-				auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
+			eventComponent->BindOnUpdate([](shared_ptr<Collider>& collider)
+				{
+					if (Input::main->GetKeyDown(KeyCode::F))
+					{
+						auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
 
-				player->GetComponent<PlayerController>()->SetOnBoard();
-			}
-			});
+						player->GetComponent<PlayerController>()->SetOnBoard();
+					}
+				});
+		}
 	}
 
 
