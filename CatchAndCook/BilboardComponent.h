@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Component.h"
+
 class BilboardComponent : public Component
 {
 	void Init() override;

@@ -21,6 +21,7 @@ void BilboardComponent::Update()
 
 	vec3 dirToCamera = (camPos - objPos);
 	dirToCamera.Normalize();
+
 	GetOwner()->_transform->LookUp(dirToCamera, vec3::Up);
 }
 

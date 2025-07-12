@@ -56,7 +56,7 @@ void FishMonster::Start()
         _animations["die"]->_speedMultiplier = 0.3f;
     }
 
-    auto& percentageComponet = GetOwner()->GetChildByName(L"HPBar")->GetComponent<PercentComponent>();
+    auto percentageComponet = GetOwner()->GetChildByNameRecursive(L"HPBar")->GetComponent<PercentComponent>();
 
     if (percentageComponet)
     {

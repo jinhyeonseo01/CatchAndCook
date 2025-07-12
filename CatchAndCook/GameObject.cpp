@@ -220,6 +220,27 @@ std::shared_ptr<GameObject> GameObject::GetChildByName(const std::wstring& name)
     return iter->lock();
 }
 
+std::shared_ptr<GameObject> GameObject::GetChildByNameRecursive(const std::wstring& name)
+{
+    for (const auto& weakChild : _childs)
+    {
+        if (weakChild.expired())
+            continue;
+
+        auto child = weakChild.lock();
+
+        if (child->GetName() == name)
+            return child;
+
+
+             auto result = child->GetChildByNameRecursive(name);
+        if (result != nullptr)
+            return result;
+    }
+
+    return nullptr;
+}
+
 int GameObject::GetChildAll(OUT std::vector<std::shared_ptr<GameObject>>& vec)
 {
     int count = 0;
