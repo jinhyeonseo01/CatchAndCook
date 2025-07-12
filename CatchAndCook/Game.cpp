@@ -79,10 +79,8 @@ void Game::Init(HWND hwnd)
 	Gizmo::main = std::make_unique<Gizmo>();
 	Gizmo::main->Init();
 	CameraManager::main->AddCamera(CameraType::DebugCamera, make_shared<DebugCamera>());
-	CameraManager::main->AddCamera(CameraType::UiCamera, make_shared<UiCamera>());
 	CameraManager::main->AddCamera(CameraType::SeaCamera, make_shared<SeaCamera>());
 	CameraManager::main->AddCamera(CameraType::BoatCamera, make_shared<BoatCamera>());
-	CameraManager::main->SetActiveCamera(CameraType::DebugCamera);
 
 	LightManager::main = make_unique<LightManager>();
 	LightManager::main->Init();
@@ -101,9 +99,9 @@ void Game::Init(HWND hwnd)
 	Sound::main = make_unique<Sound>();
 	Sound::main->Init();
 
-	SceneManager::main->AddScene(SceneType::TestScene2, false);
+	SceneManager::main->AddScene(SceneType::TestScene2, true);
 	SceneManager::main->AddScene(SceneType::Sea01, true);
-	SceneManager::main->ChangeScene(nullptr, SceneManager::main->FindScene(SceneType::Sea01), false, false);
+	SceneManager::main->ChangeScene(nullptr, SceneManager::main->FindScene(SceneType::TestScene2), false, false);
 };
 
 void Game::PrevUpdate()
@@ -234,8 +232,6 @@ void Game::CameraUpdate()
 
 	shared_ptr<Camera> camera = CameraManager::main->GetCamera(CameraType::DebugCamera);
 
-	
-
 	static float speed = 500.0f;
 	const float dt =Time::main->GetDeltaTime() *speed;
 
@@ -327,43 +323,6 @@ void Game::CameraUpdate()
 		
 	}
 	
-	if (Input::main->GetMouseDown(KeyCode::LeftMouse))
-	{
-		//Ray ray;
-		//vec2 mouseXY = Input::main->GetNDCMouseDownPosition(KeyCode::LeftMouse);
-		//vec3 cursorNdcNear = vec3(mouseXY.x, mouseXY.y, 0.0f);
-		//vec3 cursorNdcFar = vec3(mouseXY.x, mouseXY.y, 1.0f);
-
-		//Matrix inverseProjView = CameraManager::main->GetActiveCamera()->GetCameraParam().InvertVPMatrix;
-
-		//vec3 cursorWorldNear =
-		//	vec3::Transform(cursorNdcNear, inverseProjView);
-
-		//vec3 cursorWorldFar =
-		//	vec3::Transform(cursorNdcFar, inverseProjView);
-
-		//vec3 dir = cursorWorldFar - cursorWorldNear;
-		//dir.Normalize();
-
-		//ray.position = cursorWorldNear;
-		//ray.direction = dir;
-
-		//float dist = 0;
-
-		//RayHit rayhit=  ColliderManager::main->RayCast(ray, dist);
-
-		//cout << rayhit.distance << endl;
-		//cout << rayhit.normal.x << " " << rayhit.normal.y << " " << rayhit.normal.z << endl;
-		//cout << rayhit.worldPos.x << " " << rayhit.worldPos.y << " " << rayhit.worldPos.z << endl;
-
-	}
-
-	/*if (auto& terrain = SceneManager::main->GetCurrentScene()->Find(L"Terrain"))
-	{
-		cout << terrain->GetComponent<Terrain>()->GetLocalHeight(camera->GetCameraPos()) << endl;;
-	}*/
-
-	//cout << camera->GetCameraLook().x <<" " << camera->GetCameraLook().y <<" " << camera->GetCameraLook().z << endl;
 
 
 }

@@ -356,7 +356,6 @@ void PlayerController::Update2()
 
 	camera.lock()->Calculate();
 
-	CameraManager::main->Setting();
 }
 
 void PlayerController::Enable()

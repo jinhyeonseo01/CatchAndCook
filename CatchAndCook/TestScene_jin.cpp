@@ -24,8 +24,6 @@ void TestScene_jin::Init()
 	_finalShader->SetShader(ResourceManager::main->Get<Shader>(L"finalShader_MainField"));
 	_finalShader->SetPass(RENDER_PASS::Forward);
 
-
-
 	{
 		shared_ptr<Shader> shader = ResourceManager::main->Get<Shader>(L"Skybox");
 		shared_ptr<Material> material = make_shared<Material>();

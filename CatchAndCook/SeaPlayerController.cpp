@@ -233,12 +233,7 @@ void SeaPlayerController::KeyUpdate(vec3& inputDir, Quaternion& rotation, float 
     }
 
 
-    if (Input::main->GetKey(KeyCode::F1))
-    {
-        auto& camera = CameraManager::main->GetCamera(CameraType::DebugCamera);
-        GetOwner()->_transform->SetWorldPosition(camera->GetCameraPos());
-        SetState(SeaPlayerState::Idle);
-    }
+   
 
 
 }

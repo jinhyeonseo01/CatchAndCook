@@ -122,6 +122,47 @@ void ImguiManager::Render()
             ImGui::EndTabItem();
         }
 
+        if (ImGui::BeginTabItem("Camera Select"))
+        {
+            static CameraType selectedCameraType = CameraType::DebugCamera;
+
+            auto& cameras = CameraManager::main->GetCameraAlls();
+
+            static std::vector<CameraType> cameraKeys;
+            static std::vector<const char*> cameraNames;
+
+            if (cameraKeys.size() != cameras.size())
+            {
+                cameraKeys.clear();
+                cameraNames.clear();
+
+                for (auto& [key, cam] : cameras)
+                {
+                    cameraKeys.push_back(key);
+                    cameraNames.push_back(CameraManager::main->CameraTypeToString(key));
+                }
+            }
+
+            int currentIndex = 0;
+            for (int i = 0; i < (int)cameraKeys.size(); ++i)
+            {
+                if (cameraKeys[i] == selectedCameraType)
+                {
+                    currentIndex = i;
+                    break;
+                }
+            }
+
+            if (ImGui::Combo("Select Camera", &currentIndex, cameraNames.data(), (int)cameraNames.size()))
+            {
+                cout << "호로롤" << endl;
+                selectedCameraType = cameraKeys[currentIndex];
+                CameraManager::main->SetActiveCamera(selectedCameraType);
+            }
+
+            ImGui::EndTabItem();
+        }
+
     /*    if (ImGui::BeginTabItem("Jin"))
         {
             Test();
