@@ -22,9 +22,6 @@ public:
 	void Render();
 
 private:
-	void Debug();
-
-	void DebugJin();
 
 	void BoidMove();
 
