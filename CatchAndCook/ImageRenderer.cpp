@@ -21,26 +21,23 @@ void ImageRenderer::Init()
 		meshRenderer = GetOwner()->AddComponent<MeshRenderer>();
 	}
 
-	meshRenderer->AddCbufferSetter(GetCast<ImageRenderer>());
-}
-
-void ImageRenderer::Start()
-{
-	Component::Start();
-
-	auto meshRenderer = GetOwner()->GetComponent<MeshRenderer>();
 	_material = std::make_shared<Material>();
 	_material->SetShadowCasting(false);
 	_material->SetPreDepthNormal(false);
 	_material->SetShader(ResourceManager::main->Get<Shader>(L"GUISpriteShader"));
 	_material->SetPass(RENDER_PASS::Transparent);
 
+	meshRenderer->AddCbufferSetter(GetCast<ImageRenderer>());
 	meshRenderer->AddMesh(GeoMetryHelper::LoadRectCenterOneScaleMesh());
-	//meshRenderer->AddMesh(GeoMetryHelper::LoadRectangleBox(1));
 	meshRenderer->AddMaterials({ _material });
 	meshRenderer->SetInstancing(false);
 	meshRenderer->SetCulling(false);
-	
+}
+
+void ImageRenderer::Start()
+{
+	Component::Start();
+
 }
 
 void ImageRenderer::Update()

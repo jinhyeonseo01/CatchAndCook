@@ -202,7 +202,9 @@ void Scene::TransparentPass(ComPtr<ID3D12GraphicsCommandList> & cmdList)
             };
 
         std::ranges::sort(vec, [&](const RenderObjectStrucutre& a, const RenderObjectStrucutre& b) {
-            return tangentDistanceSquared(a.renderer->_bound.Center) < tangentDistanceSquared(b.renderer->_bound.Center);
+            if (a.renderer->order == b.renderer->order)
+                return (tangentDistanceSquared(a.renderer->GetBound().Center) < tangentDistanceSquared(b.renderer->GetBound().Center));
+            return a.renderer->order < b.renderer->order;
             });
 
         Shader* prevShader = nullptr;
@@ -213,7 +215,7 @@ void Scene::TransparentPass(ComPtr<ID3D12GraphicsCommandList> & cmdList)
                 cmdList->SetPipelineState(shader->_pipelineState.Get());
 
             g_debug_forward_count++;
-
+            
             if (ele.renderer->IsCulling() == true)
             {
                 if (CameraManager::main->GetActiveCamera()->IsInFrustum(ele.renderer->GetBound()) == false)

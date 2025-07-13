@@ -92,6 +92,8 @@ public:
 	bool _isInstancing = true;
 	InstanceBufferContainer* _staticInstanceBuffer = nullptr;
 
+	float order = 0;
+
 	void SetInstanceBuffer(InstanceBufferContainer* instanceBuffer);
 	bool HasInstanceBuffer();
 

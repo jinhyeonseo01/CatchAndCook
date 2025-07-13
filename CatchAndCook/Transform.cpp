@@ -46,8 +46,17 @@ void Transform::Start()
 void Transform::Update()
 {
 	Component::Update();
-
-   
+    if (auto parent = GetOwner()->GetParent())
+    {
+        vector<std::shared_ptr<GameObject>> childs;
+        int subOrder = 0;
+        auto target = GetOwner();
+        parent->GetChildAll(childs);
+        auto iter = std::find(childs.begin(), childs.end(), target);
+        if (iter != childs.end())
+            subOrder = std::distance(childs.begin(), iter);
+        SetOrder(parent->_transform->GetOrder() + 100 + subOrder);
+    }
 }
 
 void Transform::Update2()

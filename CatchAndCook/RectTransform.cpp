@@ -1,6 +1,8 @@
 ﻿#include "pch.h"
 #include "RectTransform.h"
 
+#include "Camera.h"
+#include "CameraManager.h"
 #include "Gizmo.h"
 #include "ImageRenderer.h"
 #include "MeshRenderer.h"
@@ -56,7 +58,9 @@ void RectTransform::Update2()
     if (GetOwner()->GetParent())
     {
         if (auto rect = GetOwner()->GetParent()->GetComponent<RectTransform>())
+        {
             _computedRect = ComputeRectTransform(rect->_computedRect);
+        }
         else if (auto rect = GetOwner()->GetParent()->GetComponent<Transform>())
         {
             auto rect2 = ChangeTransToRectTrans(rect);
@@ -67,6 +71,16 @@ void RectTransform::Update2()
     }
     else
         _computedRect = ComputeRectTransform({});
+
+
+    auto worldPos = Vector3::Transform(Vector3::Zero, _computedRect.worldMatrix);
+
+	if (auto render = GetOwner()->GetRenderer())
+	{
+		render->order = GetOrder();
+        //render->SetBound(render->GetBound())
+	}
+    //worldPos
 
     /*
 	auto min = _computedRect.relativeRect.min;
