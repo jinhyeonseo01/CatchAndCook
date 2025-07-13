@@ -11,7 +11,7 @@ cbuffer RectTransformParam : register(b7)
     row_major matrix RectNormalizeToLocal;
 };
 
-cbuffer SpriteParam : register(b6)
+cbuffer GUISpriteParam : register(b6)
 {
     float4 GUISprite_offsetSize;
     
@@ -47,7 +47,7 @@ VS_OUT VS_Main(VS_IN input)
 
     
     //output.uv = input.uv * tex_scale + tex_offset;
-    output.uv = input.uv + GUISprite_offsetSize.zw;
+    output.uv = input.uv * GUISprite_offsetSize.xy + GUISprite_offsetSize.zw;
     
     output.color = float4(0,0,0,0);
     

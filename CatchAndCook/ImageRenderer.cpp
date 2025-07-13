@@ -20,6 +20,8 @@ void ImageRenderer::Init()
 	if (meshRenderer == nullptr) {
 		meshRenderer = GetOwner()->AddComponent<MeshRenderer>();
 	}
+
+	meshRenderer->AddCbufferSetter(GetCast<ImageRenderer>());
 }
 
 void ImageRenderer::Start()
@@ -103,6 +105,7 @@ void ImageRenderer::SetDestroy()
 void ImageRenderer::Destroy()
 {
 	Component::Destroy();
+	GetOwner()->_renderer->RemoveCbufferSetter(GetCast<ImageRenderer>());
 }
 
 void ImageRenderer::SetData(Material* material)
@@ -111,6 +114,7 @@ void ImageRenderer::SetData(Material* material)
 	auto _rectCBuffer = Core::main->GetBufferManager()->GetBufferPool(BufferType::RectTransformParam)->Alloc(1);
 	GUISpriteParam param;
 	//param
+	param.GUISprite_offsetSize = _sprite->GetST();
 	memcpy(_rectCBuffer->ptr, &param, sizeof(param));
 
 	int index = material->GetShader()->GetRegisterIndex("GUISpriteParam");

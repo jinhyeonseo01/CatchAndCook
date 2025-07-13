@@ -24,26 +24,57 @@ std::shared_ptr<GUISprite> GUISprite::Create(const std::shared_ptr<Texture>& tex
 
 std::vector<std::shared_ptr<GUISprite>> GUISprite::Create(const std::shared_ptr<Texture>& texture, Vector2 gridSize)
 {
-	auto aprite = std::make_shared<GUISprite>();
-	aprite->SetTexture(texture);
-	aprite->uvOffsetSize = DirectX::SimpleMath::Rectangle{ 0, 0, gridSize.x, gridSize.y };
-	return {};
+	std::vector<std::shared_ptr<GUISprite>> sprites;
+	auto size = texture->GetSize();
+	int w = std::round(gridSize.x / size.x);
+	int h = std::round(gridSize.y / size.y);
+
+	for (int j = 0; j < h; j++)
+	{
+		for (int i = 0; i < w; i++)
+		{
+			auto sprite = std::make_shared<GUISprite>();
+			sprite->SetTexture(texture);
+			sprite->_rectSize = DirectX::SimpleMath::Rectangle{i * (int)gridSize.x, j * (int)gridSize.y, (int)gridSize.x, (int)gridSize.y};
+			sprites.push_back(sprite);
+		}
+	}
+	return sprites;
 }
 
 std::vector<std::shared_ptr<GUISprite>> GUISprite::Create(const std::shared_ptr<Texture>& texture,
 	std::vector<DirectX::SimpleMath::Rectangle> rects)
 {
-	return {};
+	std::vector<std::shared_ptr<GUISprite>> sprites;
+	for (auto& a : rects)
+	{
+		auto sprite = std::make_shared<GUISprite>();
+		sprite->SetTexture(texture);
+		std::cout << to_string(texture->GetSize()) << "\n";
+		sprite->_rectSize = a;
+		sprites.push_back(sprite);
+	}
+	return sprites;
 }
 
-DirectX::SimpleMath::Rectangle GUISprite::CalculateRect(Vector2 offset, Vector2 size)
+DirectX::SimpleMath::Rectangle GUISprite::CalculateRect(const Vector2 offset, const Vector2& size)
 {
 	return DirectX::SimpleMath::Rectangle{ static_cast<long>(offset.x), static_cast<long>(offset.y), static_cast<long>(size.x), static_cast<long>(size.y) };
 }
 
-DirectX::SimpleMath::Rectangle GUISprite::CalculateUV(Vector2 offset, Vector2 size)
+
+DirectX::SimpleMath::Vector4 GUISprite::GetST()
 {
-	return DirectX::SimpleMath::Rectangle{};
+	auto size = texture->GetSize();
+	Vector2 texSize = size;
+	Vector2 rectOffset = Vector2(_rectSize.x, _rectSize.y);
+	Vector2 rectSize = Vector2(_rectSize.width, _rectSize.height);
+
+	Vector2 scale = rectSize / texSize;
+	Vector2 ofs = rectOffset / texSize;
+	//std::cout << to_string(Vector4(scale.x, scale.y, ofs.x, 1 - (ofs.y + scale.y))) << "\n";
+	// vector4 에 담기
+	return Vector4(scale.x, scale.y, ofs.x, 1 - (ofs.y + scale.y));
 }
 
 //uv min max,

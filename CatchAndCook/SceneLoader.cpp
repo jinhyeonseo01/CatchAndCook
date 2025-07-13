@@ -772,16 +772,25 @@ void SceneLoader::LinkComponent(json& jsonData)
     if (type == L"Image")
     {
         auto compo = IGuid::FindObjectByGuid<ImageRenderer>(guid);
-        auto& scripts = jsonData["texturePath"];
+        auto& scripts = jsonData["sprite"]["path"];
 
-        auto sprite = std::make_shared<GUISprite>();
-        compo->SetSprite(sprite);
+        auto size = Vector2(
+            jsonData["sprite"]["size"]["width"].get<float>(),
+            jsonData["sprite"]["size"]["height"].get<float>());
+        auto spriteST = Vector4(
+            jsonData["sprite"]["uvOffset"]["u"].get<float>(),
+            jsonData["sprite"]["uvOffset"]["v"].get<float>(),
+            jsonData["sprite"]["uvSize"]["width"].get<float>(),
+			jsonData["sprite"]["uvSize"]["height"].get<float>());
+
 
         auto path = std::to_wstring(scripts.get<std::string>());
         if ((path != L""))
         {
             auto texture = ResourceManager::main->Load<Texture>(path, path);
-            sprite->SetTexture(texture);
+            auto sprites = GUISprite::Create(texture, { SimpleMath::Rectangle{ (int)spriteST.x,(int)spriteST.y, (int)spriteST.z, (int)spriteST.w} });
+            compo->SetSprite(sprites[0]);
+            //sprite->SetTexture(texture);
         }
     }
 }
