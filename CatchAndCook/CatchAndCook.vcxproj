@@ -182,6 +182,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="CameraManager.cpp" />
+    <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="CbufferParam.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="ColliderManager.cpp" />
@@ -325,6 +326,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="CameraManager.h" />
+    <ClInclude Include="Canvas.h" />
     <ClInclude Include="CbufferParam.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="ColliderManager.h" />

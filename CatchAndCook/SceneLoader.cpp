@@ -6,6 +6,7 @@
 #include "AnimationListComponent.h"
 #include "BufferPool.h"
 #include "CameraComponent.h"
+#include "Canvas.h"
 #include "Collider.h"
 #include "Scene.h"
 #include "Component.h"
@@ -208,7 +209,11 @@ void SceneLoader::PrevProcessingComponent(json& data)
         auto terr = CreateObject<ImageRenderer>(guid);
         component = terr;
     }
-
+    if (type == L"Canvas")
+    {
+        auto terr = CreateObject<Canvas>(guid);
+        component = terr;
+    }
     componentCache.emplace_back(component);
 }
 
@@ -793,6 +798,23 @@ void SceneLoader::LinkComponent(json& jsonData)
             //sprite->SetTexture(texture);
         }
     }
+    if (type == L"Canvas")
+    {
+        auto compo = IGuid::FindObjectByGuid<Canvas>(guid);
+        auto canvasType = jsonData["canvasType"].get<std::string>();
+        if (canvasType == "ScreenSpaceOverlay")
+			compo->type = CanvasType::Overlay;
+        //ScreenSpaceOverlay
+        auto resolution = Vector2(
+            jsonData["canvasResolution"][0].get<float>(),
+            jsonData["canvasResolution"][1].get<float>());
+		compo->resolution = resolution;
+        compo->match = jsonData["canvasMatch"].get<float>();
+
+
+    }
+
+    //Canvas
 }
 
 void SceneLoader::LinkMaterial(json& jsonData)

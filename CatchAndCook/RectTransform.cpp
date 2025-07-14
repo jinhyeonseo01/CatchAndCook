@@ -3,6 +3,7 @@
 
 #include "Camera.h"
 #include "CameraManager.h"
+#include "Canvas.h"
 #include "Gizmo.h"
 #include "ImageRenderer.h"
 #include "MeshRenderer.h"
@@ -70,10 +71,23 @@ void RectTransform::Update2()
             _computedRect = ComputeRectTransform({});
     }
     else
+    {
         _computedRect = ComputeRectTransform({});
+        if (auto canvas = GetOwner()->GetComponent<Canvas>())
+        {
+            
+			_computedRect.worldMatrix =
+            //Matrix::CreateTranslation(Vector3(0,0,1))
+            CameraManager::main->GetActiveCamera()->_params.InvertViewMatrix
+			//* Matrix::CreateScale(Vector3(1/canvas->resolution.x, 1 / canvas->resolution.y, 0))
+        	* _computedRect.worldMatrix;
+        	
+	        //canvas->
+        }
+    }
 
 
-    auto worldPos = Vector3::Transform(Vector3::Zero, _computedRect.worldMatrix);
+    //auto worldPos = Vector3::Transform(Vector3::Zero, _computedRect.worldMatrix);
 
 	if (auto render = GetOwner()->GetRenderer())
 	{
