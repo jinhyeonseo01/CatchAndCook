@@ -8,7 +8,8 @@ enum class InteractiveState
 	NONE,
 	ONCOLLISION,
 	GAMEON,
-	SUCCESS
+	SUCCESS,
+	FAIL,
 };
 
 class InteractiveComponent : public Component

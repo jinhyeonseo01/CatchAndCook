@@ -45,8 +45,9 @@ void Scene_Sea01::Init()
 	{
 		_interactiveBox = CreateGameObject(L"interactive");
 		auto spriteComponet = _interactiveBox->AddComponent<Sprite>();
+		spriteComponet->AddAction(make_shared<ClickAction>(KeyCode::LeftMouse));
 		spriteComponet->SetTexture(ResourceManager::main->Get<Texture>(L"interactive"));
-		spriteComponet->SetSize(vec2(0.5f, 0.5f));
+		spriteComponet->SetSize(vec2(0.5f, 0.4f));
 		spriteComponet->SetLocalPos(vec3(0.25f,0.2f, 0));
 		spriteComponet->SetClipingColor(vec4(0, 0, 0, 0));
 
@@ -221,11 +222,6 @@ void Scene_Sea01::Init()
 	}
 
 	
-
-
-
-
-
 	{
 		auto& fireEffect = SceneManager::main->GetCurrentScene()->Find(L"FireEffect");
 		fireEffect->GetComponent<MeshRenderer>()->GetMaterial(0)->SetPass(RENDER_PASS::NoEffectForwardPostProcessing);

@@ -109,7 +109,6 @@ void SeaPlayerController::Update()
     _transform->SetWorldRotation(playerRotation);
 
     Quaternion cameraRotation = Quaternion::CreateFromYawPitchRoll(_yaw*D2R, _cameraPitchOffset * D2R + _pitch * D2R, 0);
-    //Quaternion cameraRotation = pitchQuat * playerRotation;
     _camera->SetCameraRotation(cameraRotation);
 
     vec3 inputDir = vec3::Zero;
@@ -318,25 +317,12 @@ void SeaPlayerController::RenderBegin()
 
 void SeaPlayerController::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
 {
-    /*if (auto& owner = other->GetOwner())
-    {
-        if (owner->GetName() == L"2")
-        {
-			_state = SeaPlayerState::PushBack;
-			_other = owner;
-        }
-    }*/
+
 }
 
 void SeaPlayerController::CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
 {
- /*   if (auto& owner = other->GetOwner())
-    {
-        if (owner->GetName() == L"2")
-        {
-            _state = SeaPlayerState::Idle;
-        }
-    }*/
+
 }
 
 void SeaPlayerController::ChangeParent(const std::shared_ptr<GameObject>& prev, const std::shared_ptr<GameObject>& current)
@@ -392,7 +378,7 @@ void SeaPlayerController::SetState(SeaPlayerState state)
     {
     case SeaPlayerState::Idle:
     {
-
+        _moveLock = false;
         if (_animations.find("idle") != _animations.end())
         {
             _weapons->SetTargetHudVisible(false);
@@ -425,7 +411,7 @@ void SeaPlayerController::SetState(SeaPlayerState state)
         vec3 dir = worldFar - worldNear;
         dir.Normalize();
 
-        float maxDist = 1000.0f;
+        float maxDist = 5000.0f;
 
         auto ray = ColliderManager::main->RayCast({ worldNear, dir }, maxDist, GetOwner());
 

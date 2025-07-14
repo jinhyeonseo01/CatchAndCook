@@ -18,7 +18,6 @@ class ActionCommand
 public:
     virtual ~ActionCommand() {}
     virtual void Execute(Sprite* sprite) = 0;
-
 };
 
 

@@ -5,7 +5,6 @@
 
 void ActionFunc::OnClickAction(KeyCode key, Sprite* sprite)
 {
-
     if (Input::main->GetMouseDown(key))
     {
         auto pos = Input::main->GetMouseDownPosition(key);
@@ -18,7 +17,7 @@ void ActionFunc::OnClickAction(KeyCode key, Sprite* sprite)
             normalizedY >= (sprite->_ndcWorldPos.y) &&
             normalizedY <= (sprite->_ndcWorldPos.y + sprite->_ndcSize.y))
         {
-
+            cout << "헤이시발" << endl;
         }
     }
 }
