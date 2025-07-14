@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include "Component.h"
 
+class SeaPlayerController;
+
 enum class InteractiveState
 {
 	NONE,
@@ -34,6 +36,7 @@ private:
 
 private:
 	InteractiveState _state = InteractiveState::NONE;
+	shared_ptr<SeaPlayerController> _seaPlayerController;
 	weak_ptr<GameObject> _text;
 
 };

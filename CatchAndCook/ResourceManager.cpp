@@ -1004,6 +1004,7 @@ void ResourceManager::CreateDefaultTexture()
 	Load<Texture>(L"bleedTexture", L"Textures/bleedTexture.png");
 	Load<Texture>(L"smokeTexture", L"Textures/smoke.png");
 	Load<Texture>(L"bubble", L"Textures/bubble.png");
+	Load<Texture>(L"interactive", L"Textures/interactive.png");
 }
 
 void ResourceManager::CreateDefaultAnimation()

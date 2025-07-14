@@ -11,9 +11,8 @@ enum class SeaPlayerState
 	Idle,
 	Aiming,
 	Shot,
-	PushBack,
+	MiniGame,
 	Die,
-	Hit,
 };
 
 
@@ -51,7 +50,7 @@ private:
 	void Attack(float dt);
 
 
-
+	bool _moveLock = false;
 private:
 	shared_ptr<Transform> _transform;
 	shared_ptr<Camera> _camera;
@@ -63,7 +62,6 @@ private:
 	shared_ptr<SkinnedHierarchy> _skined;
 	std::unordered_map<string, std::shared_ptr<Animation>> _animations;
 private:
-	weak_ptr<GameObject> _other;
 
 	vec3 _velocity = vec3::Zero;
 

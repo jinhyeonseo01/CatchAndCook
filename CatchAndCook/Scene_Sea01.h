@@ -22,7 +22,11 @@ public:
 	void NoEffectPass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList);
 	void ParticlePass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList);
 
+
+	shared_ptr<GameObject>& GetInteractiveBox() { return _interactiveBox; }
+
+private:
 	shared_ptr<Texture> caustics;
-	shared_ptr<Texture> lopeTexture;
+	shared_ptr<GameObject> _interactiveBox;
 };
 

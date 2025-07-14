@@ -10,6 +10,7 @@ struct Item
 		: name(name), count(count) {
 	}
 };
+
 class InGameGlobal
 {
 
@@ -20,7 +21,6 @@ public:
 	
 public:
 	void AddItem(const wstring& name);
-
 
 public: 
 	std::unordered_map<wstring, Item> _inventory; // temp

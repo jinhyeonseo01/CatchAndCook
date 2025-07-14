@@ -29,6 +29,7 @@
 #include "AnimationSpriteComponent.h"
 #include "PercentComponent.h"
 #include "GraphData.h"
+#include "ResourceManager.h"
 void Scene_Sea01::Init()
 {
 	namespace fs = std::filesystem;
@@ -38,13 +39,25 @@ void Scene_Sea01::Init()
 	caustics = make_shared<Texture>();
 	caustics->Init(L"../Resources/Textures/test.jpg");
 
-	lopeTexture = make_shared<Texture>();
-	lopeTexture->Init(L"../Resources/Textures/start.jpg");
 
 	ColliderManager::main->SetCellSize(100);
 
+	{
+		_interactiveBox = CreateGameObject(L"interactive");
+		auto spriteComponet = _interactiveBox->AddComponent<Sprite>();
+		spriteComponet->SetTexture(ResourceManager::main->Get<Texture>(L"interactive"));
+		spriteComponet->SetSize(vec2(0.5f, 0.5f));
+		spriteComponet->SetLocalPos(vec3(0.25f,0.2f, 0));
+		spriteComponet->SetClipingColor(vec4(0, 0, 0, 0));
 
-
+		auto renderer = _interactiveBox->AddComponent<MeshRenderer>();
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetBlendFactor({ 0.9f,0.9f,0.9f,0.9f });
+		material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
+		material->SetPass(RENDER_PASS::UI);
+		renderer->AddMaterials({ material });
+		_interactiveBox->SetActiveSelf(false);
+	};
 
 	{
 		ShaderInfo info;
@@ -266,7 +279,6 @@ void Scene_Sea01::Rendering()
 	TableContainer conatiner = Core::main->GetBufferManager()->GetTable()->Alloc(3);
 	{
 		Core::main->GetBufferManager()->GetTable()->CopyHandle(conatiner.CPUHandle, caustics->GetSRVCpuHandle(), 0);
-		Core::main->GetBufferManager()->GetTable()->CopyHandle(conatiner.CPUHandle, lopeTexture->GetSRVCpuHandle(), 1);
 		Core::main->GetCmdList()->SetGraphicsRootDescriptorTable(GLOBAL_SRV_INDEX, conatiner.GPUHandle);
 		_globalParam.caustics = 1;
 	}
@@ -320,13 +332,6 @@ void Scene_Sea01::DebugRendering()
 
 void Scene_Sea01::RenderEnd()
 {
-	static bool _first = false;
-
-	if (_first == false)
-	{
-		ColliderManager::main->DebugPrint();
-		_first = true;
-	}
 
 	Scene::RenderEnd();
 }
@@ -536,40 +541,40 @@ void Scene_Sea01::UiPass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdL
 
 void Scene_Sea01::TransparentPass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList)
 {
-	{ 
-		auto& targets = _passObjects[RENDER_PASS::ToIndex(RENDER_PASS::Transparent)];
+	//{ 
+	//	auto& targets = _passObjects[RENDER_PASS::ToIndex(RENDER_PASS::Transparent)];
 
-		for (auto& [shader, vec] : targets)
-		{
-			cmdList->SetPipelineState(shader->_pipelineState.Get());
+	//	for (auto& [shader, vec] : targets)
+	//	{
+	//		cmdList->SetPipelineState(shader->_pipelineState.Get());
 
-			for (auto& ele : vec)
-			{
-				g_debug_forward_count++;
+	//		for (auto& ele : vec)
+	//		{
+	//			g_debug_forward_count++;
 
-				if (ele.renderer->IsCulling() == true)
-				{
-					if (CameraManager::main->GetActiveCamera()->IsInFrustum(ele.renderer->GetBound()) == false)
-					{
-						g_debug_forward_culling_count++;
-						continue;
-					}
-				}
+	//			if (ele.renderer->IsCulling() == true)
+	//			{
+	//				if (CameraManager::main->GetActiveCamera()->IsInFrustum(ele.renderer->GetBound()) == false)
+	//				{
+	//					g_debug_forward_culling_count++;
+	//					continue;
+	//				}
+	//			}
 
-				if (ele.renderer->isInstancing() == false)
-				{
-					InstancingManager::main->RenderNoInstancing(ele);
-				}
-				else
-				{
-					InstancingManager::main->AddObject(ele);
-				}
-			}
+	//			if (ele.renderer->isInstancing() == false)
+	//			{
+	//				InstancingManager::main->RenderNoInstancing(ele);
+	//			}
+	//			else
+	//			{
+	//				InstancingManager::main->AddObject(ele);
+	//			}
+	//		}
 
-			InstancingManager::main->Render();
-		}
+	//		InstancingManager::main->Render();
+	//	}
 
-	}
+	//}
 }
 
 void Scene_Sea01::ForwardPass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList)

@@ -68,7 +68,7 @@ void SeaPlayerController::Start()
         _animations.find("shot")->second->_speedMultiplier = 3.0f;
     }
 
-    _weapons->AddWeapon(L"Gun", L"GunSlot",1000.0f);
+    _weapons->AddWeapon(L"Gun", L"GunSlot",2000.0f);
     _weapons->SetCurrentWeapon(L"Gun");
     _weapons->SetTargetHudVisible(false);
 
@@ -120,6 +120,8 @@ void SeaPlayerController::Update()
 
 void SeaPlayerController::UpdatePlayerAndCamera(float dt, Quaternion& playerRotation, Quaternion& cameraRotation)
 {
+ 
+
     vec3 currentPos = _transform->GetWorldPosition();
     vec3 nextPos = currentPos + _velocity * dt;
     vec3 headOffset = vec3(0, _cameraHeightOffset, 0);
@@ -158,9 +160,11 @@ void SeaPlayerController::UpdatePlayerAndCamera(float dt, Quaternion& playerRota
     }
 
 
-     // 최종 위치 적용
+
     _transform->SetWorldPosition(nextPos);
-    _camera->SetCameraPos(nextHeadPos + _camera->GetCameraRight() * _cameraYawOffset );
+    _camera->SetCameraPos(nextHeadPos + _camera->GetCameraRight() * _cameraYawOffset);
+ 
+
     _camera->Calculate();
     _velocity *= (1 - (_resistance * dt));
 
@@ -168,91 +172,95 @@ void SeaPlayerController::UpdatePlayerAndCamera(float dt, Quaternion& playerRota
 
 void SeaPlayerController::KeyUpdate(vec3& inputDir, Quaternion& rotation, float dt)
 {
-    if (Input::main->GetKey(KeyCode::W))
-    {
-        inputDir += vec3::Forward;
-    }
-    if (Input::main->GetKey(KeyCode::S))
-    {
-        inputDir += vec3::Backward;
-    }
-    if (Input::main->GetKey(KeyCode::A))
-    {
-        inputDir += vec3::Left;
-    }
-    if (Input::main->GetKey(KeyCode::D))
-    {
-        inputDir += vec3::Right;
-    }
 
-    if (Input::main->GetKeyDown(KeyCode::Shift))
+    if (_moveLock == false)
     {
-        _maxSpeed = 2500.0f;
 
-        if (_animations.find("idle") != _animations.end())
+        if (Input::main->GetKey(KeyCode::W))
         {
+            inputDir += vec3::Forward;
+        }
+        if (Input::main->GetKey(KeyCode::S))
+        {
+            inputDir += vec3::Backward;
+        }
+        if (Input::main->GetKey(KeyCode::A))
+        {
+            inputDir += vec3::Left;
+        }
+        if (Input::main->GetKey(KeyCode::D))
+        {
+            inputDir += vec3::Right;
+        }
+
+        if (Input::main->GetKeyDown(KeyCode::Shift))
+        {
+            _maxSpeed = 2500.0f;
+
             if (_animations.find("idle") != _animations.end())
             {
-                _animations["idle"]->_speedMultiplier = 1.8f;
+                if (_animations.find("idle") != _animations.end())
+                {
+                    _animations["idle"]->_speedMultiplier = 1.8f;
+                };
             };
-        };
-    }
-
-    if (Input::main->GetKeyUp(KeyCode::Shift))
-    {
-        cout << "호롤롤" << endl;
-        _maxSpeed = 800.0f;
-
-        if (_animations.find("idle") != _animations.end())
-        {
-            _animations["idle"]->_speedMultiplier = 1.0f;
-        };
-    }
-
-
-    if (Input::main->GetMouseDown(KeyCode::RightMouse))
-    {
-        if (_skined->_blendEnd)
-        {
-            if (_state == SeaPlayerState::Idle)
-            {
-                SetState(SeaPlayerState::Aiming);
-            }
-
-            else if (_state == SeaPlayerState::Aiming)
-            {
-                SetState(SeaPlayerState::Idle);
-            }
         }
-    }
 
-    if (Input::main->GetMouseDown(KeyCode::LeftMouse))
-    {
-        if (_state == SeaPlayerState::Aiming)
+        if (Input::main->GetKeyUp(KeyCode::Shift))
+        {
+            _maxSpeed = 800.0f;
+
+            if (_animations.find("idle") != _animations.end())
+            {
+                _animations["idle"]->_speedMultiplier = 1.0f;
+            };
+        }
+
+
+        if (Input::main->GetMouseDown(KeyCode::RightMouse))
         {
             if (_skined->_blendEnd)
             {
-                SetState(SeaPlayerState::Shot);
+                if (_state == SeaPlayerState::Idle)
+                {
+                    SetState(SeaPlayerState::Aiming);
+                }
+
+                else if (_state == SeaPlayerState::Aiming)
+                {
+                    SetState(SeaPlayerState::Idle);
+                }
             }
         }
 
-    }
-
-    if (Input::main->GetKey(KeyCode::Space))
-    {
-        inputDir += vec3(0, 2, 0);
-    }
-
-    if (inputDir != vec3::Zero)
-    {
-        inputDir.Normalize();
-        vec3 moveDir = vec3::Transform(inputDir, rotation);
-        _velocity += moveDir * _moveForce * dt;
-
-        if (_velocity.Length() > _maxSpeed)
+        if (Input::main->GetMouseDown(KeyCode::LeftMouse))
         {
-            _velocity.Normalize();
-            _velocity = _velocity * _maxSpeed;
+            if (_state == SeaPlayerState::Aiming)
+            {
+                if (_skined->_blendEnd)
+                {
+                    SetState(SeaPlayerState::Shot);
+                }
+            }
+
+        }
+
+        if (Input::main->GetKey(KeyCode::Space))
+        {
+            inputDir += vec3(0, 2, 0);
+        }
+
+        if (inputDir != vec3::Zero)
+        {
+            inputDir.Normalize();
+            vec3 moveDir = vec3::Transform(inputDir, rotation);
+            _velocity += moveDir * _moveForce * dt;
+
+            if (_velocity.Length() > _maxSpeed)
+            {
+                _velocity.Normalize();
+                _velocity = _velocity * _maxSpeed;
+            }
         }
     }
 
@@ -366,25 +374,7 @@ void SeaPlayerController::UpdateState(float dt)
         break;
     case SeaPlayerState::Die:
         break;
-    case SeaPlayerState::PushBack:
-    {
-        vec3 pushDir{};
-        float pushSpeed{};
-       
-        if (auto& object =_other.lock())
-        {
-            vec3 otherCenter =object->GetComponent<Collider>()->GetBoundCenter();
-            vec3 myCenter = _collider->GetBoundCenter();
-            pushSpeed = (otherCenter - myCenter).Length();
-            pushDir = (myCenter - otherCenter);
-            pushDir.Normalize();
-        }
-
-        vec3 newPosition = _transform->GetWorldPosition() + pushDir * pushSpeed * dt;
-        _transform->SetWorldPosition(newPosition);
-    }
-    break;
-    case SeaPlayerState::Hit:
+    case SeaPlayerState::MiniGame:
         break;
     default:
         break;
@@ -477,8 +467,12 @@ void SeaPlayerController::SetState(SeaPlayerState state)
     }
 	case SeaPlayerState::Die:
 		break;
-	case SeaPlayerState::Hit:
-
+	case SeaPlayerState::MiniGame:
+        _moveLock = true;
+        if (_animations.find("idle") != _animations.end())
+        {
+            _skined->Play(_animations["idle"], 0.5f);
+        };
 		break;
 	default:
 		break;
@@ -500,51 +494,55 @@ void SeaPlayerController::Attack(float dt)
 
 Quaternion SeaPlayerController::CalCulateYawPitchRoll()
 {
-    if (Input::main->IsMouseLock() == false)
+    if (_moveLock == false)
     {
-        static vec2 lastMousePos = Input::main->GetMousePosition();
 
-        if (Input::main->GetKeyDown(KeyCode::BackQoute))
+        if (Input::main->IsMouseLock() == false)
         {
-            lastMousePos = Input::main->GetMousePosition();
+            static vec2 lastMousePos = Input::main->GetMousePosition();
+
+            if (Input::main->GetKeyDown(KeyCode::BackQoute))
+            {
+                lastMousePos = Input::main->GetMousePosition();
+
+            }
+
+            vec2 currentMousePos = Input::main->GetMousePosition();
+
+            vec2 delta = (currentMousePos - lastMousePos) * 0.1f;
+
+            _yaw += delta.x;
+            _pitch += delta.y;
+            float minPitch = -90.0f - _cameraPitchOffset;
+            float maxPitch = 90.0f - _cameraPitchOffset;
+            _pitch = std::clamp(_pitch, minPitch, maxPitch);
+            _roll = 0;
+
+            lastMousePos = currentMousePos;
 
         }
 
-        vec2 currentMousePos = Input::main->GetMousePosition();
+        else
+        {
+            vec2 currentMousePos = Input::main->GetMousePosition();
+            vec2 centerPos = vec2(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+            vec2 delta = (currentMousePos - centerPos) * 0.1f;
 
-        vec2 delta = (currentMousePos - lastMousePos) * 0.1f;
+            _yaw += delta.x;
+            _pitch += delta.y;
+            float minPitch = -90.0f - _cameraPitchOffset;
+            float maxPitch = 90.0f - _cameraPitchOffset;
+            _pitch = std::clamp(_pitch, minPitch, maxPitch);
+            _roll = 0;
 
-        _yaw += delta.x;
-        _pitch += delta.y;
-        float minPitch = -90.0f - _cameraPitchOffset;
-        float maxPitch = 90.0f - _cameraPitchOffset;
-        _pitch = std::clamp(_pitch, minPitch, maxPitch);
-        _roll = 0;
-
-        lastMousePos = currentMousePos;
-
-    }
-
-    else
-    {
-        vec2 currentMousePos = Input::main->GetMousePosition();
-        vec2 centerPos = vec2(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
-        vec2 delta = (currentMousePos - centerPos) * 0.1f;
-
-        _yaw += delta.x;
-        _pitch += delta.y;
-        float minPitch = -90.0f - _cameraPitchOffset;
-        float maxPitch = 90.0f - _cameraPitchOffset;
-        _pitch = std::clamp(_pitch, minPitch, maxPitch);
-        _roll = 0;
-
-        POINT center;
-        center.x = static_cast<LONG>(WINDOW_WIDTH / 2);
-        center.y = static_cast<LONG>(WINDOW_HEIGHT / 2);
-        ClientToScreen(Core::main->GetHandle(), &center);
-        SetCursorPos(center.x, center.y);
+            POINT center;
+            center.x = static_cast<LONG>(WINDOW_WIDTH / 2);
+            center.y = static_cast<LONG>(WINDOW_HEIGHT / 2);
+            ClientToScreen(Core::main->GetHandle(), &center);
+            SetCursorPos(center.x, center.y);
 
 
+        }
     }
 
 

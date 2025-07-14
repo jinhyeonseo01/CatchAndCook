@@ -5,6 +5,8 @@
 #include "Collider.h"
 #include "MeshRenderer.h"
 #include "TextManager.h"
+#include "Scene_Sea01.h"
+#include "SeaPlayerController.h"
 
 COMPONENT(InteractiveComponent)
 
@@ -29,6 +31,12 @@ void InteractiveComponent::Start()
 		text->SetActiveSelf(false);
 		_text = text;
 	};
+
+	{
+		 auto player  =SceneManager::main->GetCurrentScene()->Find(L"seaPlayer");
+		 _seaPlayerController = player->GetComponent< SeaPlayerController>();
+
+	}
 	
 }
 
@@ -38,7 +46,7 @@ void InteractiveComponent::Update()
 	{
 		if (Input::main->GetKeyDown(KeyCode::F))
 		{
-			_state = InteractiveState::GAMEON;
+			SetState(InteractiveState::GAMEON);
 		}
 	}
 }
@@ -140,6 +148,16 @@ void InteractiveComponent::SetState(InteractiveState state)
 	case InteractiveState::ONCOLLISION:
 		break;
 	case InteractiveState::GAMEON:
+	{
+		auto scene = SceneManager::main->GetCurrentScene();
+		auto seaScene = dynamic_pointer_cast<Scene_Sea01>(scene);
+		if (seaScene)
+		{
+			seaScene->GetInteractiveBox()->SetActiveSelf(true);
+		}
+		_seaPlayerController->SetState(SeaPlayerState::MiniGame);
+
+	}
 		break;
 	case InteractiveState::SUCCESS:
 		break;

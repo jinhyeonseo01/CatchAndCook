@@ -72,17 +72,13 @@ PS_OUT PS_Main(VS_OUT input) : SV_Target
     output.color = _BaseMap.Sample(sampler_lerp, input.uv) ;
     output.normal = float4(N, 1.0f);
     
-    if (abs(output.color.a - ClipingColor.a) < 0.0001)
+    if (abs(output.color.a - ClipingColor.a) < 0.1f)
     {
         discard;
     }
 
 
-    
-    if (abs(output.color.a - ClipingColor.a) < 0.01f)
-    {
-        discard;
-    }
+   
 
   
     
