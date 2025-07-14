@@ -190,6 +190,7 @@
     <ClCompile Include="convert_assimp.cpp" />
     <ClCompile Include="EffectComponent.cpp" />
     <ClCompile Include="FishMonster.cpp" />
+    <ClCompile Include="FoodShopObject.cpp" />
     <ClCompile Include="GameObjectSetting.cpp" />
     <ClCompile Include="GeoMetryHelper.cpp" />
     <ClCompile Include="Gizmo.cpp" />
@@ -292,6 +293,7 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="UILookUp.cpp" />
     <ClCompile Include="UITestScene.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="BoidsMove.cpp" />
@@ -335,6 +337,7 @@
     <ClInclude Include="convert_directx.h" />
     <ClInclude Include="EffectComponent.h" />
     <ClInclude Include="FishMonster.h" />
+    <ClInclude Include="FoodShopObject.h" />
     <ClInclude Include="GameObjectSetting.h" />
     <ClInclude Include="GeoMetryHelper.h" />
     <ClInclude Include="Gizmo.h" />
@@ -422,6 +425,7 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="UILookUp.h" />
     <ClInclude Include="UITestScene.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="BoidsMove.h" />

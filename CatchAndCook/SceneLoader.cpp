@@ -788,7 +788,6 @@ void SceneLoader::LinkComponent(json& jsonData)
             jsonData["sprite"]["uvSize"]["width"].get<float>(),
 			jsonData["sprite"]["uvSize"]["height"].get<float>());
 
-
         auto path = std::to_wstring(scripts.get<std::string>());
         if ((path != L""))
         {

@@ -76,11 +76,11 @@ void RectTransform::Update2()
         if (auto canvas = GetOwner()->GetComponent<Canvas>())
         {
             
-			_computedRect.worldMatrix =
+			//_computedRect.worldMatrix =
             //Matrix::CreateTranslation(Vector3(0,0,1))
-            CameraManager::main->GetActiveCamera()->_params.InvertViewMatrix
+            //CameraManager::main->GetActiveCamera()->_params.InvertViewMatrix
 			//* Matrix::CreateScale(Vector3(1/canvas->resolution.x, 1 / canvas->resolution.y, 0))
-        	* _computedRect.worldMatrix;
+        	//* _computedRect.worldMatrix;
         	
 	        //canvas->
         }

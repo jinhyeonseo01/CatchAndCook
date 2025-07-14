@@ -50,7 +50,6 @@ std::vector<std::shared_ptr<GUISprite>> GUISprite::Create(const std::shared_ptr<
 	{
 		auto sprite = std::make_shared<GUISprite>();
 		sprite->SetTexture(texture);
-		std::cout << to_string(texture->GetSize()) << "\n";
 		sprite->_rectSize = a;
 		sprites.push_back(sprite);
 	}
