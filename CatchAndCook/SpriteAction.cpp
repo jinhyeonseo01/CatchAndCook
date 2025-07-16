@@ -20,9 +20,11 @@ bool ActionFunc::OnClickAction(KeyCode key, Sprite* sprite)
             cout << "헤이시발" << endl;
             return true;
         }
+
+        return false;
     }
 
-    return false;
+
 }
 
 void ActionFunc::OnDragAction(KeyCode key, Sprite* sprite)

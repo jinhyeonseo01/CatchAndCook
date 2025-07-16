@@ -264,6 +264,7 @@
     <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="Profiler.cpp" />
     <ClCompile Include="PhysicsComponent.cpp" />
+    <ClCompile Include="ProgressCycleComponent.cpp" />
     <ClCompile Include="ProjectileComponet.cpp" />
     <ClCompile Include="RendererBase.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
@@ -406,6 +407,7 @@
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="Profiler.h" />
     <ClInclude Include="PhysicsComponent.h" />
+    <ClInclude Include="ProgressCycleComponent.h" />
     <ClInclude Include="ProjectileComponet.h" />
     <ClInclude Include="RendererBase.h" />
     <ClInclude Include="RenderTarget.h" />
@@ -750,6 +752,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\Resources\Shaders\Skybox_Field.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\SpriteProgressCycle.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>

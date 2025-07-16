@@ -18,6 +18,7 @@
 #include "SeaGrassComponent.h"
 #include "ShadowManager.h"
 #include "ParticleComponent.h"
+#include "ProgressCycleComponent.h"
 
 void BufferManager::Init()
 {
@@ -50,7 +51,8 @@ void BufferManager::Init()
 		CreateBufferPool(i, BufferType::ShadowCasterParams, sizeof(ShadowCasterParams), 5);
 		CreateBufferPool(i, BufferType::ShadowCascadeIndexParams, sizeof(ShadowCascadeIndexParams), 10);
 		CreateBufferPool(i, BufferType::ParicleHelperParams, sizeof(ParicleHelperParams), 100);
-	/*	CreateBufferPool(i, BufferType::SeaFIshParam, sizeof(FishInfo), 300);*/
+		CreateBufferPool(i, BufferType::ProgressCircle, sizeof(ProgressCycleData), 1);
+
 	}
 
 	for (int i = 0; i < MAX_FRAME_COUNT; ++i)

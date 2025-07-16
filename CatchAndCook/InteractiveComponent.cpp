@@ -8,10 +8,12 @@
 #include "Scene_Sea01.h"
 #include "SeaPlayerController.h"
 #include "SpriteAction.h"
+#include "ProgressCycleComponent.h"
 COMPONENT(InteractiveComponent)
 
 void InteractiveComponent::Init()
 {
+
 }
 
 void InteractiveComponent::Start()
@@ -20,6 +22,35 @@ void InteractiveComponent::Start()
 	{
 		auto player = SceneManager::main->GetCurrentScene()->Find(L"seaPlayer");
 		_seaPlayerController = player->GetComponent< SeaPlayerController>();
+	}
+
+	{
+		//ProgressBar
+		shared_ptr<GameObject> progressBar = SceneManager::main->GetCurrentScene()->Find(L"progressBar_Circle");
+
+		if (progressBar)
+		{
+			_progressBar = progressBar;
+		}
+
+		else
+		{
+
+			_progressBar = SceneManager::main->GetCurrentScene()->CreateGameObject(L"progressBar_Circle");
+			auto spriteComponet = _progressBar->AddComponent<Sprite>();
+
+			spriteComponet->SetSize(vec2(0.4f, 0.05f));
+			spriteComponet->SetLocalPos(vec3(0.3f, 0.2f, 0.0f));
+
+			auto renderer = _progressBar->AddComponent<MeshRenderer>();
+			shared_ptr<Material> material = make_shared<Material>();
+			material->SetBlendFactor({ 1.0f,1.0f,1.0f,1.0f });
+			material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteProgressCycle"));
+			material->SetPass(RENDER_PASS::UI);
+			renderer->AddMaterials({ material });
+			_progressBar->SetActiveSelf(false);
+			_progressBar->AddComponent<ProgressCycleComponent>();
+		};
 	}
 
 	{
@@ -37,7 +68,7 @@ void InteractiveComponent::Start()
 			auto spriteComponet = _interactiveBox->AddComponent<Sprite>();
 			spriteComponet->SetTexture(ResourceManager::main->Get<Texture>(L"interactive"));
 			spriteComponet->SetSize(vec2(0.5f, 0.6f));
-			spriteComponet->SetLocalPos(vec3(0.25f, 0.1f, 0.3f));
+			spriteComponet->SetLocalPos(vec3(0.25f, 0.1f, 0.01f));
 			spriteComponet->SetClipingColor(vec4(0, 0, 0, 0));
 
 			auto renderer = _interactiveBox->AddComponent<MeshRenderer>();
@@ -47,7 +78,6 @@ void InteractiveComponent::Start()
 			material->SetPass(RENDER_PASS::UI);
 			renderer->AddMaterials({ material });
 			_interactiveBox->SetActiveSelf(false);
-			_interactiveBox = _interactiveBox;
 		};
 	}
 
@@ -67,7 +97,7 @@ void InteractiveComponent::Start()
 			shared_ptr<GameObject> text = SceneManager::main->GetCurrentScene()->CreateGameObject(L"textMessage:" + rootname);
 			auto renderer = text->AddComponent<MeshRenderer>();
 			auto sprite = text->AddComponent<TextSprite>();
-			sprite->SetLocalPos(vec3(0.45f, 0.9f, 0.1f));
+			sprite->SetLocalPos(vec3(0.45f, 0.9f, 0.0f));
 			sprite->SetSize(vec2(0.3f, 0.3f));
 			sprite->SetText(GetOwner()->GetRoot()->GetName());
 			sprite->CreateObject(550, 256, L"Arial", FontColor::WHITE, 60);
@@ -94,7 +124,7 @@ void InteractiveComponent::Start()
 			shared_ptr<GameObject> exitMessage = SceneManager::main->GetCurrentScene()->CreateGameObject(L"exitMiniGame:");
 			auto renderer = exitMessage->AddComponent<MeshRenderer>();
 			auto sprite = exitMessage->AddComponent<Sprite>();
-			sprite->SetLocalPos(vec3(0.52f, 0.4f, 0.1f));
+			sprite->SetLocalPos(vec3(0.52f, 0.4f, 0.0f));
 			sprite->SetSize(vec2(0.10f, 0.15f));
 			sprite->SetTexture(ResourceManager::main->Load<Texture>(L"exitTexture",L"../Resources/Textures/exit.png"));
 			shared_ptr<Material> material = make_shared<Material>();
@@ -108,7 +138,7 @@ void InteractiveComponent::Start()
 
 
 	{
-		//exitMessage Message
+		//stop Message
 		shared_ptr<GameObject> stopMessage = SceneManager::main->GetCurrentScene()->Find(L"stop");
 
 		if (stopMessage)
@@ -121,7 +151,7 @@ void InteractiveComponent::Start()
 			shared_ptr<GameObject> stopMessage = SceneManager::main->GetCurrentScene()->CreateGameObject(L"stop:");
 			auto renderer = stopMessage->AddComponent<MeshRenderer>();
 			auto sprite = stopMessage->AddComponent<Sprite>();
-			sprite->SetLocalPos(vec3(0.38f, 0.4f, 0.1f));
+			sprite->SetLocalPos(vec3(0.38f, 0.4f, 0.0f));
 			sprite->SetSize(vec2(0.10f, 0.15f));
 			sprite->SetTexture(ResourceManager::main->Load<Texture>(L"stopTexture", L"../Resources/Textures/stop.png"));
 			shared_ptr<Material> material = make_shared<Material>();
@@ -172,6 +202,7 @@ void InteractiveComponent::CollisionBegin(const std::shared_ptr<Collider>& colli
 			text->SetActiveSelf(true);
 
 		}
+
 		 SetState(InteractiveState::ONCOLLISION);
 	}
 }
@@ -228,6 +259,11 @@ void InteractiveComponent::UpdateState()
 			SetState(InteractiveState::ONCOLLISION);
 			_seaPlayerController->SetState(SeaPlayerState::Idle);
 		}
+
+		if (ActionFunc::OnClickAction(KeyCode::LeftMouse, _stopMessage->GetComponent<Sprite>().get()))
+		{
+			SetState(InteractiveState::SUCCESS);
+		}
 		break;
 	case InteractiveState::SUCCESS:
 		break;
@@ -255,20 +291,21 @@ void InteractiveComponent::SetState(InteractiveState state)
 		break;
 	case InteractiveState::ONCOLLISION:
 	{
-		MiniGameTotalOnOff(false);
+	
 	}
 		break;
 	case InteractiveState::GAMEON:
 	{
 		MiniGameTotalOnOff(true);
-		_seaPlayerController->SetState(SeaPlayerState::MiniGame);
+	/*	_seaPlayerController->SetState(SeaPlayerState::MiniGame);*/
 	}
 		break;
 	case InteractiveState::SUCCESS:
-		_seaPlayerController->SetState(SeaPlayerState::Idle);
+		//_seaPlayerController->SetState(SeaPlayerState::Idle);
+	/*	SetState(InteractiveState::NONE);*/
 		break;
 	case InteractiveState::FAIL:
-		_seaPlayerController->SetState(SeaPlayerState::Idle);
+		//_seaPlayerController->SetState(SeaPlayerState::Idle);
 		break;
 	default:
 		break;
@@ -280,8 +317,13 @@ void InteractiveComponent::MiniGameTotalOnOff(bool onOff)
 	_interactiveBox->SetActiveSelf(onOff);
 	_exitMessage->SetActiveSelf(onOff);
 	_stopMessage->SetActiveSelf(onOff);
+	_progressBar->SetActiveSelf(onOff);
 
-	::SetCursorPos(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+	if (onOff==false)
+	{
+		::SetCursorPos(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+	}
+
 	Input::main->SetMouseLock(!onOff);
 
 }

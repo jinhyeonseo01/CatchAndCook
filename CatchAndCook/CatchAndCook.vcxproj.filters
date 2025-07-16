@@ -425,6 +425,13 @@
     <ClCompile Include="itemBoxComponent.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
+    <ClCompile Include="BilboardComponent.cpp" />
+    <ClCompile Include="InteractiveComponent.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="ProgressCycleComponent.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -799,6 +806,13 @@
     <ClInclude Include="itemBoxComponent.h">
       <Filter>03.Component</Filter>
     </ClInclude>
+    <ClInclude Include="BilboardComponent.h" />
+    <ClInclude Include="InteractiveComponent.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ProgressCycleComponent.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath_LH.inl">
@@ -1025,6 +1039,9 @@
     </FxCompile>
     <FxCompile Include="..\Resources\Shaders\ParticleRenderingShader2D.hlsl">
       <Filter>998.HLSL\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\SpriteProgressCycle.hlsl">
+      <Filter>998.HLSL\Graphics\KSH</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

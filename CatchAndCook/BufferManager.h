@@ -31,6 +31,7 @@ enum class BufferType
 	HookData,
 	HPData,
 	ParicleHelperParams,
+	ProgressCircle,
 
 
 	PlayerMaterialParam,

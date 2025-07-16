@@ -50,6 +50,33 @@ void ResourceManager::CreateDefaultShaderKSH()
 {
 	{
 		ShaderInfo info;
+		info._zTest = true;
+		info._stencilTest = false;
+		info._blendEnable = true;
+		info._blendType[0] = BlendType::BlendFactor;
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->SetPass(RENDER_PASS::UI);
+		shader->Init(L"SpriteProgressCycle.hlsl", ColorProp, ShaderArg{}, info);
+		Add<Shader>(L"SpriteProgressCycle", shader);
+	}
+
+	{
+
+		ShaderInfo info;
+		info._zTest = true;
+		info._stencilTest = false;
+		info._blendEnable = true;
+		info._blendType[0] = BlendType::BlendFactor;
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->SetPass(RENDER_PASS::UI);
+		shader->Init(L"SpriteShader.hlsl", ColorProp, ShaderArg{}, info);
+		Add<Shader>(L"SpriteShader", shader);
+	}
+
+
+
+	{
+		ShaderInfo info;
 		info.renderTargetCount = 4;
 
 		info.RTVForamts[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -340,20 +367,7 @@ void ResourceManager::CreateDefaultShaderKSH()
 	}
 
 
-	{
-
-		ShaderInfo info;
-		info._zTest = false;
-		info._stencilTest = false;
-		info._blendEnable = true;
-		info._blendType[0] = BlendType::BlendFactor;
-		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->SetPass(RENDER_PASS::UI);
-		shader->Init(L"SpriteShader.hlsl", ColorProp, ShaderArg{}, info);
-		Add<Shader>(L"SpriteShader", shader);
-	}
-
-
+	
 
 
 

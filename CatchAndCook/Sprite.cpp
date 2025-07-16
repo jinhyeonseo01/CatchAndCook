@@ -77,21 +77,24 @@ void Sprite::SetData(Material* material)
 {
 	auto cmdList = Core::main->GetCmdList();
 
-	material->SetTexture("_BaseMap", _spriteImage);
+	if (_spriteImage)
+	{
+		material->SetTexture("_BaseMap", _spriteImage);
+	}
 
 	// SpriteWorldParam 
 	{
 		CalculateScreenSpacePos();
 		auto CbufferContainer = Core::main->GetBufferManager()->GetBufferPool(BufferType::SpriteWorldParam)->Alloc(1);
 		memcpy(CbufferContainer->ptr, (void*)&_spriteWorldParam, sizeof(SpriteWorldParam));
-		cmdList->SetGraphicsRootConstantBufferView(material->GetShader()->GetRegisterIndex("SPRITE_WORLD_PARAM"), CbufferContainer->GPUAdress);
+		cmdList->SetGraphicsRootConstantBufferView(5, CbufferContainer->GPUAdress);
 	}
 
 	// SpriteTextureParam 
 	{
 		auto CbufferContainer = Core::main->GetBufferManager()->GetBufferPool(BufferType::SpriteTextureParam)->Alloc(1);
 		memcpy(CbufferContainer->ptr, (void*)&_sprtieTextureParam, sizeof(SprtieTextureParam));
-		cmdList->SetGraphicsRootConstantBufferView(material->GetShader()->GetRegisterIndex("SPRITE_TEXTURE_PARAM"), CbufferContainer->GPUAdress);
+		cmdList->SetGraphicsRootConstantBufferView(6, CbufferContainer->GPUAdress);
 	}
 }
 

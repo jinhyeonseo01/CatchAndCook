@@ -44,7 +44,6 @@ private:
 	shared_ptr<GameObject> _exitMessage;
 	shared_ptr<GameObject> _stopMessage;
 	shared_ptr<GameObject> _interactiveBox;
-
-
+	shared_ptr<GameObject> _progressBar;
 };
 
