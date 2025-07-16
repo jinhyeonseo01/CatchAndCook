@@ -7,13 +7,13 @@
 #include "SkinnedMeshRenderer.h"
 COMPONENT(GraphPathFinder)
 
-static random_device dre;
-static mt19937 gen(dre());
+
 static uniform_real_distribution<float> randomMoveSpeed(100.0f, 150.0f);
 
 
 void GraphPathFinder::Init()
 {
+    auto& dre = InGameGlobal::main->GetRandomMachine();
     _speed = randomMoveSpeed(dre);
 }
 

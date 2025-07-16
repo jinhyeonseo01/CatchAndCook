@@ -259,7 +259,7 @@ void InteractiveComponent::UpdateState()
 	case InteractiveState::GAMEON:
 		if (ActionFunc::OnClickAction(KeyCode::LeftMouse, _exitMessage->GetComponent<Sprite>().get()))
 		{
-			SetState(InteractiveState::NONE);
+			SetState(InteractiveState::ONCOLLISION);
 		}
 
 		if (ActionFunc::OnClickAction(KeyCode::LeftMouse, _stopMessage->GetComponent<Sprite>().get()))
@@ -303,7 +303,8 @@ void InteractiveComponent::SetState(InteractiveState state)
 		break;
 	case InteractiveState::ONCOLLISION:
 	{
-	
+		MiniGameTotalOnOff(false);
+		_seaPlayerController->SetMoveLock(false);
 	}
 		break;
 	case InteractiveState::GAMEON:
@@ -317,11 +318,13 @@ void InteractiveComponent::SetState(InteractiveState state)
 		Sound::main->Play("success");
 		MiniGameTotalOnOff(false);
 		_seaPlayerController->SetMoveLock(false);
+		GetOwner()->GetRoot()->SetActiveSelf(false);
 		break;
 	case InteractiveState::FAIL:
 		Sound::main->Play("fail");
 		MiniGameTotalOnOff(false);
 		_seaPlayerController->SetMoveLock(false);
+		SetState(InteractiveState::ONCOLLISION);
 		break;
 	default:
 		break;

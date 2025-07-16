@@ -18,6 +18,12 @@ public:
 	static unique_ptr<InGameGlobal> main;
 	void Init();
 	void InitMainField();
+
+	inline std::mt19937& GetRandomMachine()
+	{
+		static std::mt19937 rng(std::random_device{}());
+		return rng;
+	}
 	
 public:
 	void AddItem(const wstring& name);

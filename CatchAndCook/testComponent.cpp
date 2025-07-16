@@ -7,8 +7,7 @@
 #include "CameraManager.h"
 #include "Camera.h"
 #include "ColliderManager.h"
-std::random_device dre;
-std::mt19937 gen(dre());
+
 std::uniform_real_distribution<float> uid(0.0f, 1.0f);
 
 

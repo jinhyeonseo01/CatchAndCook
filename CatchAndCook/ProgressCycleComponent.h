@@ -3,8 +3,8 @@
 
 struct ProgressCycleData
 {
-	float answer = 0.7f;
-	float answerRange = 0.15f;          
+	float answer = 0.5f;
+	float answerRange = 0.13f;          
 	float currentUV = 0.0f;            
 	float answerCorrectRange = 0.1f;  
 

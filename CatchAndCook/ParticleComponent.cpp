@@ -2,10 +2,9 @@
 #include "ParticleComponent.h"
 #include "ParticleManager.h"
 
-static std::random_device rd;
-static std::mt19937 gen(rd());
 static std::uniform_real_distribution<float> dist(0.0f, 1.0f);
 static std::uniform_real_distribution<float> dist2(-0.1f, 0.1f);
+
 void ParticleComponent::Init()
 {
 }
@@ -111,8 +110,8 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 		ParticleData data;
 
 		data.size = size;
-
-
+		auto& gen = InGameGlobal::main->GetRandomMachine();
+		
 		switch (moveType)
 		{
 		case ParticleMoveType::RadialSpread:

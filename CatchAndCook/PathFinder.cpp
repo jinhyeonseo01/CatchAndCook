@@ -7,8 +7,7 @@
 #include "MeshRenderer.h"
 unordered_map<wstring, FishPath> PathFinder::_pathList;
 
-static random_device dre;
-static mt19937 gen(dre());
+
 static uniform_real_distribution<float> randomMoveSpeed(0.5f, 2.0f);
 static uniform_real_distribution<float> randomSpeed(0.7, 1.3f);
 
@@ -52,6 +51,8 @@ void PathFinder::Start()
 		return;
 
 	const auto& mat = materials[0];
+
+    auto& dre =InGameGlobal::main->GetRandomMachine();
 
 	int pathIndex = static_cast<int>(mat->GetPropertyFloat("_Path"));
 	std::wstring pathName = L"path" + std::to_wstring(pathIndex);

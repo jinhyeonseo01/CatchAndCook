@@ -72,7 +72,7 @@ bool ProgressCycleComponent::isInAnswer()
 
 void ProgressCycleComponent::CalculateCurrentUV()
 {
-	constexpr float speed = 0.3f;
+	constexpr float speed = 0.4f;
 
 	float range = _data.answerCorrectRange * 0.5f;
 	float minUV = range;
@@ -90,7 +90,5 @@ void ProgressCycleComponent::CalculateCurrentUV()
 
 void ProgressCycleComponent::Reset()
 {
-	std::random_device rd;
-	std::uniform_real_distribution<float> uid(0.3f, 0.7f);
-	_data.answer = uid(rd);
+	_data.currentUV = 0;
 }

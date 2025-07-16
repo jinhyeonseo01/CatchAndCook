@@ -23,8 +23,7 @@ void BoidsMove::SetDestroy()
 
 void BoidsMove::Init()
 {
-    random_device urd;
-    mt19937 gen(urd());
+    auto& urd = InGameGlobal::main->GetRandomMachine();
     uniform_real_distribution<float> dis(20.0f, 30.0f);
     uniform_real_distribution<float> dis2(-1.0f, 1.0f);
     _objects.emplace_back(GetOwner().get());
