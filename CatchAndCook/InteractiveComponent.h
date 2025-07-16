@@ -35,10 +35,16 @@ private:
 	void UpdateState();
 	void SetState(InteractiveState state);
 
+	void MiniGameTotalOnOff(bool onOff);
+
 private:
 	InteractiveState _state = InteractiveState::NONE;
 	shared_ptr<SeaPlayerController> _seaPlayerController;
 	weak_ptr<GameObject> _text;
+	shared_ptr<GameObject> _exitMessage;
+	shared_ptr<GameObject> _stopMessage;
+	shared_ptr<GameObject> _interactiveBox;
+
 
 };
 

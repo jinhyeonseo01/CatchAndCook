@@ -42,23 +42,7 @@ void Scene_Sea01::Init()
 
 	ColliderManager::main->SetCellSize(100);
 
-	{
-		_interactiveBox = CreateGameObject(L"interactive");
-		auto spriteComponet = _interactiveBox->AddComponent<Sprite>();
-		spriteComponet->AddAction(make_shared<ClickAction>(KeyCode::LeftMouse));
-		spriteComponet->SetTexture(ResourceManager::main->Get<Texture>(L"interactive"));
-		spriteComponet->SetSize(vec2(0.5f, 0.4f));
-		spriteComponet->SetLocalPos(vec3(0.25f,0.2f, 0));
-		spriteComponet->SetClipingColor(vec4(0, 0, 0, 0));
-
-		auto renderer = _interactiveBox->AddComponent<MeshRenderer>();
-		shared_ptr<Material> material = make_shared<Material>();
-		material->SetBlendFactor({ 0.9f,0.9f,0.9f,0.9f });
-		material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
-		material->SetPass(RENDER_PASS::UI);
-		renderer->AddMaterials({ material });
-		_interactiveBox->SetActiveSelf(false);
-	};
+	
 
 	{
 		ShaderInfo info;

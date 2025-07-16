@@ -16,53 +16,129 @@ void InteractiveComponent::Init()
 
 void InteractiveComponent::Start()
 {
-	auto& rootname = GetOwner()->GetRoot()->GetName();
-
-	shared_ptr<GameObject> object = SceneManager::main->GetCurrentScene()->Find(L"textMessage:" + rootname);
-
-	if (object)
-	{
-		_text = object;
-	}
-
-	else
-	{
-		shared_ptr<GameObject> text = SceneManager::main->GetCurrentScene()->CreateGameObject(L"textMessage:" + rootname);
-		auto renderer = text->AddComponent<MeshRenderer>();
-		auto sprite = text->AddComponent<TextSprite>();
-		sprite->SetLocalPos(vec3(0.45f, 0.9f, 0.1f));
-		sprite->SetSize(vec2(0.3f, 0.3f));
-		sprite->SetText(GetOwner()->GetRoot()->GetName());
-		sprite->CreateObject(550, 256, L"Arial", FontColor::WHITE, 60);
-		shared_ptr<Material> material = make_shared<Material>();
-		material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
-		material->SetPass(RENDER_PASS::UI);
-		renderer->AddMaterials({ material });
-
-		text->SetActiveSelf(false);
-		_text = text;
-	}
-
 
 	{
-		 auto player  =SceneManager::main->GetCurrentScene()->Find(L"seaPlayer");
-		 _seaPlayerController = player->GetComponent< SeaPlayerController>();
+		auto player = SceneManager::main->GetCurrentScene()->Find(L"seaPlayer");
+		_seaPlayerController = player->GetComponent< SeaPlayerController>();
+	}
+
+	{
+		shared_ptr<GameObject> interactiveBox = SceneManager::main->GetCurrentScene()->Find(L"interactiveBox");
+
+		if (interactiveBox)
+		{
+			_interactiveBox = interactiveBox;
+		}
+
+		else
+		{
+
+			_interactiveBox = SceneManager::main->GetCurrentScene()->CreateGameObject(L"interactiveBox");
+			auto spriteComponet = _interactiveBox->AddComponent<Sprite>();
+			spriteComponet->SetTexture(ResourceManager::main->Get<Texture>(L"interactive"));
+			spriteComponet->SetSize(vec2(0.5f, 0.6f));
+			spriteComponet->SetLocalPos(vec3(0.25f, 0.1f, 0.3f));
+			spriteComponet->SetClipingColor(vec4(0, 0, 0, 0));
+
+			auto renderer = _interactiveBox->AddComponent<MeshRenderer>();
+			shared_ptr<Material> material = make_shared<Material>();
+			material->SetBlendFactor({ 0.9f,0.9f,0.9f,0.9f });
+			material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
+			material->SetPass(RENDER_PASS::UI);
+			renderer->AddMaterials({ material });
+			_interactiveBox->SetActiveSelf(false);
+			_interactiveBox = _interactiveBox;
+		};
 	}
 
 
-	
+	{
+		//TextMessage
+		auto& rootname = GetOwner()->GetRoot()->GetName();
+		shared_ptr<GameObject> object = SceneManager::main->GetCurrentScene()->Find(L"textMessage:" + rootname);
+
+		if (object)
+		{
+			_text = object;
+		}
+
+		else
+		{
+			shared_ptr<GameObject> text = SceneManager::main->GetCurrentScene()->CreateGameObject(L"textMessage:" + rootname);
+			auto renderer = text->AddComponent<MeshRenderer>();
+			auto sprite = text->AddComponent<TextSprite>();
+			sprite->SetLocalPos(vec3(0.45f, 0.9f, 0.1f));
+			sprite->SetSize(vec2(0.3f, 0.3f));
+			sprite->SetText(GetOwner()->GetRoot()->GetName());
+			sprite->CreateObject(550, 256, L"Arial", FontColor::WHITE, 60);
+			shared_ptr<Material> material = make_shared<Material>();
+			material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
+			material->SetPass(RENDER_PASS::UI);
+			renderer->AddMaterials({ material });
+			text->SetActiveSelf(false);
+			_text = text;
+		}
+	}
+
+	{
+		//exitMessage Message
+		shared_ptr<GameObject> exitMessage = SceneManager::main->GetCurrentScene()->Find(L"exitMiniGame" );
+
+		if (exitMessage)
+		{
+			_exitMessage = exitMessage;
+		}
+
+		else
+		{
+			shared_ptr<GameObject> exitMessage = SceneManager::main->GetCurrentScene()->CreateGameObject(L"exitMiniGame:");
+			auto renderer = exitMessage->AddComponent<MeshRenderer>();
+			auto sprite = exitMessage->AddComponent<Sprite>();
+			sprite->SetLocalPos(vec3(0.52f, 0.4f, 0.1f));
+			sprite->SetSize(vec2(0.10f, 0.15f));
+			sprite->SetTexture(ResourceManager::main->Load<Texture>(L"exitTexture",L"../Resources/Textures/exit.png"));
+			shared_ptr<Material> material = make_shared<Material>();
+			material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
+			material->SetPass(RENDER_PASS::UI);
+			renderer->AddMaterials({ material });
+			exitMessage->SetActiveSelf(false);
+			_exitMessage = exitMessage;
+		}
+	}
+
+
+	{
+		//exitMessage Message
+		shared_ptr<GameObject> stopMessage = SceneManager::main->GetCurrentScene()->Find(L"stop");
+
+		if (stopMessage)
+		{
+			_stopMessage = stopMessage;
+		}
+
+		else
+		{
+			shared_ptr<GameObject> stopMessage = SceneManager::main->GetCurrentScene()->CreateGameObject(L"stop:");
+			auto renderer = stopMessage->AddComponent<MeshRenderer>();
+			auto sprite = stopMessage->AddComponent<Sprite>();
+			sprite->SetLocalPos(vec3(0.38f, 0.4f, 0.1f));
+			sprite->SetSize(vec2(0.10f, 0.15f));
+			sprite->SetTexture(ResourceManager::main->Load<Texture>(L"stopTexture", L"../Resources/Textures/stop.png"));
+			shared_ptr<Material> material = make_shared<Material>();
+			material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
+			material->SetPass(RENDER_PASS::UI);
+			renderer->AddMaterials({ material });
+			stopMessage->SetActiveSelf(false);
+			_stopMessage = stopMessage;
+		}
+	}
+
+
+
 }
 
 void InteractiveComponent::Update()
 {
-	if (_state == InteractiveState::ONCOLLISION)
-	{
-		if (Input::main->GetKeyDown(KeyCode::F))
-		{
-			SetState(InteractiveState::GAMEON);
-		}
-	}
-
 	UpdateState();
 }
 
@@ -91,6 +167,11 @@ void InteractiveComponent::CollisionBegin(const std::shared_ptr<Collider>& colli
 	if (collider->IsTrigger() && other->GetOwner()->HasTag(GameObjectTag::Player))
 	{
 
+		if (auto text = _text.lock())
+		{
+			text->SetActiveSelf(true);
+
+		}
 		 SetState(InteractiveState::ONCOLLISION);
 	}
 }
@@ -100,7 +181,14 @@ void InteractiveComponent::CollisionEnd(const std::shared_ptr<Collider>& collide
 	if (collider->IsTrigger() && other->GetOwner()->HasTag(GameObjectTag::Player))
 	{
 	
+		if (auto text = _text.lock())
+		{
+			text->SetActiveSelf(false);
+
+		}
 		SetState(InteractiveState::NONE);
+
+
 		
 	}
 }
@@ -126,6 +214,7 @@ void InteractiveComponent::UpdateState()
 	switch (_state)
 	{
 	case InteractiveState::NONE:
+
 		break;
 	case InteractiveState::ONCOLLISION:
 		if (Input::main->GetKeyDown(KeyCode::F))
@@ -134,6 +223,11 @@ void InteractiveComponent::UpdateState()
 		}
 		break;
 	case InteractiveState::GAMEON:
+		if (ActionFunc::OnClickAction(KeyCode::LeftMouse, _exitMessage->GetComponent<Sprite>().get()))
+		{
+			SetState(InteractiveState::ONCOLLISION);
+			_seaPlayerController->SetState(SeaPlayerState::Idle);
+		}
 		break;
 	case InteractiveState::SUCCESS:
 		break;
@@ -155,50 +249,39 @@ void InteractiveComponent::SetState(InteractiveState state)
 	switch (_state)
 	{
 	case InteractiveState::NONE:
-		if (auto text = _text.lock())
-		{
-			text->SetActiveSelf(false);
-		}
-
-		_seaPlayerController->SetState(SeaPlayerState::Idle);
+	{
+		MiniGameTotalOnOff(false);
+	}
 		break;
 	case InteractiveState::ONCOLLISION:
-		if (auto text = _text.lock())
-		{
-			text->SetActiveSelf(true);
-		}
-
+	{
+		MiniGameTotalOnOff(false);
+	}
 		break;
 	case InteractiveState::GAMEON:
 	{
-		if (auto text = _text.lock())
-		{
-			text->SetActiveSelf(false);
-		}
-		auto scene = SceneManager::main->GetCurrentScene();
-		auto seaScene = dynamic_pointer_cast<Scene_Sea01>(scene);
-		if (seaScene)
-		{
-			seaScene->GetInteractiveBox()->SetActiveSelf(true);
-		}
+		MiniGameTotalOnOff(true);
 		_seaPlayerController->SetState(SeaPlayerState::MiniGame);
 	}
 		break;
 	case InteractiveState::SUCCESS:
-		if (auto text = _text.lock())
-		{
-			text->SetActiveSelf(false);
-		}
 		_seaPlayerController->SetState(SeaPlayerState::Idle);
 		break;
 	case InteractiveState::FAIL:
-		if (auto text = _text.lock())
-		{
-			text->SetActiveSelf(false);
-		}
 		_seaPlayerController->SetState(SeaPlayerState::Idle);
 		break;
 	default:
 		break;
 	}
+}
+
+void InteractiveComponent::MiniGameTotalOnOff(bool onOff)
+{
+	_interactiveBox->SetActiveSelf(onOff);
+	_exitMessage->SetActiveSelf(onOff);
+	_stopMessage->SetActiveSelf(onOff);
+
+	::SetCursorPos(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+	Input::main->SetMouseLock(!onOff);
+
 }

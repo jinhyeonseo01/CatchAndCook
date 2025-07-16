@@ -5,7 +5,7 @@
 class ActionFunc
 {
 public:
-    static void OnClickAction(KeyCode key, Sprite* sprite);
+    static bool OnClickAction(KeyCode key, Sprite* sprite);
     static void OnDragAction(KeyCode key, Sprite* sprite);
     static void DisableMouseAction(KeyCode key, Sprite* sprite);
     static void EnableDisableKeyAction(KeyCode key, Sprite* sprite);

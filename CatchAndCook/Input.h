@@ -48,6 +48,7 @@ public:
     bool GetMouse(int keycode);
     bool GetMouseUp(int keycode);
 
+    void SetMousePosition(const vec2& pos);
     vec2 GetMousePosition();
     Vector2 GetMousePrevPosition();
     vec2 GetMouseDownPosition(int keycode);

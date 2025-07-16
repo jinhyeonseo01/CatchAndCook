@@ -3,7 +3,7 @@
 #include "Sprite.h"
 
 
-void ActionFunc::OnClickAction(KeyCode key, Sprite* sprite)
+bool ActionFunc::OnClickAction(KeyCode key, Sprite* sprite)
 {
     if (Input::main->GetMouseDown(key))
     {
@@ -18,8 +18,11 @@ void ActionFunc::OnClickAction(KeyCode key, Sprite* sprite)
             normalizedY <= (sprite->_ndcWorldPos.y + sprite->_ndcSize.y))
         {
             cout << "헤이시발" << endl;
+            return true;
         }
     }
+
+    return false;
 }
 
 void ActionFunc::OnDragAction(KeyCode key, Sprite* sprite)
