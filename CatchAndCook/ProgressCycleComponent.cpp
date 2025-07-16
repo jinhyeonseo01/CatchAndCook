@@ -17,7 +17,7 @@ void ProgressCycleComponent::Start()
 
 void ProgressCycleComponent::Update()
 {
-	SetCurrentUV();
+	CalculateCurrentUV();
 }
 
 void ProgressCycleComponent::Update2()
@@ -70,20 +70,27 @@ bool ProgressCycleComponent::isInAnswer()
 	return _data.IsCorrect();
 }
 
-void ProgressCycleComponent::SetCurrentUV()
+void ProgressCycleComponent::CalculateCurrentUV()
 {
 	constexpr float speed = 0.3f;
-	static bool isGoingUp = true;
+
 	float range = _data.answerCorrectRange * 0.5f;
 	float minUV = range;
 	float maxUV = 1.0f - range;
 
-	_data.currentUV += (isGoingUp ? 1.0f : -1.0f) * Time::main->GetDeltaTime() * speed;
+	_data.currentUV += (_isGoingUp ? 1.0f : -1.0f) * Time::main->GetDeltaTime() * speed;
 	_data.currentUV = clamp(_data.currentUV, minUV, maxUV);
 
 	if (_data.currentUV == maxUV)
-		isGoingUp = false;
+		_isGoingUp = false;
 	else if (_data.currentUV == minUV)
-		isGoingUp = true;
+		_isGoingUp = true;
 
+}
+
+void ProgressCycleComponent::Reset()
+{
+	std::random_device rd;
+	std::uniform_real_distribution<float> uid(0.3f, 0.7f);
+	_data.answer = uid(rd);
 }

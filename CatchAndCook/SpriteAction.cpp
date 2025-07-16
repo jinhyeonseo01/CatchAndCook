@@ -17,14 +17,13 @@ bool ActionFunc::OnClickAction(KeyCode key, Sprite* sprite)
             normalizedY >= (sprite->_ndcWorldPos.y) &&
             normalizedY <= (sprite->_ndcWorldPos.y + sprite->_ndcSize.y))
         {
-            cout << "헤이시발" << endl;
             return true;
         }
 
         return false;
     }
 
-
+    return false;
 }
 
 void ActionFunc::OnDragAction(KeyCode key, Sprite* sprite)

@@ -37,10 +37,11 @@ public:
 	
 public:
 	bool isInAnswer();
-	void SetCurrentUV();
-
+	void CalculateCurrentUV();
+	void Reset();
 
 private:
+	bool _isGoingUp = true;
 	ProgressCycleData _data;
 
 };

@@ -425,11 +425,13 @@
     <ClCompile Include="itemBoxComponent.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
-    <ClCompile Include="BilboardComponent.cpp" />
     <ClCompile Include="InteractiveComponent.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
     <ClCompile Include="ProgressCycleComponent.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="BilboardComponent.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
   </ItemGroup>
@@ -806,11 +808,13 @@
     <ClInclude Include="itemBoxComponent.h">
       <Filter>03.Component</Filter>
     </ClInclude>
-    <ClInclude Include="BilboardComponent.h" />
     <ClInclude Include="InteractiveComponent.h">
       <Filter>03.Component</Filter>
     </ClInclude>
     <ClInclude Include="ProgressCycleComponent.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="BilboardComponent.h">
       <Filter>03.Component</Filter>
     </ClInclude>
   </ItemGroup>

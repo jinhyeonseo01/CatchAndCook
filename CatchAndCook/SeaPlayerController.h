@@ -11,7 +11,6 @@ enum class SeaPlayerState
 	Idle,
 	Aiming,
 	Shot,
-	MiniGame,
 	Die,
 };
 
@@ -36,6 +35,8 @@ public:
 	virtual void ChangeParent(const std::shared_ptr<GameObject>& prev, const std::shared_ptr<GameObject>& current);
 	virtual void SetDestroy();
 	virtual void Destroy();
+
+	void SetMoveLock(bool lock) { _moveLock = lock; }
 
 private:
 	Quaternion CalCulateYawPitchRoll();

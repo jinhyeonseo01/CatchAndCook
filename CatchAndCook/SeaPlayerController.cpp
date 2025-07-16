@@ -360,8 +360,7 @@ void SeaPlayerController::UpdateState(float dt)
         break;
     case SeaPlayerState::Die:
         break;
-    case SeaPlayerState::MiniGame:
-        break;
+
     default:
         break;
     }
@@ -378,7 +377,6 @@ void SeaPlayerController::SetState(SeaPlayerState state)
     {
     case SeaPlayerState::Idle:
     {
-        _moveLock = false;
         if (_animations.find("idle") != _animations.end())
         {
             _weapons->SetTargetHudVisible(false);
@@ -452,13 +450,6 @@ void SeaPlayerController::SetState(SeaPlayerState state)
         break;
     }
 	case SeaPlayerState::Die:
-		break;
-	case SeaPlayerState::MiniGame:
-        _moveLock = true;
-        if (_animations.find("idle") != _animations.end())
-        {
-            _skined->Play(_animations["idle"], 0.5f);
-        };
 		break;
 	default:
 		break;

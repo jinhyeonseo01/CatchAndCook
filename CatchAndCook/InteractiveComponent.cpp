@@ -148,7 +148,7 @@ void InteractiveComponent::Start()
 
 		else
 		{
-			shared_ptr<GameObject> stopMessage = SceneManager::main->GetCurrentScene()->CreateGameObject(L"stop:");
+			shared_ptr<GameObject> stopMessage = SceneManager::main->GetCurrentScene()->CreateGameObject(L"stop");
 			auto renderer = stopMessage->AddComponent<MeshRenderer>();
 			auto sprite = stopMessage->AddComponent<Sprite>();
 			sprite->SetLocalPos(vec3(0.38f, 0.4f, 0.0f));
@@ -242,6 +242,9 @@ void InteractiveComponent::Destroy()
 
 void InteractiveComponent::UpdateState()
 {
+
+
+
 	switch (_state)
 	{
 	case InteractiveState::NONE:
@@ -256,13 +259,19 @@ void InteractiveComponent::UpdateState()
 	case InteractiveState::GAMEON:
 		if (ActionFunc::OnClickAction(KeyCode::LeftMouse, _exitMessage->GetComponent<Sprite>().get()))
 		{
-			SetState(InteractiveState::ONCOLLISION);
-			_seaPlayerController->SetState(SeaPlayerState::Idle);
+			SetState(InteractiveState::NONE);
 		}
 
 		if (ActionFunc::OnClickAction(KeyCode::LeftMouse, _stopMessage->GetComponent<Sprite>().get()))
 		{
-			SetState(InteractiveState::SUCCESS);
+			if (_progressBar->GetComponent<ProgressCycleComponent>()->isInAnswer())
+			{
+				SetState(InteractiveState::SUCCESS);
+			}
+			else
+			{
+				SetState(InteractiveState::FAIL);
+			}
 		}
 		break;
 	case InteractiveState::SUCCESS:
@@ -277,6 +286,8 @@ void InteractiveComponent::UpdateState()
 
 void InteractiveComponent::SetState(InteractiveState state)
 {
+
+
 	if (_state == state)
 		return;
 
@@ -287,6 +298,7 @@ void InteractiveComponent::SetState(InteractiveState state)
 	case InteractiveState::NONE:
 	{
 		MiniGameTotalOnOff(false);
+		_seaPlayerController->SetMoveLock(false);
 	}
 		break;
 	case InteractiveState::ONCOLLISION:
@@ -297,15 +309,19 @@ void InteractiveComponent::SetState(InteractiveState state)
 	case InteractiveState::GAMEON:
 	{
 		MiniGameTotalOnOff(true);
-	/*	_seaPlayerController->SetState(SeaPlayerState::MiniGame);*/
+		_seaPlayerController->SetMoveLock(true);
+		_seaPlayerController->SetState(SeaPlayerState::Idle);
 	}
 		break;
 	case InteractiveState::SUCCESS:
-		//_seaPlayerController->SetState(SeaPlayerState::Idle);
-	/*	SetState(InteractiveState::NONE);*/
+		Sound::main->Play("success");
+		MiniGameTotalOnOff(false);
+		_seaPlayerController->SetMoveLock(false);
 		break;
 	case InteractiveState::FAIL:
-		//_seaPlayerController->SetState(SeaPlayerState::Idle);
+		Sound::main->Play("fail");
+		MiniGameTotalOnOff(false);
+		_seaPlayerController->SetMoveLock(false);
 		break;
 	default:
 		break;
@@ -318,6 +334,11 @@ void InteractiveComponent::MiniGameTotalOnOff(bool onOff)
 	_exitMessage->SetActiveSelf(onOff);
 	_stopMessage->SetActiveSelf(onOff);
 	_progressBar->SetActiveSelf(onOff);
+
+	if (onOff == true)
+	{
+		_progressBar->GetComponent<ProgressCycleComponent>()->Reset();
+	}
 
 	if (onOff==false)
 	{
