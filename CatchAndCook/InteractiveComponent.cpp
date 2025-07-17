@@ -321,13 +321,13 @@ void InteractiveComponent::SetState(InteractiveState state)
 	}
 		break;
 	case InteractiveState::SUCCESS:
-		Sound::main->Play("success",0.3f);
+		Sound::main->Play("success",0.3f,true);
 		MiniGameTotalOnOff(false);
 		_seaPlayerController->SetMoveLock(false);
 		GetOwner()->GetRoot()->SetActiveSelf(false);
 		break;
 	case InteractiveState::FAIL:
-		Sound::main->Play("fail",0.3f);
+		Sound::main->Play("fail",0.3f, true);
 		MiniGameTotalOnOff(false);
 		_seaPlayerController->SetMoveLock(false);
 		SetState(InteractiveState::ONCOLLISION);
