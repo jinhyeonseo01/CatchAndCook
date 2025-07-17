@@ -101,10 +101,10 @@ void FishMonster::Update()
 {
 	float dt = Time::main->GetDeltaTime();
 
-    if (_state == FishMonsterState::Die)
-        return;
-
-    _pathFinder->CalculatePath(_moveSpeed);
+    if (_state != FishMonsterState::Die)
+    {
+        _pathFinder->CalculatePath(_moveSpeed);
+    }
 }
 
 void FishMonster::Update2()
@@ -233,13 +233,14 @@ void FishMonster::SetState(FishMonsterState state)
         {
             _skined->Play(_animations["idle"], 0.5f);
         }
-        else
+        if (_skined->_speedMultiple >= 1.5f)
         {
             _skined->_speedMultiple = 1.0f;
         }
 
 		break;
 	case FishMonsterState::Die:
+
         if (_animations.find("die") != _animations.end())
         {
             _skined->Play(_animations["die"], 0.5f);
@@ -247,7 +248,7 @@ void FishMonster::SetState(FishMonsterState state)
 
 		break;
 	case FishMonsterState::Hit:
-        _moveSpeed *= 3.0f;
+        _moveSpeed *= 2.0f;
 
         if (_animations.find("run") != _animations.end())
         {
@@ -255,7 +256,7 @@ void FishMonster::SetState(FishMonsterState state)
         }
         else
         {
-            _skined->_speedMultiple = 8.0f;
+            _skined->_speedMultiple = 7.0f;
         }
 		break;
 	default:

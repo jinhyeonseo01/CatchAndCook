@@ -30,6 +30,8 @@ public:
 	void SetDestroy()override;
 	void Destroy()override;
 
+
+	void Reset() override;
 private:
 
 	void UpdateState();

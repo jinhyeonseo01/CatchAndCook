@@ -69,23 +69,25 @@ struct PS_OUT
 PS_OUT PS_Main(VS_OUT input) : SV_Target
 {
     PS_OUT output = (PS_OUT) 0;
-
+    
     output.position = float4(input.worldPos, 1.0f);
 
-    float3 normalMapped = ComputeNormalMapping(input.worldNormal, input.worldTangent, _BumpMap.Sample(sampler_lerp, input.uv));
-    output.normal = float4(normalMapped, 1.0f);
-
-    output.color = _BaseMap.Sample(sampler_lerp, input.uv) * color;
+    float3 N = ComputeNormalMapping(
+        input.worldNormal,
+        input.worldTangent,
+        _BumpMap.Sample(sampler_lerp, input.uv));
+    
+    output.color = _BaseMap.Sample(sampler_lerp, input.uv);
+    output.normal = float4(N, 1.0f);
+    
 
     float3 toEye = normalize(g_eyeWorld - input.worldPos);
     
-    float rim = 1 - dot(output.normal.xyz, toEye);
-    
-    rim = pow(abs(rim), rimPower);
-    
-    output.color += rim * float4(0, 1, 0, 0) * rimStrength;
-    
-    //output.maoe = float4(0, 0, 0, 0);
+    float rim = 1.0 - saturate(dot(N, toEye));
+    rim = pow(rim, rimPower);
 
+    float4 rimColor = float4(0, 1, 0, 1) * rim;
+    output.color.rgb = output.color.rgb + rimColor.rgb;
+  
     return output;
 }

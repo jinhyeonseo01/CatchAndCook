@@ -33,8 +33,6 @@ public:
     void InitGuid()
     {
         AddObject(this->shared_from_this());
-        //auto& obj = GetCast<T>();
-        //return obj;
     }
 
     template <class T, class = std::enable_if_t<std::is_base_of_v<IGuid, T>>>
@@ -50,10 +48,12 @@ public:
     {
         if (object == nullptr)
             return false;
+
         if (!_GuidTable.contains(object->guid))
         {
             _GuidTable.insert(std::make_pair(object->guid,
-                std::weak_ptr<IGuid>{
+                std::weak_ptr<IGuid>
+                {
                     std::dynamic_pointer_cast<IGuid>(object)
                 }));
             return true;

@@ -240,6 +240,12 @@ void InteractiveComponent::Destroy()
 {
 }
 
+void InteractiveComponent::Reset()
+{
+	GetOwner()->GetRoot()->SetActiveSelf(true);
+	SetState(InteractiveState::NONE);
+}
+
 void InteractiveComponent::UpdateState()
 {
 
@@ -315,13 +321,13 @@ void InteractiveComponent::SetState(InteractiveState state)
 	}
 		break;
 	case InteractiveState::SUCCESS:
-		Sound::main->Play("success");
+		Sound::main->Play("success",0.3f);
 		MiniGameTotalOnOff(false);
 		_seaPlayerController->SetMoveLock(false);
 		GetOwner()->GetRoot()->SetActiveSelf(false);
 		break;
 	case InteractiveState::FAIL:
-		Sound::main->Play("fail");
+		Sound::main->Play("fail",0.3f);
 		MiniGameTotalOnOff(false);
 		_seaPlayerController->SetMoveLock(false);
 		SetState(InteractiveState::ONCOLLISION);
