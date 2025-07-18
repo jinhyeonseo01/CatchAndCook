@@ -4,7 +4,48 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a74807-b184-40ff-ba8c-95e0af4e916b" name="Changes" comment="" />
+    <list default="true" id="55a74807-b184-40ff-ba8c-95e0af4e916b" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/CatchAndCook/Canvas.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CatchAndCook/Canvas.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CatchAndCook/FoodShopObject.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CatchAndCook/FoodShopObject.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CatchAndCook/GUISprite.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CatchAndCook/GUISprite.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CatchAndCook/ImageRenderer.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CatchAndCook/ImageRenderer.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CatchAndCook/RectTransform.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CatchAndCook/RectTransform.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CatchAndCook/UILookUp.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CatchAndCook/UILookUp.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ReadMe.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Resources/Shaders/GUISpriteShader.hlsl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Resources/Shaders/TestTransparent_Total.hlsl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CatchAndCook/BufferManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/CatchAndCook/BufferManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CatchAndCook/BufferManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/CatchAndCook/BufferManager.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CatchAndCook/CatchAndCook.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/CatchAndCook/CatchAndCook.vcxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CatchAndCook/CatchAndCook.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/CatchAndCook/CatchAndCook.vcxproj.filters" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CatchAndCook/CbufferParam.h" beforeDir="false" afterPath="$PROJECT_DIR$/CatchAndCook/CbufferParam.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CatchAndCook/Component.h" beforeDir="false" afterPath="$PROJECT_DIR$/CatchAndCook/Component.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CatchAndCook/ComputeManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/CatchAndCook/ComputeManager.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CatchAndCook/Game.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/CatchAndCook/Game.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CatchAndCook/GameObject.h" beforeDir="false" afterPath="$PROJECT_DIR$/CatchAndCook/GameObject.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CatchAndCook/GeoMetryHelper.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/CatchAndCook/GeoMetryHelper.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CatchAndCook/GeoMetryHelper.h" beforeDir="false" afterPath="$PROJECT_DIR$/CatchAndCook/GeoMetryHelper.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CatchAndCook/ImguiManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/CatchAndCook/ImguiManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CatchAndCook/LightComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/CatchAndCook/LightComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CatchAndCook/RendererBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/CatchAndCook/RendererBase.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CatchAndCook/ResourceManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/CatchAndCook/ResourceManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CatchAndCook/Scene.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/CatchAndCook/Scene.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CatchAndCook/SceneLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/CatchAndCook/SceneLoader.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CatchAndCook/SkinnedHierarchy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/CatchAndCook/SkinnedHierarchy.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CatchAndCook/Texture.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/CatchAndCook/Texture.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CatchAndCook/Texture.h" beforeDir="false" afterPath="$PROJECT_DIR$/CatchAndCook/Texture.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CatchAndCook/Transform.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/CatchAndCook/Transform.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CatchAndCook/Transform.h" beforeDir="false" afterPath="$PROJECT_DIR$/CatchAndCook/Transform.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CatchAndCook/imgui.ini" beforeDir="false" afterPath="$PROJECT_DIR$/CatchAndCook/imgui.ini" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,9 +54,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 8
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
   <component name="ProjectId" id="2x3uoythaUsjrm4qSx8Tk6txIzy" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -26,7 +67,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main"
+    "git-widget-placeholder": "Merging MERGE"
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
