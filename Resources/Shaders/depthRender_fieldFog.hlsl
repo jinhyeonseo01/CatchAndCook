@@ -68,13 +68,18 @@ void CS_Main(uint3 dispatchThreadID : SV_DispatchThreadID)
 		return;
     }
     
+    //if (RenderT[texCoord.xy].a < 0.1f)
+    //{
+    //    resultTexture[texCoord.xy] = float4(color2, 1);
+    //    return;
+    //}
+    
     float4 posView = mul(posProj, InvertProjectionMatrix);
     float3 actualPosView = posView.xyz / posView.w;
     
 
     float dist = length(actualPosView);    
     float distFog = saturate((dist - g_fogMin) / (g_fogMax - g_fogMin));
-    //float distFog = smoothstep(g_fogMin, g_fogMax, dist);
     
     float fogFactor = clamp(0, 1, exp(-distFog * power));
     fogFactor = smoothstep(0.0, 1.0, fogFactor);
@@ -84,13 +89,7 @@ void CS_Main(uint3 dispatchThreadID : SV_DispatchThreadID)
     resultTexture[texCoord.xy] = float4(color.xyz, 1.0f);
     return;
 
-    //float Height = PositionT.SampleLevel(sampler_lerp, uv, 0).y;
-    
-    //float HeightUv = min(saturate(-Height / 3000), 0.999f);
-   
-    //float4 colorGradingColor = ColorGrading.SampleLevel(sampler_lerp, float2(HeightUv.x, 0), 0);
-    
-    //resultTexture[texCoord.xy] = float4(color * colorGradingColor.xyz, 1.0f);
+
 }
 
 

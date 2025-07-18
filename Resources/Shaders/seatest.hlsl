@@ -334,5 +334,5 @@ float4 PS_Main(DS_OUT input) : SV_Target0
     ///////////////////////////////////////////////////////////////////////////
     float3 sea_color = (g_seaBaseColor.rgb * diffuse) + (g_seaShallowColor.rgb * shallowFactor) + envReflection * fresnel * g_envPower + specular;
     
-    return float4(sea_color, 1.0f);
+    return float4(sea_color, 0.0f);
 }
