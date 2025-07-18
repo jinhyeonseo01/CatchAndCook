@@ -397,9 +397,7 @@ void SkinnedHierarchy::RenderBegin()
 			_finalMatrixList[i].Invert(_finalInvertMatrixList[i]);
 		}
 	}
-	_boneCBuffer = Core::main->GetBufferManager()->GetBufferPool(BufferType::BoneParam)->Alloc(1);
-	memcpy(&(static_cast<BoneParam*>(_boneCBuffer->ptr)->boneMatrixs), _finalMatrixList.data(), sizeof(Matrix) * boneCount);
-	memcpy(&(static_cast<BoneParam*>(_boneCBuffer->ptr)->boneInvertMatrixs), _finalInvertMatrixList.data(),sizeof(Matrix) * boneCount);
+
 }
 void SkinnedHierarchy::SetData(StructuredBuffer* buffer, Material* material)
 {
@@ -503,6 +501,10 @@ void SkinnedHierarchy::SetMappingTable(const std::unordered_map<std::string, std
 
 void SkinnedHierarchy::SetData(Material* material)
 {
+	int boneCount = _boneNameList.size();
+	_boneCBuffer = Core::main->GetBufferManager()->GetBufferPool(BufferType::BoneParam)->Alloc(1);
+	memcpy(&(static_cast<BoneParam*>(_boneCBuffer->ptr)->boneMatrixs), _finalMatrixList.data(), sizeof(Matrix) * boneCount);
+	memcpy(&(static_cast<BoneParam*>(_boneCBuffer->ptr)->boneInvertMatrixs), _finalInvertMatrixList.data(), sizeof(Matrix) * boneCount);
 	int index = material->GetShader()->GetRegisterIndex("BoneParam");
 	if(index != -1)
 		Core::main->GetCmdList()->SetGraphicsRootConstantBufferView(index, _boneCBuffer->GPUAdress);

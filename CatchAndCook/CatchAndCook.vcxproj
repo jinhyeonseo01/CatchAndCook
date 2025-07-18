@@ -185,6 +185,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="CameraManager.cpp" />
+    <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="CbufferParam.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="ColliderManager.cpp" />
@@ -193,6 +194,7 @@
     <ClCompile Include="EffectComponent.cpp" />
     <ClCompile Include="EventComponent.cpp" />
     <ClCompile Include="FishMonster.cpp" />
+    <ClCompile Include="FoodShopObject.cpp" />
     <ClCompile Include="GameObjectSetting.cpp" />
     <ClCompile Include="GeoMetryHelper.cpp" />
     <ClCompile Include="Gizmo.cpp" />
@@ -201,6 +203,7 @@
     <ClCompile Include="InteractiveComponent.cpp" />
     <ClCompile Include="itemBoxComponent.cpp" />
     <ClCompile Include="PercentComponent.cpp" />
+    <ClCompile Include="GUISprite.cpp" />
     <ClCompile Include="ICBufferInjector.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Core.cpp" />
@@ -216,6 +219,7 @@
     </ClCompile>
     <ClCompile Include="Global.cpp" />
     <ClCompile Include="guid_utility.cpp" />
+    <ClCompile Include="ImageRenderer.cpp" />
     <ClCompile Include="ImguiManager.cpp" />
     <ClCompile Include="InGameGlobal.cpp" />
     <ClCompile Include="InGameMainField.cpp" />
@@ -266,6 +270,7 @@
     <ClCompile Include="PhysicsComponent.cpp" />
     <ClCompile Include="ProgressCycleComponent.cpp" />
     <ClCompile Include="ProjectileComponet.cpp" />
+    <ClCompile Include="RectTransform.cpp" />
     <ClCompile Include="RendererBase.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
@@ -302,6 +307,7 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="UILookUp.cpp" />
     <ClCompile Include="UITestScene.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="BoidsMove.cpp" />
@@ -339,6 +345,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="CameraManager.h" />
+    <ClInclude Include="Canvas.h" />
     <ClInclude Include="CbufferParam.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="ColliderManager.h" />
@@ -348,6 +355,7 @@
     <ClInclude Include="EffectComponent.h" />
     <ClInclude Include="EventComponent.h" />
     <ClInclude Include="FishMonster.h" />
+    <ClInclude Include="FoodShopObject.h" />
     <ClInclude Include="GameObjectSetting.h" />
     <ClInclude Include="GeoMetryHelper.h" />
     <ClInclude Include="Gizmo.h" />
@@ -356,6 +364,7 @@
     <ClInclude Include="InteractiveComponent.h" />
     <ClInclude Include="itemBoxComponent.h" />
     <ClInclude Include="PercentComponent.h" />
+    <ClInclude Include="GUISprite.h" />
     <ClInclude Include="ICBufferInjector.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="convert_math.h" />
@@ -374,6 +383,7 @@
     </ClInclude>
     <ClInclude Include="Global.h" />
     <ClInclude Include="guid_utility.h" />
+    <ClInclude Include="ImageRenderer.h" />
     <ClInclude Include="ImguiManager.h" />
     <ClInclude Include="InGameGlobal.h" />
     <ClInclude Include="InGameMainField.h" />
@@ -409,6 +419,7 @@
     <ClInclude Include="PhysicsComponent.h" />
     <ClInclude Include="ProgressCycleComponent.h" />
     <ClInclude Include="ProjectileComponet.h" />
+    <ClInclude Include="RectTransform.h" />
     <ClInclude Include="RendererBase.h" />
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="resource.h" />
@@ -442,6 +453,7 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="UILookUp.h" />
     <ClInclude Include="UITestScene.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="BoidsMove.h" />
@@ -566,6 +578,7 @@
     <FxCompile Include="..\Resources\Shaders\ParticleRenderingShader.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    <FxCompile Include="..\Resources\Shaders\GUISpriteShader.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
@@ -803,6 +816,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\TestTransparent_Total.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="..\Resources\Shaders\Transform_b1.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -847,9 +864,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\..\Direct12-Project-Scene\Assets\Models\Objects\Sea\Terrian_Seed\New Folder\2023-11-23T113343Z.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

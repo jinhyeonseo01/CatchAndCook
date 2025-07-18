@@ -5,9 +5,11 @@
 #include "AnimationListComponent.h"
 #include "BufferPool.h"
 #include "CameraComponent.h"
+#include "Canvas.h"
 #include "Collider.h"
 #include "Scene.h"
 #include "Component.h"
+#include "ImageRenderer.h"
 #include "InitComponent.h"
 #include "LightComponent.h"
 #include "Transform.h"
@@ -15,6 +17,7 @@
 #include "ModelMesh.h"
 #include "NavMesh.h"
 #include "PhysicsComponent.h"
+#include "RectTransform.h"
 #include "SkinnedMeshRenderer.h"
 #include "Terrain.h"
 
@@ -111,6 +114,11 @@ void SceneLoader::PrevProcessingComponent(json& data)
         auto transform = CreateObject<Transform>(guid);
         component = transform;
     }
+    if (type == L"RectTransform")
+    {
+        auto transform = CreateObject<RectTransform>(guid);
+        component = transform;
+    }
     if (type == L"MeshRenderer")
     {
         auto meshRenderer = CreateObject<MeshRenderer>(guid);
@@ -195,7 +203,16 @@ void SceneLoader::PrevProcessingComponent(json& data)
         auto terr = CreateObject<AnimationListComponent>(guid);
         component = terr;
     }
-
+    if (type == L"Image")
+    {
+        auto terr = CreateObject<ImageRenderer>(guid);
+        component = terr;
+    }
+    if (type == L"Canvas")
+    {
+        auto terr = CreateObject<Canvas>(guid);
+        component = terr;
+    }
     componentCache.emplace_back(component);
 }
 
@@ -273,6 +290,68 @@ void SceneLoader::LinkComponent(json& jsonData)
         transform->SetLocalPosition(pos);
         transform->SetLocalRotation(rotation);
         transform->SetLocalScale(scale);
+    }
+
+    if (type == L"RectTransform")
+    {
+        auto transform = IGuid::FindObjectByGuid<RectTransform>(guid);
+        auto& d = transform->_rectTransformData;
+        Vector3 pos = {
+        jsonData["anchoredPosition"][0].get<float>(),
+        	jsonData["anchoredPosition"][1].get<float>(),
+        jsonData["position"][2].get<float>()
+        };
+  //      pos = Vector3{
+		//jsonData["position"][0].get<float>(),
+		//jsonData["position"][1].get<float>(),
+		//jsonData["position"][2].get<float>()
+  //      };
+        Quaternion rot = {
+            jsonData["rotation"][0].get<float>(),
+            jsonData["rotation"][1].get<float>(),
+            jsonData["rotation"][2].get<float>(),
+            jsonData["rotation"][3].get<float>()
+        };
+        Vector3 scl = {
+            jsonData["scale"][0].get<float>(),
+            jsonData["scale"][1].get<float>(),
+            jsonData["scale"][2].get<float>()
+        };
+        transform->SetLocalPosition(pos);
+        transform->SetLocalRotation(rot);
+        transform->SetLocalScale(scl);
+
+        // 2) RectTransformData 채우기
+        d.pivot = Vector2(
+            jsonData["pivot"][0].get<float>(),
+            jsonData["pivot"][1].get<float>()
+        );
+        d.anchorMin = Vector2(
+            jsonData["anchorMin"][0].get<float>(),
+            jsonData["anchorMin"][1].get<float>()
+        );
+        d.anchorMax = Vector2(
+            jsonData["anchorMax"][0].get<float>(),
+            jsonData["anchorMax"][1].get<float>()
+        );
+        d.rectSize = Vector2(
+            jsonData["rectSize"][0].get<float>(),
+            jsonData["rectSize"][1].get<float>()
+        );
+        //d.rectSize = Vector2(
+        //    jsonData["rectSize"][0].get<float>(),
+        //    jsonData["rectSize"][1].get<float>()
+        //);
+
+        d.paddingMin = Vector2(
+            jsonData["offsetMin"][0].get<float>(),
+            jsonData["offsetMin"][1].get<float>()
+        );
+        d.paddingMax = Vector2(
+            jsonData["offsetMax"][0].get<float>(),
+            jsonData["offsetMax"][1].get<float>()
+        );
+
     }
 
     if (type == L"MeshRenderer")
@@ -699,6 +778,46 @@ void SceneLoader::LinkComponent(json& jsonData)
             compo->_animationKeys.emplace(it.key(), it.value());
         }
     }
+    if (type == L"Image")
+    {
+        auto compo = IGuid::FindObjectByGuid<ImageRenderer>(guid);
+        auto& scripts = jsonData["sprite"]["path"];
+
+        auto size = Vector2(
+            jsonData["sprite"]["size"]["width"].get<float>(),
+            jsonData["sprite"]["size"]["height"].get<float>());
+        auto spriteST = Vector4(
+            jsonData["sprite"]["uvOffset"]["u"].get<float>(),
+            jsonData["sprite"]["uvOffset"]["v"].get<float>(),
+            jsonData["sprite"]["uvSize"]["width"].get<float>(),
+			jsonData["sprite"]["uvSize"]["height"].get<float>());
+
+        auto path = std::to_wstring(scripts.get<std::string>());
+        if ((path != L""))
+        {
+            auto texture = ResourceManager::main->Load<Texture>(path, path);
+            auto sprites = GUISprite::Create(texture, { SimpleMath::Rectangle{ (int)spriteST.x,(int)spriteST.y, (int)spriteST.z, (int)spriteST.w} });
+            compo->SetSprite(sprites[0]);
+            //sprite->SetTexture(texture);
+        }
+    }
+    if (type == L"Canvas")
+    {
+        auto compo = IGuid::FindObjectByGuid<Canvas>(guid);
+        auto canvasType = jsonData["canvasType"].get<std::string>();
+        if (canvasType == "ScreenSpaceOverlay")
+			compo->type = CanvasType::Overlay;
+        //ScreenSpaceOverlay
+        auto resolution = Vector2(
+            jsonData["canvasResolution"][0].get<float>(),
+            jsonData["canvasResolution"][1].get<float>());
+		compo->resolution = resolution;
+        compo->match = jsonData["canvasMatch"].get<float>();
+
+
+    }
+
+    //Canvas
 }
 
 void SceneLoader::LinkMaterial(json& jsonData)

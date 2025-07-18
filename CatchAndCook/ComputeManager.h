@@ -129,7 +129,7 @@ private:
 	void Black(ComPtr<ID3D12GraphicsCommandList>& cmdList, int x, int y, int z);
 	void Ray(ComPtr<ID3D12GraphicsCommandList>& cmdList, int x, int y, int z);
 
-	bool _on = false;
+	bool _on = true;
 
 private:
 	GodRayParam param;
