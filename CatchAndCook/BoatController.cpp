@@ -29,7 +29,7 @@ bool BoatController::IsExecuteAble()
 void BoatController::Init()
 {
 	_camera = CameraManager::main->GetCamera(CameraType::BoatCamera);
-
+	
 }
 
 void BoatController::Start()
@@ -60,6 +60,14 @@ void BoatController::Update()
 {
 	if (_onBoard == false)
 		return;
+
+
+	float floatHeight = 0.5f;       
+	float floatSpeed = 2.0f;        
+	float yOffset = sin(Time::main->GetTime() * floatSpeed) * floatHeight;
+	Vector3 pos = GetOwner()->_transform->GetWorldPosition();
+	pos.y = _GenPos.y + yOffset;
+	GetOwner()->_transform->SetWorldPosition(pos);
 
 
 	if (Input::main->GetKeyDown(KeyCode::F))

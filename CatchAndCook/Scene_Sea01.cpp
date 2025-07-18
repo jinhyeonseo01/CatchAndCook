@@ -40,7 +40,7 @@ void Scene_Sea01::Init()
 	caustics->Init(L"../Resources/Textures/test.jpg");
 
 
-	ColliderManager::main->SetCellSize(100);
+	ColliderManager::main->SetCellSize(200);
 
 	
 
@@ -240,11 +240,11 @@ void Scene_Sea01::Init()
 void Scene_Sea01::Update()
 {
 
-	ColliderManager::main->SetCellSize(100);
+	ColliderManager::main->SetCellSize(200);
 
 	Scene::Update();
 
-	/*PathStamp::main->Run();*/
+	PathStamp::main->Run();
 }
 
 void Scene_Sea01::RenderBegin()

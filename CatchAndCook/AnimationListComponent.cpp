@@ -43,6 +43,7 @@ void AnimationListComponent::Start()
 		}
 	}
 
+
 }
 
 void AnimationListComponent::Update()

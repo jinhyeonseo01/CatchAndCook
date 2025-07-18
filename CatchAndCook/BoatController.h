@@ -52,6 +52,8 @@ public:
 	static float  _yaw;
 	static float _pitch;
 	static float _roll;
+
+
 	
 	vec3 _right{};
 private:
