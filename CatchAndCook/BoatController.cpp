@@ -60,15 +60,17 @@ void BoatController::Start()
 
 void BoatController::Update()
 {
-	if (_onBoard == false)
-		return;
-
 	if (auto transform = GetOwner()->_transform)
 	{
 		vec3 pos = transform->GetWorldPosition();
 		pos.y = WaterController::GetWaveHeight(pos, _seaParam);
 		transform->SetWorldPosition(pos);
 	}
+
+	if (_onBoard == false)
+		return;
+
+
 
 	if (Input::main->GetKeyDown(KeyCode::F))
 	{
