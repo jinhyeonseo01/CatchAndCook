@@ -60,6 +60,8 @@ void Texture::Init(const wstring& path, TextureType type, bool relativePath, boo
 
     _isAlpha = !IsTextureFullyOpaque(_image, _image.GetMetadata());
     vector<D3D12_SUBRESOURCE_DATA> subResources;
+	
+    SetSize(Vector2(_image.GetMetadata().width, _image.GetMetadata().height));
 
     ThrowIfFailed(PrepareUpload(Core::main->GetDevice().Get(),
         _image.GetImages(),
@@ -193,6 +195,7 @@ void Texture::Init(vector<wstring>& paths)
         scratchImages[i] = std::move(tmpImage);
     }
     _isAlpha = !IsTextureFullyOpaque(scratchImages, firstMeta);
+    SetSize(Vector2(firstMeta.width, firstMeta.height));
 
     // 이제 firstMeta에 공통 스펙이 들어있다고 가정
     const UINT texWidth = (UINT)firstMeta.width;
@@ -318,6 +321,8 @@ void Texture::CreateStaticTexture(DXGI_FORMAT format, D3D12_RESOURCE_STATES init
     _jump = jump;
     _detphShared = detphShared;
     _clearValue = clearValue;
+
+    SetSize(Vector2(width, height));
 
     D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Tex2D(format, width, height);
     desc.MipLevels = 1;
@@ -517,6 +522,8 @@ void Texture::CreateDynamicTexture(DXGI_FORMAT format, uint32 width, uint32 heig
     desc.SampleDesc.Count = 1;
     desc.SampleDesc.Quality = 0;
     desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+
+    SetSize(Vector2(width, height));
 
     auto& device  = Core::main->GetDevice();
     //GPU Memory

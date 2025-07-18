@@ -14,6 +14,19 @@ struct alignas(16) TransformParam
 	Vector3 worldPos; p1(0);
 };
 
+struct alignas(16) RectTransformParam
+{
+	Matrix localToWorld;
+	Matrix worldToLocal;
+	Vector3 worldPos; p1(0);
+	Matrix normalizeToLocal;
+};
+
+struct alignas(16) GUISpriteParam
+{
+	Vector4 GUISprite_offsetSize;
+};
+
 struct BoneParam
 {
 	Matrix boneMatrixs[256];

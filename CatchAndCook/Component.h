@@ -42,4 +42,6 @@ public:
 private:
 	int _order = 0;
 	std::weak_ptr<GameObject> _owner;
+
+	friend class RectTransform;
 };
