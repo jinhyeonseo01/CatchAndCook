@@ -11,10 +11,10 @@
 #include "ParticleManager.h"
 COMPONENT(BoatController)
 
-float BoatController::heightOffset=15.0f;
-float BoatController::SpringArmLength=30.0f;
+float BoatController::heightOffset=11.0f;
+float BoatController::SpringArmLength=18.0f;
 float  BoatController::_yaw=0.0f;
-float BoatController::_pitch=0.0f;
+float BoatController::_pitch=21.0f;
 float BoatController::_roll=0.0f;
 
 BoatController::~BoatController()

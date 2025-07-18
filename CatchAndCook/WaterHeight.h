@@ -23,14 +23,14 @@ public:
     virtual void SetDestroy() override;
     virtual void Destroy();
 
-    float GetWaveHeight(float x,float z,float time);
-    void  SetOffset(float offset) {_offset =offset;}
+    float GetWaveHeight(const vec3& worldPos);
+
 
 private:
     SeaParam* _seaParam;
 
 
-    float _offset=-3.0f;
+
 
 
 };
