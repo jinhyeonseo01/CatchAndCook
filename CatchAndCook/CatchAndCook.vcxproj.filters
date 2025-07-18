@@ -434,9 +434,24 @@
     <ClCompile Include="BilboardComponent.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
-    <ClCompile Include="GUISprite.cpp" />
-    <ClCompile Include="RectTransform.cpp" />
-    <ClCompile Include="ImageRenderer.cpp" />
+    <ClCompile Include="UILookUp.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="RectTransform.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageRenderer.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GUISprite.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="FoodShopObject.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Canvas.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -820,9 +835,24 @@
     <ClInclude Include="BilboardComponent.h">
       <Filter>03.Component</Filter>
     </ClInclude>
-    <ClInclude Include="GUISprite.h" />
-    <ClInclude Include="RectTransform.h" />
-    <ClInclude Include="ImageRenderer.h" />
+    <ClInclude Include="UILookUp.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="RectTransform.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageRenderer.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GUISprite.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="FoodShopObject.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Canvas.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath_LH.inl">
@@ -1053,9 +1083,11 @@
     <FxCompile Include="..\Resources\Shaders\SpriteProgressCycle.hlsl">
       <Filter>998.HLSL\Graphics\KSH</Filter>
     </FxCompile>
-    <FxCompile Include="..\Resources\Shaders\TestTransparent_Total.hlsl" />
     <FxCompile Include="..\Resources\Shaders\GUISpriteShader.hlsl">
       <Filter>998.HLSL\Graphics\JIN</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\TestTransparent_Total.hlsl">
+      <Filter>998.HLSL\Module</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
