@@ -9,6 +9,7 @@
 #include "Animation.h"
 #include "PlayerController.h"
 #include "ParticleManager.h"
+#include "WaterController.h"
 COMPONENT(BoatController)
 
 float BoatController::heightOffset=11.0f;
@@ -29,7 +30,7 @@ bool BoatController::IsExecuteAble()
 void BoatController::Init()
 {
 	_camera = CameraManager::main->GetCamera(CameraType::BoatCamera);
-	
+
 }
 
 void BoatController::Start()
@@ -53,6 +54,7 @@ void BoatController::Start()
 
 	_GenPos = GetOwner()->_transform->GetWorldPosition();
 	_GenRotate = GetOwner()->_transform->GetWorldRotation();
+	_seaParam = &SceneManager::main->GetCurrentScene()->Find(L"sea")->GetComponent<WaterController>()->_seaParam;
 
 }
 
@@ -61,14 +63,12 @@ void BoatController::Update()
 	if (_onBoard == false)
 		return;
 
-
-	float floatHeight = 0.5f;       
-	float floatSpeed = 2.0f;        
-	float yOffset = sin(Time::main->GetTime() * floatSpeed) * floatHeight;
-	Vector3 pos = GetOwner()->_transform->GetWorldPosition();
-	pos.y = _GenPos.y + yOffset;
-	GetOwner()->_transform->SetWorldPosition(pos);
-
+	if (auto transform = GetOwner()->_transform)
+	{
+		vec3 pos = transform->GetWorldPosition();
+		pos.y = WaterController::GetWaveHeight(pos, _seaParam);
+		transform->SetWorldPosition(pos);
+	}
 
 	if (Input::main->GetKeyDown(KeyCode::F))
 	{
@@ -111,7 +111,6 @@ void BoatController::Update()
 
 		_camera->SetCameraPos(GetOwner()->_transform->GetWorldPosition() - GetOwner()->_transform->GetForward() * SpringArmLength + vec3(0, heightOffset, 0));
 		_camera->SetCameraRotation(quat);
-		//CameraManager::main->Setting();
 	}
 
 	else

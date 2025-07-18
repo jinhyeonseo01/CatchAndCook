@@ -40,9 +40,9 @@ public:
 private:
 	void DivingSequnce();
 
+	SeaParam* _seaParam;
 	Sequnce _seq = Sequnce::Driving;
 	Quaternion CalCulateYawPitchRoll();
-
 	vec3		_GenPos{};
 	Quaternion  _GenRotate{};
 

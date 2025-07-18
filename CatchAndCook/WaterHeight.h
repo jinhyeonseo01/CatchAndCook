@@ -23,15 +23,8 @@ public:
     virtual void SetDestroy() override;
     virtual void Destroy();
 
-    float GetWaveHeight(const vec3& worldPos);
-
-
 private:
     SeaParam* _seaParam;
-
-
-
-
 
 };
 
