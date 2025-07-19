@@ -20,6 +20,7 @@ struct alignas(16) RectTransformParam
 	Matrix worldToLocal;
 	Vector3 worldPos; p1(0);
 	Matrix normalizeToLocal;
+	Matrix overlayMatrix;
 };
 
 struct alignas(16) GUISpriteParam

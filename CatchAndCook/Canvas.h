@@ -27,8 +27,9 @@ public:
 	void SetDestroy() override;
 	void Destroy() override;
 
+	Matrix GetOverlayMatrix();
 
-	CanvasType type = CanvasType::Overlay; // Overlay, World
+	CanvasType type = CanvasType::World; // Overlay, World
 	Vector2 resolution = Vector2(1920, 1080); // 화면 해상도
 	float match = 0.0;
 };

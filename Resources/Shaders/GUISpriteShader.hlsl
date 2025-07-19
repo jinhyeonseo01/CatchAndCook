@@ -9,6 +9,7 @@ cbuffer RectTransformParam : register(b7)
     float3 RectWorldPosition;
     float padding_Rect_1;
     row_major matrix RectNormalizeToLocal;
+    row_major matrix RectOverlayMatrix;
 };
 
 cbuffer GUISpriteParam : register(b6)
@@ -39,11 +40,17 @@ VS_OUT VS_Main(VS_IN input)
 {
     VS_OUT output = (VS_OUT) 0;
     
-    float4 pos = TransformLocalToWorld(float4(input.pos.xyz, 1), mul(RectNormalizeToLocal, RectLocalToWorldMatrix));
+    //float4 pos = TransformLocalToWorld(float4(input.pos.xyz, 1), mul(RectNormalizeToLocal, RectLocalToWorldMatrix));
     //float4 pos = TransformLocalToWorld(float4(input.pos.xyz, 1), RectLocalToWorldMatrix);
     //localToWorld
     //output.pos = float4(pos.xy * float2(2, -2) + float2(-1, 1), g_pos.z, 1);
+#ifdef Overlay
+    float4 pos = TransformLocalToWorld(float4(input.pos.xyz, 1), mul(RectNormalizeToLocal, RectLocalToWorldMatrix));
+    output.pos = mul(pos, RectOverlayMatrix);
+#else
+    float4 pos = TransformLocalToWorld(float4(input.pos.xyz, 1), mul(RectNormalizeToLocal, RectLocalToWorldMatrix));
     output.pos = TransformWorldToClip(pos);
+#endif
 
     
     //output.uv = input.uv * tex_scale + tex_offset;

@@ -1,6 +1,9 @@
 ﻿#include "pch.h"
 #include "Canvas.h"
 
+#include "Camera.h"
+#include "CameraManager.h"
+
 Canvas::~Canvas()
 {
 }
@@ -78,4 +81,13 @@ void Canvas::SetDestroy()
 void Canvas::Destroy()
 {
 	Component::Destroy();
+}
+
+Matrix Canvas::GetOverlayMatrix()
+{
+	float nears = CameraManager::main->GetActiveCamera()->GetCameraParams().cameraFrustumData.z;
+	Matrix overlayMatrix = Matrix::CreateTranslation(Vector3(0, 0, nears))
+		* Matrix::CreateTranslation(Vector3(-resolution.x / 2, -resolution.y / 2, 0))
+		* Matrix::CreateScale(Vector3(2 / resolution.x, 2 / resolution.y, 1));
+	return overlayMatrix;
 }

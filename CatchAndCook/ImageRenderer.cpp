@@ -1,5 +1,7 @@
 ﻿#include "pch.h"
 #include "ImageRenderer.h"
+
+#include "Canvas.h"
 #include "MeshRenderer.h"
 #include "RectTransform.h"
 
@@ -37,7 +39,19 @@ void ImageRenderer::Init()
 void ImageRenderer::Start()
 {
 	Component::Start();
-
+	if (auto canvas = GetOwner()->GetComponentWithParents<Canvas>())
+	{
+		if (canvas->type == CanvasType::Overlay)
+		{
+			_material->SetShader(ResourceManager::main->Get<Shader>(L"GUISpriteShader_Overlay"));
+			_material->SetPass(RENDER_PASS::Transparent);
+		}
+		else
+		{
+			_material->SetShader(ResourceManager::main->Get<Shader>(L"GUISpriteShader"));
+			_material->SetPass(RENDER_PASS::Transparent);
+		}
+	}
 }
 
 void ImageRenderer::Update()
