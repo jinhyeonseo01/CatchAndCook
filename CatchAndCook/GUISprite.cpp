@@ -69,10 +69,6 @@ Vector4 GUISprite::GetST()
 	Vector2 rectOffset = Vector2(_rectSize.x, _rectSize.y);
 	Vector2 rectSize = Vector2(_rectSize.width, _rectSize.height);
 
-	std::cout << to_string(texSize) << "\n";
-	std::cout << to_string(rectOffset) << "\n";
-	std::cout << to_string(rectSize) << "\n\n";
-
 	Vector2 scale = rectSize / texSize;
 	Vector2 ofs = rectOffset / texSize;
 	//std::cout << to_string(Vector4(scale.x, scale.y, ofs.x, 1 - (ofs.y + scale.y))) << "\n";

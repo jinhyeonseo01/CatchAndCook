@@ -1,9 +1,12 @@
 ﻿#include "pch.h"
 #include "ItemBox.h"
 
+#include "Canvas.h"
 
 
 COMPONENT(ItemBox)
+
+shared_ptr<ItemBox> ItemBox::main = nullptr;
 
 ItemBox::~ItemBox()
 {
@@ -17,6 +20,7 @@ bool ItemBox::IsExecuteAble()
 void ItemBox::Init()
 {
 	Component::Init();
+	ItemBox::main = GetCast<ItemBox>();
 }
 
 void ItemBox::Start()
@@ -34,6 +38,27 @@ void ItemBox::Start()
 void ItemBox::Update()
 {
 	Component::Update();
+	if (Input::main->GetMouseDown(KeyCode::LeftMouse))
+	{
+		if (auto canvas = GetOwner()->GetComponentWithParents<Canvas>())
+		{
+			//auto rt = GetOwner()->GetComponent<RectTransform>();
+			if (canvas->type == CanvasType::Overlay)
+			{
+				auto pos = canvas->GetScreenToCanvasPos(Input::main->GetMousePosition());
+				//rt->;
+			}
+		}
+	}
+	for (int i = 0; i < _slots.size(); i++)
+	{
+		if (Input::main->GetMouseDown(KeyCode::Num1 + i))
+		{
+			_slots[i]->SetActiveSelf(true);
+			_exit->SetActiveSelf(false);
+			break;
+		}
+	}
 }
 
 void ItemBox::Update2()
@@ -89,4 +114,5 @@ void ItemBox::SetDestroy()
 void ItemBox::Destroy()
 {
 	Component::Destroy();
+	ItemBox::main = nullptr;
 }

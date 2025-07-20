@@ -27,6 +27,8 @@ public:
 	void SetDestroy() override;
 	void Destroy() override;
 
+	Vector2 GetScreenToCanvasPos(const Vector2& screenPos);
+
 	Matrix GetOverlayMatrix();
 
 	CanvasType type = CanvasType::World; // Overlay, World

@@ -4,6 +4,8 @@
 class ItemBox : public Component
 {
 public:
+	static shared_ptr<ItemBox> main;
+
 	bool _enable = false;
 
 	std::vector<std::shared_ptr<GameObject>> _slots;

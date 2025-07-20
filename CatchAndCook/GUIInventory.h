@@ -4,7 +4,10 @@
 class GUIInventory : public Component
 {
 public:
+	static shared_ptr<GUIInventory> main;
 	std::vector<std::shared_ptr<GameObject>> _slots;
+
+	int selectIndex = 0;
 
 	~GUIInventory() override;
 	bool IsExecuteAble() override;

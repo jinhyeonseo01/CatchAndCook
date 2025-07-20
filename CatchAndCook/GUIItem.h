@@ -4,7 +4,7 @@
 class ItemData
 {
 public:
-	int itemCode = 1;
+	int itemCode = 2;
 	int itemCookType = 1;
 	ItemData() = default;
 };

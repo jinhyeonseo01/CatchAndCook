@@ -26,6 +26,7 @@ void Canvas::Start()
 void Canvas::Update()
 {
 	Component::Update();
+
 }
 
 void Canvas::Update2()
@@ -81,6 +82,13 @@ void Canvas::SetDestroy()
 void Canvas::Destroy()
 {
 	Component::Destroy();
+}
+
+Vector2 Canvas::GetScreenToCanvasPos(const Vector2& screenPos)
+{
+	Vector2 normPos = (Input::main->GetMousePosition() / Vector2(WINDOW_WIDTH, WINDOW_HEIGHT));
+	normPos.y = 1 - normPos.y;
+	return normPos * resolution;
 }
 
 Matrix Canvas::GetOverlayMatrix()

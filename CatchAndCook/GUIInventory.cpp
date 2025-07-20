@@ -1,9 +1,12 @@
 ﻿#include "pch.h"
 #include "GUIInventory.h"
 
+#include "ItemBox.h"
 
 
 COMPONENT(GUIInventory)
+
+shared_ptr<GUIInventory> GUIInventory::main = nullptr;
 
 GUIInventory::~GUIInventory()
 {
@@ -17,6 +20,7 @@ bool GUIInventory::IsExecuteAble()
 void GUIInventory::Init()
 {
 	Component::Init();
+	GUIInventory::main = GetCast<GUIInventory>();
 }
 
 void GUIInventory::Start()
@@ -34,26 +38,26 @@ void GUIInventory::Update()
 	Component::Update();
 
 	std::shared_ptr<GameObject> selected;
-	int selectedIndex = -1;
 	for (int i = 0; i < _slots.size(); i++)
 	{
 		if (Input::main->GetKeyDown(KeyCode::Num1 + i))
 		{
-			selected = _slots[i]->GetChildByName(L"Selected");
-			if (selected)
-			{
-				selectedIndex = i;
-				break;
-			}
+			selectIndex = i;
+			break;
 		}
 	}
-	if (selectedIndex != -1)
+	if (selectIndex != -1)
 	{
 		for (int i = 0; i < _slots.size(); i++)
-			if (selectedIndex == i)
+			if (selectIndex == i)
 				_slots[i]->GetChildByName(L"Selected")->SetActiveSelf(true);
 			else
 				_slots[i]->GetChildByName(L"Selected")->SetActiveSelf(false);
+	}
+
+	if (Input::main->GetKeyDown(KeyCode::I))
+	{
+		ItemBox::main->GetOwner()->SetActiveSelf(!ItemBox::main->GetOwner()->GetActiveSelf());
 	}
 }
 
@@ -110,4 +114,5 @@ void GUIInventory::SetDestroy()
 void GUIInventory::Destroy()
 {
 	Component::Destroy();
+	GUIInventory::main = nullptr;
 }
