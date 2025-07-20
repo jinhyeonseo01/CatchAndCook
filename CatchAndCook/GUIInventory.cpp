@@ -25,8 +25,7 @@ void GUIInventory::Start()
 	for (int i=0;i<4;i++)
 	{
 		wstring name = L"Slot_" + to_wstring(i);
-		_slots.push_back(GetOwner()->GetScene()->Find(name));
-		std::cout << to_string(name) << "\n";
+		_slots.push_back(GetOwner()->GetChildByName(name));
 	}
 }
 

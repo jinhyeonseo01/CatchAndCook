@@ -1,12 +1,24 @@
 ﻿#pragma once
 
 
-class GUIInventory : public Component
+class ItemData
 {
 public:
-	std::vector<std::shared_ptr<GameObject>> _slots;
+	int itemCode = 1;
+	int itemCookType = 1;
+	ItemData() = default;
+};
 
-	~GUIInventory() override;
+
+class GUIItem : public Component
+{
+public:
+	std::vector<std::shared_ptr<GameObject>> _itemIcons;
+	std::vector<std::shared_ptr<GameObject>> _effectIcons;
+
+	ItemData _itemData;
+
+	~GUIItem() override;
 	bool IsExecuteAble() override;
 	void Init() override;
 	void Start() override;

@@ -128,7 +128,7 @@ float4 PS_Main(VS_OUT input) : SV_TARGET
     float4 texColor = _BaseMap.Sample(sampler_lerp, input.uv);
     
     //return texColor * input.color;
-    return pow(texColor, 0.55);
+    return texColor;
     //return float4(0,0,0,1);
 }
 

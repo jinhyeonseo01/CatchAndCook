@@ -195,6 +195,7 @@
     <ClCompile Include="GeoMetryHelper.cpp" />
     <ClCompile Include="Gizmo.cpp" />
     <ClCompile Include="GUIInventory.cpp" />
+    <ClCompile Include="GUIItem.cpp" />
     <ClCompile Include="GUISprite.cpp" />
     <ClCompile Include="ICBufferInjector.cpp" />
     <ClCompile Include="Component.cpp" />
@@ -221,6 +222,7 @@
     <ClCompile Include="InstancingManager.cpp" />
     <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Item.cpp" />
+    <ClCompile Include="ItemBox.cpp" />
     <ClCompile Include="IType.cpp" />
     <ClCompile Include="IUnit.cpp" />
     <ClCompile Include="LightComponent.cpp" />
@@ -343,6 +345,7 @@
     <ClInclude Include="GeoMetryHelper.h" />
     <ClInclude Include="Gizmo.h" />
     <ClInclude Include="GUIInventory.h" />
+    <ClInclude Include="GUIItem.h" />
     <ClInclude Include="GUISprite.h" />
     <ClInclude Include="ICBufferInjector.h" />
     <ClInclude Include="Component.h" />
@@ -372,6 +375,7 @@
     <ClInclude Include="InstancingManager.h" />
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />
+    <ClInclude Include="ItemBox.h" />
     <ClInclude Include="IType.h" />
     <ClInclude Include="IUnit.h" />
     <ClInclude Include="LightComponent.h" />

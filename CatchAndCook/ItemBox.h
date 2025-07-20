@@ -1,12 +1,16 @@
 ﻿#pragma once
 
 
-class GUIInventory : public Component
+class ItemBox : public Component
 {
 public:
-	std::vector<std::shared_ptr<GameObject>> _slots;
+	bool _enable = false;
 
-	~GUIInventory() override;
+	std::vector<std::shared_ptr<GameObject>> _slots;
+	std::shared_ptr<GameObject> _exit;
+
+
+	~ItemBox() override;
 	bool IsExecuteAble() override;
 	void Init() override;
 	void Start() override;

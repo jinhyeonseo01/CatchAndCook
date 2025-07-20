@@ -52,7 +52,6 @@ void ImageRenderer::Start()
 			_material->SetPass(RENDER_PASS::Transparent);
 		}
 	}
-	std::cout << "start" << "\n";
 }
 
 void ImageRenderer::Update()
