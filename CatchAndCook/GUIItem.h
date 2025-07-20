@@ -4,9 +4,15 @@
 class ItemData
 {
 public:
-	int itemCode = 2;
-	int itemCookType = 1;
+	int itemCode = -1;
+	int itemCookType = -1;
 	ItemData() = default;
+
+	void Clear()
+	{
+		itemCode = -1;
+		itemCookType = -1;
+	}
 };
 
 
@@ -17,6 +23,10 @@ public:
 	std::vector<std::shared_ptr<GameObject>> _effectIcons;
 
 	ItemData _itemData;
+
+	bool PushItemData(const ItemData& itemData);
+	ItemData PopItemData();
+	ItemData GetItemData();
 
 	~GUIItem() override;
 	bool IsExecuteAble() override;

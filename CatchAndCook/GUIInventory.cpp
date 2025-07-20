@@ -8,6 +8,56 @@ COMPONENT(GUIInventory)
 
 shared_ptr<GUIInventory> GUIInventory::main = nullptr;
 
+int GUIInventory::HasEmptySlot()
+{
+	for (int i=0;i<InventoryCount;i++)
+		if (_itemList[i].itemCode == -1)
+			return i;
+	return -1;
+}
+
+bool GUIInventory::PushItemData(const ItemData& itemData)
+{
+	for (int i = 0; i < InventoryCount; i++)
+	{
+		if (_itemList[i].itemCode == -1)
+		{
+			_itemList[i] = itemData;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool GUIInventory::SetItemData(const ItemData& itemData, int index)
+{
+	_itemList[index] = itemData;
+	return true;
+}
+
+ItemData GUIInventory::PopItemDataIndex(int index)
+{
+	auto temp = _itemList[index];
+	if (index < 0 || index >= InventoryCount)
+		return ItemData();
+	_itemList[index].Clear();
+	return temp;
+}
+
+void GUIInventory::SlotUpdate()
+{
+	for (int i = 0; i < _slots.size(); i++)
+	{
+		if (auto item = _slots[i]->GetComponent<GUIItem>())
+		{
+			item->PopItemData();
+			if (i < _itemList.size())
+				item->PushItemData(_itemList[i]);
+		}
+	}
+
+}
+
 GUIInventory::~GUIInventory()
 {
 }
@@ -26,7 +76,7 @@ void GUIInventory::Init()
 void GUIInventory::Start()
 {
 	Component::Start();
-	for (int i=0;i<4;i++)
+	for (int i=0;i< InventoryCount;i++)
 	{
 		wstring name = L"Slot_" + to_wstring(i);
 		_slots.push_back(GetOwner()->GetChildByName(name));
@@ -36,6 +86,8 @@ void GUIInventory::Start()
 void GUIInventory::Update()
 {
 	Component::Update();
+
+	SlotUpdate();
 
 	std::shared_ptr<GameObject> selected;
 	for (int i = 0; i < _slots.size(); i++)

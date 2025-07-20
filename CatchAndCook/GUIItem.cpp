@@ -4,6 +4,26 @@
 
 COMPONENT(GUIItem)
 
+
+
+bool GUIItem::PushItemData(const ItemData& itemData)
+{
+	_itemData = itemData;
+	return true;
+}
+
+ItemData GUIItem::PopItemData()
+{
+	ItemData temp = _itemData;
+	_itemData.Clear();
+	return temp;
+}
+
+ItemData GUIItem::GetItemData()
+{
+	return _itemData;
+}
+
 GUIItem::~GUIItem()
 {
 }

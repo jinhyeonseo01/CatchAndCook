@@ -245,6 +245,36 @@ void RectTransform::SetData(StructuredBuffer* buffer, Material* material)
 	Transform::SetData(buffer, material);
 }
 
+bool RectTransform::IsBoundCanvasPos(const Vector2& pos)
+{
+    Vector2 min = Vector2::Transform(_computedRect.relativeRect.min, _computedRect.worldMatrix);
+    Vector2 max = Vector2::Transform(_computedRect.relativeRect.max, _computedRect.worldMatrix);
+
+    if (pos.x >= min.x &&
+        pos.y >= min.y &&
+        pos.x <= max.x &&
+        pos.y <= max.y)
+    {
+
+        return true;
+    }
+
+    return false;
+}
+
+bool RectTransform::IsBoundScreenPos(const Vector2& pos)
+{
+    if (auto canvas = GetOwner()->GetComponentWithParents<Canvas>())
+    {
+        if (canvas->type == CanvasType::Overlay)
+        {
+            return IsBoundCanvasPos(canvas->GetScreenToCanvasPos(pos));
+        }
+    }
+    return false;
+}
+
+
 ComputedRect RectTransform::ComputeTransform(const shared_ptr<Transform>& transform, const ComputedRect& parent)
 {
 	ComputedRect current;

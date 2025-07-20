@@ -67,7 +67,7 @@ void FoodShopObject::CollisionBegin(const std::shared_ptr<Collider>& collider, c
 			if (auto target = GetOwner()->GetScene()->Find(L"CookUI_BeginText"))
 			{
 				target->SetActiveSelf(true);
-				target->_transform->SetWorldPosition(GetOwner()->_transform->GetLocalPosition() + Vector3::Up * 1.55);
+				target->_transform->SetWorldPosition(GetOwner()->_transform->GetLocalPosition() + Vector3::Up * 1.65);
 			}
 		}
 	}

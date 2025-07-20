@@ -1,13 +1,24 @@
 ﻿#pragma once
+#include "GUIItem.h"
 
 
 class GUIInventory : public Component
 {
 public:
+	static constexpr int InventoryCount = 4;
 	static shared_ptr<GUIInventory> main;
 	std::vector<std::shared_ptr<GameObject>> _slots;
 
+	std::array<ItemData, InventoryCount> _itemList;
+
 	int selectIndex = 0;
+
+	int HasEmptySlot();
+
+	bool PushItemData(const ItemData& itemData);
+	bool SetItemData(const ItemData& itemData, int index);
+	ItemData PopItemDataIndex(int index);
+	void SlotUpdate();
 
 	~GUIInventory() override;
 	bool IsExecuteAble() override;

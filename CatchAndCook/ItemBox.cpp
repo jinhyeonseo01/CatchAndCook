@@ -2,11 +2,38 @@
 #include "ItemBox.h"
 
 #include "Canvas.h"
+#include "GUIInventory.h"
+#include "RectTransform.h"
 
 
 COMPONENT(ItemBox)
 
 shared_ptr<ItemBox> ItemBox::main = nullptr;
+
+
+bool ItemBox::AddItemData(const ItemData& itemData)
+{
+	if (_itemList.size() < _slots.size())
+	{
+		_itemList.push_back(itemData);
+		return true;
+	}
+	return false;
+}
+
+ItemData ItemBox::GetItemDataIndex(int index)
+{
+	return _itemList[index];
+}
+
+bool ItemBox::RemoveItemDataIndex(int index)
+{
+	if (_itemList.size() <= index)
+		return false;
+	_itemList.erase(_itemList.begin() + index);
+	return true;
+}
+
 
 ItemBox::~ItemBox()
 {
@@ -21,44 +48,119 @@ void ItemBox::Init()
 {
 	Component::Init();
 	ItemBox::main = GetCast<ItemBox>();
+
 }
 
 void ItemBox::Start()
 {
 	Component::Start();
-	for (int i = 0; i < 4; i++)
+	int i = 0;
+	while (auto slot = GetOwner()->GetChildByName(L"Slot_" + to_wstring(i)))
 	{
-		wstring name = L"Slot_" + to_wstring(i);
-		_slots.push_back(GetOwner()->GetChildByName(name));
+		_slots.push_back(slot);
+		i++;
 	}
 	_exit = GetOwner()->GetChildByName(L"Exit");
+
+
+	ItemData itemData;
+
+	itemData.itemCode = 0;
+	itemData.itemCookType = -1;
+	AddItemData(itemData);
+
+	itemData.itemCode = 1;
+	itemData.itemCookType = -1;
+	AddItemData(itemData);
+	itemData.itemCode = 2;
+	itemData.itemCookType = 0;
+	AddItemData(itemData);
+
+}
+
+void ItemBox::SlotUpdate()
+{
+	//아이템 갱신//_selectedIndex
+	for (int i = 0; i < _slots.size(); i++)
+	{
+		if (auto item = _slots[i]->GetComponent<GUIItem>())
+		{
+			item->PopItemData();
+			if (_itemList.size() > i)
+				item->PushItemData(_itemList[i]);
+		}
+	}
 
 }
 
 void ItemBox::Update()
 {
 	Component::Update();
+
+	SlotUpdate();
+
+	Vector2 mousePos;
+
+	if (auto canvas = GetOwner()->GetComponentWithParents<Canvas>())
+		if (canvas->type == CanvasType::Overlay)
+			mousePos = canvas->GetScreenToCanvasPos(Input::main->GetMousePosition());
+
 	if (Input::main->GetMouseDown(KeyCode::LeftMouse))
 	{
-		if (auto canvas = GetOwner()->GetComponentWithParents<Canvas>())
+
+		if (auto exitObj = GetOwner()->GetChildByName(L"Exit"))
 		{
-			//auto rt = GetOwner()->GetComponent<RectTransform>();
-			if (canvas->type == CanvasType::Overlay)
+			if (exitObj->GetComponent<RectTransform>()->IsBoundScreenPos(Input::main->GetMousePosition()))
 			{
-				auto pos = canvas->GetScreenToCanvasPos(Input::main->GetMousePosition());
-				//rt->;
+				GetOwner()->SetActiveSelf(false);
 			}
 		}
 	}
-	for (int i = 0; i < _slots.size(); i++)
+
+	for (int i =0; i < _slots.size(); i++)
 	{
-		if (Input::main->GetMouseDown(KeyCode::Num1 + i))
+		auto slot = _slots[i];
+		auto rt = slot->GetComponent<RectTransform>();
+		if (Input::main->GetMouseDown(KeyCode::LeftMouse) && rt->IsBoundCanvasPos(mousePos)) // 아이템 선택
 		{
-			_slots[i]->SetActiveSelf(true);
-			_exit->SetActiveSelf(false);
-			break;
+			if (i < _itemList.size())
+			{
+				_selectedItemData = slot->GetComponent<GUIItem>()->GetItemData();
+				_selectedIndex = i;//_slots
+				std::cout << "push\n";
+			}
+		}
+
+		if (Input::main->GetMouseUp(KeyCode::LeftMouse) && rt->IsBoundCanvasPos(mousePos))
+		{
+			std::cout << "pop\n";
+			if (_selectedIndex != -1)
+			{
+				if (_selectedIndex == i)
+				{
+					if (GUIInventory::main)
+					{
+						//먼저 인벤토리에 칸 남는지 체크
+						if (GUIInventory::main->HasEmptySlot() != -1)
+						{
+							//아이템을 인벤토리로
+							RemoveItemDataIndex(i);
+							GUIInventory::main->PushItemData(_selectedItemData);
+						}
+					}
+				}
+				else
+				{
+					if (i < _itemList.size()) // 스왑
+						std::swap(_itemList[i], _itemList[_selectedIndex]);
+				}
+			}
+
+			_selectedItemData.Clear();
+			_selectedIndex = -1;
 		}
 	}
+
 }
 
 void ItemBox::Update2()
