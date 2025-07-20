@@ -271,7 +271,7 @@ void ResourceManager::CreateDefaultShaderKSH()
 		info.cullingType = CullingType::NONE;
 
 		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->SetPass(RENDER_PASS::Transparent);
+		shader->SetPass(RENDER_PASS::UI2);
 		shader->SetMacro({ {"Overlay",nullptr} });
 		shader->Init(L"GUISpriteShader.hlsl", StaticProp, ShaderArg{}, info);
 		Add<Shader>(L"GUISpriteShader_Overlay", shader);

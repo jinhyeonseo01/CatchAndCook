@@ -44,7 +44,7 @@ void ImageRenderer::Start()
 		if (canvas->type == CanvasType::Overlay)
 		{
 			_material->SetShader(ResourceManager::main->Get<Shader>(L"GUISpriteShader_Overlay"));
-			_material->SetPass(RENDER_PASS::Transparent);
+			_material->SetPass(RENDER_PASS::UI2);
 		}
 		else
 		{
@@ -132,7 +132,7 @@ void ImageRenderer::SetData(Material* material)
 		//auto a = rect->_computedRect.absoluteRect.max - rect->_computedRect.absoluteRect.min;
 		param.GUISprite_targetSize = rect->_computedRect.absoluteRect.max - rect->_computedRect.absoluteRect.min;
 		//param.GUISprite_targetSize = Vector2(10000, 10000);
-		std::cout << to_string(param.GUISprite_targetSize) << "\n";
+		//std::cout << to_string(param.GUISprite_targetSize) << "\n";
 	}
 	// 메시라면 월드→픽셀 환산치
 	memcpy(_rectCBuffer->ptr, &param, sizeof(param));
