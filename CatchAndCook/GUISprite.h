@@ -9,6 +9,7 @@ class GUISprite
 public:
 	std::shared_ptr<Texture> texture;
 	DirectX::SimpleMath::Rectangle _rectSize;
+	Vector4 _border;
 
 	void SetTexture(const std::shared_ptr<Texture>& texture);
 	std::shared_ptr<Texture> GetTexture();
@@ -18,4 +19,5 @@ public:
 
 	DirectX::SimpleMath::Rectangle CalculateRect(const Vector2 offset, const Vector2& size);
 	DirectX::SimpleMath::Vector4 GetST();
+	DirectX::SimpleMath::Vector4 GetBorder();
 };

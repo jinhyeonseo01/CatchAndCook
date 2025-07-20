@@ -26,6 +26,9 @@ struct alignas(16) RectTransformParam
 struct alignas(16) GUISpriteParam
 {
 	Vector4 GUISprite_offsetSize;
+	Vector4 GUISprite_border;      // ← 새 필드
+	Vector2 GUISprite_targetSize;
+	p2(0);
 };
 
 struct BoneParam
