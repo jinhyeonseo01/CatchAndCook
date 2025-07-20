@@ -34,6 +34,16 @@ bool ItemBox::RemoveItemDataIndex(int index)
 	return true;
 }
 
+int ItemBox::HasEmptySlot()
+{
+	for (int i = 0; i < _slots.size(); i++)
+	{
+		if (i >= _itemList.size() || _itemList[i].itemCode == -1)
+			return i;
+	}
+	return -1;
+}
+
 
 ItemBox::~ItemBox()
 {

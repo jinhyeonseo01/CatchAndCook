@@ -17,6 +17,8 @@ public:
 	ItemData _selectedItemData;
 	int _selectedIndex = -1;
 
+	int HasEmptySlot();
+
 	bool AddItemData(const ItemData& itemData);
 	ItemData GetItemDataIndex(int index);
 	bool RemoveItemDataIndex(int index);
@@ -39,5 +41,7 @@ public:
 	void ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene) override;
 	void SetDestroy() override;
 	void Destroy() override;
+
 };
+
 

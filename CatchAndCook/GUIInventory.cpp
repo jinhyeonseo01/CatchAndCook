@@ -1,7 +1,9 @@
 ﻿#include "pch.h"
 #include "GUIInventory.h"
 
+#include "Canvas.h"
 #include "ItemBox.h"
+#include "RectTransform.h"
 
 
 COMPONENT(GUIInventory)
@@ -106,6 +108,33 @@ void GUIInventory::Update()
 			else
 				_slots[i]->GetChildByName(L"Selected")->SetActiveSelf(false);
 	}
+
+
+
+	Vector2 mousePos;
+
+	if (auto canvas = GetOwner()->GetComponentWithParents<Canvas>())
+		if (canvas->type == CanvasType::Overlay)
+			mousePos = canvas->GetScreenToCanvasPos(Input::main->GetMousePosition());
+
+	for (int i = 0; i < _itemList.size(); i++)
+	{
+		auto slot = _slots[i];
+		auto rt = slot->GetComponent<RectTransform>();
+		if (Input::main->GetMouseDown(KeyCode::LeftMouse) && rt->IsBoundCanvasPos(mousePos)) // 아이템 선택
+		{
+			if (_itemList[i].itemCode != -1 && ItemBox::main)
+			{
+				//먼저 인벤토리에 칸 남는지 체크
+				if (ItemBox::main->HasEmptySlot() != -1)
+				{
+					//아이템을 인벤토리로
+					ItemBox::main->AddItemData(PopItemDataIndex(i));
+				}
+			}
+		}
+	}
+
 
 	if (Input::main->GetKeyDown(KeyCode::I))
 	{
