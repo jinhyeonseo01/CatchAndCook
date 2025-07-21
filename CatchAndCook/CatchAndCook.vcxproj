@@ -231,7 +231,6 @@
     <ClCompile Include="input_module.cpp" />
     <ClCompile Include="InstancingManager.cpp" />
     <ClCompile Include="Inventory.cpp" />
-    <ClCompile Include="Item.cpp" />
     <ClCompile Include="GUIItemBox.cpp" />
     <ClCompile Include="IType.cpp" />
     <ClCompile Include="IUnit.cpp" />
@@ -400,7 +399,6 @@
     <ClInclude Include="input_module.h" />
     <ClInclude Include="InstancingManager.h" />
     <ClInclude Include="Inventory.h" />
-    <ClInclude Include="Item.h" />
     <ClInclude Include="GUIItemBox.h" />
     <ClInclude Include="IType.h" />
     <ClInclude Include="IUnit.h" />
