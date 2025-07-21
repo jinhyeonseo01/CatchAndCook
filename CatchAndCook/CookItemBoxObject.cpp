@@ -2,7 +2,7 @@
 #include "CookItemBoxObject.h"
 
 #include "Collider.h"
-#include "ItemBox.h"
+#include "GUIItemBox.h"
 #include "PhysicsComponent.h"
 #include "Transform.h"
 
@@ -36,9 +36,9 @@ void CookItemBoxObject::Update()
 	{
 		if (Input::main->GetKeyDown(KeyCode::E))
 		{
-			if (ItemBox::main)
+			if (GUIItemBox::main)
 			{
-				ItemBox::main->GetOwner()->SetActiveSelf(true);
+				GUIItemBox::main->GetOwner()->SetActiveSelf(true);
 			}
 		}
 	}

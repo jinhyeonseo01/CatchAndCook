@@ -1,17 +1,17 @@
 ﻿#include "pch.h"
-#include "ItemBox.h"
+#include "GUIItemBox.h"
 
 #include "Canvas.h"
 #include "GUIInventory.h"
 #include "RectTransform.h"
 
 
-COMPONENT(ItemBox)
+COMPONENT(GUIItemBox)
 
-shared_ptr<ItemBox> ItemBox::main = nullptr;
+shared_ptr<GUIItemBox> GUIItemBox::main = nullptr;
 
 
-bool ItemBox::AddItemData(const ItemData& itemData)
+bool GUIItemBox::AddItemData(const ItemData& itemData)
 {
 	if (_itemList.size() < _slots.size())
 	{
@@ -21,12 +21,12 @@ bool ItemBox::AddItemData(const ItemData& itemData)
 	return false;
 }
 
-ItemData ItemBox::GetItemDataIndex(int index)
+ItemData GUIItemBox::GetItemDataIndex(int index)
 {
 	return _itemList[index];
 }
 
-bool ItemBox::RemoveItemDataIndex(int index)
+bool GUIItemBox::RemoveItemDataIndex(int index)
 {
 	if (_itemList.size() <= index)
 		return false;
@@ -34,7 +34,7 @@ bool ItemBox::RemoveItemDataIndex(int index)
 	return true;
 }
 
-int ItemBox::HasEmptySlot()
+int GUIItemBox::HasEmptySlot()
 {
 	for (int i = 0; i < _slots.size(); i++)
 	{
@@ -45,23 +45,23 @@ int ItemBox::HasEmptySlot()
 }
 
 
-ItemBox::~ItemBox()
+GUIItemBox::~GUIItemBox()
 {
 }
 
-bool ItemBox::IsExecuteAble()
+bool GUIItemBox::IsExecuteAble()
 {
 	return Component::IsExecuteAble();
 }
 
-void ItemBox::Init()
+void GUIItemBox::Init()
 {
 	Component::Init();
-	ItemBox::main = GetCast<ItemBox>();
+	GUIItemBox::main = GetCast<GUIItemBox>();
 
 }
 
-void ItemBox::Start()
+void GUIItemBox::Start()
 {
 	Component::Start();
 	int i = 0;
@@ -88,7 +88,7 @@ void ItemBox::Start()
 
 }
 
-void ItemBox::SlotUpdate()
+void GUIItemBox::SlotUpdate()
 {
 	//아이템 갱신//_selectedIndex
 	for (int i = 0; i < _slots.size(); i++)
@@ -103,7 +103,7 @@ void ItemBox::SlotUpdate()
 
 }
 
-void ItemBox::Update()
+void GUIItemBox::Update()
 {
 	Component::Update();
 
@@ -173,60 +173,60 @@ void ItemBox::Update()
 
 }
 
-void ItemBox::Update2()
+void GUIItemBox::Update2()
 {
 	Component::Update2();
 }
 
-void ItemBox::Enable()
+void GUIItemBox::Enable()
 {
 	Component::Enable();
 	Input::main->SetMouseLock(false);
 }
 
-void ItemBox::Disable()
+void GUIItemBox::Disable()
 {
 	Component::Disable();
 	Input::main->SetMouseLock(true);
 }
 
-void ItemBox::RenderBegin()
+void GUIItemBox::RenderBegin()
 {
 	Component::RenderBegin();
 }
 
-void ItemBox::RenderEnd()
+void GUIItemBox::RenderEnd()
 {
 	Component::RenderEnd();
 }
 
-void ItemBox::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
+void GUIItemBox::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
 {
 	Component::CollisionBegin(collider, other);
 }
 
-void ItemBox::CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
+void GUIItemBox::CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
 {
 	Component::CollisionEnd(collider, other);
 }
 
-void ItemBox::ChangeParent(const std::shared_ptr<GameObject>& prev, const std::shared_ptr<GameObject>& current)
+void GUIItemBox::ChangeParent(const std::shared_ptr<GameObject>& prev, const std::shared_ptr<GameObject>& current)
 {
 	Component::ChangeParent(prev, current);
 }
 
-void ItemBox::ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene)
+void GUIItemBox::ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene)
 {
 	Component::ChangeScene(currentScene, nextScene);
 }
 
-void ItemBox::SetDestroy()
+void GUIItemBox::SetDestroy()
 {
 	Component::SetDestroy();
 }
 
-void ItemBox::Destroy()
+void GUIItemBox::Destroy()
 {
 	Component::Destroy();
-	ItemBox::main = nullptr;
+	GUIItemBox::main = nullptr;
 }

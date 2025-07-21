@@ -2,7 +2,7 @@
 #include "GUIInventory.h"
 
 #include "Canvas.h"
-#include "ItemBox.h"
+#include "GUIItemBox.h"
 #include "RectTransform.h"
 
 
@@ -128,13 +128,13 @@ void GUIInventory::Update()
 		auto rt = slot->GetComponent<RectTransform>();
 		if (Input::main->GetMouseDown(KeyCode::LeftMouse) && rt->IsBoundCanvasPos(mousePos)) // 아이템 선택
 		{
-			if (_itemList[i].itemCode != -1 && ItemBox::main)
+			if (_itemList[i].itemCode != -1 && GUIItemBox::main)
 			{
 				//먼저 인벤토리에 칸 남는지 체크
-				if (ItemBox::main->HasEmptySlot() != -1)
+				if (GUIItemBox::main->HasEmptySlot() != -1)
 				{
 					//아이템을 인벤토리로
-					ItemBox::main->AddItemData(PopItemDataIndex(i));
+					GUIItemBox::main->AddItemData(PopItemDataIndex(i));
 				}
 			}
 		}
@@ -143,7 +143,7 @@ void GUIInventory::Update()
 
 	if (Input::main->GetKeyDown(KeyCode::I))
 	{
-		ItemBox::main->GetOwner()->SetActiveSelf(!ItemBox::main->GetOwner()->GetActiveSelf());
+		GUIItemBox::main->GetOwner()->SetActiveSelf(!GUIItemBox::main->GetOwner()->GetActiveSelf());
 	}
 }
 

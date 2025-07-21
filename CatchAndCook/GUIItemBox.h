@@ -2,10 +2,10 @@
 #include "GUIItem.h"
 
 
-class ItemBox : public Component
+class GUIItemBox : public Component
 {
 public:
-	static shared_ptr<ItemBox> main;
+	static shared_ptr<GUIItemBox> main;
 
 	bool _enable = false;
 
@@ -25,7 +25,7 @@ public:
 
 	void SlotUpdate();
 
-	~ItemBox() override;
+	~GUIItemBox() override;
 	bool IsExecuteAble() override;
 	void Init() override;
 	void Start() override;

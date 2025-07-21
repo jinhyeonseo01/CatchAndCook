@@ -223,7 +223,7 @@
     <ClCompile Include="InstancingManager.cpp" />
     <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Item.cpp" />
-    <ClCompile Include="ItemBox.cpp" />
+    <ClCompile Include="GUIItemBox.cpp" />
     <ClCompile Include="IType.cpp" />
     <ClCompile Include="IUnit.cpp" />
     <ClCompile Include="LightComponent.cpp" />
@@ -377,7 +377,7 @@
     <ClInclude Include="InstancingManager.h" />
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />
-    <ClInclude Include="ItemBox.h" />
+    <ClInclude Include="GUIItemBox.h" />
     <ClInclude Include="IType.h" />
     <ClInclude Include="IUnit.h" />
     <ClInclude Include="LightComponent.h" />
