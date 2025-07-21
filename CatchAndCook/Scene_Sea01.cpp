@@ -121,7 +121,7 @@ void Scene_Sea01::Init()
 		light->position = vec3(2121.213f, -1818.f, 3134.0f);*/
 
 		
-		light->direction = vec3(0.121f, -0.181f, -0.612f);
+		light->direction = vec3(0.121f, -0.03f, -0.612f);
 		light->position = vec3(0, 303.f, 298.f);
 	
 		light->direction.Normalize();
