@@ -107,7 +107,7 @@ void BoatController::Update()
 
 		if (ray.isHit)
 		{
-			float penetrationBuffer = 0.2f;
+			float penetrationBuffer = 0.4f;
 			GetOwner()->_transform->SetLocalPosition(GetOwner()->_transform->GetLocalPosition() + ray.normal * penetrationBuffer);
 		}
 

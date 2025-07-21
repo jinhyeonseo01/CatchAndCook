@@ -38,8 +38,8 @@ void GameObject::Init()
 
 void GameObject::Start()
 {
-    //if (_active_total)
-    //{
+    if (_active_total)
+    {
         for (size_t i = 0; i < _components.size(); ++i) {
             auto component = _components[i];
             if (component->_first) {
@@ -47,7 +47,7 @@ void GameObject::Start()
                 component->_first = false;
             }
         }
-    /*}*/
+    }
 }
 
 void GameObject::Update()
