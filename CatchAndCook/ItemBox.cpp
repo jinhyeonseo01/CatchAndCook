@@ -181,11 +181,13 @@ void ItemBox::Update2()
 void ItemBox::Enable()
 {
 	Component::Enable();
+	Input::main->SetMouseLock(false);
 }
 
 void ItemBox::Disable()
 {
 	Component::Disable();
+	Input::main->SetMouseLock(true);
 }
 
 void ItemBox::RenderBegin()

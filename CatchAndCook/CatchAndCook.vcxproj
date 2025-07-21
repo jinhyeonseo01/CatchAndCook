@@ -190,7 +190,8 @@
     <ClCompile Include="convert_assimp.cpp" />
     <ClCompile Include="EffectComponent.cpp" />
     <ClCompile Include="FishMonster.cpp" />
-    <ClCompile Include="FoodShopObject.cpp" />
+    <ClCompile Include="CookObject.cpp" />
+    <ClCompile Include="CookItemBoxObject.cpp" />
     <ClCompile Include="GameObjectSetting.cpp" />
     <ClCompile Include="GeoMetryHelper.cpp" />
     <ClCompile Include="Gizmo.cpp" />
@@ -340,7 +341,8 @@
     <ClInclude Include="convert_directx.h" />
     <ClInclude Include="EffectComponent.h" />
     <ClInclude Include="FishMonster.h" />
-    <ClInclude Include="FoodShopObject.h" />
+    <ClInclude Include="CookObject.h" />
+    <ClInclude Include="CookItemBoxObject.h" />
     <ClInclude Include="GameObjectSetting.h" />
     <ClInclude Include="GeoMetryHelper.h" />
     <ClInclude Include="Gizmo.h" />

@@ -1,9 +1,14 @@
 ﻿#pragma once
 
-class FoodShopObject : public Component
+class CookObject : public Component
 {
 public:
-	~FoodShopObject() override;
+	shared_ptr<GameObject> selectedUI;
+
+	int cookType = 0;
+	bool onTrigger = false;
+
+	~CookObject() override;
 	bool IsExecuteAble() override;
 	void Init() override;
 	void Start() override;
