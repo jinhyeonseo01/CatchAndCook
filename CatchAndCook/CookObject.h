@@ -1,12 +1,19 @@
 ﻿#pragma once
+#include "GUIItem.h"
 
 class CookObject : public Component
 {
 public:
 	shared_ptr<GameObject> selectedUI;
 
+	ItemData ownItemData;
+
 	int cookType = 0;
 	bool onTrigger = false;
+
+	bool HasOwnItem();
+	bool PushItemData(const ItemData& item);
+	ItemData PopItemData();
 
 	~CookObject() override;
 	bool IsExecuteAble() override;

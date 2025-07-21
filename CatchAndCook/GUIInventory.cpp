@@ -37,6 +37,11 @@ bool GUIInventory::SetItemData(const ItemData& itemData, int index)
 	return true;
 }
 
+ItemData GUIInventory::GetItemDataIndex(int index)
+{
+	return _itemList[index];
+}
+
 ItemData GUIInventory::PopItemDataIndex(int index)
 {
 	auto temp = _itemList[index];

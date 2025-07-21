@@ -17,6 +17,7 @@ public:
 
 	bool PushItemData(const ItemData& itemData);
 	bool SetItemData(const ItemData& itemData, int index);
+	ItemData GetItemDataIndex(int index);
 	ItemData PopItemDataIndex(int index);
 	void SlotUpdate();
 

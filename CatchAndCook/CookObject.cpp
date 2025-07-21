@@ -2,10 +2,34 @@
 #include "CookObject.h"
 
 #include "Collider.h"
+#include "GUIInventory.h"
+#include "Item.h"
 #include "PhysicsComponent.h"
 #include "Transform.h"
 
 COMPONENT(CookObject)
+
+bool CookObject::HasOwnItem()
+{
+	return ownItemData.itemCode != -1;
+}
+
+bool CookObject::PushItemData(const ItemData& item)
+{
+	if (ownItemData.itemCode == -1)
+	{
+		ownItemData = item;
+		return true;
+	}
+	return false;
+}
+
+ItemData CookObject::PopItemData()
+{
+	ItemData temp = ownItemData;
+	ownItemData.Clear();
+	return temp;
+}
 
 CookObject::~CookObject()
 {
@@ -41,14 +65,16 @@ void CookObject::Update()
 				for (auto& ui : cookUIs)
 					if (ui->GetActiveSelf() == false)
 						selectedUI = ui;
-				if (selectedUI)
+				if (selectedUI && GUIInventory::main && GUIInventory::main->GetItemDataIndex(GUIInventory::main->selectIndex).itemCode != -1
+					&& !HasOwnItem())
 				{
 					if (auto target = GetOwner()->GetScene()->Find(L"CookUI_BeginText"))
 						target->SetActiveSelf(false);
 
+					PushItemData(GUIInventory::main->PopItemDataIndex(GUIInventory::main->selectIndex));
 
 					selectedUI->SetActiveSelf(true);
-					selectedUI->_transform->SetWorldPosition(GetOwner()->_transform->GetLocalPosition() + Vector3::Up * 1.65);
+					selectedUI->_transform->SetWorldPosition(GetOwner()->_transform->GetLocalPosition() + Vector3::Up * 1.75);
 					cookType = 1;
 				}
 			}
