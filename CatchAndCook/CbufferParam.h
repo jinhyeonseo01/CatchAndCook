@@ -20,11 +20,15 @@ struct alignas(16) RectTransformParam
 	Matrix worldToLocal;
 	Vector3 worldPos; p1(0);
 	Matrix normalizeToLocal;
+	Matrix overlayMatrix;
 };
 
 struct alignas(16) GUISpriteParam
 {
 	Vector4 GUISprite_offsetSize;
+	Vector4 GUISprite_border;      // ← 새 필드
+	Vector2 GUISprite_targetSize;
+	p2(0);
 };
 
 struct BoneParam

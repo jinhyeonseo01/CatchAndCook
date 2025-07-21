@@ -182,6 +182,10 @@ void Scene::Rendering()
         UiPass(cmdList);
     Profiler::Fin();
 
+    Profiler::Set("PASS : UI2", BlockTag::CPU);
+    Ui2Pass(cmdList);
+    Profiler::Fin();
+
 }
 
 
@@ -417,6 +421,58 @@ void Scene::UiPass(ComPtr<ID3D12GraphicsCommandList>& cmdList)
             }
         }
     }
+}
+
+void Scene::Ui2Pass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList)
+{
+    { // Forward
+        auto& targets = _passObjects[RENDER_PASS::ToIndex(RENDER_PASS::UI2)];
+
+        std::vector<RenderObjectStrucutre> vec;
+        vec.reserve(2048);
+        for (auto& [shader, vec2] : targets)
+            vec.insert(vec.end(), vec2.begin(), vec2.end());
+
+        Vector3 cameraPos = CameraManager::main->GetActiveCamera()->GetCameraPos();
+        Vector3 cameraDir = CameraManager::main->GetActiveCamera()->GetCameraLook();
+
+        auto tangentDistanceSquared = [&](const Vector3& center) -> float {
+            Vector3 offset = center - cameraPos;
+            float projection = offset.Dot(cameraDir);
+            return offset.LengthSquared() - projection * projection;
+            };
+
+        std::ranges::sort(vec, [&](const RenderObjectStrucutre& a, const RenderObjectStrucutre& b) {
+            if (a.renderer->order == b.renderer->order)
+                return (tangentDistanceSquared(a.renderer->GetBound().Center) < tangentDistanceSquared(b.renderer->GetBound().Center));
+            return a.renderer->order < b.renderer->order;
+            });
+
+        Shader* prevShader = nullptr;
+        for (auto& ele : vec)
+        {
+            Shader* shader = ele.material->GetShader().get();
+            if (shader != nullptr && shader != prevShader)
+                cmdList->SetPipelineState(shader->_pipelineState.Get());
+
+            g_debug_forward_count++;
+
+            if (ele.renderer->IsCulling() == true)
+            {
+                if (CameraManager::main->GetActiveCamera()->IsInFrustum(ele.renderer->GetBound()) == false)
+                {
+                    g_debug_forward_culling_count++;
+                    continue;
+                }
+            }
+
+            SettingPrevData(ele, RENDER_PASS::PASS::UI2);
+            InstancingManager::main->RenderNoInstancing(ele);
+
+            prevShader = shader;
+        }
+    }
+
 };
 
 void Scene::FinalRender(ComPtr<ID3D12GraphicsCommandList>& cmdList)

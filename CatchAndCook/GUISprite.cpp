@@ -62,7 +62,7 @@ DirectX::SimpleMath::Rectangle GUISprite::CalculateRect(const Vector2 offset, co
 }
 
 
-DirectX::SimpleMath::Vector4 GUISprite::GetST()
+Vector4 GUISprite::GetST()
 {
 	auto size = texture->GetSize();
 	Vector2 texSize = size;
@@ -74,6 +74,19 @@ DirectX::SimpleMath::Vector4 GUISprite::GetST()
 	//std::cout << to_string(Vector4(scale.x, scale.y, ofs.x, 1 - (ofs.y + scale.y))) << "\n";
 	// vector4 에 담기
 	return Vector4(scale.x, scale.y, ofs.x, 1 - (ofs.y + scale.y));
+}
+
+DirectX::SimpleMath::Vector4 GUISprite::GetBorder()
+{
+	auto size = texture->GetSize();
+	Vector2 texSize = size;
+	Vector2 rectOffset = Vector2(_rectSize.x, _rectSize.y);
+	Vector2 rectSize = Vector2(_rectSize.width, _rectSize.height);
+	return Vector4(
+		_border.x,
+		_border.y,
+		_border.z,
+		_border.w);
 }
 
 //uv min max,

@@ -1,16 +1,31 @@
 ﻿#pragma once
+#include "GUIItem.h"
 
 
-enum class CanvasType : int
-{
-	Overlay,
-	World
-};
-
-class Canvas : public Component
+class GUIItemBox : public Component
 {
 public:
-	~Canvas() override;
+	static shared_ptr<GUIItemBox> main;
+
+	bool _enable = false;
+
+	std::vector<ItemData> _itemList;
+
+	std::vector<std::shared_ptr<GameObject>> _slots;
+	std::shared_ptr<GameObject> _exit;
+
+	ItemData _selectedItemData;
+	int _selectedIndex = -1;
+
+	int HasEmptySlot();
+
+	bool AddItemData(const ItemData& itemData);
+	ItemData GetItemDataIndex(int index);
+	bool RemoveItemDataIndex(int index);
+
+	void SlotUpdate();
+
+	~GUIItemBox() override;
 	bool IsExecuteAble() override;
 	void Init() override;
 	void Start() override;
@@ -27,12 +42,6 @@ public:
 	void SetDestroy() override;
 	void Destroy() override;
 
-	Vector2 GetScreenToCanvasPos(const Vector2& screenPos);
-
-	Matrix GetOverlayMatrix();
-
-	CanvasType type = CanvasType::World; // Overlay, World
-	Vector2 resolution = Vector2(1920, 1080); // 화면 해상도
-	float match = 0.0;
 };
+
 

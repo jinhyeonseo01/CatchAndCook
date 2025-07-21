@@ -56,6 +56,9 @@ public:
 	bool IsExecuteAble() override;
 	void SetData(StructuredBuffer* buffer, Material* material) override;
 
+	bool IsBoundCanvasPos(const Vector2& pos);
+	bool IsBoundScreenPos(const Vector2& pos);
+
 	ComputedRect ComputeRectTransform(const ComputedRect& parent);
 	static ComputedRect ComputeTransform(const shared_ptr<Transform>& transform, const ComputedRect& parent);
 	static void TopDownCompute(const shared_ptr<Transform>& transform, const ComputedRect& parent);

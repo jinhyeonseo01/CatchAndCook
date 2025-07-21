@@ -45,6 +45,20 @@ void RectTransform::Start()
 	Transform::Start();
     if (auto renderer = GetOwner()->GetComponent<MeshRenderer>())
         renderer->AddCbufferSetter(GetCast<RectTransform>());
+
+    if (auto canvas = GetOwner()->GetComponent<Canvas>())
+    {
+        if (canvas->type == CanvasType::Overlay)
+        {
+            std::cout << to_string(_rectTransformData.rectSize) << "A\n";
+            std::cout << to_string(canvas->resolution) << "A\n";
+
+			_rectTransformData.rectSize = canvas->resolution;
+			_rectTransformData.pivot = Vector2(0.5f, 0.5f);
+            SetLocalPosition(Vector3(canvas->resolution.x/2, canvas->resolution.y/2, 0));
+            SetLocalScale(Vector3(1, 1, 1));
+        }
+    }
 }
 
 void RectTransform::Update()
@@ -73,19 +87,7 @@ void RectTransform::Update2()
     else
     {
         _computedRect = ComputeRectTransform({});
-        if (auto canvas = GetOwner()->GetComponent<Canvas>())
-        {
-            
-			//_computedRect.worldMatrix =
-            //Matrix::CreateTranslation(Vector3(0,0,1))
-            //CameraManager::main->GetActiveCamera()->_params.InvertViewMatrix
-			//* Matrix::CreateScale(Vector3(1/canvas->resolution.x, 1 / canvas->resolution.y, 0))
-        	//* _computedRect.worldMatrix;
-        	
-	        //canvas->
-        }
     }
-
 
     //auto worldPos = Vector3::Transform(Vector3::Zero, _computedRect.worldMatrix);
 
@@ -146,18 +148,24 @@ shared_ptr<RectTransform> RectTransform::ChangeTransToRectTrans(const shared_ptr
 
 void RectTransform::SetData(Material* material)
 {
-    auto min = _computedRect.relativeRect.min;
-    auto max = _computedRect.relativeRect.max;
-    Vector3 bl(min.x, min.y, 0.0f); // Bottom-Left
-    Vector3 tl(min.x, max.y, 0.0f); // Top-Left
-    Vector3 tr(max.x, max.y, 0.0f); // Top-Right
-    Vector3 br(max.x, min.y, 0.0f); // Bottom-Right
-    Vector3 pos(0, 0, 0); // Bottom-Right
-    Vector3::Transform(bl, _computedRect.worldMatrix, bl);
-    Vector3::Transform(tl, _computedRect.worldMatrix, tl);
-    Vector3::Transform(tr, _computedRect.worldMatrix, tr);
-    Vector3::Transform(br, _computedRect.worldMatrix, br);
-    Vector3::Transform(pos, _computedRect.worldMatrix, pos);
+    //auto min = _computedRect.relativeRect.min;
+    //auto max = _computedRect.relativeRect.max;
+    //Vector3 bl(min.x, min.y, 0.0f); // Bottom-Left
+    //Vector3 tl(min.x, max.y, 0.0f); // Top-Left
+    //Vector3 tr(max.x, max.y, 0.0f); // Top-Right
+    //Vector3 br(max.x, min.y, 0.0f); // Bottom-Right
+    //Vector3 pos(0, 0, 0); // Bottom-Right
+    //Vector3::Transform(bl, _computedRect.worldMatrix, bl);
+    //Vector3::Transform(tl, _computedRect.worldMatrix, tl);
+    //Vector3::Transform(tr, _computedRect.worldMatrix, tr);
+    //Vector3::Transform(br, _computedRect.worldMatrix, br);
+    //Vector3::Transform(pos, _computedRect.worldMatrix, pos);
+
+    Matrix overlay;
+    if (auto canvas = GetOwner()->GetComponentWithParents<Canvas>())
+    {
+        overlay = canvas->GetOverlayMatrix();
+    }
 
 
     auto _rectCBuffer = Core::main->GetBufferManager()->GetBufferPool(BufferType::RectTransformParam)->Alloc(1);
@@ -166,6 +174,7 @@ void RectTransform::SetData(Material* material)
 	rectParam.worldToLocal = _computedRect.worldMatrix.Invert();
     rectParam.normalizeToLocal = _computedRect.rectTranslateMatrix;
 	rectParam.worldPos = Vector3::Transform(Vector3::Zero, _computedRect.worldMatrix);
+    rectParam.overlayMatrix = overlay;
     memcpy(_rectCBuffer->ptr, &rectParam, sizeof(rectParam));
 
     int index = material->GetShader()->GetRegisterIndex("RectTransformParam");
@@ -235,6 +244,36 @@ void RectTransform::SetData(StructuredBuffer* buffer, Material* material)
 {
 	Transform::SetData(buffer, material);
 }
+
+bool RectTransform::IsBoundCanvasPos(const Vector2& pos)
+{
+    Vector2 min = Vector2::Transform(_computedRect.relativeRect.min, _computedRect.worldMatrix);
+    Vector2 max = Vector2::Transform(_computedRect.relativeRect.max, _computedRect.worldMatrix);
+
+    if (pos.x >= min.x &&
+        pos.y >= min.y &&
+        pos.x <= max.x &&
+        pos.y <= max.y)
+    {
+
+        return true;
+    }
+
+    return false;
+}
+
+bool RectTransform::IsBoundScreenPos(const Vector2& pos)
+{
+    if (auto canvas = GetOwner()->GetComponentWithParents<Canvas>())
+    {
+        if (canvas->type == CanvasType::Overlay)
+        {
+            return IsBoundCanvasPos(canvas->GetScreenToCanvasPos(pos));
+        }
+    }
+    return false;
+}
+
 
 ComputedRect RectTransform::ComputeTransform(const shared_ptr<Transform>& transform, const ComputedRect& parent)
 {

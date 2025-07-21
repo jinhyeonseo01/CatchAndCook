@@ -1,5 +1,7 @@
 ﻿#include "pch.h"
 #include "ImageRenderer.h"
+
+#include "Canvas.h"
 #include "MeshRenderer.h"
 #include "RectTransform.h"
 
@@ -37,7 +39,19 @@ void ImageRenderer::Init()
 void ImageRenderer::Start()
 {
 	Component::Start();
-
+	if (auto canvas = GetOwner()->GetComponentWithParents<Canvas>())
+	{
+		if (canvas->type == CanvasType::Overlay)
+		{
+			_material->SetShader(ResourceManager::main->Get<Shader>(L"GUISpriteShader_Overlay"));
+			_material->SetPass(RENDER_PASS::UI2);
+		}
+		else
+		{
+			_material->SetShader(ResourceManager::main->Get<Shader>(L"GUISpriteShader"));
+			_material->SetPass(RENDER_PASS::Transparent);
+		}
+	}
 }
 
 void ImageRenderer::Update()
@@ -112,6 +126,15 @@ void ImageRenderer::SetData(Material* material)
 	GUISpriteParam param;
 	//param
 	param.GUISprite_offsetSize = _sprite->GetST();
+	param.GUISprite_border = _sprite->GetBorder();             // 그대로 픽셀 단위로 전송
+	if (auto rect = GetOwner()->GetComponent<RectTransform>())
+	{
+		//auto a = rect->_computedRect.absoluteRect.max - rect->_computedRect.absoluteRect.min;
+		param.GUISprite_targetSize = rect->_computedRect.absoluteRect.max - rect->_computedRect.absoluteRect.min;
+		//param.GUISprite_targetSize = Vector2(10000, 10000);
+		//std::cout << to_string(param.GUISprite_targetSize) << "\n";
+	}
+	// 메시라면 월드→픽셀 환산치
 	memcpy(_rectCBuffer->ptr, &param, sizeof(param));
 
 	int index = material->GetShader()->GetRegisterIndex("GUISpriteParam");

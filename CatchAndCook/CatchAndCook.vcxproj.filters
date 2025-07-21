@@ -434,24 +434,6 @@
     <ClCompile Include="BilboardComponent.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
-    <ClCompile Include="UILookUp.cpp">
-      <Filter>03.Component</Filter>
-    </ClCompile>
-    <ClCompile Include="RectTransform.cpp">
-      <Filter>03.Component</Filter>
-    </ClCompile>
-    <ClCompile Include="ImageRenderer.cpp">
-      <Filter>03.Component</Filter>
-    </ClCompile>
-    <ClCompile Include="GUISprite.cpp">
-      <Filter>03.Component</Filter>
-    </ClCompile>
-    <ClCompile Include="FoodShopObject.cpp">
-      <Filter>03.Component</Filter>
-    </ClCompile>
-    <ClCompile Include="Canvas.cpp">
-      <Filter>03.Component</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -835,24 +817,6 @@
     <ClInclude Include="BilboardComponent.h">
       <Filter>03.Component</Filter>
     </ClInclude>
-    <ClInclude Include="UILookUp.h">
-      <Filter>03.Component</Filter>
-    </ClInclude>
-    <ClInclude Include="RectTransform.h">
-      <Filter>03.Component</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageRenderer.h">
-      <Filter>03.Component</Filter>
-    </ClInclude>
-    <ClInclude Include="GUISprite.h">
-      <Filter>03.Component</Filter>
-    </ClInclude>
-    <ClInclude Include="FoodShopObject.h">
-      <Filter>03.Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Canvas.h">
-      <Filter>03.Component</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath_LH.inl">
@@ -1083,14 +1047,11 @@
     <FxCompile Include="..\Resources\Shaders\SpriteProgressCycle.hlsl">
       <Filter>998.HLSL\Graphics\KSH</Filter>
     </FxCompile>
-    <FxCompile Include="..\Resources\Shaders\GUISpriteShader.hlsl">
-      <Filter>998.HLSL\Graphics\JIN</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Resources\Shaders\TestTransparent_Total.hlsl">
-      <Filter>998.HLSL\Module</Filter>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\Direct12-Project-Scene\Assets\Models\Objects\Sea\Terrian_Seed\New Folder\2023-11-23T113343Z.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
     <FxCompile Include="..\Resources\Shaders\WaterShader.hlsl">
       <Filter>998.HLSL\Graphics\JIN</Filter>
     </FxCompile>

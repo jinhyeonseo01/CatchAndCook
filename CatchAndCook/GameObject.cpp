@@ -448,6 +448,8 @@ void GameObject::ActiveUpdateChain(bool active_total)
 
     if (CheckActiveUpdated()) 
     {
+        if (GetActive())
+            SceneManager::main->GetCurrentScene()->AddStartQueue(GetCast<GameObject>());
         for (auto& element : _components) 
         {
             if (GetActive()) element->Enable();

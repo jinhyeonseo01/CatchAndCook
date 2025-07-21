@@ -1,16 +1,34 @@
 ﻿#pragma once
 
 
-enum class CanvasType : int
-{
-	Overlay,
-	World
-};
-
-class Canvas : public Component
+class ItemData
 {
 public:
-	~Canvas() override;
+	int itemCode = -1;
+	int itemCookType = -1;
+	ItemData() = default;
+
+	void Clear()
+	{
+		itemCode = -1;
+		itemCookType = -1;
+	}
+};
+
+
+class GUIItem : public Component
+{
+public:
+	std::vector<std::shared_ptr<GameObject>> _itemIcons;
+	std::vector<std::shared_ptr<GameObject>> _effectIcons;
+
+	ItemData _itemData;
+
+	bool PushItemData(const ItemData& itemData);
+	ItemData PopItemData();
+	ItemData GetItemData();
+
+	~GUIItem() override;
 	bool IsExecuteAble() override;
 	void Init() override;
 	void Start() override;
@@ -26,13 +44,5 @@ public:
 	void ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene) override;
 	void SetDestroy() override;
 	void Destroy() override;
-
-	Vector2 GetScreenToCanvasPos(const Vector2& screenPos);
-
-	Matrix GetOverlayMatrix();
-
-	CanvasType type = CanvasType::World; // Overlay, World
-	Vector2 resolution = Vector2(1920, 1080); // 화면 해상도
-	float match = 0.0;
 };
 

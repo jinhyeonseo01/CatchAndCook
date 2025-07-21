@@ -1,16 +1,21 @@
 ﻿#pragma once
+#include "GUIItem.h"
 
-
-enum class CanvasType : int
-{
-	Overlay,
-	World
-};
-
-class Canvas : public Component
+class CookObject : public Component
 {
 public:
-	~Canvas() override;
+	shared_ptr<GameObject> selectedUI;
+
+	ItemData ownItemData;
+
+	int cookType = 0;
+	bool onTrigger = false;
+
+	bool HasOwnItem();
+	bool PushItemData(const ItemData& item);
+	ItemData PopItemData();
+
+	~CookObject() override;
 	bool IsExecuteAble() override;
 	void Init() override;
 	void Start() override;
@@ -26,13 +31,5 @@ public:
 	void ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene) override;
 	void SetDestroy() override;
 	void Destroy() override;
-
-	Vector2 GetScreenToCanvasPos(const Vector2& screenPos);
-
-	Matrix GetOverlayMatrix();
-
-	CanvasType type = CanvasType::World; // Overlay, World
-	Vector2 resolution = Vector2(1920, 1080); // 화면 해상도
-	float match = 0.0;
 };
 

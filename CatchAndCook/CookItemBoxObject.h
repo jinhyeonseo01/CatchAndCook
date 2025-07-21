@@ -1,9 +1,10 @@
 ﻿#pragma once
 
-class FoodShopObject : public Component
+
+class CookItemBoxObject : public Component
 {
 public:
-	~FoodShopObject() override;
+	~CookItemBoxObject() override;
 	bool IsExecuteAble() override;
 	void Init() override;
 	void Start() override;
@@ -19,5 +20,7 @@ public:
 	void ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene) override;
 	void SetDestroy() override;
 	void Destroy() override;
+
+	bool onTrigger;
 };
 

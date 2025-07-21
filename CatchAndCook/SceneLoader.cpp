@@ -791,12 +791,19 @@ void SceneLoader::LinkComponent(json& jsonData)
             jsonData["sprite"]["uvOffset"]["v"].get<float>(),
             jsonData["sprite"]["uvSize"]["width"].get<float>(),
 			jsonData["sprite"]["uvSize"]["height"].get<float>());
+        auto border = Vector4(
+	    jsonData["sprite"]["border"]["left"].get<float>(),
+	    jsonData["sprite"]["border"]["bottom"].get<float>(),
+	    jsonData["sprite"]["border"]["right"].get<float>(),
+	    jsonData["sprite"]["border"]["top"].get<float>() );
+
 
         auto path = std::to_wstring(scripts.get<std::string>());
         if ((path != L""))
         {
             auto texture = ResourceManager::main->Load<Texture>(path, path);
             auto sprites = GUISprite::Create(texture, { SimpleMath::Rectangle{ (int)spriteST.x,(int)spriteST.y, (int)spriteST.z, (int)spriteST.w} });
+			sprites[0]->_border = border;
             compo->SetSprite(sprites[0]);
             //sprite->SetTexture(texture);
         }
