@@ -332,6 +332,7 @@ void ImguiManager::ComputeController()
             ImGui::SliderFloat("Absorption", &_scatteringData->absorption, 0.0f, 1000.0f);
             ImGui::SliderFloat("Density", &_scatteringData->density, 0.0f, 15.0f);
             ImGui::SliderFloat3("Scatter Color", &_scatteringData->scatterColor.x, 0.0f, 1.0f);
+            ImGui::SliderFloat3("direction ", &_scatteringData->direction.x, -1.0f, 1.0f);
         }
     }
 }

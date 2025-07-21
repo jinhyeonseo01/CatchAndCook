@@ -409,7 +409,7 @@ void SeaPlayerController::SetState(SeaPlayerState state)
         vec3 dir = worldFar - worldNear;
         dir.Normalize();
 
-        float maxDist = 5000.0f;
+        float maxDist = 1200.0f;
 
         auto ray = ColliderManager::main->RayCast({ worldNear, dir }, maxDist, GetOwner());
 
@@ -419,7 +419,7 @@ void SeaPlayerController::SetState(SeaPlayerState state)
             {
                 if (ray.gameObject->GetRoot()->HasTag(GameObjectTag::Monster))
                 {
-                    ParticleManager::main->GenParticle(3.0f, 200, 10.0f, 60.0f, ray.worldPos, ray.normal, ParticleMoveType::BloodUnderwater, ParticleColorType::Red, { 0,0,0,0 }
+                    ParticleManager::main->GenParticle(1.0f, 200, 4.0f, 60.0f, ray.worldPos, ray.normal, ParticleMoveType::BloodUnderwater, ParticleColorType::Red, { 0,0,0,0 }
                     , ResourceManager::main->Get<Texture>(L"bleedTexture"));
                  
                     if (auto& fishMonster =ray.gameObject->GetRoot()->GetComponent<FishMonster>())

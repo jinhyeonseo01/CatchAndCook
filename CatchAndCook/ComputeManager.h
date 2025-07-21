@@ -445,14 +445,22 @@ private:
 struct ScatteringData
 {
 	float phaseG=0.453f;
-	float absorption =3.6f;
+	//float phaseG = 0.218f;
+	float absorption =485.356f;
 	vec2 Padding;
 
-	float density=15.0f;
-	vec3 scatterColor= vec3(0,1,0.375f);
+	/*float density=15.0f;
+    vec3 scatterColor= vec3(0,1,0.375f);*/
 
-	//vec3 MainlightPos;
-	//float padding2;
+	//float density = 10.795f;
+	//vec3 scatterColor = vec3(0, 0.303f, 0.746f);
+
+	float density = 9.6f;
+	vec3 scatterColor = vec3(1.0f, 1.0f, 1.0f);
+
+	vec3 direction = vec3(0, 1, 0);
+	float padding;
+
 };
 
 class Scattering : public ComputeBase

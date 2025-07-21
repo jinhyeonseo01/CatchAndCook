@@ -23,7 +23,7 @@ void ParticleComponent::Update()
 	float fadeProgress = _currTime / _autoDestroyTime;
 	fadeProgress = std::clamp(fadeProgress, 0.0f, 1.0f);
 
-	float alpha = 0.5f * (1.0f - (fadeProgress * fadeProgress * (3.0f - 2.0f * fadeProgress)));
+	float alpha = 0.3f * (1.0f - (fadeProgress * fadeProgress * (3.0f - 2.0f * fadeProgress)));
 
 	for (int i = 0; i < 4; ++i)
 	{

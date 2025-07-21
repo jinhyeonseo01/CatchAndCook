@@ -145,6 +145,7 @@ void ParticleRenderer::Rendering(Material* material, Mesh* mesh, int instanceCou
 		{
 			cmdList->SetPipelineState(_particleRenderingShader2D->_pipelineState.Get());
 		}
+
 		auto& table = Core::main->GetBufferManager()->GetTable(); 
 		_tableContainer = table->Alloc(SRV_TABLE_REGISTER_COUNT);
 		table->CopyHandle(_tableContainer.CPUHandle, _particleComponent->GetStructuredBuffer()->GetSRVHandle(), 0);

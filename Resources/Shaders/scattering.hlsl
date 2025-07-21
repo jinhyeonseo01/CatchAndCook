@@ -41,8 +41,9 @@ cbuffer ScatterParams : register(b5)
     float density;
     float3 scatterColor;
 
-    //float3 MainlightPos;
-    //float padding2;
+
+    float3 direction;
+    float paddding54;
 };
 
 Texture2D<float4> FoggedScene : register(t0);
@@ -74,7 +75,8 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     //lightDir: 픽셀에서 빛(광원) 방향으로 향하는 단위 벡터
     
     float3 lightToPixel = normalize(mainLight.position - worldPos ); // 픽셀에서 광원으로 나가는방향
-    float3 lightDir = normalize(-mainLight.direction);  //픽셀에서 광원으로 향하는방향
+    float3 ndir =normalize(direction);
+    float3 lightDir = normalize(-ndir); //픽셀에서 광원으로 향하는방향
 
     float cosTheta = dot(lightToPixel, lightDir);
     float g2 = phaseG * phaseG;
