@@ -35,6 +35,7 @@ enum class ParticleColorType
 	Black,
 	White,
 	Red,
+	Blue,
 };
 
 class ParticleComponent : public Component 

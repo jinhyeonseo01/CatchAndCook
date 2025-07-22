@@ -22,7 +22,6 @@ public:
 	void SetDestroy() override;
 
 public:
-	void SetScreenSpace(bool b) { _screenSpace = b; }
 	void SetTexture(shared_ptr<Texture> texture) { _particleTexture = texture; }
 
 
@@ -31,12 +30,10 @@ private:
 	virtual void DebugRendering();
 
 private:
-	bool _screenSpace = false;
 	TableContainer _tableContainer{};
 
 	static shared_ptr<Shader> _particleComputeShader;
 	static shared_ptr<Shader> _particleRenderingShader;
-	static shared_ptr<Shader> _particleRenderingShader2D;
 	shared_ptr<ParticleComponent> _particleComponent;
 	shared_ptr<Texture> _particleTexture;
 

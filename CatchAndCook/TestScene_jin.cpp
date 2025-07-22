@@ -99,7 +99,7 @@ void TestScene_jin::Init()
 			auto object = SceneManager::main->GetCurrentScene()->Find(L"OnBoardEvent");
 			auto eventComponent = object->GetComponent<EventComponent>();
 			eventComponent->SetBindTag(GameObjectTag::Player);
-			eventComponent->SetBindMessage(L"Press F To Board", vec3(0.4f, 0.9f, 0.1f), vec2(0.3f, 0.3f), false);
+			eventComponent->SetBindMessage(L"Press F To Board", vec3(0.4f, 0.7f, 0.01f), vec2(0.3f, 0.3f), false);
 
 			eventComponent->BindOnCollisionBegin([=](shared_ptr<Collider>& collider)
 				{

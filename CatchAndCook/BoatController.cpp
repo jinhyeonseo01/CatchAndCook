@@ -240,21 +240,21 @@ void BoatController::DivingSequnce()
 		{
 			vec3 worldPos = pos + player->_transform->GetForward() * Time::main->GetDeltaTime() * 4.0f + vec3(0, -1, 0) * Time::main->GetDeltaTime() * 7.0f;
 			auto& currentPos = player->_transform->SetWorldPosition(worldPos);
-		/*	static bool GenParticle = false;
+			static bool GenParticle = false;
 
 			if (currentPos.y <= 45.0f)
 			{
 				if (GenParticle == false)
 				{
 					GenParticle = true;
-					ParticleManager::main->GenParticle(1.5f, 500, 1.0, player->_transform->GetWorldPosition(), ParticleMoveType::RadialSpread, ParticleColorType::Random);
+					ParticleManager::main->GenParticle(2.5f, 500, 0.2f, 20.0f, player->_transform->GetWorldPosition(), vec3(1, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Blue, vec4(1, 1, 1, 1));
 				}
-			}*/
+			}
 
 			if (currentPos.y < 35.0f)
 			{
 				_onBoard = false;
-	/*			GenParticle = false;*/
+				GenParticle = false;
 				player->GetComponent<PlayerController>()->SetOFFBoard();
 
 				GetOwner()->_transform->SetLocalPosition(_GenPos);

@@ -142,6 +142,8 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 			data.dir = vec3(0, y, 0);
 			data.velocity = speed;
 		}
+
+
 		break;
 		default:
 			break;
@@ -165,6 +167,8 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 			case ParticleColorType::Red:
 				data.color = vec3(1, 0, 0);
 				break;
+			case ParticleColorType::Blue:
+				data.color = vec3(0, 0, 1);
 			default:
 				break;
 			}
