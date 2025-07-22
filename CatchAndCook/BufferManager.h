@@ -34,7 +34,8 @@ enum class BufferType
 	HPData,
 	ParicleHelperParams,
 	ProgressCircle,
-
+	ChangeSceneData,
+	
 
 	PlayerMaterialParam,
 	InstanceOffsetParam,

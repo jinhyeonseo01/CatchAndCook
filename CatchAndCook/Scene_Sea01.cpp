@@ -268,8 +268,6 @@ void Scene_Sea01::Rendering()
 		_globalParam.caustics = 1;
 	}
 
-
-
 	auto& cmdList = Core::main->GetCmdList();
 	Core::main->GetRenderTarget()->ClearDepth();
 
@@ -308,6 +306,8 @@ void Scene_Sea01::Rendering()
 	Profiler::Set("PASS : UI", BlockTag::CPU);
 	UiPass(cmdList);
 	Profiler::Fin();
+
+	ComputeManager::main->ChangeSceneDispatch();
 }
 
 void Scene_Sea01::DebugRendering()
@@ -495,9 +495,6 @@ void Scene_Sea01::ParticlePass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>
 	}
 
 }
-
-
-
 
 
 void Scene_Sea01::UiPass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList)

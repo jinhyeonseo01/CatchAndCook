@@ -501,6 +501,45 @@ private:
 	friend class ComputeManager;
 };
 
+struct ChangeSceneData
+{
+	float toblack = 1.0f;
+	vec3 pad;
+};
+
+
+class ChangeSceneCompute : public ComputeBase
+{
+
+public:
+	ChangeSceneCompute();
+	virtual ~ChangeSceneCompute();
+
+public:
+	virtual void Init(shared_ptr<Texture>& pingTexture, shared_ptr<Texture>& pongTexture);
+	virtual void Dispatch(ComPtr<ID3D12GraphicsCommandList>& cmdList, int x, int y, int z);
+	void StartChangeScene(float speed);
+
+private:
+	virtual void DispatchBegin(ComPtr<ID3D12GraphicsCommandList>& cmdList);
+	virtual void DispatchEnd(ComPtr<ID3D12GraphicsCommandList>& cmdList);
+
+private:
+	virtual void Resize();
+
+private:
+	shared_ptr<Texture> _pingTexture;
+	shared_ptr<Texture> _pongTexture;
+	shared_ptr<Shader> _shader;
+
+	bool _on = false;
+	float _speed{};
+	ChangeSceneData _data;
+
+	friend class ComputeManager;
+};
+
+
 
 
 class ComputeManager 
@@ -513,8 +552,13 @@ public:
 	void DispatchAfterDeferred(ComPtr<ID3D12GraphicsCommandList>& cmdList);
 	void DispatchMainField(ComPtr<ID3D12GraphicsCommandList>& cmdList);
 	void Dispatch(ComPtr<ID3D12GraphicsCommandList>& cmdList);
+	void ChangeSceneDispatch();
+
 public:
 	void Resize();
+	void StartChangeScene(float speed);
+	bool IsChangeEffectEnd() { return  _changeSceneCompute->_on == false; }
+
 public:
 
 	shared_ptr<Texture> _pingTexture;
@@ -532,6 +576,7 @@ public:
 	shared_ptr<FXAA> _fxaaRender;
 	shared_ptr<DOF> _dofRender;
 	shared_ptr<Scattering> _colorGradingSea;
+	shared_ptr<ChangeSceneCompute> _changeSceneCompute;
 
 	bool _mainFieldTotalOn = true;
 	// color grading

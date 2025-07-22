@@ -186,6 +186,10 @@ void Scene::Rendering()
     Ui2Pass(cmdList);
     Profiler::Fin();
 
+    ComputeManager::main->ChangeSceneDispatch();
+
+
+
 }
 
 

@@ -244,28 +244,33 @@ void BoatController::DivingSequnce()
 
 			if (currentPos.y <= 45.0f)
 			{
+			
 				if (GenParticle == false)
 				{
 					GenParticle = true;
+					ComputeManager::main->StartChangeScene(0.5f);
 					ParticleManager::main->GenParticle(2.5f, 500, 0.2f, 20.0f, player->_transform->GetWorldPosition(), vec3(1, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Blue, vec4(1, 1, 1, 1));
 				}
+
+				if (ComputeManager::main->IsChangeEffectEnd())
+				{
+					_onBoard = false;
+					GenParticle = false;
+					player->GetComponent<PlayerController>()->SetOFFBoard();
+
+					GetOwner()->_transform->SetLocalPosition(_GenPos);
+					GetOwner()->_transform->SetLocalRotation(_GenRotate);
+
+					_seq = Sequnce::Driving;
+					up = true;
+
+					Scene::_changeScene = true;
+					CameraManager::main->SetActiveCamera(CameraType::SeaCamera);
+				}
+
 			}
 
-			if (currentPos.y < 35.0f)
-			{
-				_onBoard = false;
-				GenParticle = false;
-				player->GetComponent<PlayerController>()->SetOFFBoard();
-
-				GetOwner()->_transform->SetLocalPosition(_GenPos);
-				GetOwner()->_transform->SetLocalRotation(_GenRotate);
-
-				_seq = Sequnce::Driving;
-				up = true;
-
-				Scene::_changeScene = true;
-				CameraManager::main->SetActiveCamera(CameraType::SeaCamera);
-			}
+		
 
 		}
 
