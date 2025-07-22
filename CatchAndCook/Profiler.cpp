@@ -21,6 +21,9 @@ void Profiler::Init(HWND hParent, HINSTANCE hinstance)
 
 void Profiler::Set(const string& key, BlockTag tag)
 {
+	if (main == nullptr)
+		return;
+
 	auto [it, tf] = main->blockInfoTable.try_emplace({key,{}});
 	auto& info = it->second;
 	info.tag = tag;
@@ -33,6 +36,9 @@ void Profiler::Set(const string& key, BlockTag tag)
 
 void Profiler::Fin()
 {
+	if (main == nullptr)
+		return;
+
 	auto& info = main->blockInfoTable[main->blockStack.top()];
 	info._endTime = Time::main->GetClockNow();
 
@@ -41,6 +47,9 @@ void Profiler::Fin()
 
 void Profiler::Reset()
 {
+	if (main == nullptr)
+		return;
+
 	total._endTime = Time::main->GetClockNow();
 	
 	if (currentTotal >= (1 / _frameRate))
@@ -62,6 +71,10 @@ void Profiler::Reset()
 
 LRESULT Profiler::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	if (main == nullptr)
+		return {};
+
+
 	if(msg == WM_PAINT) {
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd,&ps);

@@ -49,6 +49,16 @@ void ImguiManager::Init()
 
 void ImguiManager::Render()
 {
+    if (Input::main->GetKeyDown(KeyCode::F5))
+    {
+        _IMGUION = !_IMGUION;
+    }
+
+    if (!_IMGUION)
+        return;
+
+
+
     ImGui_ImplDX12_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();

@@ -44,8 +44,8 @@ void Game::Init(HWND hwnd)
 
 	Input::main = make_unique<Input>();
 
-	Profiler::main = make_unique<Profiler>();
-	Profiler::main->Init(_hwnd, _hInstance);
+	//Profiler::main = make_unique<Profiler>();
+	//Profiler::main->Init(_hwnd, _hInstance);
 
 #ifdef IMGUI_ON
 	ImguiManager::main = make_unique<ImguiManager>();
