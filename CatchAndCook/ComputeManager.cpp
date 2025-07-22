@@ -1438,7 +1438,7 @@ void ChangeSceneCompute::Dispatch(ComPtr<ID3D12GraphicsCommandList>& cmdList, in
 
 	_data.toblack -= _speed * Time::main->GetDeltaTime();
 
-	if (_data.toblack < -0.2f)
+	if (_data.toblack < -0.1f)
 	{
 		_data.toblack = 1.0f;
 		_on = false;

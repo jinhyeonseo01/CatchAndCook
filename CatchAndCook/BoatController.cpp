@@ -248,7 +248,7 @@ void BoatController::DivingSequnce()
 				if (GenParticle == false)
 				{
 					GenParticle = true;
-					ComputeManager::main->StartChangeScene(0.5f);
+					ComputeManager::main->StartChangeScene(0.3f);
 					ParticleManager::main->GenParticle(2.5f, 500, 0.2f, 20.0f, player->_transform->GetWorldPosition(), vec3(1, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Blue, vec4(1, 1, 1, 1));
 				}
 

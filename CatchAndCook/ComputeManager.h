@@ -518,7 +518,6 @@ public:
 public:
 	virtual void Init(shared_ptr<Texture>& pingTexture, shared_ptr<Texture>& pongTexture);
 	virtual void Dispatch(ComPtr<ID3D12GraphicsCommandList>& cmdList, int x, int y, int z);
-	void StartChangeScene(float speed);
 
 private:
 	virtual void DispatchBegin(ComPtr<ID3D12GraphicsCommandList>& cmdList);
@@ -527,10 +526,15 @@ private:
 private:
 	virtual void Resize();
 
+public:
+    void StartChangeScene(float speed);
+
+
 private:
 	shared_ptr<Texture> _pingTexture;
 	shared_ptr<Texture> _pongTexture;
 	shared_ptr<Shader> _shader;
+
 
 	bool _on = false;
 	float _speed{};

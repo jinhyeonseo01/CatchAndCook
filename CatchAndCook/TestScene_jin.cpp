@@ -111,7 +111,7 @@ void TestScene_jin::Init()
 					eventComponent->ShowEventMessage(false);
 				});
 
-			eventComponent->BindOnUpdate([](shared_ptr<Collider>& collider)
+			eventComponent->BindOnUpdateBlock([](shared_ptr<Collider>& collider)
 				{
 					if (Input::main->GetKeyDown(KeyCode::F))
 					{

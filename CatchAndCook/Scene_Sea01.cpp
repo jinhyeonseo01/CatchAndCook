@@ -179,6 +179,7 @@ void Scene_Sea01::Init()
 		{
 			auto object = SceneManager::main->GetCurrentScene()->Find(L"EscapeEvent");
 			auto eventComponent = object->GetComponent<EventComponent>();
+			eventComponent->SetSharedState("EscapeKeyDown", make_shared<bool>(false));
 			eventComponent->SetBindTag(GameObjectTag::Player);
 			eventComponent->SetBindMessage(L"Press F To Escape", vec3(0.4f, 0.9f, 0.1f), vec2(0.3f, 0.3f),false);
 			eventComponent->BindOnCollisionBegin([=](shared_ptr<Collider>& collider)
@@ -191,11 +192,25 @@ void Scene_Sea01::Init()
 					eventComponent->ShowEventMessage(false);
 				});
 
-			eventComponent->BindOnUpdate([](shared_ptr<Collider>& collider)
+	
+
+
+			eventComponent->BindOnUpdateBlock([=](shared_ptr<Collider>& collider)
 				{
 					if (Input::main->GetKeyDown(KeyCode::F))
 					{
+						auto key = eventComponent->GetSharedState<bool>("EscapeKeyDown");
+						*key = true;
+						ComputeManager::main->StartChangeScene(0.3f);
+					}
+				});
 
+			eventComponent->BindOnUpdateAlways([=](shared_ptr<Collider>& collider)
+				{
+					auto key = eventComponent->GetSharedState<bool>("EscapeKeyDown");
+				
+					if (ComputeManager::main->IsChangeEffectEnd() && *key)
+					{
 						for (auto& ele : SceneManager::main->GetCurrentScene()->_gameObjects)
 						{
 							if (ele)
@@ -204,10 +219,12 @@ void Scene_Sea01::Init()
 							}
 						}
 
+						*key = false;
 						Scene::_changeScene = true;
 					}
 				});
-		}
+
+		} 
 	}
 
 	

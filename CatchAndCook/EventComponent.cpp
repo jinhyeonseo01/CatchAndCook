@@ -22,18 +22,25 @@ void EventComponent::Start()
 
 void EventComponent::Update()
 {
-
-}
-
-void EventComponent::Update2()
-{
 	if (_Oncollision)
 	{
-		for (auto& func : _OnUpdate)
+		for (auto& func : _OnUpdateBlock)
 		{
 			func(_otherCashing);
 		}
 	}
+
+
+	for (auto& func : _OnUpdateAlways)
+	{
+		func(_otherCashing);
+	};
+
+};
+
+void EventComponent::Update2()
+{
+	
 }
 
 void EventComponent::Enable()
