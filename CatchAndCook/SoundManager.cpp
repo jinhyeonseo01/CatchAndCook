@@ -76,6 +76,30 @@ void Sound::Update()
     }
 }
 
+void Sound::SetVolume(const string& name , float volume)
+{
+    auto it = _soundDatas.find(name);
+
+    if (it == _soundDatas.end())
+    {
+        cerr << "Sound \"" << name << "\" not loaded!" << endl;
+        return;
+    }
+
+    SoundData& data = it->second;
+
+    if (data.channel)
+    {
+        data.channel->setVolume(_masterVolume * volume);
+    }
+
+}
+
+void Sound::SetMasterVolume(float volume)
+{
+    _masterVolume = volume;
+}
+
 void Sound::Play(const string& name, float volume, bool overlapped)
 {
     auto it = _soundDatas.find(name);
@@ -97,7 +121,7 @@ void Sound::Play(const string& name, float volume, bool overlapped)
     ERRCHECK(result);
     
     if (data.channel)
-        data.channel->setVolume(volume);
+        data.channel->setVolume(_masterVolume * volume);
 
 }
 
@@ -121,7 +145,6 @@ void Sound::StopAll()
    
     for (auto& ele : _soundDatas)
     {
-
         FMOD::Channel* channel = ele.second.channel;
 
         if (channel)
@@ -165,11 +188,7 @@ void Sound::LoadSound(const string& path, const string& name, bool loop)
 
      ERRCHECK(result);
 
-     SoundData data;
-     data.name = name;
-     data.sound = sound;
-     data.channel = nullptr;
-     _soundDatas[name] = data;
+     _soundDatas.emplace(name, SoundData{ nullptr, sound });
 
 }
 

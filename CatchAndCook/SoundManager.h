@@ -6,7 +6,6 @@
 
 struct SoundData
 {
-	string name;
 	FMOD::Channel* channel = nullptr;
 	FMOD::Sound* sound = nullptr;
 	bool _isPlaying = false;
@@ -20,6 +19,8 @@ public:
 	~Sound();
 	void Init();
 	void Update();
+	void SetVolume(const string& name, float volume);
+	void SetMasterVolume(float volume);
 	void Play(const string& name, float volume =1.0f, bool overlapped=false);
 	void Stop(const string& name);
 	void StopAll();
@@ -34,6 +35,7 @@ private:
 
 private:
 	std::unordered_map<string, SoundData> _soundDatas;
+	float _masterVolume = 1.0f;
 
 public:
 	static std::unique_ptr<Sound> main;
