@@ -144,7 +144,7 @@ void TestScene_jin::Rendering()
 
 	Scene::Rendering();
 
-	ParticlePass(Core::main->GetCmdList());
+	
 }
 
 void TestScene_jin::DebugRendering()
@@ -184,16 +184,3 @@ void TestScene_jin::ComputePass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList
 	ComputeManager::main->DispatchMainField(cmdList);
 }
 
-void TestScene_jin::ParticlePass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList)
-{
-	auto& targets = _passObjects[RENDER_PASS::ToIndex(RENDER_PASS::ParticlePass)];
-
-	for (auto& [shader, vec] : targets)
-	{
-		for (auto& ele : vec)
-		{
-			ele.renderer->Rendering(nullptr, nullptr, 1);
-		}
-	}
-
-}

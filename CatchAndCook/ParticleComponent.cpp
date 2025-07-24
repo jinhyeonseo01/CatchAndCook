@@ -125,6 +125,8 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 			data.worldPos = worldPos;
 			data.dir = vec3(dist(gen), dist(gen), dist(gen));
 			data.velocity = speed;
+
+			data.dir.Normalize();
 			break;
 
 		case ParticleMoveType::BloodUnderwater:
@@ -134,8 +136,8 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 			float x = dist(gen) * 0.5f;
 			float y = dist(gen) * 0.3f + 0.2f;
 			float z = dist(gen) * 0.5f;
-
 			data.dir = vec3(x, y, z);
+			data.dir.Normalize();
 			data.velocity = speed;
 			break;
 		}
@@ -146,8 +148,12 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 			data.worldPos.x += dist2(gen) * 2.0f;
 			data.worldPos.z += dist2(gen) *3.0f;
 			data.worldPos.y += dist3(gen) *3.0f;
-			data.dir = vec3(0, 1, 0);
+			float y = (dist4(gen)) * 0.3f + 0.1f;
+			data.dir = vec3(0, y, 0);
+			//노말라이즈없이사용 속도다르게주기위해
 			data.velocity = speed;
+	
+
 		}
 			break;
 		default:
@@ -176,13 +182,11 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 			case ParticleColorType::Blue:
 				data.color = vec3(0, 0, 1);
 				break;
-			default:
 				break;
 			}
 		}
 
-		data.color.Normalize();
-		data.dir.Normalize();
+
 		vecData[i] = data;
 	}
 
