@@ -161,8 +161,6 @@ void TestScene_jin::Finish()
 {
 	Scene::Finish();
 
-
-
 	if (Scene::_changeScene)
 	{
 		Scene::_changeScene = false;

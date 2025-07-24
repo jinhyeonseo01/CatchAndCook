@@ -706,6 +706,14 @@ void Scene::RenderEnd()
 
 void Scene::Finish()
 {
+    if (Scene::_changeScene)
+    {
+        for (auto& ele : _gameObjects)
+        {
+            ele->Reset();
+        }
+    }
+
     Scene::ExecuteDestroyGameObjects();
     PathFinder::ClearDebugDraw();
     GameObject::ExecuteDestroyComponents();

@@ -324,8 +324,11 @@ void InteractiveComponent::SetState(InteractiveState state)
 	case InteractiveState::SUCCESS:
 		Sound::main->Play("success",0.3f,true);
 
-		ParticleManager::main->GenParticle(8.0f, 500, 30.0f, 130.0f, GetOwner()->_transform->GetWorldPosition(), vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
+		ParticleManager::main->GenParticle(8.0f, 500, 5.0f, 30.0f, GetOwner()->_transform->GetWorldPosition(), vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
 		, ResourceManager::main->Get<Texture>(L"success"));
+
+		wcout << GetOwner()->GetName() << endl;
+		InGameGlobal::main->AddItem(GetOwner()->GetName());
 
 		MiniGameTotalOnOff(false);
 		_seaPlayerController->SetMoveLock(false);

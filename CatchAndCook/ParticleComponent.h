@@ -51,20 +51,22 @@ class ParticleComponent : public Component
 {
 
 public:
-	virtual void Init();
-	virtual void Start();
-	virtual void Update();
-	virtual void Update2();
-	virtual void Enable();
-	virtual void Disable();
-	virtual void RenderBegin();
-	virtual void RenderEnd();
-	virtual void CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other);
-	virtual void CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other);
-	virtual void ChangeParent(const std::shared_ptr<GameObject>& prev, const std::shared_ptr<GameObject>& current);
-	virtual void ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene);
-	virtual void SetDestroy() override;
-	virtual void Destroy();
+	 void Init() override;
+	 void Start() override ;
+	 void Update() override;
+	 void Update2() override;
+	 void Enable() override;
+	 void Disable() override;
+	 void RenderBegin() override;
+	 void RenderEnd() override;
+	 void CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other);
+	 void CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other);
+	 void ChangeParent(const std::shared_ptr<GameObject>& prev, const std::shared_ptr<GameObject>& current);
+	 void ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene);
+	 void SetDestroy() override;
+	 void Destroy() override;
+
+	 void Reset() override;
 
 	int GetParicleCount() { return _helperParams.paricleCount; }
 	const ParicleHelperParams& GetParicleHelperParams() { return _helperParams; }
@@ -82,6 +84,7 @@ public:
 
 
 private:
+	bool _alloc = true;
 	float _autoDestroyTime = 0;
 	float _currTime = 0;
 

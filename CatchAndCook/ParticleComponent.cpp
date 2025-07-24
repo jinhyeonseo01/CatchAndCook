@@ -38,7 +38,8 @@ void ParticleComponent::Update()
 
 	if (_currTime >= _autoDestroyTime)
 	{
-		SceneManager::main->GetCurrentScene()->AddDestroyQueue(GetOwner());
+		if(_alloc)
+		GetOwner()->SetDestroy();
 	}
 }
 
@@ -85,7 +86,15 @@ void ParticleComponent::SetDestroy()
 
 void ParticleComponent::Destroy()
 {
+	_alloc = false;
+
 	ParticleManager::main->RecycleParticleBuffer(_strBuffer);
+}
+
+void ParticleComponent::Reset()
+{
+	if(_alloc)
+		GetOwner()->SetDestroy();
 }
 
 void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, float autoDestroyTime, int particleCount, float size, float speed ,const vec3& worldPos, const vec3& worldNormal, const ParticleMoveType& moveType, const ParticleColorType& colorType, shared_ptr<Texture> texture,
