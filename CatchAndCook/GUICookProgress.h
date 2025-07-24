@@ -1,26 +1,31 @@
 ﻿#pragma once
-#include "GUIItem.h"
 
 
-class GUIInventory : public Component
+class GUICookProgress : public Component
 {
 public:
-	static shared_ptr<GUIInventory> main;
-	std::vector<std::shared_ptr<GameObject>> _slots;
 
+	float maxTime = 1;
+	float time = 0;
 
-	int selectIndex = 0;
+	float maxWidth = 0.0f; // 최대 너비
 
-	bool HasEmptySlot();
-	int GetEmptySlotIndex();
+	bool isSuccess = false;
+	bool isPlay = false;
 
-	bool PushItemData(const ItemData& itemData);
-	bool SetItemData(const ItemData& itemData, int index);
-	ItemData GetItemDataIndex(int index);
-	ItemData PopItemDataIndex(int index);
-	void SlotUpdate();
+	int type = 0;
 
-	~GUIInventory() override;
+	void Clear();
+	void Play();
+
+	float GetProgress() const { return time / maxTime; }
+	void SetMaxTime(float max) { maxTime = std::max(0.001f, max); }
+	void SetTime(float t) { time = t; }
+	bool IsSuccessed() { return (min(time, maxTime) / maxTime) >= 1; }
+
+	std::shared_ptr<RectTransform> progressBar;
+
+	~GUICookProgress() override;
 	bool IsExecuteAble() override;
 	void Init() override;
 	void Start() override;

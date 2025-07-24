@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "GUIItem.h"
 
 class InGameGlobal
 {
@@ -10,6 +11,10 @@ public:
 public: // Main Field
 	float skyTime = 0;
 
+	static constexpr int InventoryCount = 5;
+	std::array<ItemData, InventoryCount> invItems;
+	vector<ItemData> boxItems;
 
+	std::vector<std::pair<ItemData, vector<ItemData>>> cookTable;
 };
 

@@ -9,17 +9,16 @@ public:
 
 	bool _enable = false;
 
-	std::vector<ItemData> _itemList;
-
 	std::vector<std::shared_ptr<GameObject>> _slots;
 	std::shared_ptr<GameObject> _exit;
 
 	ItemData _selectedItemData;
 	int _selectedIndex = -1;
 
-	int HasEmptySlot();
+	bool HasEmptySlot();
+	int GetEmptySlotIndex();
 
-	bool AddItemData(const ItemData& itemData);
+	bool PushItemData(const ItemData& itemData);
 	ItemData GetItemDataIndex(int index);
 	bool RemoveItemDataIndex(int index);
 

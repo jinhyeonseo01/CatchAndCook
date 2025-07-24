@@ -1,16 +1,17 @@
 ﻿#pragma once
-#include "GUIItem.h"
-
-
-class GUIInventory : public Component
+class CookMargeObject : public Component
 {
 public:
-	static shared_ptr<GUIInventory> main;
+	static const int slotCount = 5; // 슬롯 개수
 	std::vector<std::shared_ptr<GameObject>> _slots;
 
+	std::array<ItemData, slotCount> itemDatas;
+	shared_ptr<GameObject> selectedUI;
 
-	int selectIndex = 0;
+	int cookType = 0;
+	bool onTrigger = false;
 
+	bool HasOwnSlot();
 	bool HasEmptySlot();
 	int GetEmptySlotIndex();
 
@@ -20,7 +21,7 @@ public:
 	ItemData PopItemDataIndex(int index);
 	void SlotUpdate();
 
-	~GUIInventory() override;
+	~CookMargeObject() override;
 	bool IsExecuteAble() override;
 	void Init() override;
 	void Start() override;

@@ -188,6 +188,7 @@
     <ClCompile Include="ColliderManager.cpp" />
     <ClCompile Include="ComputeManager.cpp" />
     <ClCompile Include="convert_assimp.cpp" />
+    <ClCompile Include="CookMargeObject.cpp" />
     <ClCompile Include="EffectComponent.cpp" />
     <ClCompile Include="FishMonster.cpp" />
     <ClCompile Include="CookObject.cpp" />
@@ -195,6 +196,7 @@
     <ClCompile Include="GameObjectSetting.cpp" />
     <ClCompile Include="GeoMetryHelper.cpp" />
     <ClCompile Include="Gizmo.cpp" />
+    <ClCompile Include="GUICookProgress.cpp" />
     <ClCompile Include="GUIInventory.cpp" />
     <ClCompile Include="GUIItem.cpp" />
     <ClCompile Include="GUISprite.cpp" />
@@ -339,6 +341,7 @@
     <ClInclude Include="ComputeManager.h" />
     <ClInclude Include="convert_assimp.h" />
     <ClInclude Include="convert_directx.h" />
+    <ClInclude Include="CookMargeObject.h" />
     <ClInclude Include="EffectComponent.h" />
     <ClInclude Include="FishMonster.h" />
     <ClInclude Include="CookObject.h" />
@@ -346,6 +349,7 @@
     <ClInclude Include="GameObjectSetting.h" />
     <ClInclude Include="GeoMetryHelper.h" />
     <ClInclude Include="Gizmo.h" />
+    <ClInclude Include="GUICookProgress.h" />
     <ClInclude Include="GUIInventory.h" />
     <ClInclude Include="GUIItem.h" />
     <ClInclude Include="GUISprite.h" />

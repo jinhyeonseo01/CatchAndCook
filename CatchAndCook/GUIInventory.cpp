@@ -10,21 +10,29 @@ COMPONENT(GUIInventory)
 
 shared_ptr<GUIInventory> GUIInventory::main = nullptr;
 
-int GUIInventory::HasEmptySlot()
+bool GUIInventory::HasEmptySlot()
 {
-	for (int i=0;i<InventoryCount;i++)
-		if (_itemList[i].itemCode == -1)
+	for (int i=0;i< InGameGlobal::InventoryCount;i++)
+		if (InGameGlobal::main->invItems[i].itemCode == -1)
+			return true;
+	return false;
+}
+
+int GUIInventory::GetEmptySlotIndex()
+{
+	for (int i = 0; i < InGameGlobal::InventoryCount; i++)
+		if (InGameGlobal::main->invItems[i].itemCode == -1)
 			return i;
 	return -1;
 }
 
 bool GUIInventory::PushItemData(const ItemData& itemData)
 {
-	for (int i = 0; i < InventoryCount; i++)
+	for (int i = 0; i < InGameGlobal::InventoryCount; i++)
 	{
-		if (_itemList[i].itemCode == -1)
+		if (InGameGlobal::main->invItems[i].itemCode == -1)
 		{
-			_itemList[i] = itemData;
+			InGameGlobal::main->invItems[i] = itemData;
 			return true;
 		}
 	}
@@ -33,21 +41,21 @@ bool GUIInventory::PushItemData(const ItemData& itemData)
 
 bool GUIInventory::SetItemData(const ItemData& itemData, int index)
 {
-	_itemList[index] = itemData;
+	InGameGlobal::main->invItems[index] = itemData;
 	return true;
 }
 
 ItemData GUIInventory::GetItemDataIndex(int index)
 {
-	return _itemList[index];
+	return InGameGlobal::main->invItems[index];
 }
 
 ItemData GUIInventory::PopItemDataIndex(int index)
 {
-	auto temp = _itemList[index];
-	if (index < 0 || index >= InventoryCount)
+	auto temp = InGameGlobal::main->invItems[index];
+	if (index < 0 || index >= InGameGlobal::InventoryCount)
 		return ItemData();
-	_itemList[index].Clear();
+	InGameGlobal::main->invItems[index].Clear();
 	return temp;
 }
 
@@ -58,8 +66,8 @@ void GUIInventory::SlotUpdate()
 		if (auto item = _slots[i]->GetComponent<GUIItem>())
 		{
 			item->PopItemData();
-			if (i < _itemList.size())
-				item->PushItemData(_itemList[i]);
+			if (i < InGameGlobal::main->invItems.size())
+				item->PushItemData(InGameGlobal::main->invItems[i]);
 		}
 	}
 
@@ -83,7 +91,7 @@ void GUIInventory::Init()
 void GUIInventory::Start()
 {
 	Component::Start();
-	for (int i=0;i< InventoryCount;i++)
+	for (int i=0;i< InGameGlobal::InventoryCount;i++)
 	{
 		wstring name = L"Slot_" + to_wstring(i);
 		_slots.push_back(GetOwner()->GetChildByName(name));
@@ -122,19 +130,19 @@ void GUIInventory::Update()
 		if (canvas->type == CanvasType::Overlay)
 			mousePos = canvas->GetScreenToCanvasPos(Input::main->GetMousePosition());
 
-	for (int i = 0; i < _itemList.size(); i++)
+	for (int i = 0; i < InGameGlobal::main->invItems.size(); i++)
 	{
 		auto slot = _slots[i];
 		auto rt = slot->GetComponent<RectTransform>();
 		if (Input::main->GetMouseDown(KeyCode::LeftMouse) && rt->IsBoundCanvasPos(mousePos)) // 아이템 선택
 		{
-			if (_itemList[i].itemCode != -1 && GUIItemBox::main)
+			if (InGameGlobal::main->invItems[i].itemCode != -1 && GUIItemBox::main)
 			{
 				//먼저 인벤토리에 칸 남는지 체크
-				if (GUIItemBox::main->HasEmptySlot() != -1)
+				if (GUIItemBox::main->HasEmptySlot())
 				{
 					//아이템을 인벤토리로
-					GUIItemBox::main->AddItemData(PopItemDataIndex(i));
+					GUIItemBox::main->PushItemData(PopItemDataIndex(i));
 				}
 			}
 		}

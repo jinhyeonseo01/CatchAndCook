@@ -27,7 +27,7 @@ void ImageRenderer::Init()
 	_material->SetShadowCasting(false);
 	_material->SetPreDepthNormal(false);
 	_material->SetShader(ResourceManager::main->Get<Shader>(L"GUISpriteShader"));
-	_material->SetPass(RENDER_PASS::Transparent);
+	_material->SetPass(RENDER_PASS::TransparentAfterPP);
 
 	meshRenderer->AddCbufferSetter(GetCast<ImageRenderer>());
 	meshRenderer->AddMesh(GeoMetryHelper::LoadRectCenterOneScaleMesh());
@@ -49,7 +49,7 @@ void ImageRenderer::Start()
 		else
 		{
 			_material->SetShader(ResourceManager::main->Get<Shader>(L"GUISpriteShader"));
-			_material->SetPass(RENDER_PASS::Transparent);
+			_material->SetPass(RENDER_PASS::TransparentAfterPP);
 		}
 	}
 }

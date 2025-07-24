@@ -391,9 +391,14 @@
     <ClCompile Include="RectTransform.cpp" />
     <ClCompile Include="ImageRenderer.cpp" />
     <ClCompile Include="Canvas.cpp" />
-    <ClCompile Include="FoodShopObject.cpp" />
     <ClCompile Include="UILookUp.cpp" />
     <ClCompile Include="GUIInventory.cpp" />
+    <ClCompile Include="CookObject.cpp" />
+    <ClCompile Include="CookItemBoxObject.cpp" />
+    <ClCompile Include="GUIItem.cpp" />
+    <ClCompile Include="GUIItemBox.cpp" />
+    <ClCompile Include="GUICookProgress.cpp" />
+    <ClCompile Include="CookMargeObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -737,9 +742,14 @@
     <ClInclude Include="RectTransform.h" />
     <ClInclude Include="ImageRenderer.h" />
     <ClInclude Include="Canvas.h" />
-    <ClInclude Include="FoodShopObject.h" />
     <ClInclude Include="UILookUp.h" />
     <ClInclude Include="GUIInventory.h" />
+    <ClInclude Include="CookObject.h" />
+    <ClInclude Include="CookItemBoxObject.h" />
+    <ClInclude Include="GUIItem.h" />
+    <ClInclude Include="GUIItemBox.h" />
+    <ClInclude Include="GUICookProgress.h" />
+    <ClInclude Include="CookMargeObject.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath_LH.inl">

@@ -6,10 +6,17 @@ enum class GameObjectTag : uint64
 	Player = 1 << 1,
 	Monster = 1 << 2,
 	Wall = 1 << 3,
-	NPC = 1 << 2,
+	NPC = 1 << 4,
+
+	CookType_Bake	= 1 << 10,
+	CookType_Boil	= 1 << 11,
+	CookType_Wash	= 1 << 12,
+	CookType_Cut	= 1 << 13,
+	CookType_Table	= 1 << 14,
 
 	NonCulling = 1ull << 25,
 	NonInstancing = 1ull << 26,
+
 };
 
 static unordered_map<string, GameObjectTag> GameObjectTagMap =
@@ -21,6 +28,12 @@ static unordered_map<string, GameObjectTag> GameObjectTagMap =
 	{ "Wall", GameObjectTag::Wall },
 	{ "NonCulling", GameObjectTag::NonCulling },
 	{ "NonInstancing", GameObjectTag::NonInstancing },
+
+	{ "CookType_Bake",		GameObjectTag::CookType_Bake},
+	{ "CookType_Boil",		GameObjectTag::CookType_Boil},
+	{ "CookType_Wash",		GameObjectTag::CookType_Wash},
+	{ "CookType_Cut",			GameObjectTag::CookType_Cut	 },
+	{ "CookType_Table",		GameObjectTag::CookType_Table }
 };
 
 inline GameObjectTag& operator|=(GameObjectTag& a, GameObjectTag b) {

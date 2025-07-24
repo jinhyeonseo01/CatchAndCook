@@ -37,6 +37,7 @@ public:
 	virtual void UiPass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> & cmdList);
 	virtual void Ui2Pass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList);
 	virtual void TransparentPass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> & cmdList);
+	virtual void TransparentAfterPPPass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList);
 	virtual void ForwardPass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> & cmdList);
 	virtual void DeferredPass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> & cmdList);
 	virtual void ShadowPass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> & cmdList);

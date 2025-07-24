@@ -11,11 +11,12 @@ COMPONENT(GUIItemBox)
 shared_ptr<GUIItemBox> GUIItemBox::main = nullptr;
 
 
-bool GUIItemBox::AddItemData(const ItemData& itemData)
+bool GUIItemBox::PushItemData(const ItemData& itemData)
 {
-	if (_itemList.size() < _slots.size())
+	if (InGameGlobal::main->boxItems.size() < _slots.size())
 	{
-		_itemList.push_back(itemData);
+		
+		InGameGlobal::main->boxItems.push_back(itemData);
 		return true;
 	}
 	return false;
@@ -23,22 +24,32 @@ bool GUIItemBox::AddItemData(const ItemData& itemData)
 
 ItemData GUIItemBox::GetItemDataIndex(int index)
 {
-	return _itemList[index];
+	return InGameGlobal::main->boxItems[index];
 }
 
 bool GUIItemBox::RemoveItemDataIndex(int index)
 {
-	if (_itemList.size() <= index)
+	if (InGameGlobal::main->boxItems.size() <= index)
 		return false;
-	_itemList.erase(_itemList.begin() + index);
+	InGameGlobal::main->boxItems.erase(InGameGlobal::main->boxItems.begin() + index);
 	return true;
 }
 
-int GUIItemBox::HasEmptySlot()
+bool GUIItemBox::HasEmptySlot()
 {
 	for (int i = 0; i < _slots.size(); i++)
 	{
-		if (i >= _itemList.size() || _itemList[i].itemCode == -1)
+		if (i >= InGameGlobal::main->boxItems.size() || InGameGlobal::main->boxItems[i].itemCode == -1)
+			return true;
+	}
+	return false;
+}
+
+int GUIItemBox::GetEmptySlotIndex()
+{
+	for (int i = 0; i < _slots.size(); i++)
+	{
+		if (i >= InGameGlobal::main->boxItems.size() || InGameGlobal::main->boxItems[i].itemCode == -1)
 			return i;
 	}
 	return -1;
@@ -73,19 +84,6 @@ void GUIItemBox::Start()
 	_exit = GetOwner()->GetChildByName(L"Exit");
 
 
-	ItemData itemData;
-
-	itemData.itemCode = 0;
-	itemData.itemCookType = -1;
-	AddItemData(itemData);
-
-	itemData.itemCode = 1;
-	itemData.itemCookType = -1;
-	AddItemData(itemData);
-	itemData.itemCode = 2;
-	itemData.itemCookType = 0;
-	AddItemData(itemData);
-
 }
 
 void GUIItemBox::SlotUpdate()
@@ -96,8 +94,8 @@ void GUIItemBox::SlotUpdate()
 		if (auto item = _slots[i]->GetComponent<GUIItem>())
 		{
 			item->PopItemData();
-			if (_itemList.size() > i)
-				item->PushItemData(_itemList[i]);
+			if (InGameGlobal::main->boxItems.size() > i)
+				item->PushItemData(InGameGlobal::main->boxItems[i]);
 		}
 	}
 
@@ -133,7 +131,7 @@ void GUIItemBox::Update()
 		auto rt = slot->GetComponent<RectTransform>();
 		if (Input::main->GetMouseDown(KeyCode::LeftMouse) && rt->IsBoundCanvasPos(mousePos)) // 아이템 선택
 		{
-			if (i < _itemList.size())
+			if (i < InGameGlobal::main->boxItems.size())
 			{
 				_selectedItemData = slot->GetComponent<GUIItem>()->GetItemData();
 				_selectedIndex = i;//_slots
@@ -151,7 +149,7 @@ void GUIItemBox::Update()
 					if (GUIInventory::main)
 					{
 						//먼저 인벤토리에 칸 남는지 체크
-						if (GUIInventory::main->HasEmptySlot() != -1)
+						if (GUIInventory::main->HasEmptySlot())
 						{
 							//아이템을 인벤토리로
 							RemoveItemDataIndex(i);
@@ -161,8 +159,8 @@ void GUIItemBox::Update()
 				}
 				else
 				{
-					if (i < _itemList.size()) // 스왑
-						std::swap(_itemList[i], _itemList[_selectedIndex]);
+					if (i < InGameGlobal::main->boxItems.size()) // 스왑
+						std::swap(InGameGlobal::main->boxItems[i], InGameGlobal::main->boxItems[_selectedIndex]);
 				}
 			}
 
