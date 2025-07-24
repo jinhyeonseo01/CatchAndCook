@@ -24,7 +24,7 @@ public:
 	void SetFrameRate(float frameRate) { _frameRate = frameRate; }
 	void SetTextures(vector<shared_ptr<Texture>>& textures);
 	void Reset();
-
+	void SetRoop(bool roop) { _roop = roop; }
 private:
 	bool _roop = false;
 

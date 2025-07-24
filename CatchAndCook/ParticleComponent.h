@@ -26,7 +26,8 @@ enum class ParticleMoveType
 {
 	RadialSpread,
 	BloodUnderwater,
-	ScreenSpaceBubble
+	CookFire,
+
 };
 
 enum class ParticleColorType

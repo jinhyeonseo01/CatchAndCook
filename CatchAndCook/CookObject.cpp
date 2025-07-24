@@ -6,7 +6,9 @@
 #include "GUIItemBox.h"
 #include "PhysicsComponent.h"
 #include "Transform.h"
-
+#include "AnimationSpriteComponent.h"
+#include "MeshRenderer.h"
+#include  "BilboardComponent.h"
 COMPONENT(CookObject)
 
 bool CookObject::HasOwnItem()
@@ -48,6 +50,72 @@ void CookObject::Init()
 void CookObject::Start()
 {
 	Component::Start();
+	
+	{
+		auto object = GetOwner()->GetChildByNameRecursive(L"particle");
+
+		if (object)
+		{
+			_particleGenPos = object->_transform->GetWorldPosition();
+		}
+	}
+
+	{
+		vector<shared_ptr<GameObject>> objects = GetOwner()->GetChildByNameRecursiveAll(L"animationSprite");
+
+		if (objects.empty() == false)
+		{
+			if (GetOwner()->HasTag(GameObjectTag::CookType_Cut))
+			{
+
+			}
+
+			if (GetOwner()->HasTag(GameObjectTag::CookType_Bake))
+			{
+
+			}
+
+			if (GetOwner()->HasTag(GameObjectTag::CookType_Wash))
+			{
+
+			}
+
+			if (GetOwner()->HasTag(GameObjectTag::CookType_Boil))
+			{
+
+			
+				GetOwner()->GetChildByName(L"kk")->GetComponent<MeshRenderer>()->GetMaterial(0)->SetPass(RENDER_PASS::Forward);
+
+				vector<shared_ptr<Texture>> _textures;
+				std::wstring path = L"../Resources/Textures/Sprite/jin/fire/";
+
+				for (const auto& entry : fs::directory_iterator(path))
+				{
+					std::wstring& path2 = entry.path().filename().wstring();
+					shared_ptr<Texture> texture = ResourceManager::main->Load<Texture>(path + path2, path + path2);
+					_textures.push_back(texture);
+				}
+
+				for (auto& ele : objects)
+				{
+					ele->GetComponent<MeshRenderer>()->GetMaterial(0)->SetPass(RENDER_PASS::Forward);
+					ele->AddComponent<BilboardComponent>();
+					auto animationSpriteComponent = ele->AddComponent<AnimationSpriteComponent>();
+					animationSpriteComponent->SetTextures(_textures);
+					animationSpriteComponent->SetRoop(true);
+					ele->SetActiveSelf(false);
+					_animationSprites.push_back(ele);
+				}
+			}
+		}
+	}
+
+	
+
+
+
+
+
 }
 
 void CookObject::Update()
@@ -81,6 +149,13 @@ void CookObject::Update()
 
 					auto process = selectedUI->GetComponent<GUICookProgress>();
 					process->type = 0;
+
+					//KSH 
+					for (auto& ele : _animationSprites)
+					{
+						ele->SetActiveSelf(true);
+					}
+
 					if (GetOwner()->HasTag(GameObjectTag::CookType_Cut))
 						process->SetMaxTime(8);
 					if (GetOwner()->HasTag(GameObjectTag::CookType_Bake))
@@ -94,6 +169,10 @@ void CookObject::Update()
 					{
 						process->SetMaxTime(10);
 						process->type = 1;
+						//KSH
+						ParticleManager::main->GenParticle(16.0f, 200, 0.15f, 0.7f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::CookFire, ParticleColorType::Red, { 0,0,0,0 }
+						, ResourceManager::main->Get<Texture>(L"smokeTexture"));
+
 					}
 					process->Clear();
 					process->Play();
@@ -107,8 +186,18 @@ void CookObject::Update()
 
 
 		if (process->IsSuccessed())
+		{
 			cookType = 2;
+
+			//KSH
+			for (auto& ele : _animationSprites)
+			{
+				ele->SetActiveSelf(false);
+			}
+		}
+		
 	}
+
 	if (cookType == 2 && onTrigger)
 	{
 		if (Input::main->GetKeyDown(KeyCode::F))

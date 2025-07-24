@@ -4,7 +4,7 @@
 
 static std::uniform_real_distribution<float> dist(0.0f, 1.0f);
 static std::uniform_real_distribution<float> dist2(-0.1f, 0.1f);
-
+static std::uniform_real_distribution<float> dist3(0, 0.1f);
 void ParticleComponent::Init()
 {
 }
@@ -18,6 +18,11 @@ void ParticleComponent::Start()
 
 void ParticleComponent::Update()
 {
+	if (_autoDestroyTime == 0)
+	{
+		return;
+	}
+
 	_currTime += Time::main->GetDeltaTime();
 
 	float fadeProgress = _currTime / _autoDestroyTime;
@@ -133,18 +138,17 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 			break;
 		}
 
-		case ParticleMoveType::ScreenSpaceBubble:
+		case ParticleMoveType::CookFire:
 		{
 			data.worldPos = worldPos;
-			data.worldPos.x += dist2(gen);
-			data.worldPos.y += dist2(gen);
+			data.worldPos.x += dist2(gen) * 2.0f;
+			data.worldPos.z += dist2(gen) *3.0f;
+			data.worldPos.y += dist3(gen) *3.0f;
 			float y = (dist(gen)) * 0.3f + 0.1f;
 			data.dir = vec3(0, y, 0);
 			data.velocity = speed;
 		}
-
-
-		break;
+			break;
 		default:
 			break;
 		}

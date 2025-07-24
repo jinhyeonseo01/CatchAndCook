@@ -172,88 +172,88 @@ struct BufferStat
 
 void BufferManager::Debug()
 {
-	static unordered_set<SceneType> _shownScenes;
-	static unordered_map<SceneType, unordered_map<BufferType, uint32_t>> _sceneBufferCounts;
-	static unordered_map<SceneType, unordered_map<BufferType, uint32_t>> _sceneStructuredCounts;
-	static unordered_map<BufferType, uint32_t> _bufferSceneMax;
-	static unordered_map<BufferType, uint32_t> _structuredSceneMax;
+	//static unordered_set<SceneType> _shownScenes;
+	//static unordered_map<SceneType, unordered_map<BufferType, uint32_t>> _sceneBufferCounts;
+	//static unordered_map<SceneType, unordered_map<BufferType, uint32_t>> _sceneStructuredCounts;
+	//static unordered_map<BufferType, uint32_t> _bufferSceneMax;
+	//static unordered_map<BufferType, uint32_t> _structuredSceneMax;
 
-	SceneType sceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
-	if (_shownScenes.contains(sceneType))
-		return;
+	//SceneType sceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
+	//if (_shownScenes.contains(sceneType))
+	//	return;
 
-	_shownScenes.insert(sceneType);
+	//_shownScenes.insert(sceneType);
 
-	cout << "\n==================== [ Scene: " << static_cast<int>(sceneType) << " ] ====================\n";
+	//cout << "\n==================== [ Scene: " << static_cast<int>(sceneType) << " ] ====================\n";
 
-	// Table Info
-	cout << "\n===================== [Table Info] =====================\n";
-	cout << "Table Allocated Count (Current Context): "
-		<< _table[CURRENT_CONTEXT_INDEX]->GetCount() << '\n';
+	//// Table Info
+	//cout << "\n===================== [Table Info] =====================\n";
+	//cout << "Table Allocated Count (Current Context): "
+	//	<< _table[CURRENT_CONTEXT_INDEX]->GetCount() << '\n';
 
-	// Texture Buffer Pool
-	cout << "\n================= [Texture Buffer Pool] =================\n";
-	_textureBufferPool->PrintCount();
+	//// Texture Buffer Pool
+	//cout << "\n================= [Texture Buffer Pool] =================\n";
+	//_textureBufferPool->PrintCount();
 
-	// General Buffer Map Summary
-	cout << "\n================ [Scene BufferMap Summary] ================\n";
-	auto& bufferMap = _sceneBufferCounts[sceneType];
-	for (const auto& map : _map)
-	{
-		for (const auto& [type, buffer] : map)
-		{
-			bufferMap[type] = buffer->GetCount();  // 현재 카운트로 갱신
-			_bufferSceneMax[type] = std::max(_bufferSceneMax[type], bufferMap[type]);
-		}
-	}
+	//// General Buffer Map Summary
+	//cout << "\n================ [Scene BufferMap Summary] ================\n";
+	//auto& bufferMap = _sceneBufferCounts[sceneType];
+	//for (const auto& map : _map)
+	//{
+	//	for (const auto& [type, buffer] : map)
+	//	{
+	//		bufferMap[type] = buffer->GetCount();  // 현재 카운트로 갱신
+	//		_bufferSceneMax[type] = std::max(_bufferSceneMax[type], bufferMap[type]);
+	//	}
+	//}
 
-	cout << left << setw(30) << "Buffer Type"
-		<< setw(12) << "This Scene"
-		<< setw(12) << "Max Any Scene" << '\n';
-	cout << string(54, '-') << '\n';
-	for (const auto& [type, count] : bufferMap)
-	{
-		cout << left << setw(30) << BufferTypeToString(type)
-			<< setw(12) << count
-			<< setw(12) << _bufferSceneMax[type] << '\n';
-	}
+	//cout << left << setw(30) << "Buffer Type"
+	//	<< setw(12) << "This Scene"
+	//	<< setw(12) << "Max Any Scene" << '\n';
+	//cout << string(54, '-') << '\n';
+	//for (const auto& [type, count] : bufferMap)
+	//{
+	//	cout << left << setw(30) << BufferTypeToString(type)
+	//		<< setw(12) << count
+	//		<< setw(12) << _bufferSceneMax[type] << '\n';
+	//}
 
-	// Instance Buffer Map
-	cout << "\n================= [Instance BufferMap] ==================\n";
-	for (const auto& map : _instanceMap)
-	{
-		for (const auto& [type, buffer] : map)
-		{
-			cout << "  [Buffer Type] " << BufferTypeToString(type) << '\n';
-			buffer->PrintCount();
-			cout << string(45, '-') << '\n';
-		}
-	}
+	//// Instance Buffer Map
+	//cout << "\n================= [Instance BufferMap] ==================\n";
+	//for (const auto& map : _instanceMap)
+	//{
+	//	for (const auto& [type, buffer] : map)
+	//	{
+	//		cout << "  [Buffer Type] " << BufferTypeToString(type) << '\n';
+	//		buffer->PrintCount();
+	//		cout << string(45, '-') << '\n';
+	//	}
+	//}
 
-	// Structured Buffer Map Summary
-	cout << "\n============= [Structured Buffer - Scene Summary] =============\n";
-	auto& structuredMap = _sceneStructuredCounts[sceneType];
-	for (const auto& map : _structuredMap)
-	{
-		for (const auto& [type, buffer] : map)
-		{
-			structuredMap[type] = buffer->GetCount();
-			_structuredSceneMax[type] = std::max(_structuredSceneMax[type], structuredMap[type]);
-		}
-	}
+	//// Structured Buffer Map Summary
+	//cout << "\n============= [Structured Buffer - Scene Summary] =============\n";
+	//auto& structuredMap = _sceneStructuredCounts[sceneType];
+	//for (const auto& map : _structuredMap)
+	//{
+	//	for (const auto& [type, buffer] : map)
+	//	{
+	//		structuredMap[type] = buffer->GetCount();
+	//		_structuredSceneMax[type] = std::max(_structuredSceneMax[type], structuredMap[type]);
+	//	}
+	//}
 
-	cout << left << setw(30) << "Buffer Type"
-		<< setw(12) << "This Scene"
-		<< setw(12) << "Max Any Scene" << '\n';
-	cout << string(54, '-') << '\n';
-	for (const auto& [type, count] : structuredMap)
-	{
-		cout << left << setw(30) << BufferTypeToString(type)
-			<< setw(12) << count
-			<< setw(12) << _structuredSceneMax[type] << '\n';
-	}
+	//cout << left << setw(30) << "Buffer Type"
+	//	<< setw(12) << "This Scene"
+	//	<< setw(12) << "Max Any Scene" << '\n';
+	//cout << string(54, '-') << '\n';
+	//for (const auto& [type, count] : structuredMap)
+	//{
+	//	cout << left << setw(30) << BufferTypeToString(type)
+	//		<< setw(12) << count
+	//		<< setw(12) << _structuredSceneMax[type] << '\n';
+	//}
 
-	cout << "\n==================== [End of Debug] =====================\n\n";
+	//cout << "\n==================== [End of Debug] =====================\n\n";
 }
 
 
