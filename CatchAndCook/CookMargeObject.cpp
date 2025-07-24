@@ -98,12 +98,12 @@ void CookMargeObject::Start()
 {
 	Component::Start();
 
-	auto CookUI_CookMarge = GetOwner()->GetScene()->Find(L"CookUI_CookMarge");
+	_CookUI_CookMarge = GetOwner()->GetScene()->Find(L"CookUI_CookMarge");
 
 	for (int i = 0; i < slotCount; i++)
 	{
 		wstring name = L"Slot_" + to_wstring(i);
-		_slots.push_back(CookUI_CookMarge->GetChildByName(name));
+		_slots.push_back(_CookUI_CookMarge->GetChildByName(name));
 	}
 }
 
@@ -138,7 +138,7 @@ void CookMargeObject::Update()
 									selectedUI = ui;
 							if (selectedUI)
 							{
-								if (auto target = GetOwner()->GetScene()->Find(L"CookUI_CookMarge"))
+								if (auto target = _CookUI_CookMarge)
 									target->SetActiveSelf(false);
 
 								selectedUI->SetActiveSelf(true);
@@ -156,7 +156,7 @@ void CookMargeObject::Update()
 			}
 			if (GUIInventory::main)
 			{
-				auto CookUI_CookMarge = GetOwner()->GetScene()->Find(L"CookUI_CookMarge");
+				auto CookUI_CookMarge = _CookUI_CookMarge;
 				if (GUIInventory::main->GetItemDataIndex(GUIInventory::main->selectIndex).itemCode != -1)
 				{
 					CookUI_CookMarge->GetChildByName(L"Text")->SetActiveSelf(true);
@@ -187,7 +187,7 @@ void CookMargeObject::Update()
 				selectedUI->SetActiveSelf(false);
 				selectedUI = nullptr;
 
-				if (auto target = GetOwner()->GetScene()->Find(L"CookUI_CookMarge"))
+				if (auto target = _CookUI_CookMarge)
 				{
 					target->SetActiveSelf(true);
 					target->_transform->SetWorldPosition(GetOwner()->_transform->GetLocalPosition() + Vector3::Up * 1.65);

@@ -8,6 +8,8 @@ public:
 	std::array<ItemData, slotCount> itemDatas;
 	shared_ptr<GameObject> selectedUI;
 
+	std::shared_ptr<GameObject> _CookUI_CookMarge;
+
 	int cookType = 0;
 	bool onTrigger = false;
 

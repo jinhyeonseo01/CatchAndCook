@@ -50,6 +50,7 @@ void CookObject::Init()
 void CookObject::Start()
 {
 	Component::Start();
+	_CookUI_BeginText = GetOwner()->GetScene()->Find(L"CookUI_BeginText");
 }
 
 void CookObject::Update()
@@ -72,7 +73,7 @@ void CookObject::Update()
 					&& GUIInventory::main && GUIInventory::main->GetItemDataIndex(GUIInventory::main->selectIndex).itemCookType != 2
 					&& !HasOwnItem())
 				{
-					if (auto target = GetOwner()->GetScene()->Find(L"CookUI_BeginText"))
+					if (auto target = _CookUI_BeginText)
 						target->SetActiveSelf(false);
 
 					PushItemData(GUIInventory::main->PopItemDataIndex(GUIInventory::main->selectIndex));
@@ -120,7 +121,6 @@ void CookObject::Update()
 			process->Clear();
 			selectedUI->SetActiveSelf(false);
 			selectedUI = nullptr;
-
 			if (auto target = GetOwner()->GetScene()->Find(L"CookUI_BeginText"))
 			{
 				target->SetActiveSelf(true);

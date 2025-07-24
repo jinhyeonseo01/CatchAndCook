@@ -435,7 +435,7 @@ void NPCGotoAny::Update()
 				skinnedHierarchy->Play(idle, 0.25);
 				bool gotoShop = false;
 				if (InGameMainField::GetMain()->shopOpen)
-					gotoShop = (_random_dist(_random) % 4) == 0; // 25% 확률로 가게로 이동
+					gotoShop = (_random_dist(_random) % 5) == 0; // 25% 확률로 가게로 이동
 				if (gotoShop)
 					GetGroup()->ChangeState(StateType::goto_shop);
 				else

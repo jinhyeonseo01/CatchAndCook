@@ -6,6 +6,8 @@ class CookObject : public Component
 public:
 	shared_ptr<GameObject> selectedUI;
 
+	shared_ptr<GameObject> _CookUI_BeginText;
+
 	ItemData ownItemData;
 
 	int cookType = 0;
