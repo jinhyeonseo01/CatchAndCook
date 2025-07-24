@@ -58,6 +58,8 @@ void CookObject::Start()
 		{
 			_particleGenPos = object->_transform->GetWorldPosition();
 		}
+
+	
 	}
 
 	{
@@ -72,7 +74,26 @@ void CookObject::Start()
 
 			if (GetOwner()->HasTag(GameObjectTag::CookType_Bake))
 			{
+				vector<shared_ptr<Texture>> _textures;
+				std::wstring path = L"../Resources/Textures/Sprite/jin/fire/";
 
+				for (const auto& entry : fs::directory_iterator(path))
+				{
+					std::wstring& path2 = entry.path().filename().wstring();
+					shared_ptr<Texture> texture = ResourceManager::main->Load<Texture>(path + path2, path + path2);
+					_textures.push_back(texture);
+				}
+
+				for (auto& ele : objects)
+				{
+					ele->GetComponent<MeshRenderer>()->GetMaterial(0)->SetPass(RENDER_PASS::Forward);
+					ele->AddComponent<BilboardComponent>();
+					auto animationSpriteComponent = ele->AddComponent<AnimationSpriteComponent>();
+					animationSpriteComponent->SetTextures(_textures);
+					animationSpriteComponent->SetRoop(true);
+					ele->SetActiveSelf(false);
+					_animationSprites.push_back(ele);
+				}
 			}
 
 			if (GetOwner()->HasTag(GameObjectTag::CookType_Wash))
@@ -83,7 +104,6 @@ void CookObject::Start()
 			if (GetOwner()->HasTag(GameObjectTag::CookType_Boil))
 			{
 
-			
 				GetOwner()->GetChildByName(L"kk")->GetComponent<MeshRenderer>()->GetMaterial(0)->SetPass(RENDER_PASS::Forward);
 
 				vector<shared_ptr<Texture>> _textures;
@@ -157,20 +177,32 @@ void CookObject::Update()
 					}
 
 					if (GetOwner()->HasTag(GameObjectTag::CookType_Cut))
+					{
 						process->SetMaxTime(8);
+					}
 					if (GetOwner()->HasTag(GameObjectTag::CookType_Bake))
 					{
 						process->SetMaxTime(15);
 						process->type = 2;
+
+						//KSH
+						ParticleManager::main->GenParticle(20.0f, 200, 0.15f, 0.7f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::CookFire, ParticleColorType::Red, { 0,0,0,0 }
+						, ResourceManager::main->Get<Texture>(L"smokeTexture"));
 					}
 					if (GetOwner()->HasTag(GameObjectTag::CookType_Wash))
+					{
 						process->SetMaxTime(5);
+
+						//KSH
+						ParticleManager::main->GenParticle(8.0f, 200, 0.15f, 0.7f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::CookFire, ParticleColorType::Red, { 0,0,0,0 }
+						, ResourceManager::main->Get<Texture>(L"Icon_Water"));
+					}
 					if (GetOwner()->HasTag(GameObjectTag::CookType_Boil))
 					{
 						process->SetMaxTime(10);
 						process->type = 1;
 						//KSH
-						ParticleManager::main->GenParticle(16.0f, 200, 0.15f, 0.7f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::CookFire, ParticleColorType::Red, { 0,0,0,0 }
+						ParticleManager::main->GenParticle(15.0f, 200, 0.15f, 0.7f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::CookFire, ParticleColorType::Red, { 0,0,0,0 }
 						, ResourceManager::main->Get<Texture>(L"smokeTexture"));
 
 					}
@@ -189,6 +221,15 @@ void CookObject::Update()
 		{
 			cookType = 2;
 
+			if (GetOwner()->HasTag(GameObjectTag::CookType_Wash))
+			{
+				auto water = GetOwner()->GetChildByName(L"water");
+				if (water)
+				{
+					water->SetActiveSelf(true);
+				}
+			}
+	
 			//KSH
 			for (auto& ele : _animationSprites)
 			{
