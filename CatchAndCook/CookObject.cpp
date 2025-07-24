@@ -4,7 +4,6 @@
 #include "GUICookProgress.h"
 #include "GUIInventory.h"
 #include "GUIItemBox.h"
-#include "Item.h"
 #include "PhysicsComponent.h"
 #include "Transform.h"
 

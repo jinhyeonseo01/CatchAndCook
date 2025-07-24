@@ -216,16 +216,16 @@ void InGameGlobal::InitMainField()
 void InGameGlobal::AddItem(const wstring& name)
 {
 
-    auto it = _inventory.find(name);
+    //auto it = _inventory.find(name);
 
-    if (it != _inventory.end())
-    {
-        it->second.count += 1;
-    }
-    else
-    {
-        _inventory.emplace(name, Item(name, 1));
-    }
+    //if (it != _inventory.end())
+    //{
+    //    it->second.count += 1;
+    //}
+    //else
+    //{
+    //    _inventory.emplace(name, Item(name, 1));
+    //}
 
 
     //for (const auto& [itemName, item] : _inventory)
