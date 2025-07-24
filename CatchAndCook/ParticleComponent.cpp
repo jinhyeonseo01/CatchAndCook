@@ -88,7 +88,7 @@ void ParticleComponent::Destroy()
 }
 
 void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, float autoDestroyTime, int particleCount, float size, float speed ,const vec3& worldPos, const vec3& worldNormal, const ParticleMoveType& moveType, const ParticleColorType& colorType, shared_ptr<Texture> texture,
-	 const vec4& clipingColor)
+	 const vec4& clipingColor,float dirChangeTime)
 {
 	assert(particleCount <= 500);
 
@@ -97,6 +97,7 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 
 	_helperParams.paricleCount = particleCount;
 	_helperParams.clipingColor = clipingColor;
+	_helperParams.changeDirTime = dirChangeTime;
 
 	if (texture)
 	{

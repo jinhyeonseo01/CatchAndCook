@@ -3,7 +3,7 @@
 struct ParticleData
 {
 	vec3 color{};
-	int life{};
+	float lifeTime{};
 
 	vec3 worldPos{};
 	float size{};
@@ -13,12 +13,20 @@ struct ParticleData
 };
 
 
+
+
+
 struct ParicleHelperParams
 {
 	int paricleCount{};
 	int textureUse = 0;
 	vec2 padding{};
 	vec4 clipingColor{};
+
+	float changeDirTime{};
+	float pp1;
+	float pp2;
+	float pp3;
 };
 
 
@@ -66,7 +74,7 @@ public:
 private:
 	void SetParticle(shared_ptr<StructuredBuffer> strBuffer,
 		float autoDestroyTime,int particleCount,float size ,float speed, const vec3& worldPos,const  vec3& worldNormal , const ParticleMoveType& moveType, const ParticleColorType& colorType, shared_ptr<Texture> texture,
-		 const vec4& clipingColor);
+		 const vec4& clipingColor,float dirChangeTime);
 
 public:
 	void SetBlendFactor(const std::array<float, 4>& factor) { _blendFactor = factor; }

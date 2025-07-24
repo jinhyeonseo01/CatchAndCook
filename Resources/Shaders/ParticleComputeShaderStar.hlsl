@@ -1,7 +1,6 @@
 #include "Global_b0.hlsl"
 
 
-
 struct ParticleData
 {
     float3 color;
@@ -21,6 +20,11 @@ cbuffer ParicleHelperParams : register(b4)
     int g_textureUse;
     float2 g_paddingvv;
     float4 g_clipingColor;
+    
+    float changeDirTime;
+    float pp1;
+    float pp2;
+    float pp3;
 };
 
 RWStructuredBuffer<ParticleData> ParticleDatas : register(u0);
@@ -35,6 +39,20 @@ void CS_Main(int3 threadIndex : SV_DispatchThreadID)
     ParticleData data = ParticleDatas[threadIndex.x];
     
     data.worldPos = data.worldPos +  data.velocity * data.dir * dt;
+    
+    data.lifetime += dt;
+    
+    if (data.lifetime >= 0)
+    {
+        data.lifetime += dt;
+    }
+
+    if (data.lifetime > changeDirTime)
+    {
+        data.dir.y *= -1;
+        data.lifetime = -1.0f;
+    }
+    
     
     ParticleDatas[threadIndex.x] = data;
 }

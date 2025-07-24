@@ -560,6 +560,7 @@ void Scene::GlobalSetting()
 {
     auto& cmdList = Core::main->GetCmdList();
 
+
     CameraControl();
     //cout << CameraManager::main->GetActiveCamera()->GetCameraPos().y << endl;
 

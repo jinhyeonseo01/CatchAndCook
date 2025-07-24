@@ -195,7 +195,7 @@ void CookObject::Update()
 
 						//KSH
 						ParticleManager::main->GenParticle(8.0f, 200, 0.15f, 0.7f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::CookFire, ParticleColorType::Red, { 0,0,0,0 }
-						, ResourceManager::main->Get<Texture>(L"Icon_Water"));
+						, ResourceManager::main->Get<Texture>(L"bubble"));
 					}
 					if (GetOwner()->HasTag(GameObjectTag::CookType_Boil))
 					{
@@ -221,20 +221,15 @@ void CookObject::Update()
 		{
 			cookType = 2;
 
-			if (GetOwner()->HasTag(GameObjectTag::CookType_Wash))
-			{
-				auto water = GetOwner()->GetChildByName(L"water");
-				if (water)
-				{
-					water->SetActiveSelf(true);
-				}
-			}
-	
 			//KSH
 			for (auto& ele : _animationSprites)
 			{
 				ele->SetActiveSelf(false);
 			}
+
+			ParticleManager::main->GenParticle(50.0f, 200, 0.15f, 0.5f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
+			, ResourceManager::main->Get<Texture>(L"smokeTexture"), ResourceManager::main->Get<Shader>(L"ParticleComputeShaderStar"),nullptr,4.0f);
+
 		}
 		
 	}

@@ -88,7 +88,7 @@ void BufferManager::Init()
 
 	for(int i=0; i<MAX_FRAME_COUNT; ++i)
 	{
-		CreateBufferPool(i, BufferType::GlobalParam,sizeof(GlobalParam),1);
+		CreateBufferPool(i, BufferType::GlobalParam,sizeof(GlobalParam),5);
 		//CreateBufferPool(i, BufferType::TransformParam,sizeof(TransformParam),1000);
 		CreateBufferPool(i, BufferType::RectTransformParam, sizeof(RectTransformParam), 300);
 		//CreateBufferPool(i, BufferType::MateriaSubParam,sizeof(TestSubMaterialParam),1000);

@@ -4,10 +4,11 @@
 #include "Light_b3.hlsl"
 
 
+
 struct ParticleData
 {
     float3 color;
-    int life;
+    float lifetime;
 
     float3 worldPos;
     float size;
@@ -15,8 +16,6 @@ struct ParticleData
     float3 dir;
     float velocity;
 };
-
-
 struct VS_OUT
 {
     float4 pos : SV_POSITION;

@@ -51,6 +51,15 @@ void ResourceManager::CreateDefaultShaderKSH()
 
 	{
 
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		ShaderInfo info;
+		info._computeShader = true;
+		shader->Init(L"ParticleComputeShaderStar.hlsl", {}, ShaderArg{ {{"CS_Main","cs"}} }, info);
+		Add<Shader>(L"ParticleComputeShaderStar", shader);
+	}
+
+	{
+
 		shared_ptr<Shader> shader  = make_shared<Shader>();
 		ShaderInfo info;
 		info._computeShader = true;
