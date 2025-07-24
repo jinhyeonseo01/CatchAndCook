@@ -6,7 +6,8 @@
 #include "LightingTest.h"
 #include "Scene_Sea01.h"
 #include "UITestScene.h"
-
+#include "CameraManager.h"
+#include "Camera.h"
 std::unique_ptr<SceneManager> SceneManager::main = nullptr;
 
 shared_ptr<Scene> SceneManager::AddScene(SceneType type, bool initExecute)
@@ -54,6 +55,21 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 	std::vector<std::shared_ptr<GameObject>> dontObj;
 
 	Core::main->FenceCurrentFrame();
+	Sound::main->StopAll();
+
+	switch (nextScene->GetSceneType())
+	{
+	case SceneType::TestScene2:
+		Sound::main->Play("chrismas", 0.1f);
+		CameraManager::main->SetActiveCamera(CameraType::ComponentCamera);
+		break;
+	case SceneType::Sea01:
+		Sound::main->Play("underwater2", 0.4f);
+		CameraManager::main->SetActiveCamera(CameraType::SeaCamera);
+		break;
+	default:
+		break;
+	}
 
 	if (currentScene != nullptr)
 	{
@@ -75,7 +91,10 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 		if (removeExecute)
 			currentScene->Release();
 	}
+
+
 	_currentScene = nextScene;
+
 	if (initExecute)
 		_currentScene->Init();
 }

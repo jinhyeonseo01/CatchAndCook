@@ -11,7 +11,6 @@
 #include "Transform.h"
 
 
-
 std::unordered_map<std::string, std::string> SkinnedHierarchy::_boneNameToHumanMappingTable;
 
 SkinnedHierarchy::~SkinnedHierarchy()
@@ -36,8 +35,6 @@ void SkinnedHierarchy::Start()
 {
 	Component::Start();
 
-
-
 	//for (auto& renderer : GetOwner()->GetComponentsWithChilds<SkinnedMeshRenderer>())
 	//	renderer->AddCbufferSetter(GetCast<SkinnedHierarchy>());
 	for (auto& renderer : GetOwner()->GetComponentsWithChilds<SkinnedMeshRenderer>())
@@ -49,7 +46,7 @@ void SkinnedHierarchy::Start()
 void SkinnedHierarchy::Update()
 {
 	Component::Update();
-	auto o = _rootBone.lock();
+	//auto o = _rootBone.lock();
 }
 
 
@@ -74,6 +71,7 @@ void SkinnedHierarchy::Update2()
 			if (_animation->IsEndTime(_animation->CalculateTime(_animationTime))) // 루프가 아닐때 멈추기
 				Stop();
 		}
+
 		if (_nextAnimation)
 		{
 			_prevAnimationBlendTime = _animationBlendTime;
@@ -156,10 +154,14 @@ double SkinnedHierarchy::AnimateBlend(const std::shared_ptr<Animation>& currentA
 	if (!currentAnim)
 		return 0;
 
+	if (nextAnim != nullptr)
+	{
+		_blendEnd = false;
+	}
+
 	double currentAnimTime;
 	double nextAnimTime;
 	auto blendInterpolValue = 0.0;
-
 
 	if (currentAnim) {
 		currentAnimTime = currentAnim->CalculateTime(_animationTime);
@@ -242,6 +244,7 @@ double SkinnedHierarchy::AnimateBlend(const std::shared_ptr<Animation>& currentA
 		_nextAnimation = nullptr;
 		_animationBlendTime = 0;
 		_prevAnimationBlendTime = 0;
+		_blendEnd = true;
 	}
 
 	return blendInterpolValue;
@@ -306,6 +309,7 @@ Vector3 SkinnedHierarchy::BlendDeltaPosition(const std::string& name,const std::
 			}
 		}
 	}
+
 	return finalAnim_interpolatedPosition;
 }
 

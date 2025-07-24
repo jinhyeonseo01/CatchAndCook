@@ -14,6 +14,7 @@
 #include "PathFinder.h"
 #include "RectTransform.h"
 #include "Volumetric.h"
+#include "BoatController.h"
 unique_ptr<ImguiManager> ImguiManager::main;
 
 ImguiManager::~ImguiManager()
@@ -48,66 +49,149 @@ void ImguiManager::Init()
 
 void ImguiManager::Render()
 {
-	ImGui_ImplDX12_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
-
-	Debug();
-	DebugJin();
-
-    if (playerHeightOffset)
+    if (Input::main->GetKeyDown(KeyCode::F5))
     {
-        ImGui::SliderFloat("playerHeightOffset", playerHeightOffset, 0.0f, 6.0f);
-        ImGui::SliderFloat("playerForwardOffset", playerForwardOffset,-6.0f, 6.0f);
-		ImGui::SliderFloat("cameraPitchOffset", cameraPitchOffset, -90.0f, 90.0f);
-        ImGui::SliderFloat("cameraYawOffset", cameraYawOffset, -10.0f, 10.0f);
+        _IMGUION = !_IMGUION;
     }
 
-	ImGui::Render();
-	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), Core::main->GetCmdList().Get());
-}
+    if (!_IMGUION)
+        return;
 
-void ImguiManager::Debug()
-{
-	ImGui::Begin("GUI");
-    ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
 
-    if (ImGui::CollapsingHeader("Debug"))
+
+    ImGui_ImplDX12_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+
+
+    ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(300, 500), ImGuiCond_FirstUseEver);
+
+    ImGui::Begin("Main GUI", nullptr, ImGuiWindowFlags_NoMove );
+
+    if (ImGui::BeginTabBar("MainTabs"))
     {
-        ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
-		ImGui::Text("ForwardCount: %d", g_debug_forward_count);
-        ImGui::Text("DeferredCount: %d", g_debug_deferred_count);
-		ImGui::Text("ForwardCullingCount: %d", g_debug_forward_culling_count);
-		ImGui::Text("DeferredCullingCount: %d", g_debug_deferred_culling_count);
-        ImGui::Text("shadowDrawCall: %d", g_debug_shadow_draw_call);
-        ImGui::Text("DrawCall: %d", g_debug_draw_call);
+        if (ImGui::BeginTabItem("Debug"))
+        {
+            ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
+            ImGui::Text("ForwardCount: %d", g_debug_forward_count);
+            ImGui::Text("DeferredCount: %d", g_debug_deferred_count);
+            ImGui::Text("ForwardCullingCount: %d", g_debug_forward_culling_count);
+            ImGui::Text("DeferredCullingCount: %d", g_debug_deferred_culling_count);
+            ImGui::Text("shadowDrawCall: %d", g_debug_shadow_draw_call);
+            ImGui::Text("DrawCall: %d", g_debug_draw_call);
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("Gizmo"))
+        {
+            GizmoController();
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("Objects"))
+        {
+            SeaController();
+            LightController();
+            BoidMove();
+            Sky();
+            LimLightControl();
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("Compute"))
+        {
+            ComputeController();
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("Player Camera"))
+        {
+            if (playerHeightOffset)
+            {
+                ImGui::SliderFloat("playerHeightOffset", playerHeightOffset, 0.0f, 6.0f);
+                ImGui::SliderFloat("playerForwardOffset", playerForwardOffset, -6.0f, 6.0f);
+                ImGui::SliderFloat("cameraPitchOffset", cameraPitchOffset, -90.0f, 90.0f);
+                ImGui::SliderFloat("cameraYawOffset", cameraYawOffset, -10.0f, 10.0f);
+            }
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("Boat (Scene2 Only)"))
+        {
+            if (SceneManager::main->GetCurrentScene()->GetSceneType() == SceneType::TestScene2)
+            {
+                ImGui::SliderFloat("heightOffset", &BoatController::heightOffset, 0.0f, 50.0f);
+                ImGui::SliderFloat("SpringArmLength", &BoatController::SpringArmLength, 0.0f, 50.0f);
+                ImGui::SliderFloat3("boatPitch", &BoatController::_pitch, 0.0f, 360.0f);
+            }
+            else
+            {
+                ImGui::Text("Not in TestScene2");
+            }
+
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("Camera Select"))
+        {
+            static CameraType selectedCameraType = CameraType::DebugCamera;
+
+            auto& cameras = CameraManager::main->GetCameraAlls();
+
+            static std::vector<CameraType> cameraKeys;
+            static std::vector<const char*> cameraNames;
+
+            if (cameraKeys.size() != cameras.size())
+            {
+                cameraKeys.clear();
+                cameraNames.clear();
+
+                for (auto& [key, cam] : cameras)
+                {
+                    cameraKeys.push_back(key);
+                    cameraNames.push_back(CameraManager::main->CameraTypeToString(key));
+                }
+            }
+
+            int currentIndex = 0;
+            for (int i = 0; i < (int)cameraKeys.size(); ++i)
+            {
+                if (cameraKeys[i] == selectedCameraType)
+                {
+                    currentIndex = i;
+                    break;
+                }
+            }
+
+            if (ImGui::Combo("Select Camera", &currentIndex, cameraNames.data(), (int)cameraNames.size()))
+            {
+                selectedCameraType = cameraKeys[currentIndex];
+                CameraManager::main->SetActiveCamera(selectedCameraType);
+            }
+
+            ImGui::EndTabItem();
+        }
+
+    /*    if (ImGui::BeginTabItem("Jin"))
+        {
+            Test();
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("Inspector"))
+        {
+            Test2();
+            ImGui::EndTabItem();
+        }*/
+
+        ImGui::EndTabBar();
     }
 
-	if (ImGui::CollapsingHeader("Gizmo Controller"))
-	{
-        GizmoController();
-	}
-
-    if (ImGui::CollapsingHeader("Object Controller"))
-    {
-        SeaController();
-        LightController();
-        BoidMove();
-        Sky();
-        VolumetricTest();
-      
-    };
-
-	if (ImGui::CollapsingHeader("Compute Controller"))
-	{
-		ComputeController();
-	}
-
-
-	ImGui::End();
-
+    ImGui::End();
+    ImGui::Render();
+    ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), Core::main->GetCmdList().Get());
 }
-
 
 void ImguiManager::BoidMove()
 {
@@ -192,117 +276,89 @@ void ImguiManager::GizmoController()
 
 void ImguiManager::ComputeController()
 {
-
-    if (ImGui::Button("Blur ON/OFF"))
+    if (ImGui::CollapsingHeader("Post Effects"))
     {
-        *_blurPtr = !(*_blurPtr);
+        if (ImGui::Checkbox("Blur", _blurPtr)) {}
+        if (ImGui::Checkbox("Bloom", _bloomPtr)) {}
+        if (ImGui::Checkbox("SSAO", _ssaoOnOff)) {}
+        if (ImGui::Checkbox("Color Grading", _colorGradingOnOff)) {}
+        if (ImGui::Checkbox("FXAA", _fxaa)) {}
+        if (ImGui::Checkbox("DOF", _dofPtr)) {}
+        if (ImGui::Checkbox("Vignette", mainField_vignette)) {}
     }
 
-    if (ImGui::Button("Bloom ON/OFF"))
+    if (ImGui::CollapsingHeader("Lighting & Shadow"))
     {
-        *_bloomPtr = !(*_bloomPtr);
+        if (ImGui::Checkbox("Shadow", _shadowOnOff)) {}
+        if (ImGui::Checkbox("Baked GI", _bakedGIOnOff)) {}
+        if (ImGui::Checkbox("God Ray", _godRayPtr)) {}
+        if (ImGui::Checkbox("Fog", mainField_fog)) {}
+        if (ImGui::Checkbox("Total Toggle", mainField_total))
+        {
+            *_shadowOnOff = *mainField_total;
+            *_bakedGIOnOff = *mainField_total;
+        }
     }
 
-    if (ImGui::Button("Shadow ON/OFF"))
+    if (ImGui::CollapsingHeader("Depth Fog Debug"))
     {
-        *_shadowOnOff = !(*_shadowOnOff);
+        static bool showDepthRender = false;
+        ImGui::Checkbox("Show Depth Fog UI", &showDepthRender);
+
+        if (showDepthRender)
+        {
+            ImGui::SliderInt("Render Type", &_fogParam->depthRendering, 0, 2);
+            ImGui::SliderFloat("Fog Max", &_fogParam->g_fogMax, 0.0f, 5000.0f);
+            ImGui::SliderFloat("Fog Min", &_fogParam->g_fogMin, 0.0f, 5000.0f);
+            ImGui::SliderFloat3("Fog Color", &_fogParam->g_fogColor.x, 0.0f, 1.0f);
+            ImGui::SliderFloat("Fog Power", &_fogParam->power, 0.0f, 30.0f);
+        }
     }
 
-    if (ImGui::Button("SSAO ON/OFF"))
+    if (ImGui::CollapsingHeader("Underwater Effect"))
     {
-        *_ssaoOnOff = !(*_ssaoOnOff);
-    }
-    if (ImGui::Button("ColorGrading ON/OFF"))
-    {
-        *_colorGradingOnOff = !(*_colorGradingOnOff);
+        if (ImGui::Checkbox("Enable Underwater", (bool*)&_underWaterParam->g_on))
+        {
+            _underWaterParam->g_on = _underWaterParam->g_on ? 1 : -1;
+        }
+
+        if (_underWaterParam->g_on == 1)
+        {
+            ImGui::SliderFloat3("Fog Color", &_underWaterParam->g_fogColor.x, 0.0f, 1.0f);
+            ImGui::SliderFloat("Fog Power", &_underWaterParam->g_fog_power, 0.0f, 30.0f);
+            ImGui::SliderFloat("Fog Max", &_underWaterParam->g_fogMax, 0.0f, 5000.0f);
+            ImGui::SliderFloat("Fog Min", &_underWaterParam->g_fogMin, 0.0f, 5000.0f);
+            ImGui::SliderFloat3("Underwater Color", &_underWaterParam->g_underWaterColor.x, 0.0f, 1.0f);
+        }
     }
 
-    if (ImGui::Button("MainField Fog ON/OFF"))
+    if (ImGui::CollapsingHeader("Scattering"))
     {
-        *mainField_fog = !(*mainField_fog);
-    }
-    if (ImGui::Button("MainField GodRay ON/OFF"))
-    {
-        *_godRayPtr = !(*_godRayPtr);
-    }
-    if (ImGui::Button("Vignette ON/OFF"))
-    {
-        *mainField_vignette = !(*mainField_vignette);
-    }
-    if (ImGui::Button("MainField BakedGI ON/OFF"))
-    {
-        *_bakedGIOnOff = !(*_bakedGIOnOff);
-    }
-    if (ImGui::Button("MainField FXAA ON/OFF"))
-    {
-    	*_fxaa = !(*_fxaa);
-    }
-    if (ImGui::Button("MainField DOF ON/OFF"))
-    {
-        *_dofPtr = !(*_dofPtr);
-    }
+        if (ImGui::Checkbox("Enable Scattering", _scattering)) {}
 
- 
-    if (ImGui::Button("MainField Total ON/OFF"))
-    {
-        *mainField_total = !(*mainField_total);
-        *_shadowOnOff = *mainField_total;
-        *_bakedGIOnOff = *mainField_total;
+        if (*_scattering)
+        {
+            ImGui::SliderFloat("Phase G", &_scatteringData->phaseG, 0.0f, 1.0f);
+            ImGui::SliderFloat("Absorption", &_scatteringData->absorption, 0.0f, 1000.0f);
+            ImGui::SliderFloat("Density", &_scatteringData->density, 0.0f, 15.0f);
+            ImGui::SliderFloat3("Scatter Color", &_scatteringData->scatterColor.x, 0.0f, 1.0f);
+            ImGui::SliderFloat3("direction ", &_scatteringData->direction.x, -1.0f, 1.0f);
+        }
     }
-
-
-    static bool showDepthRender = false;
-    if (ImGui::Button("Depth Render"))
-    {
-        showDepthRender = !showDepthRender;
-    }
-    if (showDepthRender)
-    {
-        ImGui::SliderInt("Render Type", &_fogParam->depthRendering, 0, 2);
-        ImGui::SliderFloat("Fog Max", &_fogParam->g_fogMax, 0.0f, 5000.0f);
-        ImGui::SliderFloat("Fog Min", &_fogParam->g_fogMin, 0.0f, 5000.0f);
-        ImGui::SliderFloat3("Fog Color", &_fogParam->g_fogColor.x, 0.0f, 1.0f);
-        ImGui::SliderFloat("Fog Power", &_fogParam->power, 0.0f, 30.0f);
-    }
-
-    if (ImGui::Button("Underwater Effect"))
-    {
-        _underWaterParam->g_on *= -1;
-    }
-    if (_underWaterParam->g_on == 1)
-    {
-        ImGui::SliderFloat3("Underwater Fog Color", &_underWaterParam->g_fogColor.x, 0.0f, 1.0f);
-        ImGui::SliderFloat("Underwater Fog Power", &_underWaterParam->g_fog_power, 0.0f, 30.0f);
-        ImGui::SliderFloat("Underwater Fog Max", &_underWaterParam->g_fogMax, 0.0f, 5000.0f);
-        ImGui::SliderFloat("Underwater Fog Min", &_underWaterParam->g_fogMin, 0.0f, 5000.0f);
-        ImGui::SliderFloat3("Underwater Color", &_underWaterParam->g_underWaterColor.x, 0.0f, 1.0f);
-    }
-
-	if (ImGui::Button("Scattering ON/OFF"))
-	{
-		*_scattering = !(*_scattering);
-	}
-
-	if (*_scattering)
-	{
-  
-		ImGui::SliderFloat("phaseG", &_scatteringData->phaseG, 0.0f, 1.0f);
-		ImGui::SliderFloat("absorption", &_scatteringData->absorption, 0.0f, 1000.0f);
-		ImGui::SliderFloat("DENSITY", &_scatteringData->density, 0.0f, 15.0f);
-		ImGui::SliderFloat3("scatterColor", &_scatteringData->scatterColor.x, 0.0f, 1.0f);
-	}
-
-
 }
+
 
 void ImguiManager::LightController()
 {
     if (ImGui::TreeNode("Lighting"))
     {
-        size_t size = LightManager::main->_lights.size();
+        auto& lights = LightManager::main->GetLights();
+
+        size_t size = lights.size();
+
         for (size_t i = 0; i < size; i++)
         {
-            auto light = LightManager::main->_lights[i];
+            auto light = lights[i];
 
             if (ImGui::TreeNode((std::string("Light ") + std::to_string(i)).c_str()))
             {
@@ -449,20 +505,6 @@ void ImguiManager::SeaController()
 
 
 
-void ImguiManager::DebugJin()
-{
-    ImGui::Begin("Jin");
-    ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
-    Test();
-    ImGui::End();
-
-    ImGui::Begin("Inspector");
-    ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
-    Test2();
-    ImGui::End();
-}
-
-
 float a = 0;
 std::weak_ptr<GameObject> selectGameObject;
 
@@ -572,22 +614,14 @@ void ImguiManager::Test2()
     }
 }
 
-void ImguiManager::VolumetricTest()
+void ImguiManager::LimLightControl()
 {
-    if (_volumetricData != nullptr)
-    {
-        if (ImGui::TreeNode("_volumetricData"))
+        if (ImGui::TreeNode("RimLightController"))
         {
-            ImGui::SliderFloat("Absorption", &_volumetricData->absorption, 0.0f, 10.0f);
-            ImGui::SliderFloat3("color", &_volumetricData->fogColor.x, 0, 1.0f);
-            ImGui::SliderInt("numSlice", &_volumetricData->numSlices, 0.0f, 50);
-            ImGui::SliderFloat("phase", &_volumetricData->phaseG, 0.0f, 10.0f);
-            ImGui::SliderFloat("waterHeight", &_volumetricData->waterHeight, 0.0f, 3000.0f);
-            ImGui::SliderInt("numstep", &_volumetricData->numSteps, 0.0f, 300);
-            ImGui::SliderFloat("stepSize", &_volumetricData->stepSize, 0.0f, 3.0f);
+            ImGui::SliderFloat("rimPower", &LightManager::main->_lightParmas.rimPower, 0.0f, 50.0f);
+            ImGui::SliderFloat("rimStrength", &LightManager::main->_lightParmas.rimStrength, 0.0f, 50.0f);
             ImGui::TreePop();
-        }
-    }
+        }   
 }
 
 void ImguiManager::Test()
@@ -638,34 +672,14 @@ void ImguiManager::Test()
             }
             ImGui::TreePop();
         }
-        /*
-        if (_seaParam)
-        {
 
-            if (ImGui::TreeNode("Anim"))
-            {
-
-                ImGui::SliderFloat("a", &a, 0, 1);
-            }
-        }
-        */
     }
     if (ImGui::CollapsingHeader("Jin"))
     {
 	    if (ImGui::TreeNode("Jin Test"))
 	    {
 	        ImGui::SliderFloat("testValue", &testValue, 0, 4);
-	        /*
-	        if (_seaParam)
-	        {
-
-	            if (ImGui::TreeNode("Anim"))
-	            {
-
-	                ImGui::SliderFloat("a", &a, 0, 1);
-	            }
-	        }
-			*/
+	
 	        ImGui::TreePop();
 	    }
     }

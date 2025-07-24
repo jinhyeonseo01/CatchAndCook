@@ -10,9 +10,9 @@ namespace RENDER_PASS
 		Forward = 1 << 2,
 		Transparent = 1 << 3,
 		PostProcessing = 1 << 4,
-		NoEffectPostProcessing = 1 << 5,
-		TransparentAfterPP = 1 << 6,
-		UI = 1 << 7,
+		NoEffectForwardPostProcessing = 1 << 5,
+		UI = 1 << 6,
+		ParticlePass = 1<<7,
 		UI2 = 1 << 8,
 		Debug = 1 << 9,
 	};
@@ -23,21 +23,21 @@ namespace RENDER_PASS
 		return static_cast<PASS>(static_cast<int>(a) | static_cast<int>(b));
 	}
 
-
 	inline bool HasFlag(PASS value, PASS flag) {
 		return (static_cast<int>(value) & static_cast<int>(flag)) != 0;
 	}
 
-	inline int ToIndex(PASS pass) {
+	inline int ToIndex(PASS pass) 
+	{
 		switch (pass) {
 		case Shadow: return 0;
 		case Deferred: return 1;
 		case Forward: return 2;
 		case Transparent: return 3;
 		case PostProcessing: return 4;
-		case NoEffectPostProcessing: return 5;
-		case TransparentAfterPP: return 6;
-		case UI: return 7;
+		case NoEffectForwardPostProcessing: return 5;
+		case UI: return 6;
+		case ParticlePass: return 7;
 		case UI2: return 8;
 		case Debug: return 9;
 		default: assert(false && "Invalid PASS value");

@@ -102,52 +102,62 @@ void ColliderManager::AddCollider(const std::shared_ptr<Collider>& collider)
 {
 	auto occupiedCells = GetOccupiedCells(collider);
 
+	const auto& SceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
+
 	for (const auto& cell : occupiedCells)
 	{
 		if (collider->GetOwner()->GetType() == GameObjectType::Static)
 		{
-			if(std::ranges::find(_staticColliderGrids[cell], collider) == _staticColliderGrids[cell].end())
-				_staticColliderGrids[cell].push_back(collider);
+			if(std::ranges::find(_staticColliderGrids[SceneType][cell], collider) == _staticColliderGrids[SceneType][cell].end())
+				_staticColliderGrids[SceneType][cell].push_back(collider);
 		}
 		else if (collider->GetOwner()->GetType() == GameObjectType::Dynamic)
 		{
-			if (std::ranges::find(_dynamicColliderList, collider) == _dynamicColliderList.end())
-				_dynamicColliderList.push_back(collider);
+			if (std::ranges::find(_dynamicColliderList[SceneType], collider) == _dynamicColliderList[SceneType].end())
+				_dynamicColliderList[SceneType].push_back(collider);
 			/*if (std::ranges::find(_dynamicColliderGrids[cell], collider) == _dynamicColliderGrids[cell].end())
 				_dynamicColliderGrids[cell].push_back(collider);
 			_dynamicColliderCashing[collider].push_back(cell);*/
 		}
 	}
 
-	if (_colliderLinkTable.find(collider) == _colliderLinkTable.end()) {
-		_colliderLinkTable[collider] = {};
+	if (_colliderLinkTable[SceneType].find(collider) == _colliderLinkTable[SceneType].end()) {
+		_colliderLinkTable[SceneType][collider] = {};
 	}
 }
 
 void ColliderManager::AddColliderForRay(const std::shared_ptr<Collider>& collider)
 {
-	auto it = std::ranges::find(_collidersForRay, collider);
-	if (it == _collidersForRay.end())
-		_collidersForRay.push_back(collider);
+	const auto& SceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
+
+	auto it = std::ranges::find(_collidersForRay[SceneType], collider);
+	if (it == _collidersForRay[SceneType].end())
+		_collidersForRay[SceneType].push_back(collider);
 }
 
 void ColliderManager::RemoveAColliderForRay(const std::shared_ptr<Collider>& collider)
 {
-	auto it = std::ranges::find(_collidersForRay, collider);
-	if (it != _collidersForRay.end())
-		_collidersForRay.erase(it);
+
+	const auto& SceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
+
+	auto it = std::ranges::find(_collidersForRay[SceneType], collider);
+	if (it != _collidersForRay[SceneType].end())
+		_collidersForRay[SceneType].erase(it);
 }
 
 void ColliderManager::RemoveCollider(const std::shared_ptr<Collider>& collider)
 {
 	auto occupiedCells = GetOccupiedCells(collider);
+
+	const auto& SceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
+
 	for (const auto& cell : occupiedCells)
 	{
 		if (collider->GetOwner()->GetType() == GameObjectType::Static)
 		{
-			auto it = _staticColliderGrids.find(cell);
+			auto it = _staticColliderGrids[SceneType].find(cell);
 
-			if (it != _staticColliderGrids.end())
+			if (it != _staticColliderGrids[SceneType].end())
 			{
 				auto& colliders = it->second;
 				auto colliderIt = std::ranges::find(colliders, collider);
@@ -158,9 +168,9 @@ void ColliderManager::RemoveCollider(const std::shared_ptr<Collider>& collider)
 
 		else if (collider->GetOwner()->GetType() == GameObjectType::Dynamic)
 		{
-			auto it = _dynamicColliderGrids.find(cell);
+			auto it = _dynamicColliderGrids[SceneType].find(cell);
 
-			if (it != _dynamicColliderGrids.end())
+			if (it != _dynamicColliderGrids[SceneType].end())
 			{
 				auto& colliders = it->second;
 				auto colliderIt = std::ranges::find(colliders, collider);
@@ -168,25 +178,46 @@ void ColliderManager::RemoveCollider(const std::shared_ptr<Collider>& collider)
 					colliders.erase(colliderIt);
 			}
 
-			auto it2 = std::ranges::find(_dynamicColliderList, collider);
-			if (it2 != _dynamicColliderList.end())
-				_dynamicColliderList.erase(it2);
+			auto it2 = std::ranges::find(_dynamicColliderList[SceneType], collider);
+			if (it2 != _dynamicColliderList[SceneType].end())
+				_dynamicColliderList[SceneType].erase(it2);
 		}
 	}
 
-	auto colliderIt = _colliderLinkTable.find(collider);
+	auto colliderIt = _colliderLinkTable[SceneType].find(collider);
 
-	if (colliderIt != _colliderLinkTable.end())
+	if (colliderIt != _colliderLinkTable[SceneType].end())
 	{
 		for (auto& other : colliderIt->second)
 		{
 			CallBackEnd(collider, other);
 			CallBackEnd(other, collider);
-			_colliderLinkTable[other].erase(collider);
+			_colliderLinkTable[SceneType][other].erase(collider);
 		}
-		_colliderLinkTable.erase(collider);
+		_colliderLinkTable[SceneType].erase(collider);
 	}
+
+	{
+		auto& list = _dynamicColliderList[SceneType];
+
+		list.erase(std::remove(list.begin(), list.end(), collider),list.end());
+
+	}
+	{
+
+		auto& list = _collidersForRay[SceneType];
+		list.erase(std::remove(list.begin(), list.end(), collider), list.end());
+	}
+
+	{
+		auto& list = _dynamicColliderCashing[SceneType];
+		list.erase(collider); 
+	}
+
+
 }
+
+
 
 std::unordered_set<std::shared_ptr<Collider>> ColliderManager::GetPotentialCollisions(std::shared_ptr<Collider>& collider) 
 {
@@ -194,23 +225,23 @@ std::unordered_set<std::shared_ptr<Collider>> ColliderManager::GetPotentialColli
 	potentialCollisions.reserve(32);
 
 	vector<vec3> occupiedCells;
+	const auto& SceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
 
-	if (_dynamicColliderCashing.find(collider) != _dynamicColliderCashing.end())
+	if (_dynamicColliderCashing[SceneType].find(collider) != _dynamicColliderCashing[SceneType].end())
 	{
-		occupiedCells = (_dynamicColliderCashing[collider]);
+		occupiedCells = (_dynamicColliderCashing[SceneType][collider]);
 	}
 	else
 	{
-	/*	cout << "못찾음" << endl;*/
 		occupiedCells = GetOccupiedCells(collider);
 	}
 
 	for (const auto& cell : occupiedCells)
 	{
 		{
-			auto it = _dynamicColliderGrids.find(cell);
+			auto it = _dynamicColliderGrids[SceneType].find(cell);
 
-			if (it != _dynamicColliderGrids.end())
+			if (it != _dynamicColliderGrids[SceneType].end())
 			{
 				auto& colliders = it->second;
 				potentialCollisions.insert(colliders.begin(), colliders.end());
@@ -218,9 +249,9 @@ std::unordered_set<std::shared_ptr<Collider>> ColliderManager::GetPotentialColli
 		}
 
 		{
-			auto it = _staticColliderGrids.find(cell);
+			auto it = _staticColliderGrids[SceneType].find(cell);
 
-			if (it != _staticColliderGrids.end())
+			if (it != _staticColliderGrids[SceneType].end())
 			{
 				auto& colliders = it->second;
 				potentialCollisions.insert(colliders.begin(), colliders.end());
@@ -237,13 +268,14 @@ std::unordered_set<std::shared_ptr<Collider>> ColliderManager::GetPotentialColli
 	std::unordered_set<std::shared_ptr<Collider>> potentialCollisions;
 	potentialCollisions.reserve(32);
 	const auto& occupiedCells = vec;
+	const auto& SceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
 
 	for (const auto& cell : occupiedCells)
 	{
 		{
-			auto it = _dynamicColliderGrids.find(cell);
+			auto it = _dynamicColliderGrids[SceneType].find(cell);
 
-			if (it != _dynamicColliderGrids.end())
+			if (it != _dynamicColliderGrids[SceneType].end())
 			{
 				auto& colliders = it->second;
 				potentialCollisions.insert(colliders.begin(), colliders.end());
@@ -251,9 +283,9 @@ std::unordered_set<std::shared_ptr<Collider>> ColliderManager::GetPotentialColli
 		}
 
 		{
-			auto it = _staticColliderGrids.find(cell);
+			auto it = _staticColliderGrids[SceneType].find(cell);
 
-			if (it != _staticColliderGrids.end())
+			if (it != _staticColliderGrids[SceneType].end())
 			{
 				auto& colliders = it->second;
 				potentialCollisions.insert(colliders.begin(), colliders.end());
@@ -265,11 +297,72 @@ std::unordered_set<std::shared_ptr<Collider>> ColliderManager::GetPotentialColli
 	return potentialCollisions;
 }
 
+void ColliderManager::DebugPrint()
+{
+	
+	static int count = 0;
+
+	{
+
+		for (auto& [pos, vec] : _staticColliderGrids)
+		{
+			count += vec.size();
+		}
+		cout << "_staticColliderGrids : " << count << endl;
+		count = 0;
+	}
+
+
+	{
+
+		for (auto& [pos, vec] : _dynamicColliderGrids)
+		{
+			count += vec.size();
+
+		}
+		cout << "_dynamicColliderGrids : " << count << endl;
+		count = 0;
+	}
+
+	{
+
+		for (auto& [pos, vec] : _dynamicColliderCashing)
+		{
+			count += vec.size();
+		}
+		cout << "_dynamicColliderCashing : " << count << endl;
+		count = 0;
+	}
+
+	{
+
+		
+		count += _dynamicColliderList.size();
+		cout << "_dynamicColliderList : " << count << endl;
+		count = 0;
+	}
+
+	{
+
+		for (auto& [pos, vec] : _colliderLinkTable)
+		{
+			count += vec.size();
+		}
+		cout << "_colliderLinkTable : " << count << endl;
+		count = 0;
+	}
+
+
+}
+
 void ColliderManager::Update()
 {
+
+	const auto& SceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
+
 	if (HasGizmoFlag(Gizmo::main->_flags, GizmoFlags::DivideSpace))
 	{
-		for (auto& [cell, colliders] : _staticColliderGrids)
+		for (auto& [cell, colliders] : _staticColliderGrids[SceneType])
 		{
 			for (auto& collider : colliders)
 			{
@@ -280,12 +373,15 @@ void ColliderManager::Update()
 
 	UpdateDynamicCells();
 
-	for (auto& [cell, colliders] : _dynamicColliderGrids)
+	for (auto& [cell, colliders] : _dynamicColliderGrids[SceneType])
 	{
-		if (colliders.size() <= 1  && _staticColliderGrids[cell].size() ==0 ) continue;
+	
+		if (colliders.size() <= 1  && _staticColliderGrids[SceneType][cell].size() ==0 ) continue;
 
 		for (auto& collider : colliders)
 		{
+		/*	if (collider == nullptr) continue;*/
+
 			VisualizeOccupiedCells(cell,collider);
 
 			auto potentialCollisions = GetPotentialCollisions(collider);
@@ -296,20 +392,20 @@ void ColliderManager::Update()
 
 				if (TotalCheckCollision(collider, other))
 				{
-					if (_colliderLinkTable[collider].contains(other) == false)
+					if (_colliderLinkTable[SceneType][collider].contains(other) == false)
 					{
-						_colliderLinkTable[collider].insert(other);
-						_colliderLinkTable[other].insert(collider);
+						_colliderLinkTable[SceneType][collider].insert(other);
+						_colliderLinkTable[SceneType][other].insert(collider);
 						CallBackBegin(collider, other);
 						CallBackBegin(other, collider);
 					}
 				}
 				else
 				{
-					if (_colliderLinkTable[collider].contains(other))
+					if (_colliderLinkTable[SceneType][collider].contains(other))
 					{
-						_colliderLinkTable[collider].erase(other);
-						_colliderLinkTable[other].erase(collider);
+						_colliderLinkTable[SceneType][collider].erase(other);
+						_colliderLinkTable[SceneType][other].erase(collider);
 						CallBackEnd(collider, other);
 						CallBackEnd(other, collider);
 					}
@@ -324,19 +420,22 @@ void ColliderManager::Update()
 
 void ColliderManager::UpdateDynamicCells()
 {
-	for (auto& collider : _dynamicColliderList)
+
+	const auto& SceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
+
+	for (auto& collider : _dynamicColliderList[SceneType])
 	{
 		auto occupiedCells = GetOccupiedCells(collider);
 
 		for (const auto& cell : occupiedCells)
 		{
-			if (std::ranges::find(_dynamicColliderGrids[cell], collider) == _dynamicColliderGrids[cell].end())
+			if (std::ranges::find(_dynamicColliderGrids[SceneType][cell], collider) == _dynamicColliderGrids[SceneType][cell].end())
 			{
-				_dynamicColliderGrids[cell].push_back(collider);
+				_dynamicColliderGrids[SceneType][cell].push_back(collider);
 			}
-			if (std::ranges::find(_dynamicColliderCashing[collider], cell) == _dynamicColliderCashing[collider].end())
+			if (std::ranges::find(_dynamicColliderCashing[SceneType][collider], cell) == _dynamicColliderCashing[SceneType][collider].end())
 			{
-				_dynamicColliderCashing[collider].push_back(cell);
+				_dynamicColliderCashing[SceneType][collider].push_back(cell);
 			}
 		}
 	}
@@ -397,15 +496,20 @@ bool ColliderManager::CollisionChecksDirect(const BoundingData& bound, std::vect
 //무언가와 충돌하고 있는지 체크
 bool ColliderManager::IsCollision(const std::shared_ptr<Collider>& src)
 {
-	auto it = _colliderLinkTable.find(src);
-	return (it != _colliderLinkTable.end() && !it->second.empty());
+	const auto& SceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
+
+	auto it = _colliderLinkTable[SceneType].find(src);
+	return (it != _colliderLinkTable[SceneType].end() && !it->second.empty());
 }
 //특정누군가와 충돌하고 있는지 체크
 
 bool ColliderManager::IsCollision(const std::shared_ptr<Collider>& src, const std::shared_ptr<Collider>& dest)
 {
-	auto it = _colliderLinkTable.find(src);
-	if (it != _colliderLinkTable.end())
+	const auto& SceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
+
+
+	auto it = _colliderLinkTable[SceneType].find(src);
+	if (it != _colliderLinkTable[SceneType].end())
 		return it->second.contains(dest);
 
 	return IsCollision(dest);
@@ -413,7 +517,9 @@ bool ColliderManager::IsCollision(const std::shared_ptr<Collider>& src, const st
 
 std::unordered_set<std::shared_ptr<Collider>>& ColliderManager::GetCollisionList(const std::shared_ptr<Collider>& src)
 {
-	return _colliderLinkTable.find(src)->second;
+	const auto& SceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
+
+	return _colliderLinkTable[SceneType].find(src)->second;
 }
 
 bool ColliderManager::TotalCheckCollision(const std::shared_ptr<Collider>& src, const std::shared_ptr<Collider>& dest)
@@ -440,8 +546,6 @@ void ColliderManager::VisualizeOccupiedCells(const vec3& cell, const shared_ptr<
 	}
 }
 
-
-
 void ColliderManager::CallBackBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
 {
 	auto& components = collider->GetOwner()->GetComponentAll();
@@ -466,40 +570,83 @@ RayHit ColliderManager::RayCast(const Ray& ray, const float& dis, shared_ptr<Gam
 {
 	RayHit closestHit;
 	closestHit.distance = dis;
-	bool hitFound = false;
 
-	for (const auto& collider : _collidersForRay)
+	const auto& SceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
+
+	for (const auto& collider : _collidersForRay.at(SceneType))
 	{
 		if (collider->GetOwner() == owner) continue;
 
 		RayHit currentHit;
 		currentHit.distance = dis;  
+
 		if (collider->RayCast(ray, dis, currentHit))
 		{
 			if (currentHit.distance < closestHit.distance)
 			{
 				closestHit = currentHit;
-				hitFound = true;
 			}
 		}
 	}
 
-	///*for (auto& terrain : TerrainManager::main->_terrains)
-	//{
-	//	RayHit currentHit;
-	//	if (terrain->RayCast(ray, dis, currentHit))
-	//	{
-	//		if (currentHit.distance < closestHit.distance)
-	//		{
-	//			closestHit = currentHit;
-	//			hitFound = true;
-	//		}
-	//	}
-	//}*/
-
-
 	return closestHit;
 }
+
+bool ColliderManager::RayCastSpeed(const Ray& ray, float maxDist, shared_ptr<GameObject>& owner, GameObjectTag tag) const
+{
+	const auto& sceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
+
+	if (ray.direction == vec3::Zero)
+		return false;
+
+	float dist = 0;
+
+	auto it = _collidersForRay.find(sceneType);
+
+	if (it == _collidersForRay.end())
+		return false;
+
+	for (const auto& collider : it->second)
+	{
+		if (collider->GetOwner() == owner) continue;
+		if (collider->GetOwner()->GetRoot()->HasTag(tag)) continue;
+
+		switch (collider->GetType())
+		{
+		case CollisionType::Box:
+			if (ray.Intersects(collider->GetBoundUnion().box, dist))
+			{
+				if (dist < maxDist)
+				{
+					return true;
+				}
+			}
+
+			break;
+		case CollisionType::Sphere:
+			if (ray.Intersects(collider->GetBoundUnion().sphere, dist))
+			{
+				if (dist < maxDist)
+				{
+					return true;
+				}
+			}
+			break;
+
+		case CollisionType::Frustum:
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	return false;
+}
+
+
+
+
 
 RayHit ColliderManager::RayCastForMyCell(const Ray& ray, const float& dis, shared_ptr<GameObject>& owner) 
 {
@@ -520,6 +667,7 @@ RayHit ColliderManager::RayCastForMyCell(const Ray& ray, const float& dis, share
 	for (const auto& collider : potencialColliders)
 	{
 		if (collider == Mycollider) continue;
+		if (collider->isTrigger) continue;
 
 		RayHit currentHit;
 		currentHit.distance = dis;
@@ -543,7 +691,10 @@ bool ColliderManager::RayCastAll(const Ray& ray, const float& dis, std::vector<R
 	closestHit.distance = dis;
 	bool hitFound = false;
 
-	for (const auto& collider : _collidersForRay)
+	const auto& sceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
+
+
+	for (const auto& collider : _collidersForRay.at(sceneType)) 
 	{
 		RayHit currentHit;
 		currentHit.distance = dis;  // 최대 거리로 초기화
@@ -622,6 +773,8 @@ bool ColliderManager::RayCastAllForMyCellDirect(const Ray& ray, const float& dis
 
 	for (const auto& collider : potencialColliders)
 	{
+
+
 		RayHit currentHit;
 		currentHit.distance = dis;  // 최대 거리로 초기화
 		if (collider->RayCast(ray, dis, currentHit))

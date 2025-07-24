@@ -10,11 +10,8 @@ enum class SeaPlayerState
 {
 	Idle,
 	Aiming,
-	Attack,
-	Skill,
-	PushBack,
+	Shot,
 	Die,
-	Hit,
 };
 
 
@@ -39,12 +36,14 @@ public:
 	virtual void SetDestroy();
 	virtual void Destroy();
 
-private:
-	Quaternion CalCulateYawPitchRoll();
+	void SetMoveLock(bool lock) { _moveLock = lock; }
 
 private:
+	Quaternion CalCulateYawPitchRoll();
+	
+private:
 	void UpdateState(float dt);
-	void SetState(SeaPlayerState state);
+
 
 private:
 	void Idle(float dt);
@@ -52,22 +51,23 @@ private:
 	void Attack(float dt);
 
 
-
+	bool _moveLock = false;
 private:
 	shared_ptr<Transform> _transform;
 	shared_ptr<Camera> _camera;
 	shared_ptr<Collider> _collider;
 	shared_ptr<Terrain> _terrian;
-	shared_ptr<SkinnedHierarchy> _skined;
 	shared_ptr<Weapon> _weapons;
+	shared_ptr<GameObject> _fireEffect;
 
+	shared_ptr<SkinnedHierarchy> _skined;
 	std::unordered_map<string, std::shared_ptr<Animation>> _animations;
 private:
-	weak_ptr<GameObject> _other;
-	SeaPlayerState _state = SeaPlayerState::Idle;
+
 	vec3 _velocity = vec3::Zero;
 
 	float _cameraYawOffset = -0.294f;
+ 
 	float _cameraPitchOffset = 2.212f;
 	float _cameraForwardOffset = 0.688f;
 	float _cameraHeightOffset = 4.130f;
@@ -76,12 +76,15 @@ private:
 	float _roll = 0;
 
 	const float _moveForce = 100.0f;
-	const float _maxSpeed = 700.0f;
+	float _maxSpeed = 800.0f;
 	const float _resistance = 2.5f;
 	const float _playerRadius = 10.0f;
 
 private:
 
 
+public:
+	void SetState(SeaPlayerState state);
+	SeaPlayerState _state = SeaPlayerState::Idle;
 };
 

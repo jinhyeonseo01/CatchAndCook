@@ -28,6 +28,8 @@ public:
 	void Destroy(); 
 	void RenderBegin();
 	void RenderEnd();
+
+	void Reset();
 	void Collision(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other);
 	
 
@@ -279,6 +281,7 @@ public:
 
 	std::shared_ptr<GameObject> GetChild(int index);
 	std::shared_ptr<GameObject> GetChildByName(const std::wstring& name);
+	std::shared_ptr<GameObject> GetChildByNameRecursive(const std::wstring& name);
 
 	int GetChildAll(std::vector<std::shared_ptr<GameObject>>& vec);
 	int GetChildsByName(const std::wstring& name, std::vector<std::shared_ptr<GameObject>>& vec);
@@ -332,7 +335,7 @@ public:
 	void SetType(const GameObjectType& type) { _type = type; };
 	GameObjectType GetType() const { return  _type; };
 
-	GameObjectTag _tag = GameObjectTag::Defualt;
+	GameObjectTag _tag = GameObjectTag::NONE;
 	GameObjectType _type = GameObjectType::Dynamic;
 
 	std::shared_ptr<Transform> _transform;

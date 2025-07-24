@@ -5,20 +5,19 @@
 class ActionFunc
 {
 public:
-	static void OnClickAction(KeyCode key , Sprite* sprite );
-	static void OnDragAction(KeyCode key, Sprite* sprite);
+    static bool OnClickAction(KeyCode key, Sprite* sprite);
+    static void OnDragAction(KeyCode key, Sprite* sprite);
     static void DisableMouseAction(KeyCode key, Sprite* sprite);
     static void EnableDisableKeyAction(KeyCode key, Sprite* sprite);
 };
 
 
 
-class ActionCommand 
+class ActionCommand
 {
 public:
     virtual ~ActionCommand() {}
     virtual void Execute(Sprite* sprite) = 0;
-
 };
 
 
@@ -37,14 +36,14 @@ private:
 };
 
 
-class DragAction : public ActionCommand 
+class DragAction : public ActionCommand
 {
 public:
     DragAction(KeyCode key) : _key(key) {}
 
-    void Execute(Sprite* sprite) override 
+    void Execute(Sprite* sprite) override
     {
-         ActionFunc::OnDragAction(_key, sprite);
+        ActionFunc::OnDragAction(_key, sprite);
     }
 
 private:
@@ -58,7 +57,7 @@ public:
 
     void Execute(Sprite* sprite) override
     {
-         ActionFunc::DisableMouseAction(_key, sprite);
+        ActionFunc::DisableMouseAction(_key, sprite);
     }
 
 private:
@@ -74,7 +73,7 @@ public:
     {
         ActionFunc::EnableDisableKeyAction(_key, sprite);
     }
-  
+
 private:
     KeyCode _key;
 };

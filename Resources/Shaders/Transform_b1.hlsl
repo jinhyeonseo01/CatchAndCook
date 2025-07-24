@@ -182,13 +182,14 @@ float4 TransformWorldToLocal(float4 worldPos, float4 boneIds, float4 boneWs, flo
 	return TransformWorldToLocal(worldPos, w2l);
 }
 
+
 float3 ComputeNormalMapping(float3 normal, float3 tangent, float4 normalMap)
 {
 	// [0,255] 범위에서 [0,1]로 변환
     float4 map = normalMap;
     
     if (dot(map, map) > 2.98f)
-        return normal;
+        return normalize(normal);
 
     float3 N = normalize(normal); // z
     float3 T = normalize(tangent); // x
@@ -203,6 +204,7 @@ float3 ComputeNormalMapping(float3 normal, float3 tangent, float4 normalMap)
     float3 worldNormal = mul(tangentSpaceNormal, TBN);
     
     normal = normalize(worldNormal);
+    
     
     return normal;
 }

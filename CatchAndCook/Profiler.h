@@ -51,8 +51,6 @@ public:
 
 	void Reset();
 
-
-
 	Vector2 _winSize = Vector2(400,550);
     static LRESULT CALLBACK WndProc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam);
 	static HWND WINAPI WinMain(HWND hParent, HINSTANCE hInst);

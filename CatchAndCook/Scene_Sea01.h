@@ -20,7 +20,13 @@ public:
 	virtual void FinalRender(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList);
 	virtual void ComputePass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList);
 	void NoEffectPass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList);
+	void ParticlePass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList);
 
+
+
+private:
 	shared_ptr<Texture> caustics;
+
+
 };
 

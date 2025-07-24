@@ -80,7 +80,6 @@ public:
     shared_ptr<Texture> _cubemap_skyETexture;
     shared_ptr<Texture> _cubemap_skyMTexture;
 
-
     shared_ptr<Material> _depthNormal;
     shared_ptr<Material> _depthNormal_Skinned;
 	shared_ptr<Material> _depthNormal_Instanced;

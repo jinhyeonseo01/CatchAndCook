@@ -43,12 +43,11 @@ void TestScene::Init()
 	light->material.shininess = 32.0f;
 	light->material.lightType = static_cast<int32>(LIGHT_TYPE::DIRECTIONAL_LIGHT);
 	light->strength = vec3(1.0f, 1.0f, 1.0f);
-	LightManager::main->PushLight(light);
+	LightManager::main->PushLight(light,SceneType::TestScene);
 	LightManager::main->_lightParmas.mainLight = *light.get();
 
 	CameraManager::main->GetCamera(CameraType::DebugCamera)->SetCameraLook(vec3(0.316199, 0.743145, -0.589706));
 	CameraManager::main->GetCamera(CameraType::DebugCamera)->SetCameraPos(vec3(245.946, 79.8085, 225.333));
-
 
 
 	{
@@ -103,7 +102,7 @@ void TestScene::Init()
 	shader->SetInjector({ BufferType::SeaDefaultMaterialParam });
 	shader->SetPass(RENDER_PASS::Deferred);
 
-	for (int i = 0; i < 1000; ++i)
+	for (int i = 0; i < 3; ++i)
 	{
 		{
 
@@ -124,7 +123,7 @@ void TestScene::Init()
 			{
 
 				root->AddComponent<testComponent>();
-				root->_transform->SetLocalPosition(vec3(0, 0, 0));
+				root->_transform->SetLocalPosition(vec3(30.0f, 0, 0));
 				root->_transform->SetLocalScale(vec3(5.0f, 5.0f, 5.0f));
 				root->_transform->SetLocalRotation(vec3(0, 0, 0));
 				root->SetType(GameObjectType::Dynamic);
@@ -164,7 +163,6 @@ void TestScene::Rendering()
 	auto& cmdList = Core::main->GetCmdList();
 	Core::main->GetRenderTarget()->ClearDepth();
 
-
 	Profiler::Set("PASS : Deferred", BlockTag::CPU);
 	DeferredPass(cmdList);
 	Profiler::Fin();
@@ -177,7 +175,7 @@ void TestScene::Rendering()
 	ForwardPass(cmdList);
 	Profiler::Fin();
 
-	Volumetric::main->Render();
+	//Volumetric::main->Render();
 
 	Profiler::Set("PASS : Transparent", BlockTag::CPU);
 	TransparentPass(cmdList); // Position,

@@ -28,8 +28,8 @@ void CameraComponent::Init()
 	_near = 0.1f;
 	_far = 2000.f;
 
-	CameraManager::main->AddCamera(_type, camera);
-	CameraManager::main->SetActiveCamera(_type);
+	CameraManager::main->AddCamera(CameraType::ComponentCamera, camera);
+	CameraManager::main->SetActiveCamera(CameraType::ComponentCamera);
 }
 
 void CameraComponent::Start()

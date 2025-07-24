@@ -7,8 +7,7 @@
 #include "MeshRenderer.h"
 unordered_map<wstring, FishPath> PathFinder::_pathList;
 
-static random_device dre;
-static mt19937 gen(dre());
+
 static uniform_real_distribution<float> randomMoveSpeed(0.5f, 2.0f);
 static uniform_real_distribution<float> randomSpeed(0.7, 1.3f);
 
@@ -32,6 +31,7 @@ void PathFinder::Start()
     _firstQuat = GetOwner()->_transform->GetWorldRotation();
 
 	auto renderer = GetOwner()->GetRenderer();
+
 	if (!renderer)
 		return;
 
@@ -51,6 +51,8 @@ void PathFinder::Start()
 		return;
 
 	const auto& mat = materials[0];
+
+    auto& dre =InGameGlobal::main->GetRandomMachine();
 
 	int pathIndex = static_cast<int>(mat->GetPropertyFloat("_Path"));
 	std::wstring pathName = L"path" + std::to_wstring(pathIndex);
@@ -74,11 +76,14 @@ void PathFinder::Start()
         _forward = false;
     }
 
-
     GetOwner()->_transform->SetWorldPosition(myPath[_currentIndex]);
 }
 void PathFinder::Update()
 {
+
+   
+
+
 
     if (_pathList.find(_pathName) == _pathList.end()) return;
 
@@ -105,6 +110,7 @@ void PathFinder::Update()
     const float detectionRadius = 200.f;
     const float predictTime = 1.0f;
     auto player = _player.lock();
+
 
     if (player)
     {
@@ -256,6 +262,18 @@ void PathFinder::ClearDebugDraw()
 	{
 		path.second.AreyouDraw = false;
 	}
+
+    static bool coutPrintPathCount = false;
+
+    if (coutPrintPathCount == false)
+    {
+        for (auto& ele : _pathList)
+        {
+            wcout << "Path Name:" << ele.first << " ," << "갯수:" << ele.second.count << endl;
+        }
+
+        coutPrintPathCount = true;
+    }
 }
 
 void PathFinder::SetPass(const wstring& path)
@@ -265,6 +283,7 @@ void PathFinder::SetPass(const wstring& path)
         ReadPathFile(path);
     }
 
+    _pathList[path].count++;
     _pathName = path;
 }
 

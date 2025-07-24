@@ -71,6 +71,9 @@
     <Filter Include="998.HLSL\Graphics\JIN">
       <UniqueIdentifier>{2ef74114-fef0-4fc3-a635-60fe40bc6fc8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="998.HLSL\Particle">
+      <UniqueIdentifier>{40572f47-33f7-45dc-8d98-2cdcf7ea4ddf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -362,7 +365,6 @@
     <ClCompile Include="ShadowManager.cpp">
       <Filter>07.Manager</Filter>
     </ClCompile>
-    <ClCompile Include="InGameGlobal.cpp" />
     <ClCompile Include="NPCComponent.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
@@ -381,24 +383,67 @@
     <ClCompile Include="Inventory.cpp">
       <Filter>04.Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Item.cpp">
-      <Filter>04.Resource</Filter>
-    </ClCompile>
     <ClCompile Include="InGameMainField.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
-    <ClCompile Include="GUISprite.cpp" />
-    <ClCompile Include="RectTransform.cpp" />
-    <ClCompile Include="ImageRenderer.cpp" />
+    <ClCompile Include="EventComponent.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectileComponet.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleComponent.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationSpriteComponent.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="BoatController.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphPathFinder.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphData.cpp">
+      <Filter>997.Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="InGameGlobal.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleRenderer.cpp">
+      <Filter>03.Component\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="PercentComponent.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleManager.cpp">
+      <Filter>07.Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundManager.cpp">
+      <Filter>07.Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="itemBoxComponent.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="InteractiveComponent.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="ProgressCycleComponent.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="BilboardComponent.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
     <ClCompile Include="Canvas.cpp" />
-    <ClCompile Include="UILookUp.cpp" />
-    <ClCompile Include="GUIInventory.cpp" />
     <ClCompile Include="CookObject.cpp" />
     <ClCompile Include="CookItemBoxObject.cpp" />
+    <ClCompile Include="GUIInventory.cpp" />
     <ClCompile Include="GUIItem.cpp" />
+    <ClCompile Include="GUISprite.cpp" />
+    <ClCompile Include="ImageRenderer.cpp" />
     <ClCompile Include="GUIItemBox.cpp" />
-    <ClCompile Include="GUICookProgress.cpp" />
-    <ClCompile Include="CookMargeObject.cpp" />
+    <ClCompile Include="RectTransform.cpp" />
+    <ClCompile Include="UILookUp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -713,7 +758,6 @@
     <ClInclude Include="EffectComponent.h">
       <Filter>03.Component</Filter>
     </ClInclude>
-    <ClInclude Include="InGameGlobal.h" />
     <ClInclude Include="NPCComponent.h">
       <Filter>03.Component</Filter>
     </ClInclude>
@@ -732,24 +776,67 @@
     <ClInclude Include="Inventory.h">
       <Filter>04.Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Item.h">
-      <Filter>04.Resource</Filter>
-    </ClInclude>
     <ClInclude Include="InGameMainField.h">
       <Filter>03.Component</Filter>
     </ClInclude>
-    <ClInclude Include="GUISprite.h" />
-    <ClInclude Include="RectTransform.h" />
-    <ClInclude Include="ImageRenderer.h" />
+    <ClInclude Include="EventComponent.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectileComponet.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleComponent.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationSpriteComponent.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="BoatController.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphPathFinder.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphData.h">
+      <Filter>997.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="InGameGlobal.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleRenderer.h">
+      <Filter>03.Component\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="PercentComponent.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleManager.h">
+      <Filter>07.Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>07.Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="itemBoxComponent.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="InteractiveComponent.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ProgressCycleComponent.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="BilboardComponent.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
     <ClInclude Include="Canvas.h" />
-    <ClInclude Include="UILookUp.h" />
-    <ClInclude Include="GUIInventory.h" />
     <ClInclude Include="CookObject.h" />
     <ClInclude Include="CookItemBoxObject.h" />
+    <ClInclude Include="GUIInventory.h" />
     <ClInclude Include="GUIItem.h" />
+    <ClInclude Include="GUISprite.h" />
+    <ClInclude Include="ImageRenderer.h" />
     <ClInclude Include="GUIItemBox.h" />
-    <ClInclude Include="GUICookProgress.h" />
-    <ClInclude Include="CookMargeObject.h" />
+    <ClInclude Include="RectTransform.h" />
+    <ClInclude Include="UILookUp.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath_LH.inl">
@@ -932,9 +1019,6 @@
     <FxCompile Include="..\Resources\Shaders\FXAA.hlsl">
       <Filter>998.HLSL\Compute</Filter>
     </FxCompile>
-    <FxCompile Include="..\Resources\Shaders\DeferredSeaGodRayPrePass.hlsl">
-      <Filter>998.HLSL\Graphics\KSH</Filter>
-    </FxCompile>
     <FxCompile Include="..\Resources\Shaders\scattering.hlsl">
       <Filter>998.HLSL\Compute</Filter>
     </FxCompile>
@@ -950,9 +1034,43 @@
     <FxCompile Include="..\Resources\Shaders\UnderwaterVolumetric.hlsl">
       <Filter>998.HLSL\Graphics\KSH</Filter>
     </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\ParticleComputeShader.hlsl">
+      <Filter>998.HLSL\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\ParticleRenderingShader.hlsl">
+      <Filter>998.HLSL\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\DeferredRim.hlsl">
+      <Filter>998.HLSL\Graphics\KSH</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\DeferredSeaSkinnedRim.hlsl">
+      <Filter>998.HLSL\Graphics\KSH</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\DeferredSeaEmission.hlsl">
+      <Filter>998.HLSL\Graphics\KSH</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\percentageShader.hlsl">
+      <Filter>998.HLSL\Graphics\KSH</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\DeferredSeaClip.hlsl">
+      <Filter>998.HLSL\Graphics\KSH</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\ForwardSeaClip.hlsl">
+      <Filter>998.HLSL\Graphics\KSH</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\HookShader.hlsl">
+      <Filter>998.HLSL\Graphics\KSH</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\ParticleRenderingShader2D.hlsl">
+      <Filter>998.HLSL\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\SpriteProgressCycle.hlsl">
+      <Filter>998.HLSL\Graphics\KSH</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\GUISpriteShader.hlsl" />
     <FxCompile Include="..\Resources\Shaders\TestTransparent_Total.hlsl" />
-    <FxCompile Include="..\Resources\Shaders\GUISpriteShader.hlsl">
-      <Filter>998.HLSL\Graphics\JIN</Filter>
+    <FxCompile Include="..\Resources\Shaders\changeScene.hlsl">
+      <Filter>998.HLSL\Compute</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

@@ -22,9 +22,6 @@ public:
 	void Render();
 
 private:
-	void Debug();
-
-	void DebugJin();
 
 	void BoidMove();
 
@@ -42,7 +39,7 @@ private:
 
 	void Test2();
 
-	void VolumetricTest();
+	void LimLightControl();
 
 
 public:
@@ -53,7 +50,7 @@ public:
 	UnderWaterParam* _underWaterParam;
 	SeaParam* _seaParam;
 	ScatteringData* _scatteringData;
-	VolumetricData* _volumetricData;
+
 
 	bool* _ssaoOnOff;
 	bool* _colorGradingOnOff;
@@ -82,6 +79,7 @@ public:
 	bool* _scattering;
 
 private:
+	bool _IMGUION = true;
 	bool show_window = true;
 	bool show_another_window = false;
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);

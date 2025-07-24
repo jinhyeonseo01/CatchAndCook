@@ -1,19 +1,21 @@
 ﻿#pragma once
 #include "Component.h"
 #include "PathFinder.h"
-
+#include "itemBoxComponent.h"
 
 class AnimationListComponent;
+class SkinnedHierarchy;
+class Animation;
+class GraphPathFinder;
+
+
 
 enum class FishMonsterState
 {
 	Idle,
-	Move,
-	Attack,
 	Die,
 	Hit,
 };
-
 
 class FishMonster :public Component
 {
@@ -33,30 +35,32 @@ public:
 	virtual void SetDestroy();
 	virtual void Destroy();
 
+
+	virtual void Reset();
+
+
 public:
-	void ReadPathFile(const std::wstring& fileName);
+	void EventDamage(int damage);
+
+public:
+
 
 private:
 	void UpdateState(float dt);
 	void SetState(FishMonsterState state);
-	void Idle(float dt);
-	void Move(float dt);
-	void Attack(float dt);
-	void Die(float dt);
-	void Hit(float dt);
 
 private:
-	vector<vec3> _fishPath;
-	bool _forward =true;
-	int _currentIndex = 0;
+
+	shared_ptr<GraphPathFinder> _pathFinder;
+	float _originMoveSpeed = 100.0f;
 	float _moveSpeed = 100.0f;
-	float _distanceMoved = 0.0f;
-	float _segmentLength = 0.0f;
-	wstring _pathName = L"Null";
-	Quaternion _firstQuat;
+	float _hit_to_IdleTime = 0.0f;
+public:
+	float _hp = 100.0f;
 
 private:
-	shared_ptr<AnimationListComponent> _animList;
-	FishMonsterState _state = FishMonsterState::Move;
+	shared_ptr<SkinnedHierarchy> _skined;
+	std::unordered_map<string, std::shared_ptr<Animation>> _animations;
+	FishMonsterState _state = FishMonsterState::Idle;
 };
 

@@ -1,5 +1,5 @@
 ﻿#pragma once
-
+#include "SceneManager.h"
 enum class CollisionType;
 union BoundingUnion;
 struct BoundingData;
@@ -10,7 +10,7 @@ struct RayHit
 	Vector3 worldPos;
 	float distance = 1000000;
 	Collider* collider;
-	GameObject* gameObject;
+	shared_ptr<GameObject>gameObject;
 	bool isHit = false;
 
 	explicit operator bool() const
@@ -39,6 +39,7 @@ public:
 	void AddColliderForRay(const std::shared_ptr<Collider>& collider);
 	void RemoveAColliderForRay(const std::shared_ptr<Collider>& collider);
 	void RemoveCollider(const std::shared_ptr<Collider>& collider);
+
 	void Update();
 
 	bool CollisionCheckDirect(CollisionType type, BoundingUnion bound);
@@ -63,6 +64,8 @@ private:
 
 public:
 	RayHit RayCast(const Ray& ray, const float& dis, shared_ptr<GameObject>& owner) const;
+	bool RayCastSpeed(const Ray& ray, float maxDist, shared_ptr<GameObject>& owner, GameObjectTag tag) const;
+
 	RayHit RayCastForMyCell(const Ray& ray, const float& dis, shared_ptr<GameObject>& owner);
 	bool RayCastAll(const Ray& ray, const float& dis, std::vector<RayHit>& hitList) const;
 	bool RayCastAllForMyCell(const Ray& ray, const float& dis, std::vector<RayHit>& hitList, const shared_ptr<GameObject>& owner);
@@ -80,15 +83,16 @@ public:
 	vector<vec3> GetOccupiedCellsDirect(CollisionType type, BoundingUnion bound) const;
 	std::unordered_set<std::shared_ptr<Collider>> ColliderManager::GetPotentialCollisions(std::shared_ptr<Collider>& collider);
 	std::unordered_set<std::shared_ptr<Collider>> GetPotentialCollisionsDirect(const vector<vec3>& vec);
+	std::unordered_map<SceneType, std::unordered_map<vec3, std::vector<std::shared_ptr<Collider>>, PositionHash>> _staticColliderGrids;
+	std::unordered_map<SceneType,std::unordered_map<vec3, std::vector<std::shared_ptr<Collider>>, PositionHash>> _dynamicColliderGrids;
+	std::unordered_map<SceneType,std::unordered_map<std::shared_ptr<Collider>, vector<vec3>>> _dynamicColliderCashing;
+	std::unordered_map<SceneType,std::vector<std::shared_ptr<Collider>>> _dynamicColliderList;
+	std::unordered_map<SceneType,std::unordered_map<std::shared_ptr<Collider>, std::unordered_set<std::shared_ptr<Collider>>>> _colliderLinkTable;
 
-	std::unordered_map<vec3, std::vector<std::shared_ptr<Collider>>, PositionHash> _staticColliderGrids;
-	std::unordered_map<vec3, std::vector<std::shared_ptr<Collider>>, PositionHash> _dynamicColliderGrids;
-	std::unordered_map<std::shared_ptr<Collider>, vector<vec3>> _dynamicColliderCashing;
-	std::vector<std::shared_ptr<Collider>> _dynamicColliderList;
-	std::unordered_map<std::shared_ptr<Collider>, std::unordered_set<std::shared_ptr<Collider>>> _colliderLinkTable;
+	void DebugPrint();
 
-private:
-	vector<std::shared_ptr<Collider>> _collidersForRay; 
+public:
+	std::unordered_map<SceneType,vector<std::shared_ptr<Collider>>> _collidersForRay;
 
 };
 

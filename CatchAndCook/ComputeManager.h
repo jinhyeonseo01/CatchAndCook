@@ -442,18 +442,35 @@ private:
 
 
 
+
+
+//struct ScatteringData
+//{
+//	float phaseG = 0.453f;
+//	float absorption = 3.6f;
+//	vec2 Padding;
+//
+//	float density = 15.0f;
+//	vec3 scatterColor = vec3(0, 1, 0.375f);
+//
+//	vec3 direction = vec3(0, 1, 0);
+//	float padding;
+//};
+
 struct ScatteringData
 {
-	float phaseG=0.453f;
-	float absorption =3.6f;
+	float phaseG = 0.453f;
+	float absorption = 485.356f;
 	vec2 Padding;
 
-	float density=15.0f;
-	vec3 scatterColor= vec3(0,1,0.375f);
+	float density = 9.6f;
+	vec3 scatterColor = vec3(1.0f, 1.0f, 1.0f);
 
-	//vec3 MainlightPos;
-	//float padding2;
+	vec3 direction = vec3(0, 1, 0);
+	float padding;
+
 };
+
 
 class Scattering : public ComputeBase
 {
@@ -484,6 +501,49 @@ private:
 	friend class ComputeManager;
 };
 
+struct ChangeSceneData
+{
+	float toblack = 1.0f;
+	vec3 pad;
+};
+
+
+class ChangeSceneCompute : public ComputeBase
+{
+
+public:
+	ChangeSceneCompute();
+	virtual ~ChangeSceneCompute();
+
+public:
+	virtual void Init(shared_ptr<Texture>& pingTexture, shared_ptr<Texture>& pongTexture);
+	virtual void Dispatch(ComPtr<ID3D12GraphicsCommandList>& cmdList, int x, int y, int z);
+
+private:
+	virtual void DispatchBegin(ComPtr<ID3D12GraphicsCommandList>& cmdList);
+	virtual void DispatchEnd(ComPtr<ID3D12GraphicsCommandList>& cmdList);
+
+private:
+	virtual void Resize();
+
+public:
+    void StartChangeScene(float speed);
+
+
+private:
+	shared_ptr<Texture> _pingTexture;
+	shared_ptr<Texture> _pongTexture;
+	shared_ptr<Shader> _shader;
+
+
+	bool _on = false;
+	float _speed{};
+	ChangeSceneData _data;
+
+	friend class ComputeManager;
+};
+
+
 
 
 class ComputeManager 
@@ -496,8 +556,13 @@ public:
 	void DispatchAfterDeferred(ComPtr<ID3D12GraphicsCommandList>& cmdList);
 	void DispatchMainField(ComPtr<ID3D12GraphicsCommandList>& cmdList);
 	void Dispatch(ComPtr<ID3D12GraphicsCommandList>& cmdList);
+	void ChangeSceneDispatch();
+
 public:
 	void Resize();
+	void StartChangeScene(float speed);
+	bool IsChangeEffectEnd() { return  _changeSceneCompute->_on == false; }
+
 public:
 
 	shared_ptr<Texture> _pingTexture;
@@ -515,6 +580,7 @@ public:
 	shared_ptr<FXAA> _fxaaRender;
 	shared_ptr<DOF> _dofRender;
 	shared_ptr<Scattering> _colorGradingSea;
+	shared_ptr<ChangeSceneCompute> _changeSceneCompute;
 
 	bool _mainFieldTotalOn = true;
 	// color grading

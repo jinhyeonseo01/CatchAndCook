@@ -31,7 +31,7 @@ public:
     ~Input();
 
     void Update();
-
+  
 
 public:
 
@@ -48,6 +48,7 @@ public:
     bool GetMouse(int keycode);
     bool GetMouseUp(int keycode);
 
+    void SetMousePosition(const vec2& pos);
     vec2 GetMousePosition();
     Vector2 GetMousePrevPosition();
     vec2 GetMouseDownPosition(int keycode);
@@ -56,11 +57,10 @@ public:
 
     bool IsMouseLock() { return _isMouseLock; }
     void SetMouseLock(bool isMouseLock);
-    bool _isMouseLock = false;
     void SetCursor(const Vector2& pos);
 
 private:
-
+    bool _isMouseLock = false;
     bool DataUpdate(const InputEvent& event);
     void DataBeginUpdate();
 

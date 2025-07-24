@@ -33,16 +33,17 @@ public:
 
 	//MeshRenderer
 	void AddMesh(const std::shared_ptr<Mesh>& _mesh);
+	void SetMesh(const std::vector<std::shared_ptr<Mesh>>& mesh);
+	std::vector<std::shared_ptr<Mesh>>& GetMeshes() { return _mesh; }
 	void SetMaterials(const std::vector<std::shared_ptr<Material>>& _materials);
 	void AddMaterials(const std::vector<std::shared_ptr<Material>>& _materials);
+	void AddMaterial(shared_ptr<Material>& material);
 	std::vector<std::shared_ptr<Material>>& GetMaterials();
 	std::shared_ptr<Material> GetMaterial(int index = 0);
 	void SetSharedMaterials(const std::vector<std::shared_ptr<Material>>& _materials);
 	void AddSharedMaterials(const std::vector<std::shared_ptr<Material>>& _materials);
-	void SetDebugShader(shared_ptr<Shader>& shader) { _normalDebugShader = shader; }
 
 	void SetSpecialMaterials();
-
 
 	std::vector<std::shared_ptr<Mesh>> _mesh;
 	std::vector<std::shared_ptr<Material>> _uniqueMaterials;
@@ -52,7 +53,6 @@ private:
 	std::vector<std::pair<int, std::shared_ptr<Material>>> _depthNormalMaterials;
 	std::vector<std::pair<int, std::shared_ptr<Material>>> _shadowMaterials;
 
-	shared_ptr<Shader> _normalDebugShader;
 	//std::shared_ptr<ForwardLightSetter> _setter_ForwardLight;
 };
 

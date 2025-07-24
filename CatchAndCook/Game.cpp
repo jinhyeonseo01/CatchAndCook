@@ -31,7 +31,8 @@
 #include "Terrain.h"
 #include "PathStamp.h"
 #include "ShadowManager.h"
-
+#include "ParticleManager.h"
+#include "SoundManager.h"
 void Game::Init(HWND hwnd)
 {
 	IGuid::StaticInit();
@@ -43,7 +44,7 @@ void Game::Init(HWND hwnd)
 
 	Input::main = make_unique<Input>();
 
-	Profiler::main = make_unique<Profiler>();
+	//Profiler::main = make_unique<Profiler>();
 	//Profiler::main->Init(_hwnd, _hInstance);
 
 #ifdef IMGUI_ON
@@ -53,6 +54,8 @@ void Game::Init(HWND hwnd)
 
 	ResourceManager::main = make_unique<ResourceManager>();
 	ResourceManager::main->Init();
+
+
 
 	NavMeshManager::main = make_unique<NavMeshManager>();
 	NavMeshManager::main->Init();
@@ -78,9 +81,8 @@ void Game::Init(HWND hwnd)
 	Gizmo::main = std::make_unique<Gizmo>();
 	Gizmo::main->Init();
 	CameraManager::main->AddCamera(CameraType::DebugCamera, make_shared<DebugCamera>());
-	CameraManager::main->AddCamera(CameraType::UiCamera, make_shared<UiCamera>());
 	CameraManager::main->AddCamera(CameraType::SeaCamera, make_shared<SeaCamera>());
-	CameraManager::main->SetActiveCamera(CameraType::DebugCamera);
+	CameraManager::main->AddCamera(CameraType::BoatCamera, make_shared<BoatCamera>());
 
 	LightManager::main = make_unique<LightManager>();
 	LightManager::main->Init();
@@ -93,10 +95,15 @@ void Game::Init(HWND hwnd)
 	PathStamp::main = make_unique<PathStamp>();
 	PathStamp::main->Init();
 
-	SceneManager::main->AddScene(SceneType::TestScene, false);
-	SceneManager::main->AddScene(SceneType::TestScene2, false);
-	SceneManager::main->AddScene(SceneType::Sea01, false);
-	SceneManager::main->ChangeScene(nullptr, SceneManager::main->FindScene(SceneType::TestScene2), true, true);
+	ParticleManager::main = make_unique<ParticleManager>();
+	ParticleManager::main->Init();
+
+	Sound::main = make_unique<Sound>();
+	Sound::main->Init();
+
+	SceneManager::main->AddScene(SceneType::TestScene2, true);
+	SceneManager::main->AddScene(SceneType::Sea01, true);
+	SceneManager::main->ChangeScene(nullptr, SceneManager::main->FindScene(SceneType::TestScene2), false, false);
 };
 
 void Game::PrevUpdate()
@@ -109,10 +116,8 @@ void Game::PrevUpdate()
 		_quit = true;
 		return;
 	}
-	if(Input::main->GetKeyDown(KeyCode::F5))
-	{
-		//SceneManager::main->Reload();
-	}
+
+
 	if (Input::main->GetKeyDown(KeyCode::F9))
 	{
 		HWND hWnd = Core::main->GetHandle();
@@ -139,7 +144,6 @@ void Game::PrevUpdate()
 		else
 		{
 			SetWindowLong(hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_VISIBLE);
-			// ���� ũ��� ������ ����
 			SetWindowPos(hWnd, HWND_TOP, 0, 0, 800, 600, SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
 
 			RECT rect;
@@ -167,7 +171,10 @@ void Game::Run()
 
 	Input::main->Update();
 	Time::main->Update();
-		PrevUpdate();
+	Sound::main->Update();
+
+
+	PrevUpdate();
 
 	if (_quit)
 		return;
@@ -228,8 +235,6 @@ void Game::CameraUpdate()
 		return;
 
 	shared_ptr<Camera> camera = CameraManager::main->GetCamera(CameraType::DebugCamera);
-
-	
 
 	static float speed = 500.0f;
 	const float dt =Time::main->GetDeltaTime() *speed;
@@ -322,43 +327,6 @@ void Game::CameraUpdate()
 		
 	}
 	
-	if (Input::main->GetMouseDown(KeyCode::LeftMouse))
-	{
-		//Ray ray;
-		//vec2 mouseXY = Input::main->GetNDCMouseDownPosition(KeyCode::LeftMouse);
-		//vec3 cursorNdcNear = vec3(mouseXY.x, mouseXY.y, 0.0f);
-		//vec3 cursorNdcFar = vec3(mouseXY.x, mouseXY.y, 1.0f);
-
-		//Matrix inverseProjView = CameraManager::main->GetActiveCamera()->GetCameraParam().InvertVPMatrix;
-
-		//vec3 cursorWorldNear =
-		//	vec3::Transform(cursorNdcNear, inverseProjView);
-
-		//vec3 cursorWorldFar =
-		//	vec3::Transform(cursorNdcFar, inverseProjView);
-
-		//vec3 dir = cursorWorldFar - cursorWorldNear;
-		//dir.Normalize();
-
-		//ray.position = cursorWorldNear;
-		//ray.direction = dir;
-
-		//float dist = 0;
-
-		//RayHit rayhit=  ColliderManager::main->RayCast(ray, dist);
-
-		//cout << rayhit.distance << endl;
-		//cout << rayhit.normal.x << " " << rayhit.normal.y << " " << rayhit.normal.z << endl;
-		//cout << rayhit.worldPos.x << " " << rayhit.worldPos.y << " " << rayhit.worldPos.z << endl;
-
-	}
-
-	/*if (auto& terrain = SceneManager::main->GetCurrentScene()->Find(L"Terrain"))
-	{
-		cout << terrain->GetComponent<Terrain>()->GetLocalHeight(camera->GetCameraPos()) << endl;;
-	}*/
-
-	//cout << camera->GetCameraLook().x <<" " << camera->GetCameraLook().y <<" " << camera->GetCameraLook().z << endl;
 
 
 }

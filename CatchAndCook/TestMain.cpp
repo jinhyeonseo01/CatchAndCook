@@ -54,8 +54,8 @@ int main()
 	vec4 viewPos = vec4::Transform(worldPos, viewMat);
     vec4 clipPos = vec4::Transform(viewPos, projMat);
 
-	cout << "World Space= (" << worldPos.x << " " << worldPos.y << " " << worldPos.z <<")" << endl;
-	cout << "View Space = (" << viewPos.x << ", " << viewPos.y << ", " << viewPos.z << ")" << endl;
+	cout << "World Space= (" << worldPos.x << " " << worldPos.y << " " << worldPos.z << worldPos.w <<")" << endl;
+	cout << "View Space = (" << viewPos.x << ", " << viewPos.y << ", " << viewPos.z << " "<< viewPos.w << ")" << endl;
 	cout << "Clip Space = (" << clipPos.x << ", " << clipPos.y << ", " << clipPos.z << ", " << clipPos.w << ")" << endl;
 
 

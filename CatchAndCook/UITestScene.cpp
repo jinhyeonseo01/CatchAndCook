@@ -11,10 +11,29 @@
 #include "SpriteAction.h"
 #include "TextManager.h"
 #include "Inventory.h"
+#include "LightManager.h"
 
 void UITestScene::Init()
 {
 	Scene::Init();
+
+
+	{
+		std::shared_ptr<Light> light = std::make_shared<Light>();
+		light->onOff = 1;
+		light->direction = vec3(-0.024f, 1.0f, 0.899f);
+		light->position = vec3(769.f, 1282.f, 750.0f);
+		light->direction.Normalize();
+
+		light->material.ambient = vec3(0.4f, 0.4f, 0.4f);
+		light->material.diffuse = vec3(1.0f, 1.0f, 1.0f);
+		light->material.specular = vec3(0, 0, 0);
+		light->material.shininess = 32.0f;
+		light->material.lightType = static_cast<int32>(LIGHT_TYPE::DIRECTIONAL_LIGHT);
+		light->strength = vec3(1.0f, 1.0f, 1.0f);
+		LightManager::main->PushLight(light, SceneType::UITest);
+		LightManager::main->_lightParmas.mainLight = *light.get();
+	}
 
 	{
 		ShaderInfo info;
@@ -25,7 +44,7 @@ void UITestScene::Init()
 		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"cubemap", L"cubemap.hlsl", GeoMetryProp,
 			ShaderArg{}, info);
 
-		shared_ptr<Texture> texture = ResourceManager::main->Load<Texture>(L"cubemap", L"Textures/cubemap/output.dds", TextureType::CubeMap);
+		shared_ptr<Texture> texture = ResourceManager::main->Load<Texture>(L"cubemap", L"Textures/cubemap/ocean_env.dds", TextureType::CubeMap);
 		shared_ptr<Material> material = make_shared<Material>();
 
 		shared_ptr<GameObject> gameObject = CreateGameObject(L"cubeMap");
@@ -49,7 +68,7 @@ void UITestScene::Init()
 
 		inventory->SetLocalPos(vec3(0, 0, 0.3f));
 		inventory->SetSize(vec2(300, 300));
-		inventory->SetTexture(ResourceManager::main->Load<Texture>(L"inventory", L"Textures/inventory.png"));
+		inventory->SetTexture(ResourceManager::main->Load<Texture>(L"inventory", L"Textures/start.jpg"));
 		inventory->AddAction(make_shared<DragAction>(KeyCode::LeftMouse));
 
 		shared_ptr<Material> material = make_shared<Material>();
@@ -59,16 +78,17 @@ void UITestScene::Init()
 
 		{
 			inventory->AddItem(ResourceManager::main->Load<Texture>(L"start", L"Textures/start.jpg"));
-			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/spriteTest.jpg"));
-			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/spriteTest.jpg"));
-			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/spriteTest.jpg"));
-			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/spriteTest.jpg"));
-			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/spriteTest.jpg"));
-			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/spriteTest.jpg"));
-			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/spriteTest.jpg"));
+			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/start.jpg"));
+			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/start.jpg"));
+			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/start.jpg"));
+			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/start.jpg"));
+			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/start.jpg"));
+			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/start.jpg"));
+			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/start.jpg"));
 		}
 
 	}
+
 
 
 	//{
@@ -124,8 +144,8 @@ void UITestScene::Init()
 	//	auto& renderer = root->AddComponent<MeshRenderer>();
 
 	//	auto& sprite = root->AddComponent<TextSprite>();
-	//	sprite->SetLocalPos(vec3(0 + 200.0f, 0.0f, 0.000001f));
-	//	sprite->SetSize(vec2(300, 300));
+	//	sprite->SetLocalPos(vec3(0,0,0));
+	//	sprite->SetSize(vec2(0.2f, 0.2f));
 	//	sprite->SetText(L"HelloWorld");
 	//	sprite->CreateObject(512, 256, L"Arial", FontColor::WHITE, 60);
 
@@ -137,45 +157,45 @@ void UITestScene::Init()
 
 	//}
 
-	//{
-	//	{
+	{
+		{
 
-	//		shared_ptr<GameObject> gameObject = CreateGameObject(L"AnimationSprite");
-	//		auto meshRenderer = gameObject->AddComponent<MeshRenderer>();
-	//		shared_ptr<Texture> texture = ResourceManager::main->Load<Texture>(L"fire", L"Textures/fire.png");
-	//		auto& sprite = gameObject->AddComponent<AnimationSprite>();
-	//		sprite->SetLocalPos(vec3(0, 0, 0.3f));
-	//		sprite->SetSize(vec2(500, 500));
-	//		sprite->SetFrameRate(0.001f);
-	//		sprite->SetClipingColor(vec4(0, 0, 0, 1.0f));		https://imagecolorpicker.com/
-	//		sprite->SetTexture(texture);
+			shared_ptr<GameObject> gameObject = CreateGameObject(L"AnimationSprite");
+			auto meshRenderer = gameObject->AddComponent<MeshRenderer>();
+			shared_ptr<Texture> texture = ResourceManager::main->Load<Texture>(L"fire", L"Textures/fire.png");
+			auto& sprite = gameObject->AddComponent<AnimationSprite>();
+			sprite->SetLocalPos(vec3(0.5f, 0.5f, 0.0001f));
+			sprite->SetSize(vec2(0.3f, 0.3f));
+			sprite->SetFrameRate(0.001f);
+			sprite->SetClipingColor(vec4(0, 0, 0, 0.0f));		https://imagecolorpicker.com/
+			sprite->SetTexture(texture);
 
-	//		const float TextureSize = 512.0f;
+			const float TextureSize = 512.0f;
 
-	//		for (int i = 0; i < 5; ++i)
-	//		{
-	//			float add = i * TextureSize / 5;
-	//			for (int j = 0; j < 5; ++j)
-	//			{
+			for (int i = 0; i < 5; ++i)
+			{
+				float add = i * TextureSize / 5;
+				for (int j = 0; j < 5; ++j)
+				{
 
-	//				SpriteRect rect;
-	//				rect.left = 0 + j * TextureSize / 5;
-	//				rect.top = add;
-	//				rect.right = rect.left + TextureSize / 5;
-	//				rect.bottom = rect.top + TextureSize / 5;
+					SpriteRect rect;
+					rect.left = 0 + j * TextureSize / 5;
+					rect.top = add;
+					rect.right = rect.left + TextureSize / 5;
+					rect.bottom = rect.top + TextureSize / 5;
 
-	//				sprite->PushUVCoord(rect);
-	//			}
-	//		}
+					sprite->PushUVCoord(rect);
+				}
+			}
 
-	//		shared_ptr<Material> material = make_shared<Material>();
-	//		material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
-	//		material->SetPass(RENDER_PASS::UI);
-	//		meshRenderer->AddMaterials({ material });
+			shared_ptr<Material> material = make_shared<Material>();
+			material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
+			material->SetPass(RENDER_PASS::UI);
+			meshRenderer->AddMaterials({ material });
 
-	//	};
+		};
 
-	//}
+	}
 }
 
 void UITestScene::Update()

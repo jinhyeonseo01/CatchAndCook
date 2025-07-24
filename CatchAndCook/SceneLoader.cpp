@@ -2,7 +2,6 @@
 #include "SceneLoader.h"
 #include "SceneLoader.h"
 #include <nlohmann/json_fwd.hpp>
-
 #include "AnimationListComponent.h"
 #include "BufferPool.h"
 #include "CameraComponent.h"
@@ -388,7 +387,7 @@ void SceneLoader::LinkComponent(json& jsonData)
                         material->SetShader(shader);
                         material->SetPass(shader->GetPass());
                     }
-                    if (material->GetPass() == RENDER_PASS::Forward)
+                    if (material->GetPass()| RENDER_PASS::Forward)
 						material->SetPreDepthNormal(true);
                 }
 
@@ -469,16 +468,21 @@ void SceneLoader::LinkComponent(json& jsonData)
 
                     material->SetPreDepthNormal(true);
                 }
+
                 else
                 {
 
-                    shader = ResourceManager::main->Get<Shader>(L"DeferredSeaSkinned");
-                    material->SetShader(shader);
-                    material->SetPass(shader->GetPass());
-
-                    material->SetShader(shader);
-                    material->SetPass(shader->GetPass());
-
+                    if (shader == nullptr)
+                    {
+                        shader = ResourceManager::main->Get<Shader>(L"DeferredSeaSkinned");
+                        material->SetShader(shader);
+                        material->SetPass(shader->GetPass());
+                    }
+                    else
+                    {
+                        material->SetShader(shader);
+                        material->SetPass(shader->GetPass());
+                    }
                 }
 
                 materials.push_back(material);

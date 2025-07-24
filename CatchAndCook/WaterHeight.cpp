@@ -1,7 +1,8 @@
 ﻿#include "pch.h"
 #include "WaterHeight.h"
 #include "Transform.h"
-
+#include "WaterController.h"
+COMPONENT(WaterHeight)
 
 WaterHeight::~WaterHeight()
 {
@@ -23,17 +24,16 @@ void WaterHeight::Init()
 
 void WaterHeight::Start()
 {
-
-
+    _seaParam = &SceneManager::main->GetCurrentScene()->Find(L"sea")->GetComponent<WaterController>()->_seaParam;
 }
 
 void WaterHeight::Update()
 {
     if(auto transform = GetOwner()->_transform)
     {
-        vec3 pos = transform->GetLocalPosition();
-        pos.y = GetWaveHeight(pos.x,pos.z,Time::main->GetTime()) + _offset;
-        transform->SetLocalPosition(pos);
+        vec3 pos = transform->GetWorldPosition();
+        pos.y = WaterController::GetWaveHeight(pos,_seaParam);
+        transform->SetWorldPosition(pos);
     }
 }
 
@@ -66,22 +66,6 @@ void WaterHeight::Destroy()
 {
 }
 
-float WaterHeight::GetWaveHeight(float x,float z,float time)
-{ 
 
-    float height = 0.0f;
 
-    for(int i = 0; i < 3; i++)
-    {
-        float frequency = 2 * PI / waves[i].wavelength;
-        float phase = waves[i].speed * time;
-        vec2 direction = waves[i].direction;
 
-        float dotProduct = x * direction.x + z * direction.y;
-        float wave = sin(dotProduct * frequency + phase);
-
-        height += waves[i].amplitude * wave;
-    }
-
-    return height;
-};

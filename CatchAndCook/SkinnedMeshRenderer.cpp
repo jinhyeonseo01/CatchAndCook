@@ -32,6 +32,8 @@ void SkinnedMeshRenderer::Start()
 {
 	Component::Start();
 
+	/*wcout << " 호출스택:" << debug_test++ << " 이름:" << GetOwner()->GetRoot()->GetName() << "SkinnedMeshRenderer" << endl;*/
+
 	//AddStructuredSetter(_setter_ForwardLight, BufferType::ForwardLightParam);
 	if (auto objectSettingComponent = GetOwner()->GetComponentWithParents<ObjectSettingComponent>())
 		AddStructuredSetter(objectSettingComponent, BufferType::ObjectSettingParam);
@@ -47,7 +49,8 @@ void SkinnedMeshRenderer::Start()
 			SetCulling(false);
 	}
 
-	auto root = GetOwner()->GetParent();
+	auto root = GetOwner()->GetRoot();
+
 	if (root != nullptr)
 	{
 		auto hierarchys = GetOwner()->GetComponentWithParents<SkinnedHierarchy>();
@@ -56,6 +59,10 @@ void SkinnedMeshRenderer::Start()
 		else
 			_hierarchy = root->AddComponent<SkinnedHierarchy>();
 		_hierarchy.lock()->SetModel(_model);
+	}
+	else
+	{
+		cout << "퍽킹" << endl;
 	}
 
 	auto owner = GetOwner();
@@ -88,7 +95,11 @@ void SkinnedMeshRenderer::Start()
 		SetOriginBound(localBox);
 	}
 
-	SetSpecialMaterials();
+	if (SceneManager::main->GetCurrentScene()->GetSceneType() != SceneType::Sea01)
+	{
+		SetSpecialMaterials();
+	}
+
 }
 
 void SkinnedMeshRenderer::Update()

@@ -6,6 +6,7 @@
 #include "LightComponent.h"
 #include "Shader.h"
 #include "Texture.h"
+
 unique_ptr<ComputeManager> ComputeManager::main = nullptr;
 
 /*************************
@@ -44,7 +45,6 @@ void Blur::Init(shared_ptr<Texture>& pingTexture, shared_ptr<Texture>& pongTextu
 		ShaderInfo info;
 		info._computeShader = true;
 
-		
 		_XBlurshader->Init(L"xblur.hlsl", {}, ShaderArg{ {{"CS_Main","cs"}}}, info);
 		ResourceManager::main->Add<Shader>(L"xblur", _XBlurshader);
 	}
@@ -903,7 +903,6 @@ void UnderWaterEffect::Dispatch(ComPtr<ID3D12GraphicsCommandList>& cmdList, int 
 	_pingTexture->ResourceBarrier(D3D12_RESOURCE_STATE_COPY_SOURCE);
 	renderTarget->ResourceBarrier(D3D12_RESOURCE_STATE_COPY_DEST);
 	cmdList->CopyResource(renderTarget->GetResource().Get(), _pingTexture->GetResource().Get());
-
 	depthTexture->ResourceBarrier(D3D12_RESOURCE_STATE_DEPTH_WRITE);
 }
 
@@ -1188,7 +1187,8 @@ void ComputeManager::Init()
 	_colorGradingSea = std::make_shared<Scattering>();
 	_colorGradingSea->Init(_pingTexture, _pongTexture);
 
-
+	_changeSceneCompute = make_shared<ChangeSceneCompute>();
+	_changeSceneCompute->Init(_pingTexture, _pongTexture);
 
 	ImguiManager::main->mainField_total = &_mainFieldTotalOn;
 }
@@ -1207,6 +1207,7 @@ void ComputeManager::DispatchAfterDeferred(ComPtr<ID3D12GraphicsCommandList>& cm
 
 	_ssaoRender->Dispatch(cmdList, dispath[0], dispath[1], dispath[2]);
 
+
 	Core::main->GetRenderTarget()->GetRenderTarget()->ResourceBarrier(D3D12_RESOURCE_STATE_RENDER_TARGET);
 }
 
@@ -1222,7 +1223,7 @@ void ComputeManager::DispatchMainField(ComPtr<ID3D12GraphicsCommandList>& cmdLis
 
 	int32 dispath[3] = { dispatchX,dispatchY,1 };
 
-	//bool _onOff = true;
+
 
 	_depthRender->Dispatch(cmdList, dispath[0], dispath[1], dispath[2]);
 
@@ -1242,7 +1243,10 @@ void ComputeManager::DispatchMainField(ComPtr<ID3D12GraphicsCommandList>& cmdLis
 
 	_vignetteRender->Dispatch(cmdList, dispath[0], dispath[1], dispath[2]);
 
+
 	Core::main->GetRenderTarget()->GetRenderTarget()->ResourceBarrier(D3D12_RESOURCE_STATE_RENDER_TARGET);
+	auto& depthTexture = Core::main->GetRenderTarget()->GetDSTexture();
+	depthTexture->ResourceBarrier(D3D12_RESOURCE_STATE_DEPTH_WRITE);
 }
 
 void ComputeManager::Dispatch(ComPtr<ID3D12GraphicsCommandList>& cmdList)
@@ -1255,7 +1259,6 @@ void ComputeManager::Dispatch(ComPtr<ID3D12GraphicsCommandList>& cmdList)
 
 	int32 dispath[3] = {dispatchX,dispatchY,1};
 
-
 	_depthRender->Dispatch(cmdList, dispath[0], dispath[1], dispath[2]);
 
 	_underWaterEffect->Dispatch(cmdList, dispath[0], dispath[1], dispath[2]);
@@ -1263,10 +1266,23 @@ void ComputeManager::Dispatch(ComPtr<ID3D12GraphicsCommandList>& cmdList)
 	_colorGradingSea->Dispatch(cmdList, dispath[0], dispath[1], dispath[2]);
 
 	Core::main->GetRenderTarget()->GetRenderTarget()->ResourceBarrier(D3D12_RESOURCE_STATE_RENDER_TARGET);
-
 	auto& depthTexture = Core::main->GetRenderTarget()->GetDSTexture();
 	depthTexture->ResourceBarrier(D3D12_RESOURCE_STATE_DEPTH_WRITE);
 
+}
+
+void ComputeManager::ChangeSceneDispatch()
+{
+	if (_changeSceneCompute->_on)
+	{
+		const int threadGroupSizeX = 16;
+		const int threadGroupSizeY = 16;
+
+		int dispatchX = static_cast<int>(std::ceil(static_cast<float>(WINDOW_WIDTH) / threadGroupSizeX));
+		int dispatchY = static_cast<int>(std::ceil(static_cast<float>(WINDOW_HEIGHT) / threadGroupSizeY));
+
+		_changeSceneCompute->Dispatch(Core::main->GetCmdList(), dispatchX, dispatchY, 1);
+	}
 }
 
 void ComputeManager::Resize()
@@ -1295,6 +1311,12 @@ void ComputeManager::Resize()
 	_fxaaRender->Resize();
 	_dofRender->Resize();
 	_colorGradingSea->Resize();
+	_changeSceneCompute->Resize();
+}
+
+void ComputeManager::StartChangeScene(float speed)
+{
+	_changeSceneCompute->StartChangeScene(speed);
 }
 
 Scattering::Scattering()
@@ -1331,7 +1353,6 @@ void Scattering::Dispatch(ComPtr<ID3D12GraphicsCommandList>& cmdList, int x, int
 	_pingTexture->ResourceBarrier(D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
 	_tableContainer = table->Alloc(10);
 
-	//_scatteringData.MainlightPos = LightManager::main->GetMainLight()->position;
 
 	auto CbufferContainer = Core::main->GetBufferManager()->CreateAndGetBufferPool(BufferType::ScatteringData, sizeof(ScatteringData), 1)->Alloc(1);
 	memcpy(CbufferContainer->ptr, (void*)&_scatteringData, sizeof(ScatteringData));
@@ -1365,5 +1386,84 @@ void Scattering::DispatchEnd(ComPtr<ID3D12GraphicsCommandList>& cmdList)
 }
 
 void Scattering::Resize()
+{
+}
+
+
+ChangeSceneCompute::ChangeSceneCompute()
+{
+}
+
+ChangeSceneCompute::~ChangeSceneCompute()
+{
+}
+
+void ChangeSceneCompute::Init(shared_ptr<Texture>& pingTexture, shared_ptr<Texture>& pongTexture)
+{
+	_pingTexture = pingTexture;
+	_pongTexture = pongTexture;
+
+	_shader = make_shared<Shader>();
+	ShaderInfo info;
+	info._computeShader = true;
+	_shader->Init(L"changeScene.hlsl", {}, ShaderArg{ {{"CS_Main","cs"}} }, info);
+
+}
+
+void ChangeSceneCompute::Dispatch(ComPtr<ID3D12GraphicsCommandList>& cmdList, int x, int y, int z)
+{
+
+
+	auto& table = Core::main->GetBufferManager()->GetTable();
+	cmdList->SetPipelineState(_shader->_pipelineState.Get());
+	_pingTexture->ResourceBarrier(D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+	_tableContainer = table->Alloc(10);
+
+	auto CbufferContainer = Core::main->GetBufferManager()->CreateAndGetBufferPool(BufferType::ChangeSceneData, sizeof(ChangeSceneData), 1)->Alloc(1);
+	memcpy(CbufferContainer->ptr, (void*)&_data, sizeof(_data));
+	cmdList->SetComputeRootConstantBufferView(4, CbufferContainer->GPUAdress);
+
+	auto& renderTarget = Core::main->GetRenderTarget()->GetRenderTarget();
+	renderTarget->ResourceBarrier(D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
+
+	table->CopyHandle(_tableContainer.CPUHandle, renderTarget->GetSRVCpuHandle(), 0);
+	table->CopyHandle(_tableContainer.CPUHandle, _pingTexture->GetUAVCpuHandle(), 5);
+
+	cmdList->SetComputeRootDescriptorTable(10, _tableContainer.GPUHandle);
+	cmdList->Dispatch(x, y, z);
+
+	_pingTexture->ResourceBarrier(D3D12_RESOURCE_STATE_COPY_SOURCE);
+	renderTarget->ResourceBarrier(D3D12_RESOURCE_STATE_COPY_DEST);
+	cmdList->CopyResource(renderTarget->GetResource().Get(), _pingTexture->GetResource().Get());
+
+	_data.toblack -= _speed * Time::main->GetDeltaTime();
+
+	if (_data.toblack < -0.1f)
+	{
+		_data.toblack = 1.0f;
+		_on = false;
+	}
+
+	renderTarget->ResourceBarrier(D3D12_RESOURCE_STATE_RENDER_TARGET);
+
+
+}
+
+void ChangeSceneCompute::StartChangeScene(float speed)
+{
+	_on = true;
+	_speed = speed;
+
+}
+
+void ChangeSceneCompute::DispatchBegin(ComPtr<ID3D12GraphicsCommandList>& cmdList)
+{
+}
+
+void ChangeSceneCompute::DispatchEnd(ComPtr<ID3D12GraphicsCommandList>& cmdList)
+{
+}
+
+void ChangeSceneCompute::Resize()
 {
 }

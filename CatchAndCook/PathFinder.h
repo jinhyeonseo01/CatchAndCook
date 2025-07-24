@@ -7,6 +7,7 @@ struct FishPath
 	vector<vec3> path;
 	bool AreyouDraw = false;
 	vec3 _pathColor;
+	int count = 0; //추적용.
 };
 
 struct FishInfo
@@ -15,7 +16,6 @@ struct FishInfo
 	float fishSpeed;
 	float boundsCenterZ;
 	float boundsSizeZ;
-
 };
 
 class RenderBase;

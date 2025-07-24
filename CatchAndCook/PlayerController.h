@@ -8,10 +8,6 @@ class AnimationListComponent;
 class SkinnedHierarchy;
 class CameraComponent;
 
-enum class MoveType
-{
-	Field, Water
-};
 
 struct ControlInfo
 {
@@ -55,6 +51,10 @@ public:
 
 
 public:
+	void SetOnBoard();
+	void SetOFFBoard();
+
+public:
 	void CameraControl();
 	void MoveControl();
 
@@ -78,10 +78,9 @@ private:
 	Vector3 velocity = Vector3::Zero;
 	ControlInfo controlInfo = fieldInfo;
 	bool isGround = true;
-
-
-
+	bool _onBoard = false;
 public:
-
+	vec3 _GenPos{};
+	Quaternion _GenRotate{};
 };
 

@@ -22,7 +22,6 @@ void LightComponent::Init()
 	Component::Init();
 
 	light = std::make_shared<Light>();
-
 	light->material.ambient = vec3(0.2f, 0.2f, 0.2f);
 	light->material.diffuse = vec3(1.0f, 1.0f, 1.0f);
 	light->material.specular = vec3(1.0f, 1.0f, 1.0f);
@@ -45,7 +44,6 @@ void LightComponent::Start()
 	light->direction = GetOwner()->_transform->GetForward();
 	light->position = GetOwner()->_transform->GetWorldPosition();
 
-
 	if (light->material.lightType == 0)
 		mainLight = GetCast<LightComponent>();
 }
@@ -58,7 +56,6 @@ void LightComponent::Update()
 void LightComponent::Update2()
 {
 	Component::Update2();
-
 
 	if (light->material.lightType == 0 && abs(InGameGlobal::main->skyTime - skyTime) > 0.001)
 	{
@@ -123,12 +120,14 @@ void LightComponent::Update2()
 			}
 		}
 	}
+
 	light->direction = GetOwner()->_transform->GetForward();
 	light->position = GetOwner()->_transform->GetWorldPosition();
 
 	if (Input::main->GetKey(KeyCode::LeftBracket)) {
 		GetOwner()->_transform->SetLocalRotation(GetOwner()->_transform->GetLocalRotation() * Quaternion::CreateFromAxisAngle(Vector3::Up, 1.5 * Time::main->GetDeltaTime()));
 	}
+
 	if (Input::main->GetKey(KeyCode::RightBracket)) {
 		GetOwner()->_transform->SetLocalRotation(GetOwner()->_transform->GetLocalRotation() * Quaternion::CreateFromAxisAngle(Vector3::Up, -1.5 * Time::main->GetDeltaTime()));
 	}
@@ -138,17 +137,14 @@ void LightComponent::Enable()
 {
 	Component::Enable();
 	light->onOff = 1;
-
-	LightManager::main->PushLight(light);
+	LightManager::main->PushLight(light,SceneManager::main->GetCurrentScene()->GetSceneType());
 }
 
 void LightComponent::Disable()
 {
 	Component::Disable();
 	light->onOff = 0;
-	LightManager::main->RemoveLight(light);
-	if (LightManager::main->GetMainLight() == light)
-		LightManager::main->_mainLights = nullptr;
+	LightManager::main->RemoveLight(light, SceneManager::main->GetCurrentScene()->GetSceneType());
 }
 
 void LightComponent::RenderBegin()
@@ -182,17 +178,3 @@ void LightComponent::Destroy()
 	Component::Destroy();
 }
 
-void LightComponent::RenderEnd()
-{
-	Component::RenderEnd();
-}
-
-void LightComponent::ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene)
-{
-	Component::ChangeScene(currentScene, nextScene);
-
-	if (nextScene == GetOwner()->GetScene())
-		LightManager::main->PushLight(light);
-	else
-		LightManager::main->RemoveLight(light);
-}

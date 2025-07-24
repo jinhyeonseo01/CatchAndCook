@@ -3,9 +3,8 @@
 #include "Sprite.h"
 
 
-void ActionFunc::OnClickAction(KeyCode key, Sprite* sprite)
+bool ActionFunc::OnClickAction(KeyCode key, Sprite* sprite)
 {
-
     if (Input::main->GetMouseDown(key))
     {
         auto pos = Input::main->GetMouseDownPosition(key);
@@ -18,9 +17,13 @@ void ActionFunc::OnClickAction(KeyCode key, Sprite* sprite)
             normalizedY >= (sprite->_ndcWorldPos.y) &&
             normalizedY <= (sprite->_ndcWorldPos.y + sprite->_ndcSize.y))
         {
-
+            return true;
         }
-    } 
+
+        return false;
+    }
+
+    return false;
 }
 
 void ActionFunc::OnDragAction(KeyCode key, Sprite* sprite)
@@ -51,16 +54,16 @@ void ActionFunc::OnDragAction(KeyCode key, Sprite* sprite)
     if (_dragSprite && Input::main->GetMouse(key))
     {
         vec2 pos = Input::main->GetMousePosition();
-        vec2 delta = pos - _lastMousePos; 
+        vec2 delta = pos - _lastMousePos;
 
-        delta.x = delta.x * (_dragSprite->_firstWindowSize.x / WINDOW_WIDTH);
-        delta.y = delta.y * (_dragSprite->_firstWindowSize.y / WINDOW_HEIGHT);
+        delta.x = delta.x ;
+        delta.y = delta.y ;
 
         _dragSprite->SetLocalPos(vec3(_dragSprite->_screenLocalPos.x + delta.x,
-			_dragSprite->_screenLocalPos.y + delta.y,
-			0.1f));
+            _dragSprite->_screenLocalPos.y + delta.y,
+            0.1f));
 
-        _lastMousePos = pos; 
+        _lastMousePos = pos;
     }
 
     // 우클릭 종료

@@ -14,6 +14,7 @@ public:
 	double GetClockNow() const;
 	double GetDeltaTimeNow() const;
 
+
 private:
 	uint64	_frequency = 0;
 	uint64	_prevCount = 0;

@@ -62,10 +62,7 @@ void GameObject::Update()
         }
     }
 
-    if (Input::main->GetKeyDown(KeyCode::M))
-    {
-        SetDestroy();
-    }
+
 
 }
 
@@ -105,6 +102,17 @@ void GameObject::RenderEnd()
     }
 }
 
+void GameObject::Reset()
+{
+    for (auto& component : _components) 
+    {
+         component->Reset();
+    }
+
+}
+
+
+
 void GameObject::Destroy()
 {
     for (int i = 0; i < _components.size(); ++i) 
@@ -113,7 +121,7 @@ void GameObject::Destroy()
         component->Destroy();
     }
 
-    if (!parent.expired()) parent.lock()->RemoveChild(GetCast<GameObject>());
+    //if (!parent.expired()) parent.lock()->RemoveChild(GetCast<GameObject>());
 
 };
 
@@ -128,7 +136,6 @@ void GameObject::SetDestroy()
     }
 
     IDelayDestroy::SetDestroy();
-
     GetScene()->AddDestroyQueue(GetCast<GameObject>());
 }
 
@@ -205,14 +212,38 @@ std::shared_ptr<GameObject> GameObject::GetChildByName(const std::wstring& name)
                 return false;
             return obj.lock()->GetName() == name;
         });
+
     if (iter == _childs.end())
         return nullptr;
+
     return iter->lock();
+}
+
+std::shared_ptr<GameObject> GameObject::GetChildByNameRecursive(const std::wstring& name)
+{
+    for (const auto& weakChild : _childs)
+    {
+        if (weakChild.expired())
+            continue;
+
+        auto child = weakChild.lock();
+
+        if (child->GetName() == name)
+            return child;
+
+
+             auto result = child->GetChildByNameRecursive(name);
+        if (result != nullptr)
+            return result;
+    }
+
+    return nullptr;
 }
 
 int GameObject::GetChildAll(OUT std::vector<std::shared_ptr<GameObject>>& vec)
 {
     int count = 0;
+
     for (auto& child : _childs)
         if (!child.expired())
         {
@@ -291,7 +322,9 @@ bool GameObject::RemoveChild(const std::shared_ptr<GameObject>& obj)
     auto iter = std::find_if(_childs.begin(), _childs.end(), [&](const std::weak_ptr<GameObject>& element) {
             return element.lock() == obj;
         });
-    if (iter != _childs.end()) {
+
+    if (iter != _childs.end()) 
+    {
         _childs.erase(iter);
         return true;
     }
@@ -326,6 +359,7 @@ bool GameObject::SetParent(const std::shared_ptr<GameObject>& nextParentObj)
 {
     if (nextParentObj != nullptr && nextParentObj.get() == this)
         return false;
+
     if (this->IsDestroy())
         return false;
 
@@ -341,6 +375,7 @@ bool GameObject::SetParent(const std::shared_ptr<GameObject>& nextParentObj)
         prevParentObj->RemoveChild(thisObj);
         this->ActiveUpdateChain(true);
     }
+
     this->parent.reset(); // null
     this->rootParent = thisObj;
 
@@ -351,6 +386,7 @@ bool GameObject::SetParent(const std::shared_ptr<GameObject>& nextParentObj)
         this->ActiveUpdateChain(nextParentObj->GetActive());
         nextParentObj->AddChild(thisObj);
     }
+
     if (prevRootParent.lock() != this->rootParent.lock()) //root ����
         SetRootParent(this->rootParent.lock());
 

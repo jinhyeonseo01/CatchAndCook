@@ -98,6 +98,7 @@ public:
 	double _animationBlendTime = 0;
 	double _prevAnimationBlendTime = 0;
 
+	bool _blendEnd = true;
 
 	double _duration = 0.25;
 	double _speedMultiple = 1.2;

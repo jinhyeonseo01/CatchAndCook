@@ -20,6 +20,7 @@ public:
 	void SetDestroy() override;
 	void Destroy() override;
 
+public:
 	void SetSkyTime(float currentSkyTime){ this->skyTime = currentSkyTime; };
 	void SetLight(const std::shared_ptr<Light>& light) { this->light = light; };
 	std::shared_ptr<Light>& GetLight() { return light; };
@@ -38,9 +39,10 @@ public:
 
 	float skyTime = -1;
 
+	
 	static std::weak_ptr<LightComponent> mainLight;
 	static std::shared_ptr<LightComponent> GetMainLight() { return mainLight.lock(); }
-	void RenderEnd() override;
-	void ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene) override;;
+
+
 };
 

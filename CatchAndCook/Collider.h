@@ -4,6 +4,8 @@
 #include "Component.h"
 #include "Game.h"
 
+
+
 enum class CollisionType
 {
 	Box,
@@ -49,6 +51,8 @@ public:
 	void CollisionEnd(const std::shared_ptr<Collider>& collider,const std::shared_ptr<Collider>& other) override;
 	void SetDestroy() override;
 	void Destroy() override;
+
+
 
 
 public:

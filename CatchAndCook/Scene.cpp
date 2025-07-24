@@ -23,6 +23,8 @@
 #include "TerrainManager.h"
 #include "Volumetric.h"
 
+ bool Scene::_changeScene=false;
+
 void Scene::AddFrontGameObject(const std::shared_ptr<GameObject>& gameObject)
 {
     gameObject->SetScene(GetCast<Scene>());
@@ -72,6 +74,7 @@ void Scene::Update()
         current->Start();
         _startQueue.pop();
     }
+
     Profiler::Fin();
 
     Profiler::Set("Logic_Update1");
@@ -168,11 +171,11 @@ void Scene::Rendering()
 
 
     Profiler::Set("PASS : Transparent", BlockTag::CPU);
-    TransparentPass(cmdList); // Position,
+        TransparentPass(cmdList); // Position,
     Profiler::Fin();
 
     Profiler::Set("PASS : Compute", BlockTag::CPU);
-    ComputePass(cmdList);
+        ComputePass(cmdList);
     Profiler::Fin();
 
     Profiler::Set("PASS : TransparentAfterPP", BlockTag::CPU);
@@ -180,12 +183,16 @@ void Scene::Rendering()
     Profiler::Fin();
 
     Profiler::Set("PASS : UI", BlockTag::CPU);
-    UiPass(cmdList);
+        UiPass(cmdList);
     Profiler::Fin();
 
     Profiler::Set("PASS : UI2", BlockTag::CPU);
     Ui2Pass(cmdList);
     Profiler::Fin();
+
+    ComputeManager::main->ChangeSceneDispatch();
+
+
 
 }
 
@@ -210,9 +217,7 @@ void Scene::TransparentPass(ComPtr<ID3D12GraphicsCommandList> & cmdList)
             };
 
         std::ranges::sort(vec, [&](const RenderObjectStrucutre& a, const RenderObjectStrucutre& b) {
-            if (a.renderer->order == b.renderer->order)
-                return (tangentDistanceSquared(a.renderer->GetBound().Center) < tangentDistanceSquared(b.renderer->GetBound().Center));
-            return a.renderer->order < b.renderer->order;
+            return tangentDistanceSquared(a.renderer->_bound.Center) < tangentDistanceSquared(b.renderer->_bound.Center);
             });
 
         Shader* prevShader = nullptr;
@@ -223,7 +228,7 @@ void Scene::TransparentPass(ComPtr<ID3D12GraphicsCommandList> & cmdList)
                 cmdList->SetPipelineState(shader->_pipelineState.Get());
 
             g_debug_forward_count++;
-            
+
             if (ele.renderer->IsCulling() == true)
             {
                 if (CameraManager::main->GetActiveCamera()->IsInFrustum(ele.renderer->GetBound()) == false)
@@ -468,6 +473,9 @@ void Scene::UiPass(ComPtr<ID3D12GraphicsCommandList>& cmdList)
             {
                 auto& [material, mesh, target] = renderStructure;
                 SettingPrevData(renderStructure, RENDER_PASS::PASS::UI);
+
+                cmdList->OMSetBlendFactor(material->GetBlendFactor().data());
+
                 target->Rendering(material, mesh);
             }
         }
@@ -544,7 +552,6 @@ void Scene::FinalRender(ComPtr<ID3D12GraphicsCommandList>& cmdList)
 
 void Scene::ComputePass(ComPtr<ID3D12GraphicsCommandList>& cmdList)
 {
-    //후처리작업진행할거임.
     ComputeManager::main->Dispatch(cmdList);
 }
 
@@ -558,14 +565,13 @@ void Scene::GlobalSetting()
 
     _globalParam.window_size = vec2(WINDOW_WIDTH,WINDOW_HEIGHT);
     _globalParam.Time = Time::main->GetTime();
-
+    _globalParam.dt = Time::main->GetDeltaTimeNow();
 
     auto CbufferContainer = Core::main->GetBufferManager()->GetBufferPool(BufferType::GlobalParam)->Alloc(1);
     memcpy(CbufferContainer->ptr,(void*)&_globalParam,sizeof(GlobalParam));
 
     cmdList->SetGraphicsRootConstantBufferView(0,CbufferContainer->GPUAdress);
     cmdList->SetComputeRootConstantBufferView(0, CbufferContainer->GPUAdress);
-
 
     auto& table = Core::main->GetBufferManager()->GetTable();
     TableContainer container = Core::main->GetBufferManager()->GetTable()->Alloc(1);
@@ -683,7 +689,9 @@ void Scene::Finish()
     Scene::ExecuteDestroyGameObjects();
     PathFinder::ClearDebugDraw();
     GameObject::ExecuteDestroyComponents();
-}
+    
+   
+} 
 
 void Scene::ExecuteDestroyGameObjects()
 {
@@ -692,24 +700,56 @@ void Scene::ExecuteDestroyGameObjects()
         auto& gameObject = _destroyQueue.front();
         _destroyQueue.pop();
 
-        auto it = std::find(_gameObjects.begin(), _gameObjects.end(), gameObject);
+        std::vector<std::shared_ptr<GameObject>> vec;
+        gameObject->GetChildAll(vec);
 
-        if (it != _gameObjects.end())
+        for (auto& ele : vec)
         {
-            gameObject->Destroy();
-            _gameObjects.erase(it);
-        }
-        else
-        {
-            it = std::find(_gameObjects_deactivate.begin(), _gameObjects_deactivate.end(), gameObject);
-            if (it != _gameObjects_deactivate.end())
+            auto it = std::find(_gameObjects.begin(), _gameObjects.end(), ele);
+
+            if (it != _gameObjects.end())
             {
-                gameObject->Destroy();
-                _gameObjects_deactivate.erase(it);
+                ele->Destroy();
+                _gameObjects.erase(it);
+            }
+
+            else
+            {
+                it = std::find(_gameObjects_deactivate.begin(), _gameObjects_deactivate.end(), ele);
+                if (it != _gameObjects_deactivate.end())
+                {
+                    ele->Destroy();
+                    _gameObjects_deactivate.erase(it);
+                }
             }
         }
+
+        {
+            auto it = std::find(_gameObjects.begin(), _gameObjects.end(), gameObject);
+
+            if (it != _gameObjects.end())
+            {
+                gameObject->Destroy();
+                _gameObjects.erase(it);
+            }
+
+
+            else
+            {
+                it = std::find(_gameObjects_deactivate.begin(), _gameObjects_deactivate.end(), gameObject);
+                if (it != _gameObjects_deactivate.end())
+                {
+                    gameObject->Destroy();
+                    _gameObjects_deactivate.erase(it);
+                }
+            }
+        }
+
     }
 }
+
+
+
 
 
 std::shared_ptr<GameObject> Scene::CreateGameObject(const std::wstring& name, GameObjectType type)
@@ -744,34 +784,40 @@ bool Scene::RemoveAtGameObject(int index)
 
 void Scene::CameraControl()
 {
-	static CameraType type = CameraType::DebugCamera;
+    static CameraType type = CameraType::DebugCamera;
 
-	if (Input::main->GetKeyDown(KeyCode::F1))
-	{
-		type = CameraType::DebugCamera;
-        Input::main->SetMouseLock(false);
-	}
+    if (Input::main->GetKeyDown(KeyCode::F1))
+    {
+        type = CameraType::DebugCamera;
+        CameraManager::main->Setting(type);
+    }
 
     if (Input::main->GetKeyDown(KeyCode::F2))
     {
-		type = CameraType::ComponentCamera;
+        type = CameraType::ComponentCamera;
+        CameraManager::main->Setting(type);
     }
 
     if (Input::main->GetKeyDown(KeyCode::F3))
     {
         type = CameraType::SeaCamera;
+        CameraManager::main->Setting(type);
     }
 
-	CameraManager::main->Setting(type);
+    if (Input::main->GetKeyDown(KeyCode::F4))
+    {
+        type = CameraType::BoatCamera;
+        CameraManager::main->Setting(type);
+    }
+
+ 
+    CameraManager::main->Setting();
 }
 
 void Scene::AddDestroyQueue(const std::shared_ptr<GameObject>& gameObject)
 {
 	_destroyQueue.push(gameObject);
 }
-
-
-
 
 std::shared_ptr<GameObject> Scene::Find(const std::wstring& name, bool includeDestroy)
 {

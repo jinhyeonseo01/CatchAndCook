@@ -301,7 +301,6 @@ void Gizmo::Rendering(Material* material, Mesh* mesh, int instanceCount)
 	cmdList->SetPipelineState(material->GetShader()->_pipelineState.Get());
 
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
-
 	cmdList->IASetVertexBuffers(1,1,&container->_bufferView);
 	cmdList->DrawInstanced(2, lineDatas.size(),0,0);
 

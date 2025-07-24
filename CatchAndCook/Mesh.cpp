@@ -16,28 +16,31 @@ Mesh::~Mesh()
 
 void Mesh::Redner(int instanceCount)
 {
-	if(instanceCount == 0)
+	if (instanceCount == 0)
 		return;
 
 	auto& cmdList = Core::main->GetCmdList();
 	cmdList->IASetPrimitiveTopology(_topology);
 
-	if(_vertexCount != 0)
+	if (_UseBuffer)
 	{
-
-		if(_indexCount != 0)
+		if (_indexCount != 0)
 		{
-			cmdList->IASetVertexBuffers(0,1,&_vertexBufferView);
+			cmdList->IASetVertexBuffers(0, 1, &_vertexBufferView);
 			cmdList->IASetIndexBuffer(&_indexBufferView);
-			cmdList->DrawIndexedInstanced(_indexCount,instanceCount,0,0,0);
-		} else
+			cmdList->DrawIndexedInstanced(_indexCount, instanceCount, 0, 0, 0);
+		}
+		else
 		{
-			cmdList->IASetVertexBuffers(0,1,&_vertexBufferView);
-			cmdList->DrawInstanced(_vertexCount,instanceCount,0,0);
+			cmdList->IASetVertexBuffers(0, 1, &_vertexBufferView);
+			cmdList->DrawInstanced(_vertexCount, instanceCount, 0, 0);
 		}
 	}
 
-
+	else
+	{
+ 		cmdList->DrawInstanced(_vertexCount, _InstacnceCount, 0, 0);
+	}
 };
 
 void Mesh::CreateIndexBuffer(vector<uint32>& vec)

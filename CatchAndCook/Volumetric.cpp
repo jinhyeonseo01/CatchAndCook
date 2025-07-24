@@ -53,7 +53,7 @@ void Volumetric::Init()
 
 	_mesh = GeoMetryHelper::LoadRectangleMesh();
 	
-	ImguiManager::main->_volumetricData = &_data;
+
 }
 
 

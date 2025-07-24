@@ -48,6 +48,66 @@ void ResourceManager::CreateDefaultShader()
 
 void ResourceManager::CreateDefaultShaderKSH()
 {
+	{
+		ShaderInfo info;
+		info._zTest = true;
+		info._stencilTest = false;
+		info._blendEnable = true;
+		info._blendType[0] = BlendType::BlendFactor;
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->SetPass(RENDER_PASS::UI);
+		shader->Init(L"SpriteProgressCycle.hlsl", ColorProp, ShaderArg{}, info);
+		Add<Shader>(L"SpriteProgressCycle", shader);
+	}
+
+	{
+
+		ShaderInfo info;
+		info._zTest = true;
+		info._stencilTest = false;
+		info._blendEnable = true;
+		info._blendType[0] = BlendType::BlendFactor;
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->SetPass(RENDER_PASS::UI);
+		shader->Init(L"SpriteShader.hlsl", ColorProp, ShaderArg{}, info);
+		Add<Shader>(L"SpriteShader", shader);
+	}
+
+
+
+	{
+		ShaderInfo info;
+		info.renderTargetCount = 4;
+
+		info.RTVForamts[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		info.RTVForamts[1] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		info.RTVForamts[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		info.RTVForamts[3] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"percentageShader", L"percentageShader.hlsl", StaticProp,
+			ShaderArg{}, info);
+
+		shader->SetPass(RENDER_PASS::Deferred);
+
+	}
+
+
+	{
+		ShaderInfo info;
+		info.renderTargetCount = 1;
+		info._primitiveType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
+		info.RTVForamts[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+		info.cullingType = CullingType::BACK;
+
+		shared_ptr<Shader> shader = make_shared<Shader>();
+
+		shader->Init(L"HookShader.hlsl", {}, ShaderArg{ {{"PS_Main","ps"},{"VS_Main","vs"},{"GS_Main","gs"}} }, info);
+		shader->SetPass(RENDER_PASS::NoEffectForwardPostProcessing);
+		Add<Shader>(L"HookShader", shader);
+
+
+	}
 
 	{
 		ShaderInfo info;
@@ -112,6 +172,39 @@ void ResourceManager::CreateDefaultShaderKSH()
 		ShaderInfo info;
 		info.renderTargetCount = 4;
 
+		info.RTVForamts[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		info.RTVForamts[1] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		info.RTVForamts[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		info.RTVForamts[3] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"DeferredRim", L"DeferredRim.hlsl", StaticProp,
+			ShaderArg{}, info);
+
+		shader->SetPass(RENDER_PASS::Deferred);
+	}
+
+	{
+		ShaderInfo info;
+		info.renderTargetCount = 4;
+
+
+		info.RTVForamts[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		info.RTVForamts[1] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		info.RTVForamts[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		info.RTVForamts[3] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"DeferredSeaEmission", L"DeferredSeaEmission.hlsl", StaticProp,
+			ShaderArg{}, info);
+
+		shader->SetInjector({ BufferType::SeaDefaultMaterialParam });
+		shader->SetPass(RENDER_PASS::Deferred);
+
+	}
+
+	{
+		ShaderInfo info;
+		info.renderTargetCount = 4;
+
 	
 		info.RTVForamts[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		info.RTVForamts[1] = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -136,7 +229,54 @@ void ResourceManager::CreateDefaultShaderKSH()
 		info.RTVForamts[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		info.RTVForamts[3] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 
+		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"D_SeaEnvClip", L"DeferredSeaClip.hlsl", StaticProp,
+			ShaderArg{}, info);
+
+		shader->SetInjector({ BufferType::SeaDefaultMaterialParam });
+		//shader->SetInjector({ BufferType::DefaultMaterialParam });
+		shader->SetPass(RENDER_PASS::Deferred);
+
+	}
+
+	{
+		ShaderInfo info;
+		info.renderTargetCount = 1;
+
+		info.RTVForamts[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"F_SeaEnvClip", L"ForwardSeaClip.hlsl", StaticProp,
+			ShaderArg{}, info);
+
+		shader->SetInjector({ BufferType::SeaDefaultMaterialParam });
+		shader->SetPass(RENDER_PASS::NoEffectForwardPostProcessing);
+
+	}
+
+	{
+		ShaderInfo info;
+		info.renderTargetCount = 4;
+
+		info.RTVForamts[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		info.RTVForamts[1] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		info.RTVForamts[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		info.RTVForamts[3] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+
 		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"DeferredSeaSkinned", L"DeferredSeaSkinned.hlsl", SkinProp,
+			ShaderArg{}, info);
+		shader->SetInjector({ BufferType::SeaDefaultMaterialParam });
+		shader->SetPass(RENDER_PASS::Deferred);
+	}
+
+	{
+		ShaderInfo info;
+		info.renderTargetCount = 4;
+
+		info.RTVForamts[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		info.RTVForamts[1] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		info.RTVForamts[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		info.RTVForamts[3] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"DeferredSeaSkinnedRim", L"DeferredSeaSkinnedRim.hlsl", SkinProp,
 			ShaderArg{}, info);
 		shader->SetInjector({ BufferType::SeaDefaultMaterialParam });
 		shader->SetPass(RENDER_PASS::Deferred);
@@ -227,37 +367,8 @@ void ResourceManager::CreateDefaultShaderKSH()
 	}
 
 
+	
 
-	{
-
-		ShaderInfo info;
-		info._zTest = false;
-		info._stencilTest = false;
-		info._blendEnable = true;
-
-		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->SetPass(RENDER_PASS::Forward);
-		shader->Init(L"SpriteShader.hlsl", ColorProp, ShaderArg{}, info);
-		Add<Shader>(L"SpriteShader", shader);
-	}
-
-
-	{
-
-		ShaderInfo info;
-		info._zTest = true;
-		info._zWrite = false;
-		info._stencilTest = false;
-		info._blendEnable = true;
-		info.renderTargetCount = 1;
-		info._blendType[0] = BlendType::AlphaBlend;
-		info.cullingType = CullingType::NONE;
-
-		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->SetPass(RENDER_PASS::Transparent);
-		shader->Init(L"GUISpriteShader.hlsl",StaticProp, ShaderArg{}, info);
-		Add<Shader>(L"GUISpriteShader", shader);
-	}
 
 	{
 
@@ -457,27 +568,6 @@ void ResourceManager::CreateDefaultShaderJIN()
 		shader->SetPass(RENDER_PASS::Deferred);
 		shader->Init(L"Environment.hlsl", StaticProp, ShaderArg{}, info);
 		Add<Shader>(L"Environment", shader);
-	}
-
-	{
-
-		ShaderInfo info;
-		info._zTest = true;
-		info._stencilTest = false;
-		info.cullingType = CullingType::NONE;
-
-		info.renderTargetCount = 4;
-
-		info.RTVForamts[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		info.RTVForamts[1] = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		info.RTVForamts[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
-		info.RTVForamts[3] = DXGI_FORMAT_R32G32B32A32_FLOAT;
-
-		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->SetInjector({ BufferType::EnvMaterialParam });
-		shader->SetPass(RENDER_PASS::Deferred);
-		shader->Init(L"Environment.hlsl", StaticProp, ShaderArg{}, info);
-		Add<Shader>(L"Environment_NoCull", shader);
 	}
 
 	{
@@ -705,6 +795,23 @@ void ResourceManager::CreateDefaultShaderJIN()
 
 		ShaderInfo info;
 		info._zTest = true;
+		info._zWrite = false;
+		info._stencilTest = false;
+		info._blendEnable = true;
+		info.renderTargetCount = 1;
+		info._blendType[0] = BlendType::AlphaBlend;
+		info.cullingType = CullingType::NONE;
+
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->SetPass(RENDER_PASS::Transparent);
+		shader->Init(L"GUISpriteShader.hlsl", StaticProp, ShaderArg{}, info);
+		Add<Shader>(L"GUISpriteShader", shader);
+	}
+
+	{
+
+		ShaderInfo info;
+		info._zTest = true;
 		info._stencilTest = false;
 		info.cullingType = CullingType::BACK;
 		info._depthOnly = true;
@@ -845,24 +952,6 @@ void ResourceManager::CreateDefaultShaderJIN()
 	}
 
 
-	{
-
-		ShaderInfo info;
-		info._zTest = true;
-		info._zWrite = false;
-		info._stencilTest = false;
-
-		info._blendEnable = true;
-		
-
-		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->SetInjector({ BufferType::DefaultMaterialParam });
-		shader->SetPass(RENDER_PASS::Transparent);
-		shader->Init(L"TestTransparent_Total.hlsl", StaticProp, ShaderArg{}, info);
-		Add<Shader>(L"TestTransparent", shader);
-	}
-
-
 
 	{
 
@@ -960,6 +1049,11 @@ void ResourceManager::CreateDefaultTexture()
 	_cubemap_skyTexture = Load<Texture>(L"cubemap_sky0", L"Textures/cubemap/Sky_0.png.dds", TextureType::CubeMap);
 	_cubemap_skyNTexture = Load<Texture>(L"cubemap_sky1", L"Textures/cubemap/Sky_1.png.dds", TextureType::CubeMap);
 	_cubemap_skyETexture = Load<Texture>(L"cubemap_sky2", L"Textures/cubemap/Sky_2.png.dds", TextureType::CubeMap);
+
+	Load<Texture>(L"bleedTexture", L"Textures/bleedTexture.png");
+	Load<Texture>(L"smokeTexture", L"Textures/smoke.png");
+	Load<Texture>(L"bubble", L"Textures/bubble.png");
+	Load<Texture>(L"interactive", L"Textures/interactive.png");
 }
 
 void ResourceManager::CreateDefaultAnimation()

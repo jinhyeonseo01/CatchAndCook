@@ -104,20 +104,16 @@ void WaveGeneration(inout float3 worldPos, inout float3 worldNormal)
     {
         Wave wave = waves[i];
 
-        // 주파수 및 위상 계산
         float frequency = 2.0f * PI / wave.wavelength;
         float phase = wave.speed * g_Time;
         float2 dir = normalize(wave.direction);
         float steep = wave.steepness;
 
-        // 현재 정점의 xz 좌표와 파도 방향의 내적
         float dotVal = dot(dir, worldPos.xz);
 
-        // sin과 cos를 사용하여 파도의 변위 계산
         float waveSin = sin(dotVal * frequency + phase);
         float waveCos = cos(dotVal * frequency + phase);
-
-        // Gerstner 공식에 따라 위치 수정
+        
         modifiedPos.x += steep * wave.amplitude * dir.x * waveCos;
         modifiedPos.z += steep * wave.amplitude * dir.y * waveCos;
         waveY += wave.amplitude * waveSin;
@@ -338,5 +334,5 @@ float4 PS_Main(DS_OUT input) : SV_Target0
     ///////////////////////////////////////////////////////////////////////////
     float3 sea_color = (g_seaBaseColor.rgb * diffuse) + (g_seaShallowColor.rgb * shallowFactor) + envReflection * fresnel * g_envPower + specular;
     
-    return float4(sea_color, 1.0f);
+    return float4(sea_color, 0.0f);
 }

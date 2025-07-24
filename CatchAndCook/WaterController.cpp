@@ -2,6 +2,8 @@
 #include "WaterController.h"
 #include "RendererBase.h"
 
+
+
 WaterController::~WaterController()
 {
 }
@@ -35,8 +37,10 @@ void WaterController::Init()
 	_dudv->Init(L"../Resources/Textures/sea/dudv2.png");
 
 	
-	ImguiManager::main->_seaParam = &_seaParam;
-
+	if (ImguiManager::main->_seaParam == nullptr)
+	{
+		ImguiManager::main->_seaParam = &_seaParam;
+	}
  
   
 
@@ -112,6 +116,7 @@ void WaterController::SetData(Material* material)
 
 void WaterController::Setting(const wstring& colorPath, const wstring& movementPath)
 {
+	SeaParam& param = WaterController::_seaParam;
 
 	const wstring originPath =L"../Resources/Textures/sea/";
 
@@ -181,3 +186,25 @@ void WaterController::Setting(const wstring& colorPath, const wstring& movementP
 	}
 
 }
+
+float WaterController::GetWaveHeight(const vec3& worldPos, const SeaParam* param)
+{
+	float height = 43.5f;
+
+	for (int i = 0; i < param->wave_count; i++)
+	{
+		float frequency = 2 * 3.14159f / param->waves[i].wavelength;
+		float phase = param->waves[i].speed * Time::main->GetTime();
+		vec2 direction = param->waves[i].direction;
+		direction.Normalize();
+
+		float dotProduct = worldPos.x * direction.x + worldPos.z * direction.y;
+		float wave = sin(dotProduct * frequency + phase);
+
+		height += param->waves[i].amplitude * wave;
+	}
+
+	return height;
+}
+
+

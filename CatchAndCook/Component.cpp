@@ -52,6 +52,11 @@ void Component::Destroy()
 
 }
 
+void Component::Reset()
+{
+
+}
+
 void Component::RenderBegin()
 {
 

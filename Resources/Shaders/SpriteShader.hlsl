@@ -67,5 +67,10 @@ float4 PS_Main(VS_OUT input) : SV_TARGET
         discard;
     }
     
-    return texColor * input.color * g_alpha;
+    if (abs(texColor.a - clipingColor.a) < 0.1f)
+    {
+        discard;
+    }
+    
+    return texColor * input.color ;
 }

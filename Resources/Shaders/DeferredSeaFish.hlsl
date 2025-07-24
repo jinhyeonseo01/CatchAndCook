@@ -51,7 +51,7 @@ VS_OUT VS_Main(VS_IN input, uint id : SV_InstanceID)
     float maxZ = fishinfo.boundsCenterZ + fishinfo.boundsSizeZ;
     float weight = saturate((localZ - minZ) / (maxZ - minZ));
 
-    float phaseOffset = localZ * 0.5f;
+    float phaseOffset = localZ * 0.7f;
 
     float wave = sin(g_Time * fishinfo.fishSpeed + phaseOffset)
            * fishinfo.fishWaveAmount * weight;
@@ -88,7 +88,5 @@ PS_OUT PS_Main(VS_OUT input) : SV_Target
     output.normal = float4(N, 1.0f);
     
 
-   
-    
     return output;
 }

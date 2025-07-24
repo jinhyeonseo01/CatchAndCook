@@ -1,58 +1,50 @@
 ﻿#pragma once
 #include "Component.h"
+#include "SeaPlayerController.h"
 
-struct Gun
+struct weapon
 {
 	wstring GunName =L"NULL";
-	shared_ptr<GameObject> body{};
-	shared_ptr<GameObject> hook{};
+	shared_ptr<GameObject> gun{};
 	shared_ptr<GameObject> weaponSlot{};
-
-	float _power{};
-	float _range =300.0f;
 	float _speed =800.0f;
 };
 
-enum class WeaponState
-{
-	Idle,
-	Shot,
-	Reload,
-};
 
-class Weapon :public Component
+class Weapon 
 {
-
 public:
 	Weapon();
 	~Weapon();
-	void SetDestroy() override;
-	void Init() override;
-	void Start() override;
-	void Update() override;
-	void Update2() override;
-	void Enable() override;
-	void Disable() override;
-	void Destroy() override;
-	void RenderBegin() override;
-	void CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other) override;
-	void CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other) override;
-	bool IsExecuteAble() override;
 
-	void ChangeState(const WeaponState& state);
+	void Init(SeaPlayerController* contorller);
+public:
+	void CreateBullet();
+	void SetCurrentWeapon(const wstring& weaponName);
+	void AddWeapon(const wstring& gunName,const wstring& slotName ,float speed);
+	void SetTargetHudSize();
+	vec3 GetTaretPos();
+	shared_ptr<weapon> GetCurrentWeapon() { return _currentWeapon; }
+
+	void Shot();
+
+	void SetTargetHudVisible(bool onOff)
+	{
+		if (_targetHud)
+			_targetHud->SetActiveSelf(onOff);
+	}
 
 public:
-	WeaponState GetState() { return  _state; }
-	void SetCurrentWeapon(const wstring& weaponName);
-	void AddWeapon(const wstring& weaponName, const wstring& bodyName, const wstring& hookName , const wstring& weaponSlot);
-	void AddWeapon(shared_ptr<Gun> gun);
-	shared_ptr<Gun> GetCurrentWeapon() { return _currentWeapon; }
+	static void RecycleBullet(const shared_ptr<GameObject>& bullet);
+
 
 private:
-	WeaponState _state = WeaponState::Idle;
-	float _moveDist = 0;
-	shared_ptr<Gun> _currentWeapon;
-	unordered_map<wstring, shared_ptr<Gun>> _weapons;
+	SeaPlayerController* _controller;
+	shared_ptr<weapon> _currentWeapon;
+	shared_ptr<GameObject> _targetHud;
+	unordered_map<wstring, shared_ptr<weapon>> _weapons;
+
+	static std::queue<shared_ptr<GameObject>> _bulletQueue;
 
 };
 

@@ -7,8 +7,9 @@ enum class CameraType
 {
     DebugCamera,
 	SeaCamera,
-    UiCamera,
-    ComponentCamera
+    BoatCamera,
+    ComponentCamera,
+
 };
 
 
@@ -60,7 +61,6 @@ public:
     void SetCameraLook(const vec3& look);
     void SetCameraUp(const vec3& up);
     void SetCameraRight(const vec3& right);
-
 
     vec3& GetCameraPos() { return _cameraPos; }
     vec3& GetCameraLook() { return _cameraLook; }
@@ -140,14 +140,15 @@ public:
 private:
 };
 
-class UiCamera : public Camera
+class BoatCamera : public Camera
 {
 
 public:
-    UiCamera();
-    virtual ~UiCamera();
+    BoatCamera();
+    virtual ~BoatCamera();
     virtual void Update();
 
 };
+
 
 

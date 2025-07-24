@@ -11,8 +11,6 @@ Camera::Camera(CameraType type)
 void Camera::Update()
 {
     Calculate();
-
-
 }
 
 Vector3 Camera::GetScreenToWorldPosition(Vector2 mousePosition)
@@ -224,25 +222,20 @@ void SeaCamera::Update()
 }
 /*************************
 *                        *
-*     UiCamera           *
+*     BoatCamera         *
 *                        *
 **************************/
-UiCamera::UiCamera()
+
+BoatCamera::BoatCamera()
 {
-	_type = CameraType::UiCamera;
-	_projmode = CameraProjectionMode::Orthographic;
-    _orthoSize = vec2(WINDOW_WIDTH, WINDOW_HEIGHT);
-	_cameraPos = vec3(0, 0, -1.0f);
+    _type = CameraType::BoatCamera;
 }
 
-UiCamera::~UiCamera()
+BoatCamera::~BoatCamera()
 {
-
 }
 
-void UiCamera::Update()
+void BoatCamera::Update()
 {
     Camera::Update();
 }
-
-

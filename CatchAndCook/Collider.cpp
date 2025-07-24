@@ -86,13 +86,12 @@ void Collider::Start()
 		groupRootObject = obj->GetOwner();
 	}
 
-	//if (GetOwner()->GetType() == GameObjectType::Static && GetOwner()->GetActive())
-	//{
-	//	CalculateBounding();
-	//	ColliderManager::main->AddCollider(GetCast<Collider>());
-	//}
-	CalculateBounding();
-	ColliderManager::main->AddCollider(GetCast<Collider>());
+	if (GetOwner()->GetType() == GameObjectType::Static && GetOwner()->GetActive())
+	{
+		CalculateBounding();
+		ColliderManager::main->AddCollider(GetCast<Collider>());
+	}
+
 }
 
 void Collider::Update()
@@ -119,7 +118,6 @@ void Collider::Enable()
 	if (GetOwner()->GetType() == GameObjectType::Static)
 		CalculateBounding();
 	
-
 	groupId = PhysicsComponent::GetPhysicsGroupID(GetOwner());
 	if (auto obj = GetOwner()->GetComponentWithParents<PhysicsComponent>()) {
 		groupRootObject = obj->GetOwner();
@@ -185,7 +183,11 @@ void Collider::SetDestroy()
 void Collider::Destroy()
 {
 	Component::Destroy();
+	cout << "DESTORY" << endl;
+	ColliderManager::main->RemoveCollider(GetCast<Collider>());
+
 }
+
 
 vec3 Collider::GetCenter()
 {
@@ -316,14 +318,13 @@ bool Collider::RayCast(const Ray& ray, const float& dis, RayHit& hit)
 {
 	hit.distance = dis;
 	hit.collider = this;
-	hit.gameObject = GetOwner().get();
+	hit.gameObject = GetOwner();
 
 	////// _bound.box를 지역 변수로 캐싱하여 반복 접근을 줄입니다.
 
 	if (_type == CollisionType::Box)
 	{
 		const auto& box = _bound.box;
-		// Ray와 박스 간의 충돌 여부를 테스트합니다.
 		if (ray.Intersects(box, hit.distance))
 		{
 			// 월드 좌표계에서 충돌 지점을 계산합니다.
@@ -365,6 +366,7 @@ bool Collider::RayCast(const Ray& ray, const float& dis, RayHit& hit)
 			return true;
 		}
 	}
+
 	if (_type == CollisionType::Sphere)
 	{
 		const auto& sphere = _bound.sphere;
@@ -382,7 +384,6 @@ bool Collider::RayCast(const Ray& ray, const float& dis, RayHit& hit)
 	}
 
 	hit.isHit = false;
-	// No intersection occurred.
 	return false;
 }
 
@@ -449,49 +450,6 @@ pair<vec3, vec3> Collider::GetMinMax()
 {
 	if (_type == CollisionType::Box)
 	{
-		/*
-		Matrix rotMatrix = Matrix::CreateFromQuaternion(_bound.box.Orientation);
-		vec3 center = _bound.box.Center;
-		vec3 extents = _bound.box.Extents;
-
-		vec3 localVertices[8] = {
-			vec3(-extents.x, -extents.y, -extents.z),
-			vec3(-extents.x, -extents.y,  extents.z),
-			vec3(-extents.x,  extents.y, -extents.z),
-			vec3(-extents.x,  extents.y,  extents.z),
-			vec3(extents.x, -extents.y, -extents.z),
-			vec3(extents.x, -extents.y,  extents.z),
-			vec3(extents.x,  extents.y, -extents.z),
-			vec3(extents.x,  extents.y,  extents.z)
-		};
-
-		vec3 worldMin = vec3(FLT_MAX, FLT_MAX, FLT_MAX);
-		vec3 worldMax = vec3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
-
-		for (int i = 0; i < 8; i++)
-		{
-			vec3 worldVertex = center + vec3(
-				localVertices[i].x * rotMatrix.m[0][0] + localVertices[i].y * rotMatrix.m[1][0] + localVertices[i].z * rotMatrix.m[2][0],
-				localVertices[i].x * rotMatrix.m[0][1] + localVertices[i].y * rotMatrix.m[1][1] + localVertices[i].z * rotMatrix.m[2][1],
-				localVertices[i].x * rotMatrix.m[0][2] + localVertices[i].y * rotMatrix.m[1][2] + localVertices[i].z * rotMatrix.m[2][2]
-			);
-
-			worldMin = vec3(
-				std::min(worldMin.x, worldVertex.x),
-				std::min(worldMin.y, worldVertex.y),
-				std::min(worldMin.z, worldVertex.z)
-			);
-
-			worldMax = vec3(
-				std::max(worldMax.x, worldVertex.x),
-				std::max(worldMax.y, worldVertex.y),
-				std::max(worldMax.z, worldVertex.z)
-			);
-		}
-
-
-		return std::make_pair(worldMin, worldMax);
-		*/
 		auto rot = Matrix::CreateFromQuaternion(_bound.box.Orientation);
 		vec3 center = _bound.box.Center;
 		vec3 extent = _bound.box.Extents;

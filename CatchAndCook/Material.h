@@ -73,6 +73,9 @@ public:
 
 	static void AllocDefualtTextureHandle();
 
+	void SetBlendFactor(const std::array<float, 4>& factor) { _blendFactor = factor; }
+	const std::array<float, 4>& GetBlendFactor() const { return _blendFactor; }
+
 	std::shared_ptr<Material> Clone();
 	void CopyProperties(std::shared_ptr<Material>& dest);
 
@@ -85,7 +88,7 @@ public:
 	}
 
 public:
-	
+	std::array<float, 4> _blendFactor = { 0.8f, 0.8f, 0.8f, 0.8f };
 	uint32 _instanceID = 0;
 private:
 	shared_ptr<Shader> _shader;

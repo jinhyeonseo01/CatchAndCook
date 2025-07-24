@@ -41,6 +41,12 @@ cbuffer LightHelperParams : register(b3)
     float3 g_eyeWorld;
     int g_lightCount;
     Light mainLight;
+    
+    float rimPower;
+    float rimStrength;
+    
+    float pp1;
+    float pp2;
 };
 
 StructuredBuffer<Light> g_lights : register(t16);
@@ -103,7 +109,7 @@ void ComputePointLight(Light L, LightMateiral mat, float3 pos, float3 normal, fl
 {
     float3 lightVec = L.position - pos;
     float d = length(lightVec);
-    if (dot(lightVec, lightVec) > L.fallOffEnd * L.fallOffEnd)
+    if (d > L.fallOffEnd )
         return;
 
     lightVec /= d;

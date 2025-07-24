@@ -59,7 +59,7 @@ private:
 		::memcpy(data, &vec[0], bufferSize);
 		uploadBuffer->Unmap(0, nullptr);
 
-		//복사작업
+
 		auto& list  =Core::main->GetResCmdList();
 		list->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(_vertexBuffer.Get(), D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST));
 		list->CopyBufferRegion(_vertexBuffer.Get(), 0, uploadBuffer, 0, bufferSize);
@@ -89,16 +89,23 @@ public:
 	void SetTopolgy(D3D_PRIMITIVE_TOPOLOGY topology) { _topology = topology; }
 	D3D_PRIMITIVE_TOPOLOGY&  GetTopology() { return _topology; }
 
-	//struturedBuffer 이용할때 사용
-	void SetVertexCount(uint32 count) { _vertexCount = count; _noUseVertex = true; }
-
 	void SetBound(BoundingBox box){_originalBound = box;};
 	BoundingBox GetBound() const {return _originalBound;};
-
 	BoundingBox CalculateBound(const Matrix& worldMatrix) const;
 	uint32 GetID() {return _instanceID;}
+
+	bool GetUseBuffer() const { return _UseBuffer; }
+	void SetUseBuffer(bool useBuffer) { _UseBuffer =useBuffer; }
+	void SetDrawCall(int vertexCount, int InstacnceCount) 
+	{
+		SetUseBuffer(false);
+		_vertexCount = vertexCount; _InstacnceCount = InstacnceCount;
+	}
+
+
 private:
-	bool _noUseVertex=false;
+	bool _UseBuffer = true;
+	int _InstacnceCount = 0;
 
 	D3D_PRIMITIVE_TOPOLOGY _topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 

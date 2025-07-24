@@ -2,130 +2,81 @@
 #include "Weapon.h"
 #include "Transform.h"
 #include "Gizmo.h"
+#include "MeshRenderer.h"
+#include "CameraManager.h"
+#include "Camera.h"
+#include "Collider.h"
+#include "Mesh.h"
+#include "ProjectileComponet.h"
+
+std::queue<shared_ptr<GameObject>> Weapon::_bulletQueue;
 Weapon::Weapon()
 {
 }
 
 Weapon::~Weapon()
 {
+
 }
 
-void Weapon::SetDestroy()
+void Weapon::Init(SeaPlayerController* contorller)
 {
-}
+	_targetHud = SceneManager::main->GetCurrentScene()->CreateGameObject(L"Sprite1");
 
-void Weapon::Init()
+	auto& renderer = _targetHud->AddComponent<MeshRenderer>();
+	auto& sprite = _targetHud->AddComponent<Sprite>();
+
+	sprite->SetLocalPos(vec3(0.5f, 0.5f, 0.0f));
+	sprite->SetClipingColor(vec4(0, 0, 0, 0));
+	sprite->SetTexture(ResourceManager::main->Load<Texture>(L"targetHud", L"Textures/targetHud.png"));
+	shared_ptr<Material> material = make_shared<Material>();
+	material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
+	material->SetBlendFactor({ 0.4f,0.4f,0.4f,0.4f });
+	material->SetPass(RENDER_PASS::UI);
+	renderer->AddMaterials({ material });
+
+	_controller = contorller;
+
+
+	CreateBullet();
+
+};
+
+void Weapon::CreateBullet()
 {
-}
 
-void Weapon::Start()
-{
-}
+	auto object = SceneManager::main->GetCurrentScene()->Find(L"Bullet");
 
-void Weapon::Update()
-{
-	float dt = Time::main->GetDeltaTime();
-
-	switch (_state)
+	if (object == nullptr)
 	{
-	case WeaponState::Idle:
-	{
-
-	}
-		break;
-	case WeaponState::Shot:
-	{
-		const float speed = _currentWeapon->_speed;
-		vec3 currentPos = _currentWeapon->hook->_transform->GetWorldPosition();
-		vec3 forward = _currentWeapon->hook->_transform->GetForward();
-		_currentWeapon->hook->_transform->SetWorldPosition(currentPos + forward * _currentWeapon->_speed * Time::main->GetDeltaTime());
-		_moveDist += speed * Time::main->GetDeltaTime();
-
-		if (_moveDist >= _currentWeapon->_range)
-		{
-			_moveDist = 0;
-			ChangeState(WeaponState::Reload);
-		}
-	}
-		break;
-	case WeaponState::Reload:
-	{
-		const float speed = _currentWeapon->_speed;
-		vec3 slotPos = _currentWeapon->weaponSlot->_transform->GetWorldPosition();
-		vec3 currentHookPos = _currentWeapon->hook->_transform->GetWorldPosition();
-		vec3 dir = slotPos - currentHookPos;
-		dir.Normalize();
-
-		_currentWeapon->hook->_transform->SetWorldPosition(currentHookPos + dir * speed * Time::main->GetDeltaTime());
-		_moveDist += speed * Time::main->GetDeltaTime();
-
-		if (_moveDist >= _currentWeapon->_range)
-		{
-			_moveDist = 0;
-			_currentWeapon->hook->_transform->SetLocalPosition(vec3::Zero);
-			ChangeState(WeaponState::Idle);
-		}
-	}
-		break;
-	default:
-		break;
-	}
-
-}
-
-void Weapon::Update2()
-{
-}
-
-void Weapon::Enable()
-{
-}
-
-void Weapon::Disable()
-{
-}
-
-void Weapon::Destroy()
-{
-}
-
-void Weapon::RenderBegin()
-{
-}
-
-void Weapon::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
-{
-}
-
-void Weapon::CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
-{
-}
-
-bool Weapon::IsExecuteAble()
-{
-    return false;
-}
-
-void Weapon::ChangeState(const WeaponState& state)
-{
-	if (_state == state)
+		cout << "못찾음총알" << endl;
 		return;
-
-	_state = state;
-
-	switch (_state)
-	{
-	case WeaponState::Idle:
-
-		break;
-	case WeaponState::Shot:
-		break;
-	case WeaponState::Reload:
-		break;
-	default:
-		break;
 	}
-}
+
+	object->SetActiveSelf(false);
+	auto& exmeshRenderer =object->GetComponent<MeshRenderer>();
+	auto& extransform = object->GetComponent<Transform>();
+
+	std::vector<std::shared_ptr<Material>>& materials = exmeshRenderer->GetMaterials();
+	std::vector<std::shared_ptr<Mesh>>& meshes = exmeshRenderer->GetMeshes();
+
+	for (int i = 0; i < 50; ++i)
+	{
+		auto& bullet = SceneManager::main->GetCurrentScene()->CreateGameObject(L"MYBullet");
+		auto& meshRenderer = bullet->AddComponent<MeshRenderer>();
+		meshRenderer->SetMesh(meshes);
+		meshRenderer->SetMaterials(materials);
+
+		auto& transform = bullet->GetComponent<Transform>();
+		transform->SetLocalScale(extransform->GetLocalScale());
+
+		auto& projectileComponent = bullet->AddComponent<ProjectileComponet>();
+
+		bullet->SetActiveSelf(false);
+		_bulletQueue.push(bullet);
+	};
+
+};
 
 void Weapon::SetCurrentWeapon(const wstring& weaponName)
 {
@@ -142,47 +93,89 @@ void Weapon::SetCurrentWeapon(const wstring& weaponName)
 
 	if (_currentWeapon)
 	{
-		_currentWeapon->body->SetActiveSelf(false);
-		_currentWeapon->hook->SetActiveSelf(false);
+		_currentWeapon->gun->SetActiveSelf(false);
+		_currentWeapon->gun->SetActiveSelf(false);
 	}
 
 	_currentWeapon = it->second;
 
-	_currentWeapon->body->SetActiveSelf(true);
-	_currentWeapon->hook->SetActiveSelf(true);
+	_currentWeapon->gun->SetActiveSelf(true);
+	_currentWeapon->gun->SetActiveSelf(true);
 
 }
 
-void Weapon::AddWeapon(const wstring& weaponName, const wstring& bodyName, const wstring& hookName, const wstring& weaponSlot)
+void Weapon::AddWeapon(const wstring& gunName, const wstring& slotName , float speed)
 {
-	shared_ptr<Gun> gun = make_shared<Gun>();
-	gun->body = SceneManager::main->GetCurrentScene()->Find(bodyName);
-	gun->hook = SceneManager::main->GetCurrentScene()->Find(hookName);
-	gun->weaponSlot = SceneManager::main->GetCurrentScene()->Find(weaponSlot);
+	shared_ptr<weapon> weaPon = make_shared<weapon>();
+	weaPon->_speed = speed;
+	weaPon->gun = SceneManager::main->GetCurrentScene()->Find(gunName);
+	weaPon->weaponSlot = SceneManager::main->GetCurrentScene()->Find(slotName);
 
-	if (gun->body == nullptr || gun->hook == nullptr || gun->weaponSlot ==nullptr)
+	if (weaPon->gun == nullptr  || weaPon->weaponSlot == nullptr)
 	{
 		cout << "Weapon Not Found" << endl;
 		return;
 	}
 
-	gun->GunName = weaponName;
-	_weapons[weaponName] = gun;
+	weaPon->GunName = gunName;
+	_currentWeapon = weaPon;
+	_weapons[gunName] = weaPon;
 }
 
-void Weapon::AddWeapon(shared_ptr<Gun> gun)
+void Weapon::SetTargetHudSize()
 {
-	auto it = _weapons.find(gun->GunName);
+	float aspect = static_cast<float>(WINDOW_WIDTH) / static_cast<float>(WINDOW_HEIGHT);
+	float height = 0.05f; 
+	vec2 size(height / aspect, height); 
+	auto& sprite = _targetHud->GetComponent<Sprite>();
+	sprite->SetSize(size);
+	sprite->SetLocalPos(vec3(0.5f-size.x*0.5f,0.5f-size.y*0.5f, 0.0f));
+}
 
-	if (it != _weapons.end())
+vec3 Weapon::GetTaretPos()
+{
+	auto& sprite = _targetHud->GetComponent<Sprite>();
+	return sprite->GetTargetPos();
+}
+
+
+void Weapon::Shot()
+{
+	if (_currentWeapon == nullptr)
 	{
-		cout << "Weapon Already Exist" << endl;
+		cout << "건없음" << endl;
 		return;
 	}
 
-	_weapons[gun->GunName] = gun;
-}
+	if (_bulletQueue.empty())
+	{
+		CreateBullet();
+	}
 
+	auto& bulletOBject = _bulletQueue.front();
+	_bulletQueue.pop();
+
+	bulletOBject->SetActiveSelf(true);
+	auto& projectileComponent = bulletOBject->GetComponent<ProjectileComponet>();
+	auto& slotPos = _currentWeapon->weaponSlot->_transform->GetWorldPosition();
+
+	vec3 screenCenterFar = vec3(0.0f, 0.0f, 1.0f);
+	auto& cam = CameraManager::main->GetActiveCamera();
+	const Matrix& invVP = cam->_params.InvertVPMatrix;
+	vec3 worldFar = vec3::Transform(screenCenterFar, invVP);
+	vec3 dir = worldFar - slotPos;
+	dir.Normalize();
+
+	projectileComponent->SetDir(dir);
+	projectileComponent->SetSpeed(_currentWeapon->_speed);
+	bulletOBject->_transform->SetLocalPosition(slotPos);
+
+}
+void Weapon::RecycleBullet(const shared_ptr<GameObject>& bullet)
+{
+	bullet->SetActiveSelf(false);
+	_bulletQueue.push(bullet);
+};
 
 
 

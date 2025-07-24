@@ -2,7 +2,7 @@
 #include "Sprite.h"
 #include "MeshRenderer.h"
 #include "TextManager.h"
-
+#include "Transform.h"
 Sprite::Sprite()
 {
 }
@@ -13,7 +13,8 @@ Sprite::~Sprite()
 
 void Sprite::Init()
 {
-	_firstWindowSize = vec2(WINDOW_WIDTH, WINDOW_HEIGHT);
+
+
 }
 
 void Sprite::Start()
@@ -76,25 +77,28 @@ void Sprite::SetData(Material* material)
 {
 	auto cmdList = Core::main->GetCmdList();
 
-	material->SetTexture("_BaseMap", _spriteImage);
+	if (_spriteImage)
+	{
+		material->SetTexture("_BaseMap", _spriteImage);
+	}
 
 	// SpriteWorldParam 
 	{
-		CalculateWorldPos();
+		CalculateScreenSpacePos();
 		auto CbufferContainer = Core::main->GetBufferManager()->GetBufferPool(BufferType::SpriteWorldParam)->Alloc(1);
 		memcpy(CbufferContainer->ptr, (void*)&_spriteWorldParam, sizeof(SpriteWorldParam));
-		cmdList->SetGraphicsRootConstantBufferView(material->GetShader()->GetRegisterIndex("SPRITE_WORLD_PARAM"), CbufferContainer->GPUAdress);
+		cmdList->SetGraphicsRootConstantBufferView(5, CbufferContainer->GPUAdress);
 	}
 
 	// SpriteTextureParam 
 	{
 		auto CbufferContainer = Core::main->GetBufferManager()->GetBufferPool(BufferType::SpriteTextureParam)->Alloc(1);
 		memcpy(CbufferContainer->ptr, (void*)&_sprtieTextureParam, sizeof(SprtieTextureParam));
-		cmdList->SetGraphicsRootConstantBufferView(material->GetShader()->GetRegisterIndex("SPRITE_TEXTURE_PARAM"), CbufferContainer->GPUAdress);
+		cmdList->SetGraphicsRootConstantBufferView(6, CbufferContainer->GPUAdress);
 	}
 }
 
-void Sprite::CalculateWorldPos()
+void Sprite::CalculateScreenSpacePos()
 {
 	vector<shared_ptr<Sprite>> sprites;
 	GetOwner()->GetComponentsWithParents(sprites);
@@ -106,7 +110,7 @@ void Sprite::CalculateWorldPos()
 		worldPos += sprite->_screenLocalPos;
 	}
 
-	_spriteWorldParam.ndcPos = vec3(worldPos.x / _firstWindowSize.x, worldPos.y / _firstWindowSize.y, worldPos.z);
+	_spriteWorldParam.ndcPos = vec3(worldPos.x, worldPos.y, worldPos.z);
 	_ndcWorldPos = _spriteWorldParam.ndcPos;
 }
 
@@ -119,11 +123,11 @@ void Sprite::SetTexture(shared_ptr<Texture> texture)
 
 void Sprite::SetSize(const vec2& size)
 {
-	_spriteWorldParam.ndcScale.x = size.x / _firstWindowSize.x;
-	_spriteWorldParam.ndcScale.y = size.y / _firstWindowSize.y;
+	_spriteWorldParam.ndcScale.x = size.x;
+	_spriteWorldParam.ndcScale.y = size.y;
 
 	_ndcSize = _spriteWorldParam.ndcScale;
-	_screenSize = size;
+
 }
 
 void Sprite::SetLocalPos(const vec3& screenPos)
@@ -158,6 +162,8 @@ void Sprite::SetClipingColor(const vec4& color)
 {
 	_spriteWorldParam.clipingColor = color;
 }
+
+
 
 /*****************************************************************
 *                                                                *
@@ -244,7 +250,7 @@ void TextSprite::SetData(Material* material)
 	auto& cmdList = Core::main->GetCmdList();
 	// SpriteWorldParam 
 	{
-		CalculateWorldPos();
+		CalculateScreenSpacePos();
 		auto CbufferContainer = Core::main->GetBufferManager()->GetBufferPool(BufferType::SpriteWorldParam)->Alloc(1);
 		memcpy(CbufferContainer->ptr, (void*)&_spriteWorldParam, sizeof(SpriteWorldParam));
 		cmdList->SetGraphicsRootConstantBufferView(material->GetShader()->GetRegisterIndex("SPRITE_WORLD_PARAM"), CbufferContainer->GPUAdress);
@@ -376,7 +382,6 @@ void AnimationSprite::RenderBegin()
 
 void AnimationSprite::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
 {
-
 }
 
 void AnimationSprite::CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
@@ -385,6 +390,7 @@ void AnimationSprite::CollisionEnd(const std::shared_ptr<Collider>& collider, co
 
 void AnimationSprite::SetDestroy()
 {
+
 }
 
 void AnimationSprite::Destroy()
@@ -400,7 +406,7 @@ void AnimationSprite::SetData(Material* material)
 
 	// SpriteWorldParam 
 	{
-		CalculateWorldPos();
+		CalculateScreenSpacePos();
 		auto CbufferContainer = Core::main->GetBufferManager()->GetBufferPool(BufferType::SpriteWorldParam)->Alloc(1);
 		memcpy(CbufferContainer->ptr, (void*)&_spriteWorldParam, sizeof(SpriteWorldParam));
 		cmdList->SetGraphicsRootConstantBufferView(material->GetShader()->GetRegisterIndex("SPRITE_WORLD_PARAM"), CbufferContainer->GPUAdress);

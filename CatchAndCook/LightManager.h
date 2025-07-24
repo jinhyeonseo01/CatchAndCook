@@ -46,15 +46,13 @@ struct LightHelperParams
 	vec3 eyeWorldPos{};
 	int lightCount = 0;
 	Light mainLight;
-	/*std::array<Light, 60> light;
 
-	int useRim = 1;
-	vec3 rimColor = vec3(0,1.0f,0);
+	float rimPower =17.0f;
+	float rimStrength= 50.0f;
 
-	float rimPower = 23.0f;
-	float rimStrength = 500.0f;
-	float dummy1 = 0;
-	float dummy2 = 0;*/
+	float padding1;
+	float padding2;
+
 };
 
 //struct ForwardLightParams
@@ -71,21 +69,23 @@ public:
 	static unique_ptr<LightManager> main;
 
 	void Init();
-	void PushLight(const std::shared_ptr<Light>& light);
-	void RemoveLight(const std::shared_ptr<Light>& light);
+	void PushLight(const std::shared_ptr<Light>& light, const SceneType& sceneType);
+	void RemoveLight(const std::shared_ptr<Light>& light, const SceneType& sceneType);
 	void SetData();
 
 	void Clear();
 
 	std::shared_ptr<Light> GetMainLight();
+	std::vector<std::shared_ptr<Light>>& GetLights();
+
 
 private:
 	void Update();
 
 public:
-	static const int _maxLight = 300;
+	static const int _maxLight = 100;
 	LightHelperParams _lightParmas;
-	std::vector<std::shared_ptr<Light>> _lights;
+	unordered_map<SceneType,std::vector<std::shared_ptr<Light>>> _lightsSceneCollector;
 	std::shared_ptr<Light> _mainLights;
 
 	shared_ptr<StructuredBuffer> _strBuffer;

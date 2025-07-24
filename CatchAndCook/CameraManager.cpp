@@ -42,3 +42,15 @@ CameraType CameraManager::GetCameraType()
 {
 	return _activeCamera->GetCameraType();
 }
+
+const char* CameraManager::CameraTypeToString(CameraType type)
+{
+	switch (type)
+	{
+	case CameraType::DebugCamera:    return "DebugCamera";
+	case CameraType::SeaCamera:      return "SeaCamera";
+	case CameraType::BoatCamera:     return "BoatCamera";
+	case CameraType::ComponentCamera:return "ComponentCamera";
+	default:                        return "Unknown";
+	}
+}

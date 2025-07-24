@@ -117,6 +117,7 @@ void Core::RenderEnd()
     _renderTarget->ChangeIndex();
 
 	CURRENT_CONTEXT_INDEX = (CURRENT_CONTEXT_INDEX + 1) % MAX_FRAME_COUNT;
+ 
 
     _bufferManager->Reset();
     g_debug_deferred_count = 0;
@@ -241,7 +242,7 @@ void Core::ResizeTexture(std::shared_ptr<Texture>& texture, int w, int h)
 
 void Core::InitDirectX12()
 {
-    CreateDevice(false, false); // 최적화 할 부분
+    CreateDevice(false, false);
     CreateCmdQueue();
     CreateSwapChain();
 }

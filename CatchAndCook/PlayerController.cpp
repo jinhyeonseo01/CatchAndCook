@@ -15,6 +15,7 @@
 #include "Transform.h"
 #include "AnimationListComponent.h"
 #include "InGameMainField.h"
+#include "BoatController.h"
 
 
 COMPONENT(PlayerController)
@@ -53,15 +54,25 @@ void PlayerController::Start()
 		auto run = animationList->GetAnimations()["run"];
 		run->_speedMultiplier = 1.15f;
 	}
+
+
+	_GenPos = GetOwner()->_transform->GetWorldPosition();
+	_GenRotate = GetOwner()->_transform->GetWorldRotation();
 }
 
 void PlayerController::Update()
 {
+	if (_onBoard)
+		return;
+
+
 	Component::Update();
 	ColliderManager::main->UpdateDynamicCells();
 
 	if (Input::main->IsMouseLock())
 		CameraControl();
+
+
 	MoveControl();
 
 
@@ -191,6 +202,7 @@ void PlayerController::MoveControl()
 			Quaternion::LookRotation(targetLookWorldDirection, Vector3::Transform(Vector3::Up, lookRotation)),
 			std::clamp(Time::main->GetDeltaTime() * 15, 0.0, 1.0));
 	}
+
 	//if (!(targetLookWorldDirectionDelayed.Length() < 0.1 && targetLookWorldDirection == Vector3::Zero))
 	//{
 	//	// 등속 운동 로직
@@ -210,9 +222,6 @@ void PlayerController::MoveControl()
 	velocity = Vector3(velocity.x, prevVelocity.y, velocity.z);
 
 	GetOwner()->_transform->LookUp(Vector3::Transform(Vector3::Forward, currentLookWorldRotation), Vector3::Up);
-
-
-
 
 
 	isGround = false;
@@ -251,10 +260,12 @@ void PlayerController::MoveControl()
 
 			// 이동할 곳에서 충돌되는지 보기.
 			std::vector<std::shared_ptr<Collider>> otherColliders;
+
 			if (ColliderManager::main->CollisionChecksDirect(boundingData, otherColliders))
 			{
 				for (auto& otherCollider : otherColliders)
 				{
+
 					if (otherCollider->GetGroupID() != playerGroupID && !otherCollider->IsTrigger())
 					{
 						auto otherBoundingData = otherCollider->GetBoundingData();
@@ -281,11 +292,12 @@ void PlayerController::MoveControl()
 
 	RayHit foundGround;
 	std::vector<RayHit> hitList;
-	if (auto isHit = ColliderManager::main->RayCastAllForMyCellDirect({ upRayOffset, Vector3::Down }, upDistance + gitMargin, hitList, 
-		BoundingData{CollisionType::Box, BoundingUnion(BoundingOrientedBox(currentPos, Vector3(2,2,2), Quaternion::Identity))}))
+
+	if (auto isHit = ColliderManager::main->RayCastAllForMyCellDirect({ upRayOffset, Vector3::Down }, upDistance + gitMargin, hitList, BoundingData{CollisionType::Box, BoundingUnion(BoundingOrientedBox(currentPos, Vector3(2,2,2), Quaternion::Identity))}))
 	{
 		for (auto& hit : hitList)
 		{
+		
 			if (PhysicsComponent::GetPhysicsGroupID(hit.gameObject->GetCast<GameObject>()) != PhysicsComponent::GetPhysicsGroupID(GetOwner()) && 
 				(hit.collider ==nullptr || (hit.collider != nullptr && (!hit.collider->IsTrigger()))))
 			{
@@ -325,17 +337,25 @@ void PlayerController::MoveControl()
 		GetOwner()->_transform->SetWorldPosition(cameraPos);
 
 	}
+
+	if (Input::main->GetKeyDown(KeyCode::J))
+	{
+		SetOnBoard();
+	}
+
 }
 
 
 void PlayerController::Update2()
 {
+
+	if (_onBoard)
+		return;
+
 	Component::Update2();
 
 	camera.lock()->Calculate();
 
-
-	CameraManager::main->Setting();
 }
 
 void PlayerController::Enable()
@@ -356,10 +376,7 @@ void PlayerController::RenderBegin()
 void PlayerController::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
 {
 	Component::CollisionBegin(collider, other);
-	if (other->IsTrigger())
-	{
-		std::cout << "Trigger\n";
-	}
+
 }
 
 void PlayerController::CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
@@ -380,4 +397,27 @@ void PlayerController::SetDestroy()
 void PlayerController::Destroy()
 {
 	Component::Destroy();
+}
+
+void PlayerController::SetOnBoard()
+{
+	_onBoard = true;
+
+	auto playerShip =SceneManager::main->GetCurrentScene()->Find(L"PlayerShip");
+	playerShip->GetComponent<BoatController>()->SetOnBaord();
+
+	auto boatSeat = SceneManager::main->GetCurrentScene()->Find(L"BoatSeat");
+	GetOwner()->GetRoot()->SetParent(boatSeat);
+
+	GetOwner()->_transform->SetLocalPosition(vec3(0, 0, 0));
+	GetOwner()->_transform->SetLocalRotation(vec3(0, 0, 0));
+
+}
+
+void PlayerController::SetOFFBoard()
+{
+	_onBoard = false;
+	GetOwner()->SetParent(nullptr);
+	GetOwner()->_transform->SetWorldPosition(vec3(407.26, 45.25, 120.89));
+
 }

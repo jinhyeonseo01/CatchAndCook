@@ -36,7 +36,6 @@ struct SeaParam
 
 class WaterController :public Component , public RenderCBufferSetter
 {
-
 public:
     ~WaterController() override;
     bool IsExecuteAble() override;
@@ -55,6 +54,9 @@ public:
 
     virtual void SetData(Material* material = nullptr);
     void Setting(const wstring& colorPath, const wstring& movementPath);
+
+    static float GetWaveHeight(const vec3& worldPos, const SeaParam* param);
+    SeaParam _seaParam;
 private:
     shared_ptr<Texture> _textures;
     shared_ptr<Texture> _bump;
@@ -62,7 +64,6 @@ private:
 
 	CBufferContainer* _cbufferContainer;
 
-    SeaParam _seaParam;
 
 };
 

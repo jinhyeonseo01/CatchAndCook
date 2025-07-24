@@ -127,7 +127,7 @@ void Terrain::Start()
                     if (material->GetShader()->_name == "DeferredSeaGrass.hlsl")
                     {
                         newMaterial->SetShader(ResourceManager::main->Get<Shader>(L"DeferredSeaGrass"));
-              /*          newMaterial->SetShadowCasting(false);*/
+                        newMaterial->SetShadowCasting(false);
                         _instancesObject[i].lock()->AddComponent<SeaGrassComponent>();
                         _instancesObject[i].lock()->SetType(GameObjectType::Static);
                     }
@@ -441,7 +441,7 @@ bool Terrain::RayCast(const Ray& ray, const float& dis, RayHit& hit)
 
         hit.distance = reusltDis;
         hit.worldPos = localPos + GetOwner()->_transform->GetWorldPosition();
-        hit.gameObject = GetOwner().get();
+        hit.gameObject = GetOwner();
         hit.collider = nullptr;
         hit.isHit = true;
 

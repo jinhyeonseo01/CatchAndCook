@@ -65,6 +65,8 @@ void Input::SetCursor(const Vector2& pos)
 
 void Input::SetMouseLock(bool isMouseLock)
 {
+    if (_isMouseLock == isMouseLock)
+        return;
 
     _isMouseLock = isMouseLock;
 
@@ -72,11 +74,11 @@ void Input::SetMouseLock(bool isMouseLock)
     {
         mousePos = prevMousePos = Vector2(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
         SetCursor(mousePos);
-		//ShowCursor(false);
+		ShowCursor(false);
     }
     else
     {
-		//ShowCursor(true);
+		ShowCursor(true);
     }
 
 }
@@ -198,6 +200,13 @@ void Input::DataBeginUpdate()
             _inputMouseField[i].up = false;
         }
     }
+}
+
+
+
+void Input::SetMousePosition(const vec2& pos)
+{
+    mousePos = pos;
 }
 
 Vector2 Input::GetMousePosition()

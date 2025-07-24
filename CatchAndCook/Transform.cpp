@@ -40,6 +40,8 @@ void Transform::Start()
     {
         GetOwner()->GetRenderer()->AddStructuredSetter(static_pointer_cast<Transform>(shared_from_this()), BufferType::TransformParam);
     }
+
+
  
 }
 
@@ -167,6 +169,7 @@ vec3 Transform::GetForward()
 {
     Quaternion quat = GetWorldRotation();
     _forward = vec3::Transform(vec3(0, 0, 1), quat);
+    _forward.Normalize();
     return _forward;
 }
 
@@ -395,6 +398,7 @@ bool Transform::GetLocalSRTMatrix(Matrix& localSRT)
         _isLocalSRTChanged = true;
 		return true;
     }
+
 
     localSRT = _localSRTMatrix;
     return false;

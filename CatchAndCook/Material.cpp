@@ -34,7 +34,6 @@ void Material::AllocDefualtTextureHandle()
 {
 	auto& NoneTexture = ResourceManager::main->GetNoneTexture()->GetSRVCpuHandle();
 
-
 	auto& table = Core::main->GetBufferManager()->GetTable();
 	_defualtTableContainer = Core::main->GetBufferManager()->GetTable()->Alloc(SRV_TABLE_REGISTER_COUNT);
 	for (int i=0;i< SRV_TABLE_REGISTER_COUNT;i++)
@@ -193,23 +192,25 @@ bool Material::HasPropertyMatrix(const std::string& name)
 
 std::shared_ptr<Material> Material::Clone()
 {
-	std::shared_ptr<Material> material = make_shared<Material>();
-	material->_propertyInts = _propertyInts;
-	material->_propertyFloats = _propertyFloats;
-	material->_propertyVectors = _propertyVectors;
-	material->_propertyMatrixs = _propertyMatrixs;
-	material->_propertyHandle = _propertyHandle;
-	material->_propertyTexture = _propertyTexture;
-	material->_shaderInjectors = _shaderInjectors;
-	material->_customInjectors = _customInjectors;
-	material->_shader = _shader;
-	material->_pass = _pass;
-	material->_stencilIndex = _stencilIndex;
-	material->_useMaterialParams = _useMaterialParams;
-	material->_shadowCasting = _shadowCasting;
-	material->_setDataOff = _setDataOff;
-	material->_preDepthNormal = _preDepthNormal;
-	return material;
+	return make_shared<Material>(*this);
+
+	//std::shared_ptr<Material> material = make_shared<Material>();
+	//material->_propertyInts = _propertyInts;
+	//material->_propertyFloats = _propertyFloats;
+	//material->_propertyVectors = _propertyVectors;
+	//material->_propertyMatrixs = _propertyMatrixs;
+	//material->_propertyHandle = _propertyHandle;
+	//m aterial->_propertyTexture = _propertyTexture;
+	//material->_shaderInjectors = _shaderInjectors;
+	//material->_customInjectors = _customInjectors;
+	//material->_shader = _shader;
+	//material->_pass = _pass;
+	//material->_stencilIndex = _stencilIndex;
+	//material->_useMaterialParams = _useMaterialParams;
+	//material->_shadowCasting = _shadowCasting;
+	//material->_setDataOff = _setDataOff;
+	//material->_preDepthNormal = _preDepthNormal;
+	//return material;
 
 }
 

@@ -4,9 +4,17 @@
 #include "Gizmo.h"
 #include "AnimationListComponent.h"
 #include "SkinnedHierarchy.h"
+#include "Animation.h"
+#include "PercentComponent.h"
+#include "GraphPathFinder.h"
+#include "MeshRenderer.h"
+#include "Collider.h"
+#include "itemBoxComponent.h"
+COMPONENT(FishMonster)
 
 FishMonster::FishMonster()
 {
+
 }
 
 FishMonster::~FishMonster()
@@ -15,15 +23,74 @@ FishMonster::~FishMonster()
 
 void FishMonster::Init()
 {
+
 }
 
 void FishMonster::Start()
 {
-	_firstQuat = GetOwner()->_transform->GetWorldRotation();
+	_animations = GetOwner()->GetComponentWithChilds<AnimationListComponent>()->GetAnimations();
 
-	std::unordered_map<string, std::shared_ptr<Animation>> aniList;
+	_skined = GetOwner()->GetRoot()->GetComponentWithChilds<SkinnedHierarchy>();
+
+    if (_skined == nullptr)
+    {
+        _skined = GetOwner()->AddComponent<SkinnedHierarchy>();
+    }
+
+    if (_animations.find("idle") != _animations.end())
+    {
+        _skined->Play(_animations["idle"], 0.5f);
+    }
+
+    else
+    {
+        wcout << GetOwner()->GetName() << "idle 못찾음" << endl;
+    }
+
+    if (_animations.find("die") != _animations.end())
+    {
+        _animations["die"]->_isLoop = false;
+        _animations["die"]->_speedMultiplier = 0.3f;
+    }
+
+    auto percentageComponet = GetOwner()->GetChildByNameRecursive(L"HPBar")->GetComponent<PercentComponent>();
+
+    if (percentageComponet)
+    {
+        percentageComponet->BindingPercentage(&_hp);
+    }
+
+    else
+    {
+        cout << "percentageComponet" << "못찾음" << endl;
+    }
+
+     _pathFinder = GetOwner()->GetRoot()->GetComponent<GraphPathFinder>();
+
+     if (_pathFinder)
+     {
+         _pathFinder->SetAutoPliotMode(true);
+     }
+     else
+     {
+         cout << "GraphPathFinder" << "못찾음" << endl;
+     }
 
 
+     if (GetOwner()->GetName().find(L"ray") == 0)
+     {
+         if (_animations.find("idle") != _animations.end())
+         {
+             _animations["idle"]->_speedMultiplier = 2.0f;
+         }
+
+         GetOwner()->SetName(L"ray");
+     }
+
+     if (GetOwner()->GetName().find(L"redFish") == 0)
+     {
+         GetOwner()->SetName(L"redFish");
+     }
 
 }
 
@@ -31,11 +98,15 @@ void FishMonster::Update()
 {
 	float dt = Time::main->GetDeltaTime();
 
-	UpdateState(dt);
+    if (_state != FishMonsterState::Die)
+    {
+        _pathFinder->CalculatePath(_moveSpeed);
+    }
 }
 
 void FishMonster::Update2()
 {
+    UpdateState(Time::main->GetDeltaTime());
 }
 
 void FishMonster::Enable()
@@ -71,25 +142,72 @@ void FishMonster::Destroy()
 
 }
 
+void FishMonster::Reset()
+{
+    GetOwner()->SetActiveSelf(true);
+    SetState(FishMonsterState::Idle);
+    _hp = 100.0f;
+    _hit_to_IdleTime = 0.0f;
+    
+}
 
 void FishMonster::UpdateState(float dt)
 {
-	switch (_state)
-	{
-	case FishMonsterState::Idle:
-		Idle(dt);
-		break;
-	case FishMonsterState::Move:
-		Move(dt);
-		break;
-	case FishMonsterState::Attack:
-		Attack(dt);
-		break;
-	case FishMonsterState::Die:
-		Die(dt);
+
+    switch (_state)
+    {
+    case FishMonsterState::Idle:
+     
+        break;
+    case FishMonsterState::Die:
+    
+        if (_skined->IsPlay() == false)
+        {
+            _hit_to_IdleTime = 0;
+            GetOwner()->SetActiveSelf(false);
+            auto& object = SceneManager::main->GetCurrentScene()->Find(L"itemBox");
+           
+            if (object)
+            {
+                object->SetActiveSelf(false);
+
+                auto& exmeshRenderer = object->GetComponent<MeshRenderer>();
+                auto& extransform = object->GetComponent<Transform>();
+
+                std::vector<std::shared_ptr<Material>>& materials = exmeshRenderer->GetMaterials();
+                std::vector<std::shared_ptr<Mesh>>& meshes = exmeshRenderer->GetMeshes();
+
+                auto& itemBox = SceneManager::main->GetCurrentScene()->CreateGameObject(GetOwner()->GetName());
+                auto& meshRenderer = itemBox->AddComponent<MeshRenderer>();
+                meshRenderer->SetMesh(meshes);
+                meshRenderer->SetMaterials(materials);
+
+                auto& transform = itemBox->GetComponent<Transform>();
+                transform->SetLocalScale(extransform->GetLocalScale());
+                transform->SetLocalPosition(GetOwner()->_transform->GetWorldPosition());
+
+                auto collider = itemBox->AddComponent<Collider>();
+                collider->SetBoundingBox(vec3(0, 0.09795811f, 0), vec3(0.1711108f/2, 0.1970621f/2, 0.1503567f/2));
+                collider->SetTrigger(true);
+                auto itemboxComponent  = itemBox->AddComponent<itemBoxComponent>();
+                
+            }
+
+        }
+
 		break;
 	case FishMonsterState::Hit:
-		Hit(dt);
+    {
+        _hit_to_IdleTime += dt;
+        constexpr float LimitTime = 5.0f;
+
+        if (_hit_to_IdleTime >= LimitTime)
+        {
+            _hit_to_IdleTime = 0;
+            SetState(FishMonsterState::Idle);
+        }
+
+    }
 		break;
 	default:
 		break;
@@ -100,138 +218,63 @@ void FishMonster::SetState(FishMonsterState state)
 {
 	if (_state == state)
 		return;
+
 	_state = state;
 
 	switch (_state)
 	{
 	case FishMonsterState::Idle:
-		break;
-	case FishMonsterState::Move:
-		break;
-	case FishMonsterState::Attack:
+        _moveSpeed = _originMoveSpeed;
+
+        if (_animations.find("idle") != _animations.end())
+        {
+            _skined->Play(_animations["idle"], 0.5f);
+        }
+        if (_skined->_speedMultiple >= 1.5f)
+        {
+            _skined->_speedMultiple = 1.0f;
+        }
+
 		break;
 	case FishMonsterState::Die:
+
+        if (_animations.find("die") != _animations.end())
+        {
+            _skined->Play(_animations["die"], 0.5f);
+        }
+
 		break;
 	case FishMonsterState::Hit:
+        _moveSpeed *= 2.0f;
+
+        if (_animations.find("run") != _animations.end())
+        {
+            _skined->Play(_animations["run"], 0.5f);
+        }
+        else
+        {
+            _skined->_speedMultiple = 7.0f;
+        }
 		break;
 	default:
 		break;
 	}
 }
 
-void FishMonster::Idle(float dt)
+void FishMonster::EventDamage(int damage)
 {
+    _hp -= damage;
+    _hit_to_IdleTime = 0;
+
+    if (_hp <= 0)
+    {
+        SetState(FishMonsterState::Die);
+    }
+    else
+    {
+        SetState(FishMonsterState::Hit);
+    }
 
 }
 
-void FishMonster::Move(float dt)
-{
 
-	const vector<vec3>& myPath = _fishPath;
-
-	int nextIndex = _forward ? _currentIndex + 1 : _currentIndex - 1;
-
-	const vec3& start = myPath[_currentIndex];
-	const vec3& end = myPath[nextIndex];
-
-	if (_segmentLength < 0.0001f)
-		_segmentLength = (end - start).Length();
-
-	_distanceMoved += Time::main->GetDeltaTime() * _moveSpeed;
-
-	float t = std::clamp(_distanceMoved / _segmentLength, 0.0f, 1.0f);
-	vec3 pos = vec3::Lerp(start, end, t);
-	vec3 currentPos = GetOwner()->_transform->SetWorldPosition(pos);
-
-	vec3 dir = end - start;
-
-	if (dir.LengthSquared() > 0.0001f)
-	{
-		dir.Normalize();
-		GetOwner()->_transform->LookUpSmooth(dir, vec3::Up, 6.0f, _firstQuat);
-	}
-
-	if (t >= 1.0f)
-	{
-		_distanceMoved = 0.0f;
-		_segmentLength = 0.0f;
-
-		if (_forward)
-		{
-			_currentIndex += 1;
-
-			if (_currentIndex >= myPath.size()-1)
-			{
-				_forward = false;
-				return;
-			}
-		}
-
-		else
-		{
-			_currentIndex -= 1;
-
-			if (_currentIndex <= 0)
-			{
-				_forward = true;
-				return;
-			}
-
-		}
-	}
-
-	//for (size_t i = 0; i < myPath.size() - 1; ++i)
-	//{
-	//	Gizmo::main->Line(myPath[i], myPath[i + 1], vec4(1, 1, 0, 1));
-	//}
-
-	//cout << "Current Index: " << _currentIndex << ", Next: " << nextIndex << endl;
-	//cout << "Forward: " << _forward << ", t: " << t << ", DistanceMoved: " << _distanceMoved << endl;
-
-
-
-}
-
-void FishMonster::Attack(float dt)
-{
-}
-
-void FishMonster::Die(float dt)
-{
-}
-
-void FishMonster::Hit(float dt)
-{
-}
-
-void FishMonster::ReadPathFile(const std::wstring& fileName)
-{
-	const wstring path = L"../Resources/Graph/";;
-
-	_pathName = fileName;
-
-	std::ifstream file(path+fileName);
-
-	if (!file.is_open())
-	{
-		std::wcout << L"Failed to open file: " << fileName << std::endl;
-		return;
-	}
-
-
-	std::string line;
-
-	while (std::getline(file, line))
-	{
-		if (line.empty()) continue;
-
-		std::istringstream ss(line);
-		float x, y, z;
-		ss >> x >> y >> z;
-		vec3 point(x, y, z);
-		_fishPath.push_back(point);
-	}
-
-	file.close();
-	//cout << "라인 데이터: " << _fishPath.size() << "개 읽음." << std::endl;
-}
