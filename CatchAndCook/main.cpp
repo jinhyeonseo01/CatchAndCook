@@ -12,9 +12,9 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 int main()
 {
 
-#ifdef _DEBUG
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-#endif
+//#ifdef _DEBUG
+//	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+//#endif
 
 	HINSTANCE hInst = GetModuleHandle(NULL);
 	WNDCLASSEX wc = { sizeof(WNDCLASSEX),
@@ -93,9 +93,9 @@ int main()
 	DestroyWindow(hwnd);
 	UnregisterClass(wc.lpszClassName, wc.hInstance);
 
-#ifdef _DEBUG
-	_CrtDumpMemoryLeaks();
-#endif
+//#ifdef _DEBUG
+//	_CrtDumpMemoryLeaks();
+//#endif
 
 	return 0;
 };

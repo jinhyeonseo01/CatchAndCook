@@ -28,9 +28,6 @@ void FishMonster::Init()
 
 void FishMonster::Start()
 {
-
-    cout << "start!" << endl;
-
 	_animations = GetOwner()->GetComponentWithChilds<AnimationListComponent>()->GetAnimations();
 
 	_skined = GetOwner()->GetRoot()->GetComponentWithChilds<SkinnedHierarchy>();

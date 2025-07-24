@@ -83,7 +83,7 @@ private:
 	void Update();
 
 public:
-	static const int _maxLight = 300;
+	static const int _maxLight = 100;
 	LightHelperParams _lightParmas;
 	unordered_map<SceneType,std::vector<std::shared_ptr<Light>>> _lightsSceneCollector;
 	std::shared_ptr<Light> _mainLights;

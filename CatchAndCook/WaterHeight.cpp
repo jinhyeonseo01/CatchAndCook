@@ -25,7 +25,6 @@ void WaterHeight::Init()
 void WaterHeight::Start()
 {
     _seaParam = &SceneManager::main->GetCurrentScene()->Find(L"sea")->GetComponent<WaterController>()->_seaParam;
-    cout << "야호" << endl;
 }
 
 void WaterHeight::Update()

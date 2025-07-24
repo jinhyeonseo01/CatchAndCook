@@ -78,32 +78,31 @@ void BufferManager::Init()
 {
 
 	_textureBufferPool = make_shared<TextureBufferPool>();
-	_textureBufferPool->Init(2000,10,5);
+	_textureBufferPool->Init(800,10,5);
 
 	for (int i = 0; i < MAX_FRAME_COUNT; ++i)
 	{
 		_table[i] = make_shared<DescritporTable>();
-		_table[i]->Init(100000);
+		_table[i]->Init(40000);
 	}
 
 	for(int i=0; i<MAX_FRAME_COUNT; ++i)
 	{
 		CreateBufferPool(i, BufferType::GlobalParam,sizeof(GlobalParam),1);
-		CreateBufferPool(i, BufferType::TransformParam,sizeof(TransformParam),1000);
-		CreateBufferPool(i, BufferType::RectTransformParam, sizeof(RectTransformParam), 1000);
-		CreateBufferPool(i, BufferType::MateriaSubParam,sizeof(TestSubMaterialParam),1000);
-		CreateBufferPool(i, BufferType::CameraParam,sizeof(CameraParams),128);
+		//CreateBufferPool(i, BufferType::TransformParam,sizeof(TransformParam),1000);
+		CreateBufferPool(i, BufferType::RectTransformParam, sizeof(RectTransformParam), 300);
+		//CreateBufferPool(i, BufferType::MateriaSubParam,sizeof(TestSubMaterialParam),1000);
+		CreateBufferPool(i, BufferType::CameraParam,sizeof(CameraParams),10);
 		CreateBufferPool(i, BufferType::SpriteTextureParam,sizeof(SprtieTextureParam),255);
 		CreateBufferPool(i, BufferType::SpriteWorldParam,sizeof(SpriteWorldParam),255);
 		CreateBufferPool(i, BufferType::GUISpriteParam, sizeof(GUISpriteParam), 1000);
 		CreateBufferPool(i, BufferType::LightHelperParam,sizeof(LightHelperParams),1);
-		CreateBufferPool(i, BufferType::BoneParam,sizeof(BoneParam),1000);
 		CreateBufferPool(i, BufferType::SeaParam, sizeof(TerrainDetailsParam), 5);
 		CreateBufferPool(i, BufferType::FogParam, sizeof(FogParam), 5);
 		CreateBufferPool(i, BufferType::UnderWaterParam, sizeof(UnderWaterParam), 5);
-		CreateBufferPool(i, BufferType::InstanceOffsetParam, sizeof(InstanceOffsetParam), 10000);
-		CreateBufferPool(i, BufferType::GrassParam, sizeof(GrassParam), 32);
-		CreateBufferPool(i, BufferType::SeaGrassParam, sizeof(SeaGrassParam), 10000);
+		CreateBufferPool(i, BufferType::InstanceOffsetParam, sizeof(InstanceOffsetParam), 3000);
+		CreateBufferPool(i, BufferType::GrassParam, sizeof(GrassParam), 10);
+		CreateBufferPool(i, BufferType::SeaGrassParam, sizeof(SeaGrassParam), 30);
 		CreateBufferPool(i, BufferType::ShadowCasterParams, sizeof(ShadowCasterParams), 5);
 		CreateBufferPool(i, BufferType::ShadowCascadeIndexParams, sizeof(ShadowCascadeIndexParams), 10);
 		CreateBufferPool(i, BufferType::ParicleHelperParams, sizeof(ParicleHelperParams), 100);
@@ -113,20 +112,18 @@ void BufferManager::Init()
 
 	for (int i = 0; i < MAX_FRAME_COUNT; ++i)
 	{
-		CreateStructuredBufferPool(i, BufferType::TransformParam,"TransformDatas",sizeof(Instance_Transform),100000);
+		CreateStructuredBufferPool(i, BufferType::TransformParam,"TransformDatas",sizeof(Instance_Transform),20000);
 		CreateStructuredBufferPool(i, BufferType::SeaPlantParam, "PlantInfos", sizeof(PlantInfo), 20000);
-	/*	CreateStructuredBufferPool(i, BufferType::ForwardLightParam, "ForwardLightDatas", sizeof(ForwardLightParams), 10000);*/
-		CreateStructuredBufferPool(i, BufferType::ObjectSettingParam, "ObjectSettingDatas", sizeof(ObjectSettingParam), 5000);
+		CreateStructuredBufferPool(i, BufferType::ObjectSettingParam, "ObjectSettingDatas", sizeof(ObjectSettingParam), 1000);
 		CreateStructuredBufferPool(i, BufferType::SeaFIshParam, "FIshInfos", sizeof(FishInfo), 20000);
-	/*	CreateStructuredBufferPool(BufferType::ForwardLightParam, "ForwardLightDatas", sizeof(ForwardLightParams), 10000);*/
 		CreateStructuredBufferPool(i, BufferType::LightDataParam, "g_lights", sizeof(Light), LightManager::_maxLight);
-		CreateStructuredBufferPool(i, BufferType::BoneParam, "BoneDatas", sizeof(Matrix), 2 * 256 * 1024);
-		CreateStructuredBufferPool(i, BufferType::HPData, "HPData", sizeof(float)*4, 300);
+		CreateStructuredBufferPool(i, BufferType::BoneParam, "BoneDatas", sizeof(Matrix), 200000);
+		CreateStructuredBufferPool(i, BufferType::HPData, "HPData", sizeof(float)*4, 50);
 	}
 
 	for(int i=0; i < MAX_FRAME_COUNT; ++i)
 	{
-		CreateInstanceBufferPool(i, BufferType::TransformInstanceParam, sizeof(Instance_Transform), 10000, 40);
+		CreateInstanceBufferPool(i, BufferType::TransformInstanceParam, sizeof(Instance_Transform), 10000, 30);
 		CreateInstanceBufferPool(i, BufferType::GizmoInstanceParam, sizeof(Instance_Gizmo), 250000, 1);
 	}
 	
@@ -167,70 +164,98 @@ void BufferManager::Reset()
 	}
 }
 
+struct BufferStat
+{
+	uint32_t totalCount = 0;
+	uint32_t maxCount = 0;
+};
+
 void BufferManager::Debug()
 {
+	static unordered_set<SceneType> _shownScenes;
+	static unordered_map<SceneType, unordered_map<BufferType, uint32_t>> _sceneBufferCounts;
+	static unordered_map<SceneType, unordered_map<BufferType, uint32_t>> _sceneStructuredCounts;
+	static unordered_map<BufferType, uint32_t> _bufferSceneMax;
+	static unordered_map<BufferType, uint32_t> _structuredSceneMax;
 
-	static unordered_set<SceneType> _show;
+	SceneType sceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
+	if (_shownScenes.contains(sceneType))
+		return;
 
-	auto& sceneType =  SceneManager::main->GetCurrentScene()->GetSceneType();
+	_shownScenes.insert(sceneType);
 
-	if (_show.find(sceneType) == _show.end())
+	cout << "\n==================== [ Scene: " << static_cast<int>(sceneType) << " ] ====================\n";
+
+	// Table Info
+	cout << "\n===================== [Table Info] =====================\n";
+	cout << "Table Allocated Count (Current Context): "
+		<< _table[CURRENT_CONTEXT_INDEX]->GetCount() << '\n';
+
+	// Texture Buffer Pool
+	cout << "\n================= [Texture Buffer Pool] =================\n";
+	_textureBufferPool->PrintCount();
+
+	// General Buffer Map Summary
+	cout << "\n================ [Scene BufferMap Summary] ================\n";
+	auto& bufferMap = _sceneBufferCounts[sceneType];
+	for (const auto& map : _map)
 	{
-		_show.insert(sceneType);
-
-		cout << "============================현재씬" << (int)SceneManager::main->GetCurrentScene()->GetSceneType() << "===================================" << endl;
-
-		cout << "\n===================== [Table Info] =====================\n";
-		for (int i = 0; i < MAX_FRAME_COUNT; ++i)
+		for (const auto& [type, buffer] : map)
 		{
-			cout << "Table Allocated Count: " << _table[i]->GetCount() << endl;
+			bufferMap[type] = buffer->GetCount();  // 현재 카운트로 갱신
+			_bufferSceneMax[type] = std::max(_bufferSceneMax[type], bufferMap[type]);
 		}
-		cout << "\n================= [Texture Buffer Pool] =================\n";
-		_textureBufferPool->PrintCount();
-		cout << "\n=================== [General BufferMap] =================\n";
-		cout << left << setw(30) << "Buffer Type" << "Count\n";
-		cout << string(45, '-') << "\n";
-		for (int i = 0; i < MAX_FRAME_COUNT; ++i)
-		{
-			cout << "현재 FRAME INDEX " << i << endl;
-			for (auto& ele : _map[i])
-			{
-				cout << left << setw(30) << BufferTypeToString(ele.first)
-					<< ele.second->GetCount() << "\n";
-			}
-		}
-		cout << "\n=================== [Instance BufferMap] ================\n";
-		for (int i = 0; i < MAX_FRAME_COUNT; ++i)
-		{
-			cout << "현재 FRAME INDEX " << i << endl;
-
-			for (auto& ele : _instanceMap[i])
-			{
-				cout << "[Buffer Type] " << BufferTypeToString(ele.first) << "\n";
-				ele.second->PrintCount();
-				cout << string(45, '-') << "\n";
-			}
-		}
-
-		cout << "\n=============== [Structured Buffer Pool] ===============\n";
-		cout << left << setw(30) << "Buffer Type" << "Count\n";
-		cout << string(45, '-') << "\n";
-		for (int i = 0; i < MAX_FRAME_COUNT; ++i)
-		{
-			cout << "현재 FRAME INDEX " << i << endl;
-			for (auto& ele : _structuredMap[i])
-			{
-				cout << left << setw(30) << BufferTypeToString(ele.first)
-					<< ele.second->GetCount() << "\n";
-			}
-		}
-
-		cout << "\n==================== [End of Debug] =====================\n\n";
 	}
 
+	cout << left << setw(30) << "Buffer Type"
+		<< setw(12) << "This Scene"
+		<< setw(12) << "Max Any Scene" << '\n';
+	cout << string(54, '-') << '\n';
+	for (const auto& [type, count] : bufferMap)
+	{
+		cout << left << setw(30) << BufferTypeToString(type)
+			<< setw(12) << count
+			<< setw(12) << _bufferSceneMax[type] << '\n';
+	}
 
-	
+	// Instance Buffer Map
+	cout << "\n================= [Instance BufferMap] ==================\n";
+	for (const auto& map : _instanceMap)
+	{
+		for (const auto& [type, buffer] : map)
+		{
+			cout << "  [Buffer Type] " << BufferTypeToString(type) << '\n';
+			buffer->PrintCount();
+			cout << string(45, '-') << '\n';
+		}
+	}
+
+	// Structured Buffer Map Summary
+	cout << "\n============= [Structured Buffer - Scene Summary] =============\n";
+	auto& structuredMap = _sceneStructuredCounts[sceneType];
+	for (const auto& map : _structuredMap)
+	{
+		for (const auto& [type, buffer] : map)
+		{
+			structuredMap[type] = buffer->GetCount();
+			_structuredSceneMax[type] = std::max(_structuredSceneMax[type], structuredMap[type]);
+		}
+	}
+
+	cout << left << setw(30) << "Buffer Type"
+		<< setw(12) << "This Scene"
+		<< setw(12) << "Max Any Scene" << '\n';
+	cout << string(54, '-') << '\n';
+	for (const auto& [type, count] : structuredMap)
+	{
+		cout << left << setw(30) << BufferTypeToString(type)
+			<< setw(12) << count
+			<< setw(12) << _structuredSceneMax[type] << '\n';
+	}
+
+	cout << "\n==================== [End of Debug] =====================\n\n";
 }
+
 
 void BufferManager::CreateBufferPool(uint32 index,BufferType type, uint32 size, uint32 count)
 {
