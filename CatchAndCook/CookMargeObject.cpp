@@ -224,6 +224,9 @@ void CookMargeObject::Update()
 						{
 							GUIItemBox::main->PushItemData(cookRes.first);
 						}
+						ParticleManager::main->GenParticle(5.0f, 500, 0.5f, 1.0f, _particleGenPos, vec3(0, 0, 0),
+							ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
+						, ResourceManager::main->Get<Texture>(L"success"));
 						break;
 					}
 				}
