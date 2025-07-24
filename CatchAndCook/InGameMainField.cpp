@@ -47,7 +47,7 @@ void InGameMainField::Update()
 {
 	Component::Update();
 
-	if (Input::main->GetKeyDown(KeyCode::Num6))
+	if (Input::main->GetKeyDown(KeyCode::Num8))
 	{
 		shopOpen = true;
 	}
@@ -55,6 +55,15 @@ void InGameMainField::Update()
 	{
 		shopOpen = false;
 	}
+	float normTime = InGameGlobal::main->skyTime;
+	while (normTime >= 4)
+		normTime -= 4;
+	if (InGameGlobal::main->skyTime >= 0.9999 && InGameGlobal::main->skyTime <= 1.89)
+	{
+		InGameMainField::GetMain()->shopOpen = true;
+	}
+	else
+		InGameMainField::GetMain()->shopOpen = false;
 }
 
 void InGameMainField::Update2()

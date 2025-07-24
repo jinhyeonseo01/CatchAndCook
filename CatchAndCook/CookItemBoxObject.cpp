@@ -34,7 +34,7 @@ void CookItemBoxObject::Update()
 
 	if (onTrigger)
 	{
-		if (Input::main->GetKeyDown(KeyCode::E))
+		if (Input::main->GetKeyDown(KeyCode::F))
 		{
 			if (GUIItemBox::main)
 			{

@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "GUIItem.h"
 
 struct Item
 {
@@ -31,5 +32,13 @@ public:
 public: 
 	std::unordered_map<wstring, Item> _inventory; // temp
 	float skyTime = 0;
+public: // Main Field
+	float skyTime = 3;
+
+	static constexpr int InventoryCount = 5;
+	std::array<ItemData, InventoryCount> invItems;
+	vector<ItemData> boxItems;
+
+	std::vector<std::pair<ItemData, vector<ItemData>>> cookTable;
 };
 

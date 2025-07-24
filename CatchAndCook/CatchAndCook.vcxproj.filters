@@ -437,13 +437,15 @@
     <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="CookObject.cpp" />
     <ClCompile Include="CookItemBoxObject.cpp" />
-    <ClCompile Include="GUIInventory.cpp" />
     <ClCompile Include="GUIItem.cpp" />
     <ClCompile Include="GUISprite.cpp" />
     <ClCompile Include="ImageRenderer.cpp" />
     <ClCompile Include="GUIItemBox.cpp" />
     <ClCompile Include="RectTransform.cpp" />
     <ClCompile Include="UILookUp.cpp" />
+    <ClCompile Include="GUIInventory.cpp" />
+    <ClCompile Include="GUICookProgress.cpp" />
+    <ClCompile Include="CookMargeObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -837,6 +839,8 @@
     <ClInclude Include="GUIItemBox.h" />
     <ClInclude Include="RectTransform.h" />
     <ClInclude Include="UILookUp.h" />
+    <ClInclude Include="GUICookProgress.h" />
+    <ClInclude Include="CookMargeObject.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath_LH.inl">
