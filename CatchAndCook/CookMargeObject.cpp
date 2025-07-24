@@ -105,6 +105,17 @@ void CookMargeObject::Start()
 		wstring name = L"Slot_" + to_wstring(i);
 		_slots.push_back(_CookUI_CookMarge->GetChildByName(name));
 	}
+
+	{
+		auto object = GetOwner()->GetChildByNameRecursive(L"particle");
+
+		if (object)
+		{
+			_particleGenPos = object->_transform->GetWorldPosition();
+		}
+
+
+	}
 }
 
 void CookMargeObject::Update()
