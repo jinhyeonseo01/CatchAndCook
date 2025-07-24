@@ -83,7 +83,7 @@ void PlayerController::Update()
 	if (selectDist <= 1 && selectObjectSetting)
 	{
 		selectObjectSetting->_objectSettingParam.o_select = true;
-		selectObjectSetting->_objectSettingParam.o_selectColor = Vector4(0.90, 0.90, 0.90, 1) * 0.5;
+		selectObjectSetting->_objectSettingParam.o_selectColor = Vector4(0.90, 0.90, 0.90, 1) * 0.7;
 	}
 		
 

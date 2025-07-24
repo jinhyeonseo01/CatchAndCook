@@ -433,7 +433,13 @@ void NPCGotoAny::Update()
 			if ((endPoint - Vector2(currentWorldPos.x, currentWorldPos.z)).Length() <= 0.25)
 			{
 				skinnedHierarchy->Play(idle, 0.25);
-				GetGroup()->ChangeState(StateType::idle);
+				bool gotoShop = false;
+				if (InGameMainField::GetMain()->shopOpen)
+					gotoShop = (_random_dist(_random) % 4) == 0; // 25% 확률로 가게로 이동
+				if (gotoShop)
+					GetGroup()->ChangeState(StateType::goto_shop);
+				else
+					GetGroup()->ChangeState(StateType::idle);
 			}
 			else
 			{
@@ -566,7 +572,7 @@ bool NPCGotoShop::TriggerUpdate()
 {
 	if ((GetGroup()->currentState->GetType() == StateType::goto_any ||
 		GetGroup()->currentState->GetType() == StateType::idle) &&
-		InGameMainField::GetMain()->shopOpen) // A
+		Input::main->GetKeyDown(KeyCode::Num8)) // A // InGameMainField::GetMain()->shopOpen
 	{
 		return true;
 	}

@@ -9,7 +9,7 @@ public:
 	void InitMainField();
 
 public: // Main Field
-	float skyTime = 0;
+	float skyTime = 3;
 
 	static constexpr int InventoryCount = 5;
 	std::array<ItemData, InventoryCount> invItems;
