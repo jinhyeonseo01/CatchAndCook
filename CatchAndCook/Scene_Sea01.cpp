@@ -347,6 +347,7 @@ void Scene_Sea01::Finish()
 		_changeScene = false;
 		CameraManager::main->SetActiveCamera(CameraType::ComponentCamera);
 		SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::TestScene2), false, false);
+		InGameGlobal::main->skyTime = 1.0f;
 	}
 
 

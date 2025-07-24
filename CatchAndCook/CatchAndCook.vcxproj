@@ -191,6 +191,7 @@
     <ClCompile Include="ColliderManager.cpp" />
     <ClCompile Include="ComputeManager.cpp" />
     <ClCompile Include="convert_assimp.cpp" />
+    <ClCompile Include="CookMargeObject.cpp" />
     <ClCompile Include="EffectComponent.cpp" />
     <ClCompile Include="EventComponent.cpp" />
     <ClCompile Include="FishMonster.cpp" />
@@ -204,6 +205,7 @@
     <ClCompile Include="InteractiveComponent.cpp" />
     <ClCompile Include="itemBoxComponent.cpp" />
     <ClCompile Include="PercentComponent.cpp" />
+    <ClCompile Include="GUICookProgress.cpp" />
     <ClCompile Include="GUIInventory.cpp" />
     <ClCompile Include="GUIItem.cpp" />
     <ClCompile Include="GUISprite.cpp" />
@@ -356,6 +358,7 @@
     <ClInclude Include="ComputeManager.h" />
     <ClInclude Include="convert_assimp.h" />
     <ClInclude Include="convert_directx.h" />
+    <ClInclude Include="CookMargeObject.h" />
     <ClInclude Include="EffectComponent.h" />
     <ClInclude Include="EventComponent.h" />
     <ClInclude Include="FishMonster.h" />
@@ -369,6 +372,7 @@
     <ClInclude Include="InteractiveComponent.h" />
     <ClInclude Include="itemBoxComponent.h" />
     <ClInclude Include="PercentComponent.h" />
+    <ClInclude Include="GUICookProgress.h" />
     <ClInclude Include="GUIInventory.h" />
     <ClInclude Include="GUIItem.h" />
     <ClInclude Include="GUISprite.h" />
