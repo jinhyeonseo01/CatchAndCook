@@ -225,7 +225,7 @@ void InGameGlobal::AddItem(const wstring& name)
 	if (name == L"갈색버섯")
 		boxItems.push_back(ItemData(5, -1));
     //auto it = _inventory.find(name);
-
+	/*
     if (it != _inventory.end())
     {
         it->second.count += 1;
@@ -240,5 +240,6 @@ void InGameGlobal::AddItem(const wstring& name)
     {
         wcout << itemName << "," << item.count << endl;
     }
+	*/
 }
 

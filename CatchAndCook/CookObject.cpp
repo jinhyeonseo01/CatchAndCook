@@ -228,8 +228,7 @@ void CookObject::Update()
 			}
 
 			//KSH (성공시 이펙트인데 밑으로 옮겨야되는데 어디로 옮겨야될지모르겠음.)
-			ParticleManager::main->GenParticle(5.0f, 500, 0.5f, 1.0f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
-			, ResourceManager::main->Get<Texture>(L"success"));
+
 
 		}
 		

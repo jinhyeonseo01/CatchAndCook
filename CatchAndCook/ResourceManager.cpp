@@ -77,7 +77,7 @@ void ResourceManager::CreateDefaultShaderKSH()
 		info._blendEnable = true;
 		info._blendType[0] = BlendType::BlendFactor;
 		info.RTVForamts[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-		info._zWrite = false;
+		info._zWrite = true;
 
 		info.cullingType = CullingType::BACK;
 
