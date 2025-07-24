@@ -48,6 +48,47 @@ void ResourceManager::CreateDefaultShader()
 
 void ResourceManager::CreateDefaultShaderKSH()
 {
+
+	{
+
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		ShaderInfo info;
+		info._computeShader = true;
+		shader->Init(L"ParticleComputeShaderStar.hlsl", {}, ShaderArg{ {{"CS_Main","cs"}} }, info);
+		Add<Shader>(L"ParticleComputeShaderStar", shader);
+	}
+
+	{
+
+		shared_ptr<Shader> shader  = make_shared<Shader>();
+		ShaderInfo info;
+		info._computeShader = true;
+		shader->Init(L"ParticleComputeShader.hlsl", {}, ShaderArg{ {{"CS_Main","cs"}} }, info);
+		Add<Shader>(L"ParticleComputeShader",shader);
+	}
+
+	{
+
+		shared_ptr<Shader> shader = make_shared<Shader>();
+
+		ShaderInfo info;
+		info.renderTargetCount = 1;
+		info._primitiveType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
+		info._blendEnable = true;
+		info._blendType[0] = BlendType::BlendFactor;
+		info.RTVForamts[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		info._zWrite = false;
+
+		info.cullingType = CullingType::BACK;
+
+		shader = make_shared<Shader>();
+		shader->Init(L"ParticleRenderingShader.hlsl", {}, ShaderArg{ {{"PS_Main","ps"},{"VS_Main","vs"},{"GS_Main","gs"}} }, info);
+		shader->SetPass(RENDER_PASS::ParticlePass);
+
+		Add<Shader>(L"ParticleRenderingShader", shader);
+	}
+
+
 	{
 		ShaderInfo info;
 		info._zTest = true;
@@ -1054,6 +1095,9 @@ void ResourceManager::CreateDefaultTexture()
 	Load<Texture>(L"smokeTexture", L"Textures/smoke.png");
 	Load<Texture>(L"bubble", L"Textures/bubble.png");
 	Load<Texture>(L"interactive", L"Textures/interactive.png");
+	Load<Texture>(L"Icon_Water", L"Textures/Icon_Water.png");
+	Load<Texture>(L"success", L"Textures/success.png");
+
 }
 
 void ResourceManager::CreateDefaultAnimation()

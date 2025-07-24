@@ -33,5 +33,9 @@ public:
 	void ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene) override;
 	void SetDestroy() override;
 	void Destroy() override;
+
+private:
+	vec3 _particleGenPos{};
+	vector<shared_ptr<GameObject>> _animationSprites;
 };
 

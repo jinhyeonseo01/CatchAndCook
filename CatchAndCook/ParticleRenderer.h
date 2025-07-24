@@ -23,8 +23,8 @@ public:
 
 public:
 	void SetTexture(shared_ptr<Texture> texture) { _particleTexture = texture; }
-
-
+	void SetRenderingShader(shared_ptr<Shader> shader) { _particleRenderingShader = shader; }
+	void SetComputeShader(shared_ptr<Shader> shader) { _particleComputeShader = shader; }
 private:
 	virtual void Rendering(Material* material, Mesh* mesh, int instanceCount = 1);
 	virtual void DebugRendering();
@@ -32,8 +32,8 @@ private:
 private:
 	TableContainer _tableContainer{};
 
-	static shared_ptr<Shader> _particleComputeShader;
-	static shared_ptr<Shader> _particleRenderingShader;
+	shared_ptr<Shader> _particleComputeShader;
+	shared_ptr<Shader> _particleRenderingShader;
 	shared_ptr<ParticleComponent> _particleComponent;
 	shared_ptr<Texture> _particleTexture;
 

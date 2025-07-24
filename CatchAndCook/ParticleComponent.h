@@ -3,7 +3,7 @@
 struct ParticleData
 {
 	vec3 color{};
-	int life{};
+	float lifeTime{};
 
 	vec3 worldPos{};
 	float size{};
@@ -13,12 +13,20 @@ struct ParticleData
 };
 
 
+
+
+
 struct ParicleHelperParams
 {
 	int paricleCount{};
 	int textureUse = 0;
 	vec2 padding{};
 	vec4 clipingColor{};
+
+	float changeDirTime{};
+	float pp1;
+	float pp2;
+	float pp3;
 };
 
 
@@ -26,7 +34,8 @@ enum class ParticleMoveType
 {
 	RadialSpread,
 	BloodUnderwater,
-	ScreenSpaceBubble
+	CookFire,
+
 };
 
 enum class ParticleColorType
@@ -42,20 +51,22 @@ class ParticleComponent : public Component
 {
 
 public:
-	virtual void Init();
-	virtual void Start();
-	virtual void Update();
-	virtual void Update2();
-	virtual void Enable();
-	virtual void Disable();
-	virtual void RenderBegin();
-	virtual void RenderEnd();
-	virtual void CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other);
-	virtual void CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other);
-	virtual void ChangeParent(const std::shared_ptr<GameObject>& prev, const std::shared_ptr<GameObject>& current);
-	virtual void ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene);
-	virtual void SetDestroy() override;
-	virtual void Destroy();
+	 void Init() override;
+	 void Start() override ;
+	 void Update() override;
+	 void Update2() override;
+	 void Enable() override;
+	 void Disable() override;
+	 void RenderBegin() override;
+	 void RenderEnd() override;
+	 void CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other);
+	 void CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other);
+	 void ChangeParent(const std::shared_ptr<GameObject>& prev, const std::shared_ptr<GameObject>& current);
+	 void ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene);
+	 void SetDestroy() override;
+	 void Destroy() override;
+
+	 void Reset() override;
 
 	int GetParicleCount() { return _helperParams.paricleCount; }
 	const ParicleHelperParams& GetParicleHelperParams() { return _helperParams; }
@@ -65,7 +76,7 @@ public:
 private:
 	void SetParticle(shared_ptr<StructuredBuffer> strBuffer,
 		float autoDestroyTime,int particleCount,float size ,float speed, const vec3& worldPos,const  vec3& worldNormal , const ParticleMoveType& moveType, const ParticleColorType& colorType, shared_ptr<Texture> texture,
-		 const vec4& clipingColor);
+		 const vec4& clipingColor,float dirChangeTime);
 
 public:
 	void SetBlendFactor(const std::array<float, 4>& factor) { _blendFactor = factor; }
@@ -73,6 +84,7 @@ public:
 
 
 private:
+	bool _alloc = true;
 	float _autoDestroyTime = 0;
 	float _currTime = 0;
 

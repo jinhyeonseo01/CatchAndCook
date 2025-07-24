@@ -2,8 +2,6 @@
 #include "ParticleRenderer.h"
 #include "ParticleComponent.h"
 
-shared_ptr<Shader> ParticleRenderer::_particleComputeShader = nullptr;
-shared_ptr<Shader> ParticleRenderer::_particleRenderingShader = nullptr;
 
 bool ParticleRenderer::IsExecuteAble()
 {
@@ -12,33 +10,9 @@ bool ParticleRenderer::IsExecuteAble()
 
 void ParticleRenderer::Init()
 {
-    SetCulling(false);
-    SetInstancing(false);
+	SetCulling(false);
+	SetInstancing(false);
 
-	if(_particleComputeShader ==nullptr)
-	{
-		_particleComputeShader = make_shared<Shader>();
-		ShaderInfo info;
-		info._computeShader = true;
-		_particleComputeShader->Init(L"ParticleComputeShader.hlsl", {}, ShaderArg{ {{"CS_Main","cs"}} }, info);
-	}
-
-	if (_particleRenderingShader == nullptr)
-	{
-		ShaderInfo info;
-		info.renderTargetCount = 1;
-		info._primitiveType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
-		info._blendEnable = true;
-		info._blendType[0] = BlendType::BlendFactor;
-		info.RTVForamts[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-		info._zWrite = false;
-
-		info.cullingType = CullingType::BACK;
-
-		_particleRenderingShader = make_shared<Shader>();
-		_particleRenderingShader->Init(L"ParticleRenderingShader.hlsl", {}, ShaderArg{ {{"PS_Main","ps"},{"VS_Main","vs"},{"GS_Main","gs"}} }, info);
-		_particleRenderingShader->SetPass(RENDER_PASS::ParticlePass);
-	}
 
 
 }

@@ -211,14 +211,6 @@ void Scene_Sea01::Init()
 				
 					if (ComputeManager::main->IsChangeEffectEnd() && *key)
 					{
-						for (auto& ele : SceneManager::main->GetCurrentScene()->_gameObjects)
-						{
-							if (ele)
-							{
-								ele->Reset();
-							}
-						}
-
 						*key = false;
 						Scene::_changeScene = true;
 					}

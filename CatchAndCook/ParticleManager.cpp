@@ -17,14 +17,15 @@ void ParticleManager::Init()
 
 }
 
-shared_ptr<GameObject> ParticleManager::GenParticle(float autodestroyTime, int particleCount, float particleSize, float speed, const vec3& worldPos, const vec3& worldNormal, const ParticleMoveType& moveType, const ParticleColorType& colorType, const vec4& clipingColor,shared_ptr<Texture> texture )
+shared_ptr<GameObject> ParticleManager::GenParticle(float autodestroyTime, int particleCount, float particleSize, float speed, const vec3& worldPos, const vec3& worldNormal, const ParticleMoveType& moveType, const ParticleColorType& colorType, const vec4& clipingColor, shared_ptr<Texture> texture,
+	shared_ptr<Shader> compute , shared_ptr<Shader> rendering, float dirChangeTime)
 {
 	shared_ptr<StructuredBuffer> buffer = AllocParticleBuffer();
 
 	shared_ptr<GameObject> object = SceneManager::main->GetCurrentScene()->CreateGameObject(L"Particle");
 
 	auto& particleComponent = object->AddComponent<ParticleComponent>();
-	particleComponent->SetParticle(buffer, autodestroyTime, particleCount, particleSize, speed, worldPos,worldNormal ,moveType, colorType,texture, clipingColor);
+	particleComponent->SetParticle(buffer, autodestroyTime, particleCount, particleSize, speed, worldPos,worldNormal ,moveType, colorType,texture, clipingColor, dirChangeTime);
 	
 	auto& particleRenderer = object->AddComponent<ParticleRenderer>();
 
@@ -33,6 +34,23 @@ shared_ptr<GameObject> ParticleManager::GenParticle(float autodestroyTime, int p
 		particleRenderer->SetTexture(texture);
 	}
 
+	if (compute == nullptr)
+	{
+		particleRenderer->SetComputeShader(ResourceManager::main->Get<Shader>(L"ParticleComputeShader"));
+	}
+	else
+	{
+		particleRenderer->SetComputeShader(compute);
+	}
+
+	if (rendering == nullptr)
+	{
+		particleRenderer->SetRenderingShader(ResourceManager::main->Get<Shader>(L"ParticleRenderingShader"));
+	}
+	else
+	{
+		particleRenderer->SetRenderingShader(rendering);
+	}
 
 
 	return object;

@@ -9,6 +9,7 @@
 #include "SeaPlayerController.h"
 #include "SpriteAction.h"
 #include "ProgressCycleComponent.h"
+#include "Transform.h"
 COMPONENT(InteractiveComponent)
 
 void InteractiveComponent::Init()
@@ -322,6 +323,13 @@ void InteractiveComponent::SetState(InteractiveState state)
 		break;
 	case InteractiveState::SUCCESS:
 		Sound::main->Play("success",0.3f,true);
+
+		ParticleManager::main->GenParticle(8.0f, 500, 5.0f, 30.0f, GetOwner()->_transform->GetWorldPosition(), vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
+		, ResourceManager::main->Get<Texture>(L"success"));
+
+		wcout << GetOwner()->GetName() << endl;
+		InGameGlobal::main->AddItem(GetOwner()->GetName());
+
 		MiniGameTotalOnOff(false);
 		_seaPlayerController->SetMoveLock(false);
 		GetOwner()->GetRoot()->SetActiveSelf(false);

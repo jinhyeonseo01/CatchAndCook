@@ -12,7 +12,7 @@ public:
 	~TestScene_jin() override;
 
 	void ComputePass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList) override;
-	void ParticlePass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList);
+
 
 
 };

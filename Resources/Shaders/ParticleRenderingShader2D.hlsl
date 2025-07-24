@@ -4,10 +4,11 @@
 #include "Light_b3.hlsl"
 
 
+
 struct ParticleData
 {
     float3 color;
-    int life;
+    float lifetime;
 
     float3 worldPos;
     float size;
@@ -15,8 +16,6 @@ struct ParticleData
     float3 dir;
     float velocity;
 };
-
-
 
 
 struct VS_OUT
@@ -40,6 +39,7 @@ cbuffer ParicleHelperParams : register(b4)
     int g_textureUse;
     float2 g_paddingvv;
     float4 g_clipingColor;
+   
 };
 
 StructuredBuffer<ParticleData> ParticleDatas : register(t0);

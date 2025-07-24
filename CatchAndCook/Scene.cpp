@@ -174,6 +174,8 @@ void Scene::Rendering()
         TransparentPass(cmdList); // Position,
     Profiler::Fin();
 
+
+
     Profiler::Set("PASS : Compute", BlockTag::CPU);
         ComputePass(cmdList);
     Profiler::Fin();
@@ -187,7 +189,11 @@ void Scene::Rendering()
     Profiler::Fin();
 
     Profiler::Set("PASS : UI2", BlockTag::CPU);
-    Ui2Pass(cmdList);
+        Ui2Pass(cmdList);
+    Profiler::Fin();
+
+    Profiler::Set("PASS : PariclePass", BlockTag::CPU);
+    ParticlePass(cmdList);
     Profiler::Fin();
 
     ComputeManager::main->ChangeSceneDispatch();
@@ -555,10 +561,24 @@ void Scene::ComputePass(ComPtr<ID3D12GraphicsCommandList>& cmdList)
     ComputeManager::main->Dispatch(cmdList);
 }
 
+void Scene::ParticlePass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList)
+{
+    auto& targets = _passObjects[RENDER_PASS::ToIndex(RENDER_PASS::ParticlePass)];
+
+    for (auto& [shader, vec] : targets)
+    {
+        for (auto& ele : vec)
+        {
+            ele.renderer->Rendering(nullptr, nullptr, 1);
+        }
+    }
+}
+
 
 void Scene::GlobalSetting()
 {
     auto& cmdList = Core::main->GetCmdList();
+
 
     CameraControl();
     //cout << CameraManager::main->GetActiveCamera()->GetCameraPos().y << endl;
@@ -686,6 +706,14 @@ void Scene::RenderEnd()
 
 void Scene::Finish()
 {
+    if (Scene::_changeScene)
+    {
+        for (auto& ele : _gameObjects)
+        {
+            ele->Reset();
+        }
+    }
+
     Scene::ExecuteDestroyGameObjects();
     PathFinder::ClearDebugDraw();
     GameObject::ExecuteDestroyComponents();

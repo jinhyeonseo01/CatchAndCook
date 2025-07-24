@@ -50,6 +50,13 @@ void itemBoxComponent::RenderEnd()
 void itemBoxComponent::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
 {
     Sound::main->Play("itemGet2",0.3f);
+    wcout << GetOwner()->GetName() << endl;
+
+    static vec3 offset = vec3(0, 10.0f, 0);
+
+    ParticleManager::main->GenParticle(8.0f, 500, 3.0f, 30.0f, GetOwner()->_transform->GetWorldPosition()+ offset, vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
+    , ResourceManager::main->Get<Texture>(L"success"));
+ 
     InGameGlobal::main->AddItem(GetOwner()->GetName());
 	GetOwner()->SetDestroy();
 }

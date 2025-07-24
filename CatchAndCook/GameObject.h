@@ -282,6 +282,7 @@ public:
 	std::shared_ptr<GameObject> GetChild(int index);
 	std::shared_ptr<GameObject> GetChildByName(const std::wstring& name);
 	std::shared_ptr<GameObject> GetChildByNameRecursive(const std::wstring& name);
+	vector<shared_ptr<GameObject>> GetChildByNameRecursiveAll(const std::wstring& name);
 
 	int GetChildAll(std::vector<std::shared_ptr<GameObject>>& vec);
 	int GetChildsByName(const std::wstring& name, std::vector<std::shared_ptr<GameObject>>& vec);

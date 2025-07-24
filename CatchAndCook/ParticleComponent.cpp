@@ -2,9 +2,10 @@
 #include "ParticleComponent.h"
 #include "ParticleManager.h"
 
-static std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+static std::uniform_real_distribution<float> dist(-1.0f, 1.0f);
 static std::uniform_real_distribution<float> dist2(-0.1f, 0.1f);
-
+static std::uniform_real_distribution<float> dist3(0, 0.1f);
+static std::uniform_real_distribution<float> dist4(0, 1.0f);
 void ParticleComponent::Init()
 {
 }
@@ -18,6 +19,11 @@ void ParticleComponent::Start()
 
 void ParticleComponent::Update()
 {
+	if (_autoDestroyTime == 0)
+	{
+		return;
+	}
+
 	_currTime += Time::main->GetDeltaTime();
 
 	float fadeProgress = _currTime / _autoDestroyTime;
@@ -32,7 +38,8 @@ void ParticleComponent::Update()
 
 	if (_currTime >= _autoDestroyTime)
 	{
-		SceneManager::main->GetCurrentScene()->AddDestroyQueue(GetOwner());
+		if(_alloc)
+		GetOwner()->SetDestroy();
 	}
 }
 
@@ -79,11 +86,19 @@ void ParticleComponent::SetDestroy()
 
 void ParticleComponent::Destroy()
 {
+	_alloc = false;
+
 	ParticleManager::main->RecycleParticleBuffer(_strBuffer);
 }
 
+void ParticleComponent::Reset()
+{
+	if(_alloc)
+		GetOwner()->SetDestroy();
+}
+
 void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, float autoDestroyTime, int particleCount, float size, float speed ,const vec3& worldPos, const vec3& worldNormal, const ParticleMoveType& moveType, const ParticleColorType& colorType, shared_ptr<Texture> texture,
-	 const vec4& clipingColor)
+	 const vec4& clipingColor,float dirChangeTime)
 {
 	assert(particleCount <= 500);
 
@@ -92,6 +107,7 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 
 	_helperParams.paricleCount = particleCount;
 	_helperParams.clipingColor = clipingColor;
+	_helperParams.changeDirTime = dirChangeTime;
 
 	if (texture)
 	{
@@ -118,6 +134,8 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 			data.worldPos = worldPos;
 			data.dir = vec3(dist(gen), dist(gen), dist(gen));
 			data.velocity = speed;
+
+			data.dir.Normalize();
 			break;
 
 		case ParticleMoveType::BloodUnderwater:
@@ -127,24 +145,26 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 			float x = dist(gen) * 0.5f;
 			float y = dist(gen) * 0.3f + 0.2f;
 			float z = dist(gen) * 0.5f;
-
 			data.dir = vec3(x, y, z);
+			data.dir.Normalize();
 			data.velocity = speed;
 			break;
 		}
 
-		case ParticleMoveType::ScreenSpaceBubble:
+		case ParticleMoveType::CookFire:
 		{
 			data.worldPos = worldPos;
-			data.worldPos.x += dist2(gen);
-			data.worldPos.y += dist2(gen);
-			float y = (dist(gen)) * 0.3f + 0.1f;
+			data.worldPos.x += dist2(gen) * 2.0f;
+			data.worldPos.z += dist2(gen) *3.0f;
+			data.worldPos.y += dist3(gen) *3.0f;
+			float y = (dist4(gen)) * 0.3f + 0.1f;
 			data.dir = vec3(0, y, 0);
+			//노말라이즈없이사용 속도다르게주기위해
 			data.velocity = speed;
+	
+
 		}
-
-
-		break;
+			break;
 		default:
 			break;
 		}
@@ -157,6 +177,7 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 			{
 			case ParticleColorType::Random:
 				data.color = vec3(dist(gen), dist(gen), dist(gen));
+				data.color.Normalize();
 				break;
 			case ParticleColorType::Black:
 				data.color = vec3(0, 0, 0);
@@ -169,10 +190,11 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 				break;
 			case ParticleColorType::Blue:
 				data.color = vec3(0, 0, 1);
-			default:
+				break;
 				break;
 			}
 		}
+
 
 		vecData[i] = data;
 	}
