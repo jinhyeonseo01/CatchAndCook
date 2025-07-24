@@ -2,9 +2,10 @@
 #include "ParticleComponent.h"
 #include "ParticleManager.h"
 
-static std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+static std::uniform_real_distribution<float> dist(-1.0f, 1.0f);
 static std::uniform_real_distribution<float> dist2(-0.1f, 0.1f);
 static std::uniform_real_distribution<float> dist3(0, 0.1f);
+static std::uniform_real_distribution<float> dist4(0, 1.0f);
 void ParticleComponent::Init()
 {
 }
@@ -145,8 +146,7 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 			data.worldPos.x += dist2(gen) * 2.0f;
 			data.worldPos.z += dist2(gen) *3.0f;
 			data.worldPos.y += dist3(gen) *3.0f;
-			float y = (dist(gen)) * 0.3f + 0.1f;
-			data.dir = vec3(0, y, 0);
+			data.dir = vec3(0, 1, 0);
 			data.velocity = speed;
 		}
 			break;
@@ -162,6 +162,7 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 			{
 			case ParticleColorType::Random:
 				data.color = vec3(dist(gen), dist(gen), dist(gen));
+				data.color.Normalize();
 				break;
 			case ParticleColorType::Black:
 				data.color = vec3(0, 0, 0);
@@ -174,11 +175,14 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 				break;
 			case ParticleColorType::Blue:
 				data.color = vec3(0, 0, 1);
+				break;
 			default:
 				break;
 			}
 		}
 
+		data.color.Normalize();
+		data.dir.Normalize();
 		vecData[i] = data;
 	}
 

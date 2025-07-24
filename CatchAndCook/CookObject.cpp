@@ -186,7 +186,7 @@ void CookObject::Update()
 						process->type = 2;
 
 						//KSH
-						ParticleManager::main->GenParticle(20.0f, 200, 0.15f, 0.7f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::CookFire, ParticleColorType::Red, { 0,0,0,0 }
+						ParticleManager::main->GenParticle(20.0f, 200, 0.15f, 0.3f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::CookFire, ParticleColorType::Red, { 0,0,0,0 }
 						, ResourceManager::main->Get<Texture>(L"smokeTexture"));
 					}
 					if (GetOwner()->HasTag(GameObjectTag::CookType_Wash))
@@ -194,7 +194,7 @@ void CookObject::Update()
 						process->SetMaxTime(5);
 
 						//KSH
-						ParticleManager::main->GenParticle(8.0f, 200, 0.15f, 0.7f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::CookFire, ParticleColorType::Red, { 0,0,0,0 }
+						ParticleManager::main->GenParticle(8.0f, 200, 0.15f, 0.3f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::CookFire, ParticleColorType::Red, { 0,0,0,0 }
 						, ResourceManager::main->Get<Texture>(L"bubble"));
 					}
 					if (GetOwner()->HasTag(GameObjectTag::CookType_Boil))
@@ -202,7 +202,7 @@ void CookObject::Update()
 						process->SetMaxTime(10);
 						process->type = 1;
 						//KSH
-						ParticleManager::main->GenParticle(15.0f, 200, 0.15f, 0.7f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::CookFire, ParticleColorType::Red, { 0,0,0,0 }
+						ParticleManager::main->GenParticle(15.0f, 200, 0.15f, 0.3f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::CookFire, ParticleColorType::Red, { 0,0,0,0 }
 						, ResourceManager::main->Get<Texture>(L"smokeTexture"));
 
 					}
@@ -227,8 +227,9 @@ void CookObject::Update()
 				ele->SetActiveSelf(false);
 			}
 
-			ParticleManager::main->GenParticle(50.0f, 200, 0.15f, 0.5f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
-			, ResourceManager::main->Get<Texture>(L"smokeTexture"), ResourceManager::main->Get<Shader>(L"ParticleComputeShaderStar"),nullptr,4.0f);
+			//KSH (성공시 이펙트인데 밑으로 옮겨야되는데 어디로 옮겨야될지모르겠음.)
+			ParticleManager::main->GenParticle(5.0f, 500, 0.5f, 1.0f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
+			, ResourceManager::main->Get<Texture>(L"success"));
 
 		}
 		
