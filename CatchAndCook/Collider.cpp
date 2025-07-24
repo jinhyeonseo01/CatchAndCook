@@ -183,6 +183,7 @@ void Collider::SetDestroy()
 void Collider::Destroy()
 {
 	Component::Destroy();
+	cout << "DESTORY" << endl;
 	ColliderManager::main->RemoveCollider(GetCast<Collider>());
 
 }
@@ -449,49 +450,6 @@ pair<vec3, vec3> Collider::GetMinMax()
 {
 	if (_type == CollisionType::Box)
 	{
-		/*
-		Matrix rotMatrix = Matrix::CreateFromQuaternion(_bound.box.Orientation);
-		vec3 center = _bound.box.Center;
-		vec3 extents = _bound.box.Extents;
-
-		vec3 localVertices[8] = {
-			vec3(-extents.x, -extents.y, -extents.z),
-			vec3(-extents.x, -extents.y,  extents.z),
-			vec3(-extents.x,  extents.y, -extents.z),
-			vec3(-extents.x,  extents.y,  extents.z),
-			vec3(extents.x, -extents.y, -extents.z),
-			vec3(extents.x, -extents.y,  extents.z),
-			vec3(extents.x,  extents.y, -extents.z),
-			vec3(extents.x,  extents.y,  extents.z)
-		};
-
-		vec3 worldMin = vec3(FLT_MAX, FLT_MAX, FLT_MAX);
-		vec3 worldMax = vec3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
-
-		for (int i = 0; i < 8; i++)
-		{
-			vec3 worldVertex = center + vec3(
-				localVertices[i].x * rotMatrix.m[0][0] + localVertices[i].y * rotMatrix.m[1][0] + localVertices[i].z * rotMatrix.m[2][0],
-				localVertices[i].x * rotMatrix.m[0][1] + localVertices[i].y * rotMatrix.m[1][1] + localVertices[i].z * rotMatrix.m[2][1],
-				localVertices[i].x * rotMatrix.m[0][2] + localVertices[i].y * rotMatrix.m[1][2] + localVertices[i].z * rotMatrix.m[2][2]
-			);
-
-			worldMin = vec3(
-				std::min(worldMin.x, worldVertex.x),
-				std::min(worldMin.y, worldVertex.y),
-				std::min(worldMin.z, worldVertex.z)
-			);
-
-			worldMax = vec3(
-				std::max(worldMax.x, worldVertex.x),
-				std::max(worldMax.y, worldVertex.y),
-				std::max(worldMax.z, worldVertex.z)
-			);
-		}
-
-
-		return std::make_pair(worldMin, worldMax);
-		*/
 		auto rot = Matrix::CreateFromQuaternion(_bound.box.Orientation);
 		vec3 center = _bound.box.Center;
 		vec3 extent = _bound.box.Extents;

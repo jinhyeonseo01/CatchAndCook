@@ -49,7 +49,6 @@ void itemBoxComponent::RenderEnd()
 
 void itemBoxComponent::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
 {
-
     Sound::main->Play("itemGet2",0.3f);
     InGameGlobal::main->AddItem(GetOwner()->GetName());
 	GetOwner()->SetDestroy();
@@ -77,5 +76,6 @@ void itemBoxComponent::Destroy()
 
 void itemBoxComponent::Reset()
 {
-    SceneManager::main->GetCurrentScene()->AddDestroyQueue(GetOwner());
+    GetOwner()->SetDestroy();
+
 }
