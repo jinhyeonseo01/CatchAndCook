@@ -419,7 +419,9 @@ void SeaPlayerController::SetState(SeaPlayerState state)
             {
                 if (ray.gameObject->GetRoot()->HasTag(GameObjectTag::Monster))
                 {
-                    ParticleManager::main->GenParticle(1.5f, 500,5.0f, 60.0f, ray.worldPos, ray.normal, ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
+                    //ParticleManager::main->GenParticle(1.5f, 500,5.0f, 60.0f, ray.worldPos, ray.normal, ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
+                    //, ResourceManager::main->Get<Texture>(L"bleedTexture"));
+                    ParticleManager::main->GenParticle(1.5f, 300, 5.0f, 60.0f, ray.worldPos, ray.normal, ParticleMoveType::BloodUnderwater, ParticleColorType::Red, { 0,0,0,0 }
                     , ResourceManager::main->Get<Texture>(L"bleedTexture"));
                  
                     if (auto& fishMonster =ray.gameObject->GetRoot()->GetComponent<FishMonster>())
