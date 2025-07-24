@@ -243,6 +243,9 @@ void FishMonster::SetState(FishMonsterState state)
             _skined->Play(_animations["die"], 0.5f);
         }
 
+        ParticleManager::main->GenParticle(8.0f, 500, 30.0f, 130.0f, GetOwner()->_transform->GetWorldPosition(), vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
+        , ResourceManager::main->Get<Texture>(L"success"));
+
 		break;
 	case FishMonsterState::Hit:
         _moveSpeed *= 2.0f;
