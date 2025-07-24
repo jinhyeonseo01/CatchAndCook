@@ -112,7 +112,6 @@ void AnimationSpriteComponent::SetTextures(vector<shared_ptr<Texture>>& textures
 
 void AnimationSpriteComponent::Reset()
 {
-	GetOwner()->SetActiveSelf(true);
 	_currentFrameIndex = 0;
 	_currentTime = 0;
 }
