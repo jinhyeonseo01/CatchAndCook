@@ -69,6 +69,7 @@ public:
 	}
 
 public:
+
 	ComPtr<ID3D12Resource>& GetDefaultBuffer() { return _structuredDefaultBuffer; }
 	ComPtr<ID3D12Resource>& GetUploadBuffer() { return _structuredUploadBuffer; }
 

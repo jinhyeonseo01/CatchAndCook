@@ -39,7 +39,7 @@ extern std::vector<VertexProp> GizmoInstanceProp;
 extern std::vector<VertexProp> TransformInstanceProp;
 
 
-const uint32 SWAP_CHAIN_FRAME_COUNT = 3; 
+const uint32 SWAP_CHAIN_FRAME_COUNT = 2; 
 const uint32 MAX_FRAME_COUNT = SWAP_CHAIN_FRAME_COUNT - 1;
 extern uint32 CURRENT_CONTEXT_INDEX;
 

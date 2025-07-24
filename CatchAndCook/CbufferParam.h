@@ -69,7 +69,7 @@ struct alignas(16) EnvMaterialParam
 	float padding;
 };
 
-CBUFFER_INJECTOR("EnvMaterialParam", EnvMaterialParam, 8000, BufferType::EnvMaterialParam, std::shared_ptr<Material>,
+CBUFFER_INJECTOR("EnvMaterialParam", EnvMaterialParam, 2000, BufferType::EnvMaterialParam, std::shared_ptr<Material>,
 	// data <- source
 	data.color = Vector4(source->GetPropertyVector("_Color"));
 	data._baseMapST = Vector4(source->GetPropertyVector("_BaseMap_ST"));
@@ -84,7 +84,7 @@ struct alignas(16) PlayerMaterialParam
 	Vector4 temp;
 };
 
-CBUFFER_INJECTOR("PlayerMaterialParam", PlayerMaterialParam, 2560, BufferType::PlayerMaterialParam, std::shared_ptr<Material>,
+CBUFFER_INJECTOR("PlayerMaterialParam", PlayerMaterialParam, 200, BufferType::PlayerMaterialParam, std::shared_ptr<Material>,
 	data.temp = Vector4(1, 0, 0, 1);
 	// data <- source
 	//data.color = Vector4(source->GetPropertyVector("_Color"));
@@ -154,7 +154,7 @@ struct alignas(16) SeaDefaultMaterialParam
 	vec4 clipingColor;
 };
 
-CBUFFER_INJECTOR("SeaDefaultMaterialParam", SeaDefaultMaterialParam, 2560, BufferType::SeaDefaultMaterialParam, std::shared_ptr<Material>,
+CBUFFER_INJECTOR("SeaDefaultMaterialParam", SeaDefaultMaterialParam, 300, BufferType::SeaDefaultMaterialParam, std::shared_ptr<Material>,
 	data.color = Vector4(source->GetPropertyVector("_Color"));
 	data.clipingColor = Vector4(source->GetPropertyVector("_ClipingColor"));
 )

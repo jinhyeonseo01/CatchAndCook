@@ -174,6 +174,8 @@ void TestScene_jin::Finish()
 	}
 
 
+
+
 }
 
 TestScene_jin::~TestScene_jin()

@@ -24,8 +24,10 @@ public:
 	~CBufferPool();
 	void Init(uint32 size, uint32 count);
 	void Reset();
+	uint32 GetCount() { return _currentIndex; }
 	CBufferContainer* Alloc(uint32 count = 1);
-	//void Free(CBufferContainer* cbuffer);
+
+
 
 private:
 
@@ -59,6 +61,8 @@ struct HeapStructure
 	int32 handleIncrementSize = 0;
 	int32 currentIndex = 0;
 
+
+
 };
 
 class TextureBufferPool
@@ -66,6 +70,7 @@ class TextureBufferPool
 
 public:
 	void Init(int32 SrvUavCount , int32 RTVCount , int32 DSVCount);
+
 
 	void FreeSRVHandle(D3D12_CPU_DESCRIPTOR_HANDLE handle);
 	void FreeRTVHandle(D3D12_CPU_DESCRIPTOR_HANDLE handle);
@@ -75,7 +80,16 @@ public:
 	void AllocRTVDescriptorHandle(D3D12_CPU_DESCRIPTOR_HANDLE* hanlde);
 	void AllocDSVDescriptorHandle(D3D12_CPU_DESCRIPTOR_HANDLE* hanlde);
 
+	void PrintCount()
+	{
+		
+		cout << _srvHeap.currentIndex << endl;
+		cout << _rtvHeap.currentIndex << endl;
+		cout << _dsvHeap.currentIndex << endl;
+
+	};
 private:
+
 
 	int32 AllocSRV();
 	int32 AllocRTV();
@@ -108,6 +122,7 @@ class DescritporTable
 public:
 	void Init(uint32 count);
 	TableContainer Alloc(uint32 count);
+	uint32 GetCount() { return _currentIndex; }
 	void CopyHandle(D3D12_CPU_DESCRIPTOR_HANDLE& destHandle, D3D12_CPU_DESCRIPTOR_HANDLE& sourceHandle, uint32 index);
 	void CopyHandles(D3D12_CPU_DESCRIPTOR_HANDLE& destHandle, D3D12_CPU_DESCRIPTOR_HANDLE& sourceHandle, uint32 size);
 	void Reset();
@@ -138,9 +153,11 @@ struct InstanceBufferContainer
 	void* ptr;
 	uint32 elementCount = 1;
 	bool isAlloc = false;
-
 	int writeOffset = 0;
 	int writeIndex = 0;
+
+	int GetCount() { return writeIndex; }
+
 	template<class T>
 	void AddData(const T& data)
 	{
@@ -181,7 +198,13 @@ public:
 	void Init(uint32 size,uint32 elementCount, uint32 bufferCount);
 	void Reset();
 	InstanceBufferContainer* Alloc();
-
+	void PrintCount()
+	{
+		for (auto& ele : _containers)
+		{
+			cout << ele.GetCount() << endl;
+		}
+	}
 private:
 	vector<InstanceBufferContainer> _containers;
 
@@ -189,7 +212,6 @@ private:
 	void* offsetPtr = nullptr;
 
 	uint32 _currentIndex = 0;
-
 	uint32 _elementSize = 0;
 	uint32 _elementCount = 0;
 	uint32 _bufferSize = 0;

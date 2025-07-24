@@ -59,6 +59,7 @@ enum class BufferType
 	DOFParam,
 };
 
+
 class CBufferPool;
 class DescritporTable;
 class TextureBufferPool;
@@ -69,6 +70,7 @@ class BufferManager
 public:
 	void Init();
 	void Reset();
+	void Debug();
 
 	void CreateBufferPool(uint32 index , BufferType type, uint32 size, uint32 count);
 	void CreateBufferPool_Static(BufferType type, uint32 size, uint32 count);

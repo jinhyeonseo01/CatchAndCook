@@ -20,6 +20,60 @@
 #include "ParticleComponent.h"
 #include "ProgressCycleComponent.h"
 
+std::string BufferTypeToString(BufferType type)
+{
+	switch (type)
+	{
+	case BufferType::GlobalParam: return "GlobalParam";
+	case BufferType::TransformParam: return "TransformParam";
+	case BufferType::RectTransformParam: return "RectTransformParam";
+	case BufferType::MateriaParam: return "MateriaParam";
+	case BufferType::BoneParam: return "BoneParam";
+	case BufferType::CameraParam: return "CameraParam";
+	case BufferType::MateriaSubParam: return "MateriaSubParam";
+	case BufferType::SpriteWorldParam: return "SpriteWorldParam";
+	case BufferType::GUISpriteParam: return "GUISpriteParam";
+	case BufferType::SpriteTextureParam: return "SpriteTextureParam";
+	case BufferType::TestParam: return "TestParam";
+	case BufferType::DefaultMaterialParam: return "DefaultMaterialParam";
+	case BufferType::SeaDefaultMaterialParam: return "SeaDefaultMaterialParam";
+	case BufferType::EnvMaterialParam: return "EnvMaterialParam";
+	case BufferType::LightHelperParam: return "LightHelperParam";
+	case BufferType::TerrainDetailsParam: return "TerrainDetailsParam";
+	case BufferType::SeaParam: return "SeaParam";
+	case BufferType::FogParam: return "FogParam";
+	case BufferType::UnderWaterParam: return "UnderWaterParam";
+	case BufferType::SeaPlantParam: return "SeaPlantParam";
+	case BufferType::SeaFIshParam: return "SeaFIshParam";
+	case BufferType::SeaGrassParam: return "SeaGrassParam";
+	case BufferType::ScatteringData: return "ScatteringData";
+	case BufferType::VolumetricData: return "VolumetricData";
+	case BufferType::HookData: return "HookData";
+	case BufferType::HPData: return "HPData";
+	case BufferType::ParicleHelperParams: return "ParicleHelperParams";
+	case BufferType::ProgressCircle: return "ProgressCircle";
+	case BufferType::ChangeSceneData: return "ChangeSceneData";
+	case BufferType::PlayerMaterialParam: return "PlayerMaterialParam";
+	case BufferType::InstanceOffsetParam: return "InstanceOffsetParam";
+	case BufferType::TransformInstanceParam: return "TransformInstanceParam";
+	case BufferType::GizmoInstanceParam: return "GizmoInstanceParam";
+	case BufferType::GizmoTextInstanceParam: return "GizmoTextInstanceParam";
+	case BufferType::ForwardLightParam: return "ForwardLightParam";
+	case BufferType::VignetteParam: return "VignetteParam";
+	case BufferType::ObjectMaterialParam: return "ObjectMaterialParam";
+	case BufferType::ObjectSettingParam: return "ObjectSettingParam";
+	case BufferType::LightDataParam: return "LightDataParam";
+	case BufferType::GrassParam: return "GrassParam";
+	case BufferType::WaterParam: return "WaterParam";
+	case BufferType::ShadowCasterParams: return "ShadowCasterParams";
+	case BufferType::ShadowCascadeIndexParams: return "ShadowCascadeIndexParams";
+	case BufferType::GodRayParam: return "GodRayParam";
+	case BufferType::FXAAParams: return "FXAAParams";
+	case BufferType::DOFParam: return "DOFParam";
+	default: return "Unknown";
+	}
+}
+
 void BufferManager::Init()
 {
 
@@ -72,7 +126,7 @@ void BufferManager::Init()
 
 	for(int i=0; i < MAX_FRAME_COUNT; ++i)
 	{
-		CreateInstanceBufferPool(i, BufferType::TransformInstanceParam, sizeof(Instance_Transform), 10000, 128);
+		CreateInstanceBufferPool(i, BufferType::TransformInstanceParam, sizeof(Instance_Transform), 10000, 40);
 		CreateInstanceBufferPool(i, BufferType::GizmoInstanceParam, sizeof(Instance_Gizmo), 250000, 1);
 	}
 	
@@ -82,6 +136,17 @@ void BufferManager::Init()
 
 void BufferManager::Reset()
 {
+
+	static float time = 0;
+
+	time += Time::main->GetDeltaTime();
+
+	if (time > 5.0f)
+	{
+		Debug();
+		time = 0;
+	}
+
 	_table[CURRENT_CONTEXT_INDEX]->Reset();
 
 	{
@@ -100,6 +165,71 @@ void BufferManager::Reset()
 			ele.second->Clear();
 		}
 	}
+}
+
+void BufferManager::Debug()
+{
+
+	static unordered_set<SceneType> _show;
+
+	auto& sceneType =  SceneManager::main->GetCurrentScene()->GetSceneType();
+
+	if (_show.find(sceneType) == _show.end())
+	{
+		_show.insert(sceneType);
+
+		cout << "============================현재씬" << (int)SceneManager::main->GetCurrentScene()->GetSceneType() << "===================================" << endl;
+
+		cout << "\n===================== [Table Info] =====================\n";
+		for (int i = 0; i < MAX_FRAME_COUNT; ++i)
+		{
+			cout << "Table Allocated Count: " << _table[i]->GetCount() << endl;
+		}
+		cout << "\n================= [Texture Buffer Pool] =================\n";
+		_textureBufferPool->PrintCount();
+		cout << "\n=================== [General BufferMap] =================\n";
+		cout << left << setw(30) << "Buffer Type" << "Count\n";
+		cout << string(45, '-') << "\n";
+		for (int i = 0; i < MAX_FRAME_COUNT; ++i)
+		{
+			cout << "현재 FRAME INDEX " << i << endl;
+			for (auto& ele : _map[i])
+			{
+				cout << left << setw(30) << BufferTypeToString(ele.first)
+					<< ele.second->GetCount() << "\n";
+			}
+		}
+		cout << "\n=================== [Instance BufferMap] ================\n";
+		for (int i = 0; i < MAX_FRAME_COUNT; ++i)
+		{
+			cout << "현재 FRAME INDEX " << i << endl;
+
+			for (auto& ele : _instanceMap[i])
+			{
+				cout << "[Buffer Type] " << BufferTypeToString(ele.first) << "\n";
+				ele.second->PrintCount();
+				cout << string(45, '-') << "\n";
+			}
+		}
+
+		cout << "\n=============== [Structured Buffer Pool] ===============\n";
+		cout << left << setw(30) << "Buffer Type" << "Count\n";
+		cout << string(45, '-') << "\n";
+		for (int i = 0; i < MAX_FRAME_COUNT; ++i)
+		{
+			cout << "현재 FRAME INDEX " << i << endl;
+			for (auto& ele : _structuredMap[i])
+			{
+				cout << left << setw(30) << BufferTypeToString(ele.first)
+					<< ele.second->GetCount() << "\n";
+			}
+		}
+
+		cout << "\n==================== [End of Debug] =====================\n\n";
+	}
+
+
+	
 }
 
 void BufferManager::CreateBufferPool(uint32 index,BufferType type, uint32 size, uint32 count)

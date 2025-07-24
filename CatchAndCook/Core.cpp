@@ -117,6 +117,7 @@ void Core::RenderEnd()
     _renderTarget->ChangeIndex();
 
 	CURRENT_CONTEXT_INDEX = (CURRENT_CONTEXT_INDEX + 1) % MAX_FRAME_COUNT;
+ 
 
     _bufferManager->Reset();
     g_debug_deferred_count = 0;
