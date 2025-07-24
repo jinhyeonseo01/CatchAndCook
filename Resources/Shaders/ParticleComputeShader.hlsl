@@ -22,7 +22,6 @@ cbuffer ParicleHelperParams : register(b4)
     float4 g_clipingColor;
 };
 
-
 RWStructuredBuffer<ParticleData> ParticleDatas : register(u0);
 
 [numthreads(256, 1, 1)]
