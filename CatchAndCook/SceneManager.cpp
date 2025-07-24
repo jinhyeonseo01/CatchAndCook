@@ -60,7 +60,7 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 	switch (nextScene->GetSceneType())
 	{
 	case SceneType::TestScene2:
-		Sound::main->Play("chrismas", 0.1f);
+		Sound::main->Play("main", 0.2f);
 		CameraManager::main->SetActiveCamera(CameraType::ComponentCamera);
 		break;
 	case SceneType::Sea01:
