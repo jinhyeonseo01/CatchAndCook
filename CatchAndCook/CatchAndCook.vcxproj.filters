@@ -1103,9 +1103,6 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\ico\favicon.ico">
-      <Filter>리소스 파일</Filter>
-    </Image>
     <Image Include="..\Resources\Textures\main.ico">
       <Filter>리소스 파일</Filter>
     </Image>
