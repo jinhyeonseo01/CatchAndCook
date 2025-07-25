@@ -114,7 +114,7 @@ void Game::PrevUpdate()
 	//제거
 	if (Input::main->GetKey(KeyCode::K))
 	{
-		InGameGlobal::main->gold += 5;
+		InGameGlobal::main->gold += 1000;
 	}
 
 	if (Input::main->GetKeyDown(KeyCode::Esc) || _quit)
