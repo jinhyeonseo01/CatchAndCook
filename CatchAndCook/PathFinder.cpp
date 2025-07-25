@@ -44,7 +44,6 @@ void PathFinder::Start()
             BufferType::SeaFIshParam
         );
 
-
         const auto& materials = meshrenderer->GetMaterials();
 
         if (materials.empty())
@@ -106,9 +105,6 @@ void PathFinder::Update()
 {
 
    
-
-
-
     if (_pathList.find(_pathName) == _pathList.end()) return;
 
     const vector<vec3>& myPath = _pathList[_pathName].path;
