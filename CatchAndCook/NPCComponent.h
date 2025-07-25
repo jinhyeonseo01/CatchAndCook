@@ -72,6 +72,8 @@ public:
 	bool isSit = false;
 	bool isSitEnd = false;
 
+	std::shared_ptr<GameObject> selectedUI;
+
 	std::weak_ptr<GameObject> point;
 };
 

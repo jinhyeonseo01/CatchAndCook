@@ -750,6 +750,11 @@ void NPCEatting::Update()
 			GetGroup()->ChangeState(StateType::goto_shop);
 		}
 	}
+
+	if (selectedUI)
+	{
+		selectedUI->_transform->SetWorldPosition(npc->GetOwner()->_transform->GetWorldPosition() + Vector3::Up * 1.7f);
+	}
 }
 
 void NPCEatting::Begin(StateType type, const std::shared_ptr<StatePattern>& prevState)
@@ -784,6 +789,30 @@ void NPCEatting::Begin(StateType type, const std::shared_ptr<StatePattern>& prev
 		this->isSitEnd = false;
 		skinnedHierarchy->Play(sitdown, 0.25);
 	}
+
+	vector<std::shared_ptr<GameObject>> cookUIs;
+	SceneManager::main->GetCurrentScene()->Finds(L"CookUI_NPC_Need", cookUIs);
+	
+	for (auto ui : cookUIs)
+		if (!ui->GetActiveSelf())
+		{
+			selectedUI = ui;
+			break;
+		}
+	if (selectedUI)
+	{
+		selectedUI->SetActiveSelf(true);
+		auto item = selectedUI->GetChildByName(L"Slot_0")->GetComponent<GUIItem>();
+		vector<ItemData> itemDatas;
+		itemDatas.push_back((ItemData(10, -1)));
+		itemDatas.push_back((ItemData(11, -1)));
+		auto needFood = itemDatas[rand() % itemDatas.size()];
+
+		item->PopItemData();
+		item->PushItemData(needFood);
+
+		selectedUI->_transform->SetWorldPosition(npc->GetOwner()->_transform->GetWorldPosition() + Vector3::Up * 1.65f);
+	}
 }
 
 bool NPCEatting::TriggerUpdate()
@@ -800,6 +829,11 @@ void NPCEatting::End(const std::shared_ptr<StatePattern>& nextState)
 	if (point)
 	{
 		InGameMainField::GetMain()->shopTablePointsPool.push_back(point);
+	}
+	if (selectedUI)
+	{
+		selectedUI->SetActiveSelf(false);
+		selectedUI = nullptr;
 	}
 	//this->point
 }

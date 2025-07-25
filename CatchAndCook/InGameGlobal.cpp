@@ -15,15 +15,18 @@ void InGameGlobal::Init()
 	itemData.itemCode = 7;
 	itemData.itemCookType = -1;
 	boxItems.push_back(itemData);
-
 	itemData.itemCode = 7;
 	itemData.itemCookType = -1;
 	boxItems.push_back(itemData);
-
 	itemData.itemCode = 7;
 	itemData.itemCookType = -1;
 	boxItems.push_back(itemData);
-
+	itemData.itemCode = 7;
+	itemData.itemCookType = -1;
+	boxItems.push_back(itemData);
+	itemData.itemCode = 7;
+	itemData.itemCookType = -1;
+	boxItems.push_back(itemData);
 	itemData.itemCode = 7;
 	itemData.itemCookType = -1;
 	boxItems.push_back(itemData);
@@ -31,12 +34,23 @@ void InGameGlobal::Init()
 	itemData.itemCode = 5;
 	itemData.itemCookType = -1;
 	boxItems.push_back(itemData);
-
+	itemData.itemCode = 5;
+	itemData.itemCookType = -1;
+	boxItems.push_back(itemData);
+	itemData.itemCode = 6;
+	itemData.itemCookType = -1;
+	boxItems.push_back(itemData);
 	itemData.itemCode = 6;
 	itemData.itemCookType = -1;
 	boxItems.push_back(itemData);
 
 	itemData.itemCode = 4;
+	itemData.itemCookType = -1;
+	boxItems.push_back(itemData);
+	itemData.itemCode = 4;
+	itemData.itemCookType = -1;
+	boxItems.push_back(itemData);
+	itemData.itemCode = 3;
 	itemData.itemCookType = -1;
 	boxItems.push_back(itemData);
 	itemData.itemCode = 3;
