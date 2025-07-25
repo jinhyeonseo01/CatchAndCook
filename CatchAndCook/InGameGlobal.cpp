@@ -229,15 +229,29 @@ void InGameGlobal::InitMainField()
 
 void InGameGlobal::AddItem(const wstring& name)
 {
-
+	ItemData getItem;
 	if (name == L"ray")
-		boxItems.push_back(ItemData(3, -1));
+		getItem = (ItemData(3, -1));
 	if (name == L"redFish")
-		boxItems.push_back(ItemData(4, -1));
+		getItem = (ItemData(4, -1));
 	if (name == L"주황버섯")
-		boxItems.push_back(ItemData(6, -1));
+		getItem = (ItemData(6, -1));
 	if (name == L"갈색버섯")
-		boxItems.push_back(ItemData(5, -1));
+		getItem = (ItemData(5, -1));
+
+	bool success = false;
+	for (int i=0;i< invItems.size();i++)
+		if (invItems[i].itemCode == -1)
+		{
+			invItems[i] = getItem;
+			success = true;
+			break;
+		}
+	if (!success)
+	{
+		boxItems.push_back(getItem);
+	}
+	//boxItems.push_back 
     //auto it = _inventory.find(name);
 	/*
     if (it != _inventory.end())

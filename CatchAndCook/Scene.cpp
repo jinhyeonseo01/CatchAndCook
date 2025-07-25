@@ -39,9 +39,15 @@ void Scene::AddGameObject(const std::shared_ptr<GameObject>& gameObject)
 	gameObject->SetScene(GetCast<Scene>());
 
     if (gameObject->GetType() == GameObjectType::Deactivate)
-        _gameObjects_deactivate.push_back(gameObject);
+    {
+        if (std::ranges::find(_gameObjects_deactivate, gameObject) == _gameObjects_deactivate.end())
+			_gameObjects_deactivate.push_back(gameObject);
+    }
     else
-		_gameObjects.push_back(gameObject);
+    {
+        if (std::ranges::find(_gameObjects, gameObject) == _gameObjects.end())
+			_gameObjects.push_back(gameObject);
+    }
 }
 
 void Scene::Init()
@@ -970,4 +976,9 @@ void Scene::Release()
 
     ColliderManager::main->Clear();
     LightManager::main->Clear();
+}
+
+void Scene::SetDontDestroy(std::shared_ptr<GameObject> obj)
+{
+    _dont_destroy_gameObjects.push_back(obj);
 }

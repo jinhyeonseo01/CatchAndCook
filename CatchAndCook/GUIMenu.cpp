@@ -56,6 +56,7 @@ void GUIMenu::Update()
 				}
 				case 2:
 				{
+						//메인메뉴
 					break;
 				}
 				case 3:

@@ -82,6 +82,8 @@ public:
 	friend class SceneManager;
 	friend class SceneLoader;
 
+	void SetDontDestroy(std::shared_ptr<GameObject> obj);
+
 public:
 	std::array<unordered_map<shared_ptr<Shader>,std::vector<RenderObjectStrucutre>>, RENDER_PASS::Count> _passObjects;
 	std::vector<std::shared_ptr<GameObject>> _dont_destroy_gameObjects;
