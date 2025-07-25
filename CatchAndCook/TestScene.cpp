@@ -145,7 +145,7 @@ void TestScene::Init()
 void TestScene::Update()
 {
 	Scene::Update();
-
+	
 }
 
 void TestScene::RenderBegin()

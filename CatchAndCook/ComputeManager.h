@@ -213,10 +213,12 @@ private:
 	void XBlur(ComPtr<ID3D12GraphicsCommandList>& cmdList, int x, int y, int z);
 	void YBlur(ComPtr<ID3D12GraphicsCommandList>& cmdList, int x, int y, int z);
 
+
+public:
+	bool _on = false;
 private:
 	int32 _blurCount = 3;
 
-	bool _on = false;
 
 	shared_ptr<Texture> _pingtexture;
 	shared_ptr<Texture> _pongtexture;

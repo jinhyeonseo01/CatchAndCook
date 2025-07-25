@@ -8,6 +8,7 @@
 #include "UITestScene.h"
 #include "CameraManager.h"
 #include "Camera.h"
+#include "MainMenuScene.h"
 std::unique_ptr<SceneManager> SceneManager::main = nullptr;
 
 shared_ptr<Scene> SceneManager::AddScene(SceneType type, bool initExecute)
@@ -17,6 +18,9 @@ shared_ptr<Scene> SceneManager::AddScene(SceneType type, bool initExecute)
 
 	switch (type)
 	{
+	case::SceneType::MainMenu:
+		scene = make_shared<MainMenuScene>();
+		break;
 	case::SceneType::TestScene:
 		scene = make_shared<TestScene>();
 		break;
@@ -59,6 +63,10 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 
 	switch (nextScene->GetSceneType())
 	{
+	case SceneType::MainMenu:
+		Sound::main->Play("main", 0.14f);
+		CameraManager::main->SetActiveCamera(CameraType::ComponentCamera);
+		break;
 	case SceneType::TestScene2:
 		Sound::main->Play("main", 0.14f);
 		CameraManager::main->SetActiveCamera(CameraType::ComponentCamera);
@@ -79,7 +87,6 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 				obj->GetChildsAll(dontObj);
 		}
 	}
-	std::cout << to_string(dontObj.size()) << "\n";
 
 	for (auto& obj : dontObj)
 	{

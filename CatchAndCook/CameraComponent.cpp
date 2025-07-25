@@ -35,6 +35,9 @@ void CameraComponent::Init()
 void CameraComponent::Start()
 {
 	Component::Start();
+	auto camera = std::static_pointer_cast<Camera>(GetCast<CameraComponent>());
+	CameraManager::main->AddCamera(CameraType::ComponentCamera, camera);
+	CameraManager::main->SetActiveCamera(CameraType::ComponentCamera);
 	Calculate();
 }
 void CameraComponent::Update()
@@ -55,6 +58,7 @@ void CameraComponent::Update2()
 
 	Component::Update2();
 	auto trans = GetOwner()->_transform;
+	std::cout << to_string(trans->GetWorldPosition()) << "\n";
 	SetCameraPos(trans->GetWorldPosition());
 	SetCameraRotation(trans->GetWorldRotation());
 }

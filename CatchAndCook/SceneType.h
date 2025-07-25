@@ -6,4 +6,5 @@ enum class SceneType
 	LightingTest,
 	Sea01,
 	UITest,
+	MainMenu,
 };
