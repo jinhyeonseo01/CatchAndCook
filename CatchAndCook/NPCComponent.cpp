@@ -16,6 +16,7 @@
 #include "TerrainManager.h"
 #include "Transform.h"
 #include "AnimationListComponent.h"
+#include "GUINPCFood.h"
 #include "InGameMainField.h"
 #include "InitComponent.h"
 #include "NavMeshManager.h"
@@ -437,7 +438,10 @@ void NPCGotoAny::Update()
 				if (InGameMainField::GetMain()->shopOpen)
 					gotoShop = (_random_dist(_random) % 5) == 0; // 25% 확률로 가게로 이동
 				if (gotoShop)
+				{
 					GetGroup()->ChangeState(StateType::goto_shop);
+					npc->isEat = false;
+				}
 				else
 					GetGroup()->ChangeState(StateType::idle);
 			}
@@ -515,7 +519,7 @@ void NPCGotoShop::Update()
 			if ((endPoint - Vector2(currentWorldPos.x, currentWorldPos.z)).Length() <= 0.25)
 			{
 				skinnedHierarchy->Play(idle, 0.25);
-				if (InGameMainField::GetMain()->shopOpen)
+				if (InGameMainField::GetMain()->shopOpen && (!npc->isEat))
 					GetGroup()->ChangeState(StateType::goto_table);
 				else
 					GetGroup()->ChangeState(StateType::goto_any);
@@ -750,6 +754,17 @@ void NPCEatting::Update()
 			GetGroup()->ChangeState(StateType::goto_shop);
 		}
 	}
+
+	if (selectedUI)
+	{
+		selectedUI->_transform->SetWorldPosition(npc->GetOwner()->_transform->GetWorldPosition() + Vector3::Up * 1.7f);
+
+		if (selectedUI->GetComponent<GUINPCFood>()->eat)
+		{
+			GetGroup()->ChangeState(StateType::goto_shop);
+			npc->isEat = true;
+		}
+	}
 }
 
 void NPCEatting::Begin(StateType type, const std::shared_ptr<StatePattern>& prevState)
@@ -784,6 +799,22 @@ void NPCEatting::Begin(StateType type, const std::shared_ptr<StatePattern>& prev
 		this->isSitEnd = false;
 		skinnedHierarchy->Play(sitdown, 0.25);
 	}
+
+	vector<std::shared_ptr<GameObject>> cookUIs;
+	SceneManager::main->GetCurrentScene()->Finds(L"CookUI_NPC_Need", cookUIs);
+	
+	for (auto ui : cookUIs)
+		if (!ui->GetActiveSelf())
+		{
+			selectedUI = ui;
+			break;
+		}
+	if (selectedUI)
+	{
+		selectedUI->SetActiveSelf(true);
+		selectedUI->GetComponent<GUINPCFood>()->SetFood();
+		selectedUI->_transform->SetWorldPosition(npc->GetOwner()->_transform->GetWorldPosition() + Vector3::Up * 1.65f);
+	}
 }
 
 bool NPCEatting::TriggerUpdate()
@@ -800,6 +831,11 @@ void NPCEatting::End(const std::shared_ptr<StatePattern>& nextState)
 	if (point)
 	{
 		InGameMainField::GetMain()->shopTablePointsPool.push_back(point);
+	}
+	if (selectedUI)
+	{
+		selectedUI->SetActiveSelf(false);
+		selectedUI = nullptr;
 	}
 	//this->point
 }

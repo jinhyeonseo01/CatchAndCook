@@ -5,7 +5,6 @@
 #include "Game.h"
 #include "Shader.h"
 
-unique_ptr<Game> game;
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -52,7 +51,7 @@ int main()
 	ShowWindow(hwnd, SW_SHOWDEFAULT);
 	UpdateWindow(hwnd);
 
-	game = make_unique<Game>();
+	auto game = Game::main = make_shared<Game>();
 	game->SetHandle(hwnd, hInst);
 	game->Init(hwnd);
 
@@ -86,9 +85,9 @@ int main()
 		}
 	}
 
-
+	Game::main = nullptr;
 	game->Release();
-	game.reset(nullptr);
+	game = nullptr;
 
 	DestroyWindow(hwnd);
 	UnregisterClass(wc.lpszClassName, wc.hInstance);

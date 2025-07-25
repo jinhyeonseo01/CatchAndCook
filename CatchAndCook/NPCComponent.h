@@ -72,6 +72,8 @@ public:
 	bool isSit = false;
 	bool isSitEnd = false;
 
+	std::shared_ptr<GameObject> selectedUI;
+
 	std::weak_ptr<GameObject> point;
 };
 
@@ -122,4 +124,7 @@ public:
 	Vector3 velocity;
 	Vector3 lookDirection = Vector3::Forward;
 	bool isGround = true;
+
+
+	bool isEat = false;
 };

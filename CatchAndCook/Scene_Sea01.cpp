@@ -316,6 +316,10 @@ void Scene_Sea01::Rendering()
 	UiPass(cmdList);
 	Profiler::Fin();
 
+	Profiler::Set("PASS : UI2", BlockTag::CPU);
+	Ui2Pass(cmdList);
+	Profiler::Fin();
+
 	ComputeManager::main->ChangeSceneDispatch();
 }
 

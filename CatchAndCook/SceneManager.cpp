@@ -74,19 +74,23 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 	if (currentScene != nullptr)
 	{
 		for (auto& obj : prevScene->_dont_destroy_gameObjects)
+		{
 			if (!obj->IsDestroy())
 				obj->GetChildsAll(dontObj);
+		}
 	}
+	std::cout << to_string(dontObj.size()) << "\n";
 
 	for (auto& obj : dontObj)
 	{
 		nextScene->AddGameObject(obj);
-		nextScene->_dont_destroy_gameObjects.push_back(obj);
 		if(currentScene != nullptr)
 			currentScene->RemoveGameObject(obj);
 	}
 	if (currentScene != nullptr)
 	{
+		for (auto& obj : prevScene->_dont_destroy_gameObjects)
+			nextScene->_dont_destroy_gameObjects.push_back(obj);
 		currentScene->_dont_destroy_gameObjects.clear();
 		if (removeExecute)
 			currentScene->Release();
