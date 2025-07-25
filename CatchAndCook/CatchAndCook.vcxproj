@@ -293,6 +293,7 @@
     <ClCompile Include="SeaPlayerController.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShadowManager.cpp" />
+    <ClCompile Include="ShowGameMoeny.cpp" />
     <ClCompile Include="simple_mesh_ext.cpp" />
     <ClCompile Include="simple_mesh_LH.cpp" />
     <ClCompile Include="SkinnedHierarchy.cpp" />
@@ -454,6 +455,7 @@
     <ClInclude Include="SeaPlayerController.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShadowManager.h" />
+    <ClInclude Include="ShowGameMoeny.h" />
     <ClInclude Include="simple_mesh_ext.h" />
     <ClInclude Include="simple_mesh_LH.h" />
     <ClInclude Include="SkinnedHierarchy.h" />
@@ -961,6 +963,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\ico\favicon.ico" />
+    <Image Include="..\Resources\Textures\main.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

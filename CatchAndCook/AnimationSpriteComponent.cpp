@@ -107,7 +107,7 @@ void AnimationSpriteComponent::SetTextures(vector<shared_ptr<Texture>>& textures
 
 	_maxFrameIndex = textures.size();
 
-	cout << "스프라이트 애니메이션 갯수:" << textures.size() << endl;
+
 }
 
 void AnimationSpriteComponent::Reset()

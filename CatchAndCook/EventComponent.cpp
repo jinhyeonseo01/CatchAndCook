@@ -127,9 +127,7 @@ void EventComponent::SetBindMessage(const wstring& message, const vec3& pos, con
 		shared_ptr<GameObject> text = SceneManager::main->GetCurrentScene()->CreateGameObject(L"EvenetMessage");
 		auto& renderer = text->AddComponent<MeshRenderer>();
 		auto& sprite = text->AddComponent<TextSprite>();
-		//sprite->SetLocalPos(vec3(0.4f, 0.9f, 0.1f));
-		//sprite->SetSize(vec2(0.3f, 0.3f));
-		//sprite->SetText(L"Press F To Esacpe");
+		
 
 		sprite->SetLocalPos(pos);
 		sprite->SetSize(size);

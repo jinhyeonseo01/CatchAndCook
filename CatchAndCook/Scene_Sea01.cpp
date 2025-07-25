@@ -30,6 +30,7 @@
 #include "PercentComponent.h"
 #include "GraphData.h"
 #include "ResourceManager.h"
+#include "ShowGameMoeny.h"
 void Scene_Sea01::Init()
 {
 	namespace fs = std::filesystem;
@@ -242,6 +243,8 @@ void Scene_Sea01::Init()
 		fireEffect->SetActiveSelf(false);
 	};
 
+	shared_ptr<GameObject> showGameMoeny = SceneManager::main->GetCurrentScene()->CreateGameObject(L"ShowGameMoeny");
+	showGameMoeny->AddComponent<ShowGameMoeny>();
 
 	std::ranges::sort(_gameObjects, [&](const auto& a, const auto& b) {
 		return a->GetName() < b->GetName();

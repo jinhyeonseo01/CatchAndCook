@@ -111,6 +111,12 @@ void Game::Init(HWND hwnd)
 
 void Game::PrevUpdate()
 {
+	//제거
+	if (Input::main->GetKey(KeyCode::K))
+	{
+		InGameGlobal::main->gold += 1000;
+	}
+
 	if (Input::main->GetKeyDown(KeyCode::Esc) || _quit)
 	{
 		Core::main->Fence();
@@ -331,6 +337,8 @@ void Game::CameraUpdate()
 		camera->SetCameraRotation(sumDelta.x, sumDelta.y, 0);
 		
 	}
+
+	
 	
 
 

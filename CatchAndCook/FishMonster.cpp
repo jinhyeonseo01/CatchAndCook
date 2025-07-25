@@ -37,10 +37,6 @@ void FishMonster::Start()
     {
         _skined->Play(_animations["idle"], 0.5f);
     }
-    else
-    {
-        wcout << GetOwner()->GetName() << "idle 못찾음" << endl;
-    }
 
     if (_animations.find("die") != _animations.end())
     {
@@ -55,21 +51,13 @@ void FishMonster::Start()
         percentageComponet->BindingPercentage(&_hp);
     }
 
-    else
-    {
-        cout << "percentageComponet" << "못찾음" << endl;
-    }
-
      _pathFinder = GetOwner()->GetRoot()->GetComponent<GraphPathFinder>();
 
      if (_pathFinder)
      {
          _pathFinder->SetAutoPliotMode(true);
      }
-     else
-     {
-         cout << "GraphPathFinder" << "못찾음" << endl;
-     }
+    
 
 
      if (GetOwner()->GetName().find(L"ray") == 0)

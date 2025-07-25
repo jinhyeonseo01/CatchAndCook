@@ -37,6 +37,7 @@ void AnimationListComponent::Start()
 				hieracy->SetAnimation(firstAnimation);
 			}
 		}
+	
 	}
 
 

@@ -6,6 +6,7 @@
 #include <random>
 #include "MeshRenderer.h"
 #include "SkinnedMeshRenderer.h"
+#include "RendererBase.h"
 unordered_map<wstring, FishPath> PathFinder::_pathList;
 
 
@@ -31,75 +32,73 @@ void PathFinder::Start()
 {
    _firstQuat = GetOwner()->_transform->GetWorldRotation();
 
-	auto renderer = GetOwner()->GetRenderer();
+   auto renderer = GetOwner()->GetComponentWithChilds<MeshRenderer>();
 
-    if (renderer)
-    {
-        if (auto meshrenderer = dynamic_pointer_cast<MeshRenderer>(renderer))
-        {
-            meshrenderer->AddStructuredSetter(
-                std::static_pointer_cast<PathFinder>(shared_from_this()),
-                BufferType::SeaFIshParam
-            );
+   if (renderer)
+   {
 
-            const auto& materials = meshrenderer->GetMaterials();
-
-            if (materials.empty())
-                return;
-
-            const auto& mat = materials[0];
-
-            auto& dre = InGameGlobal::main->GetRandomMachine();
-
-            int pathIndex = static_cast<int>(mat->GetPropertyFloat("_Path"));
-            std::wstring pathName = L"path" + std::to_wstring(pathIndex);
-            SetPass(pathName);
-
-            _moveSpeed = mat->GetPropertyFloat("_MoveSpeed") * randomMoveSpeed(dre);
-            _info.fishSpeed = mat->GetPropertyFloat("_Speed");
-            _info.fishWaveAmount = mat->GetPropertyFloat("_Power") * randomSpeed(dre);
-            const BoundingBox& box = meshrenderer->GetOriginBound();
-            _info.boundsSizeZ = box.Extents.z;
-            _info.boundsCenterZ = box.Center.z;
-
-            _pathOffset = GenerateRandomPointInSphere(mat->GetPropertyFloat("_Radius"));
-            _player = SceneManager::main->GetCurrentScene()->Find(L"seaPlayer");
-
-            const vector<vec3>& myPath = _pathList[_pathName].path;
-            _currentIndex = (std::rand() % myPath.size());
-
-            if (_currentIndex >= myPath.size() - 1)
-            {
-                _forward = false;
-            }
-
-            GetOwner()->_transform->SetWorldPosition(myPath[_currentIndex]);
-        }
-    }
+       renderer->AddStructuredSetter(
+           std::static_pointer_cast<PathFinder>(shared_from_this()),
+           BufferType::SeaFIshParam);
 
 
-    if (SceneManager::main->GetCurrentScene()->GetSceneType() == SceneType::TestScene2)
-    {
-        vec3  _pathOffset = vec3(50, 50, 50);
+       const auto& materials = renderer->GetMaterials();
 
-        std::wstring pathName = L"path" + std::to_wstring(99);
-        SetPass(pathName);
-        SetMoveSpeed(10.0f);
+       if (materials.empty())
+           return;
+
+       const auto& mat = materials[0];
+
+       auto& dre = InGameGlobal::main->GetRandomMachine();
+
+       int pathIndex = static_cast<int>(mat->GetPropertyFloat("_Path"));
+       std::wstring pathName = L"path" + std::to_wstring(pathIndex);
+       SetPass(pathName);
+
+       _moveSpeed = mat->GetPropertyFloat("_MoveSpeed") * randomMoveSpeed(dre);
+       _info.fishSpeed = mat->GetPropertyFloat("_Speed");
+       _info.fishWaveAmount = mat->GetPropertyFloat("_Power") * randomSpeed(dre);
+       const BoundingBox& box = renderer->GetOriginBound();
+       _info.boundsSizeZ = box.Extents.z;
+       _info.boundsCenterZ = box.Center.z;
+
+       _pathOffset = GenerateRandomPointInSphere(mat->GetPropertyFloat("_Radius"));
+       _player = SceneManager::main->GetCurrentScene()->Find(L"seaPlayer");
+
+       const vector<vec3>& myPath = _pathList[_pathName].path;
+       _currentIndex = (std::rand() % myPath.size());
+
+       if (_currentIndex >= myPath.size() - 1)
+       {
+           _forward = false;
+       }
+
+       GetOwner()->_transform->SetWorldPosition(myPath[_currentIndex]);
+   };
+
+
+   if (SceneManager::main->GetCurrentScene()->GetSceneType() == SceneType::TestScene2)
+   {
+       vec3  _pathOffset = vec3(50, 50, 50);
+
+       std::wstring pathName = L"path" + std::to_wstring(99);
+       SetPass(pathName);
+       SetMoveSpeed(10.0f);
 
 
 
-        const vector<vec3>& myPath = _pathList[_pathName].path;
-        _currentIndex = (std::rand() % myPath.size());
+       const vector<vec3>& myPath = _pathList[_pathName].path;
+       _currentIndex = (std::rand() % myPath.size());
 
-        if (_currentIndex >= myPath.size() - 1)
-        {
-            _forward = false;
-        }
+       if (_currentIndex >= myPath.size() - 1)
+       {
+           _forward = false;
+       }
 
-        GetOwner()->_transform->SetWorldPosition(myPath[_currentIndex]);
-    }
+       GetOwner()->_transform->SetWorldPosition(myPath[_currentIndex]);
+   };
 
-
+    
 
 
 

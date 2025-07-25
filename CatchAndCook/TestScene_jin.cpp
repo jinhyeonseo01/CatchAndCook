@@ -16,7 +16,9 @@
 #include "EventComponent.h"
 #include "TextManager.h"
 #include "PathStamp.h"
-
+#include "ShowGameMoeny.h"
+#include "BilboardComponent.h"
+#include "AnimationSpriteComponent.h"
 
 void TestScene_jin::Init()
 {
@@ -124,6 +126,35 @@ void TestScene_jin::Init()
 		}
 	}
 
+	
+	shared_ptr<GameObject> showGameMoeny = SceneManager::main->GetCurrentScene()->CreateGameObject(L"ShowGameMoeny");
+	showGameMoeny->AddComponent<ShowGameMoeny>();
+
+	/*{
+		auto object =SceneManager::main->GetCurrentScene()->Find(L"Fire_animationSprite");
+
+		if (object)
+		{
+
+			vector<shared_ptr<Texture>> _textures;
+			std::wstring path = L"../Resources/Textures/Sprite/jin/fire/";
+
+			for (const auto& entry : fs::directory_iterator(path))
+			{
+				std::wstring& path2 = entry.path().filename().wstring();
+				shared_ptr<Texture> texture = ResourceManager::main->Load<Texture>(path + path2, path + path2);
+				_textures.push_back(texture);
+			}
+
+			object->GetComponent<MeshRenderer>()->GetMaterial(0)->SetPass(RENDER_PASS::Forward);
+			object->AddComponent<BilboardComponent>();
+			auto animationSpriteComponent = object->AddComponent<AnimationSpriteComponent>();
+			animationSpriteComponent->SetTextures(_textures);
+			animationSpriteComponent->SetRoop(true);
+			animationSpriteComponent->SetFrameRate(2.0f);
+		}
+		
+	}*/
 
 }
 

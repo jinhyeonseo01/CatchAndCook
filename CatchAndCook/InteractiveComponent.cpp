@@ -86,6 +86,7 @@ void InteractiveComponent::Start()
 	{
 		//TextMessage
 		auto& rootname = GetOwner()->GetRoot()->GetName();
+
 		shared_ptr<GameObject> object = SceneManager::main->GetCurrentScene()->Find(L"textMessage:" + rootname);
 
 		if (object)
@@ -98,7 +99,7 @@ void InteractiveComponent::Start()
 			shared_ptr<GameObject> text = SceneManager::main->GetCurrentScene()->CreateGameObject(L"textMessage:" + rootname);
 			auto renderer = text->AddComponent<MeshRenderer>();
 			auto sprite = text->AddComponent<TextSprite>();
-			sprite->SetLocalPos(vec3(0.45f, 0.9f, 0.0f));
+			sprite->SetLocalPos(vec3(0.45f, 0.7f, 0.0f));
 			sprite->SetSize(vec2(0.3f, 0.3f));
 			sprite->SetText(GetOwner()->GetRoot()->GetName());
 			sprite->CreateObject(550, 256, L"Arial", FontColor::WHITE, 60);
@@ -322,9 +323,12 @@ void InteractiveComponent::SetState(InteractiveState state)
 	}
 		break;
 	case InteractiveState::SUCCESS:
-		Sound::main->Play("success",0.3f,true);
+	{
+		Sound::main->Play("success", 0.3f, true);
 
-		ParticleManager::main->GenParticle(8.0f, 500, 5.0f, 30.0f, GetOwner()->_transform->GetWorldPosition(), vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
+		static vec3 offset = vec3(0, 20.0f, 0);
+
+		ParticleManager::main->GenParticle(8.0f, 500, 6.0f, 30.0f, GetOwner()->_transform->GetWorldPosition() + offset, vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
 		, ResourceManager::main->Get<Texture>(L"success"));
 
 		wcout << GetOwner()->GetRoot()->GetName() << endl;
@@ -334,6 +338,7 @@ void InteractiveComponent::SetState(InteractiveState state)
 		_seaPlayerController->SetMoveLock(false);
 		GetOwner()->GetRoot()->SetActiveSelf(false);
 		break;
+	}
 	case InteractiveState::FAIL:
 		Sound::main->Play("fail",0.3f, true);
 		MiniGameTotalOnOff(false);
@@ -357,10 +362,10 @@ void InteractiveComponent::MiniGameTotalOnOff(bool onOff)
 		_progressBar->GetComponent<ProgressCycleComponent>()->Reset();
 	}
 
-	if (onOff==false)
-	{
-		::SetCursorPos(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
-	}
+	//if (onOff==false)
+	//{
+	//	::SetCursorPos(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+	//}
 
 	Input::main->SetMouseLock(!onOff);
 

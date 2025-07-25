@@ -1,16 +1,7 @@
 ﻿#pragma once
 #include "GUIItem.h"
 
-struct Item
-{
-	std::wstring name; // ResourceManager 에서 알맞는 이미지 찾아적용
-	int count;
-	Item() {};
 
-	Item(const wstring& name, int count)
-		: name(name), count(count) {
-	}
-};
 
 class InGameGlobal
 {
@@ -31,14 +22,12 @@ public:
 
 public: 
 	float skyTime = 0;
-	std::unordered_map<wstring, Item> _inventory; // temp
-
 	int gold = 0;
-public: // Main Field
+public: 
 
 	static constexpr int InventoryCount = 5;
 	std::array<ItemData, InventoryCount> invItems;
-	vector<ItemData> boxItems; //여기다가넣기
+	vector<ItemData> boxItems; 
 	std::vector<std::pair<ItemData, vector<ItemData>>> cookTable;
 };
 
