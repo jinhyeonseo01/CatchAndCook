@@ -124,4 +124,7 @@ public:
 	Vector3 velocity;
 	Vector3 lookDirection = Vector3::Forward;
 	bool isGround = true;
+
+
+	bool isEat = false;
 };

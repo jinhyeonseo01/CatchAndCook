@@ -202,6 +202,7 @@
     <ClCompile Include="Gizmo.cpp" />
     <ClCompile Include="GraphData.cpp" />
     <ClCompile Include="GraphPathFinder.cpp" />
+    <ClCompile Include="GUINPCFood.cpp" />
     <ClCompile Include="InteractiveComponent.cpp" />
     <ClCompile Include="itemBoxComponent.cpp" />
     <ClCompile Include="PercentComponent.cpp" />
@@ -369,6 +370,7 @@
     <ClInclude Include="Gizmo.h" />
     <ClInclude Include="GraphData.h" />
     <ClInclude Include="GraphPathFinder.h" />
+    <ClInclude Include="GUINPCFood.h" />
     <ClInclude Include="InteractiveComponent.h" />
     <ClInclude Include="itemBoxComponent.h" />
     <ClInclude Include="PercentComponent.h" />
