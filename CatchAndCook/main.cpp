@@ -4,32 +4,50 @@
 #include <crtdbg.h>
 #include "Game.h"
 #include "Shader.h"
+#include "resource.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+HCURSOR g_cursor = NULL; // 전역 변수로 설정
 
 int main()
 {
-
-//#ifdef _DEBUG
+	//#ifdef _DEBUG
 //	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 //#endif
 
-	HINSTANCE hInst = GetModuleHandle(NULL);
-	WNDCLASSEX wc = { sizeof(WNDCLASSEX),
-				CS_CLASSDC,
-				WndProc,
-				0L,
-				0L,
-		hInst,
-				NULL,
-				NULL,
-				NULL,
-				NULL,
-				L"Game", // lpszClassName, L-string
-				NULL };
+	g_cursor = LoadCursorFromFile(L"../Resources/Cursor/cursor1.ani");
 
-	// https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerclassa?redirectedfrom=MSDN
+	if (g_cursor == NULL)
+	{
+		MessageBox(NULL, L"애니메이션 커서 로드 실패", L"에러", MB_OK | MB_ICONERROR);
+		return 1;
+	}
+	if (!g_cursor)
+	{
+		DWORD err = GetLastError();
+		std::wcerr << L"커서 로딩 실패, 오류 코드: " << err << std::endl;
+	}
+
+
+	HINSTANCE hInst = GetModuleHandle(NULL);
+
+	WNDCLASSEX wc = {
+		sizeof(WNDCLASSEX),
+		CS_CLASSDC,
+		WndProc,
+		0L,
+		0L,
+		hInst,
+		LoadIcon(hInst, MAKEINTRESOURCE(IDI_ICON1)), // 큰 아이콘 설정
+		NULL,
+		(HBRUSH)GetStockObject(WHITE_BRUSH),
+		NULL,
+		L"Catch&Cook",
+		LoadIcon(hInst, MAKEINTRESOURCE(IDI_ICON1))  // 작은 아이콘 설정
+	};
+
+
 	if (!RegisterClassEx(&wc)) {
 		cout << "RegisterClassEx() failed." << endl;
 	}
@@ -40,7 +58,7 @@ int main()
 	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, false);
 
 	// 윈도우를 만들때 위에서 계산한 wr 사용
-	HWND hwnd = CreateWindow(wc.lpszClassName, L"Game",
+	HWND hwnd = CreateWindow(wc.lpszClassName, L"Catch&Cook",
 		WS_OVERLAPPEDWINDOW,
 		100, // 윈도우 좌측 상단의 x 좌표
 		100, // 윈도우 좌측 상단의 y 좌표
@@ -110,7 +128,14 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		
 		switch (msg)
 		{
-	
+		case WM_SETCURSOR:
+			if (g_cursor && LOWORD(lParam) == HTCLIENT) // 클라이언트 영역일 때만
+			{
+				SetCursor(g_cursor);
+				return TRUE;
+			}
+			break;
+
 		case WM_SIZE:
 		{
 			if (Initalize)
