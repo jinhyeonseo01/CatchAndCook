@@ -33,6 +33,9 @@
 #include "ShadowManager.h"
 #include "ParticleManager.h"
 #include "SoundManager.h"
+
+std::shared_ptr<Game> Game::main = nullptr;
+
 void Game::Init(HWND hwnd)
 {
 	IGuid::StaticInit();
@@ -108,7 +111,7 @@ void Game::Init(HWND hwnd)
 
 void Game::PrevUpdate()
 {
-	if (Input::main->GetKeyDown(KeyCode::Esc))
+	if (Input::main->GetKeyDown(KeyCode::Esc) || _quit)
 	{
 		Core::main->Fence();
 		DestroyWindow(Core::main->GetHandle());
@@ -227,6 +230,8 @@ void Game::Release()
 	Input::main.reset(nullptr);
 	Core::main.reset(nullptr);
 	IGuid::StaticRelease();
+
+	main = nullptr;
 }
 
 void Game::CameraUpdate()

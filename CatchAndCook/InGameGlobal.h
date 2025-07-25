@@ -32,6 +32,8 @@ public:
 public: 
 	float skyTime = 0;
 	std::unordered_map<wstring, Item> _inventory; // temp
+
+	int gold = 0;
 public: // Main Field
 
 	static constexpr int InventoryCount = 5;

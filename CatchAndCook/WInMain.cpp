@@ -28,9 +28,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	MSG msg;
 
-	unique_ptr<Game> game = make_unique<Game>();
+	auto game = Game::main = make_shared<Game>();
 	game->Init(hWnd);
-
 
 	while (true)
 	{
@@ -50,7 +49,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			game->Run();
 		}
 	}
-
+	Game::main = nullptr;
     return (int)msg.wParam;
 }
 
