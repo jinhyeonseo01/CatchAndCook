@@ -965,7 +965,6 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\ico\favicon.ico" />
     <Image Include="..\Resources\Textures\main.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
