@@ -37,7 +37,6 @@ void FishMonster::Start()
     {
         _skined->Play(_animations["idle"], 0.5f);
     }
-
     else
     {
         wcout << GetOwner()->GetName() << "idle 못찾음" << endl;
