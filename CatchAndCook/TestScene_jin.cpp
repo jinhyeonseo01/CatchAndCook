@@ -15,6 +15,7 @@
 #include "testComponent.h"
 #include "EventComponent.h"
 #include "TextManager.h"
+#include "PathStamp.h"
 
 
 void TestScene_jin::Init()
@@ -130,7 +131,10 @@ void TestScene_jin::Update()
 {
 	ColliderManager::main->SetCellSize(5);
 
-	Scene::Update();
+
+	PathStamp::main->Run();
+
+ 	Scene::Update();
 
 }
 
