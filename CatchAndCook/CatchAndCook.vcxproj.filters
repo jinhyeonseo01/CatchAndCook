@@ -44,9 +44,6 @@
     <Filter Include="999.pch\extern">
       <UniqueIdentifier>{e676c44d-931e-447d-9037-d6e8e14516af}</UniqueIdentifier>
     </Filter>
-    <Filter Include="07.Manager">
-      <UniqueIdentifier>{82f13e75-8ffc-4bb2-8ca1-4e4e86b3f828}</UniqueIdentifier>
-    </Filter>
     <Filter Include="999.pch\garbage">
       <UniqueIdentifier>{a46a5456-8b27-4435-a290-4c10da482d88}</UniqueIdentifier>
     </Filter>
@@ -73,6 +70,9 @@
     </Filter>
     <Filter Include="998.HLSL\Particle">
       <UniqueIdentifier>{40572f47-33f7-45dc-8d98-2cdcf7ea4ddf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07.Manager">
+      <UniqueIdentifier>{82f13e75-8ffc-4bb2-8ca1-4e4e86b3f828}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1076,6 +1076,7 @@
     <FxCompile Include="..\Resources\Shaders\changeScene.hlsl">
       <Filter>998.HLSL\Compute</Filter>
     </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\ParticleComputeShaderDropDown.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Resources\Shaders\WaterShader.hlsl">

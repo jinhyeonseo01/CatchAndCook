@@ -54,8 +54,8 @@ void ResourceManager::CreateDefaultShaderKSH()
 		shared_ptr<Shader> shader = make_shared<Shader>();
 		ShaderInfo info;
 		info._computeShader = true;
-		shader->Init(L"ParticleComputeShaderStar.hlsl", {}, ShaderArg{ {{"CS_Main","cs"}} }, info);
-		Add<Shader>(L"ParticleComputeShaderStar", shader);
+		shader->Init(L"ParticleComputeShaderDropDown.hlsl", {}, ShaderArg{ {{"CS_Main","cs"}} }, info);
+		Add<Shader>(L"ParticleComputeShaderDropDown", shader);
 	}
 
 	{
@@ -77,7 +77,7 @@ void ResourceManager::CreateDefaultShaderKSH()
 		info._blendEnable = true;
 		info._blendType[0] = BlendType::BlendFactor;
 		info.RTVForamts[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-		info._zWrite = true;
+		info._zWrite = false;
 
 		info.cullingType = CullingType::BACK;
 
@@ -1097,7 +1097,7 @@ void ResourceManager::CreateDefaultTexture()
 	Load<Texture>(L"interactive", L"Textures/interactive.png");
 	Load<Texture>(L"Icon_Water", L"Textures/Icon_Water.png");
 	Load<Texture>(L"success", L"Textures/success.png");
-
+	Load<Texture>(L"dive", L"Textures/dive.png");
 }
 
 void ResourceManager::CreateDefaultAnimation()

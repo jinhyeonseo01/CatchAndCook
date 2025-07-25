@@ -5,6 +5,7 @@
 #include "simple_mesh_ext.h"
 #include <random>
 #include "MeshRenderer.h"
+#include "SkinnedMeshRenderer.h"
 unordered_map<wstring, FishPath> PathFinder::_pathList;
 
 
@@ -28,64 +29,90 @@ void PathFinder::Init()
 
 void PathFinder::Start()
 {
-    _firstQuat = GetOwner()->_transform->GetWorldRotation();
+    cout << "호잇" << endl;
+
+   _firstQuat = GetOwner()->_transform->GetWorldRotation();
 
 	auto renderer = GetOwner()->GetRenderer();
 
-	if (!renderer)
-		return;
-
-	renderer->AddStructuredSetter(
-		std::static_pointer_cast<PathFinder>(shared_from_this()),
-		BufferType::SeaFIshParam
-	);
-
-
-	auto meshRdr = std::dynamic_pointer_cast<MeshRenderer>(renderer);
-	if (!meshRdr)
-		return;
-
-	const auto& materials = meshRdr->GetMaterials();
-
-	if (materials.empty())
-		return;
-
-	const auto& mat = materials[0];
-
-    auto& dre =InGameGlobal::main->GetRandomMachine();
-
-	int pathIndex = static_cast<int>(mat->GetPropertyFloat("_Path"));
-	std::wstring pathName = L"path" + std::to_wstring(pathIndex);
-	SetPass(pathName);
-
-	_moveSpeed = mat->GetPropertyFloat("_MoveSpeed") * randomMoveSpeed(dre);
-	_info.fishSpeed = mat->GetPropertyFloat("_Speed");
-	_info.fishWaveAmount = mat->GetPropertyFloat("_Power") * randomSpeed(dre);
-	const BoundingBox& box = meshRdr->GetOriginBound();
-	_info.boundsSizeZ = box.Extents.z;
-	_info.boundsCenterZ = box.Center.z;
-
-	_pathOffset = GenerateRandomPointInSphere(mat->GetPropertyFloat("_Radius"));
-    _player = SceneManager::main->GetCurrentScene()->Find(L"seaPlayer");
-
-    const vector<vec3>& myPath = _pathList[_pathName].path;
-    _currentIndex = (std::rand() % myPath.size());
-
-    if (_currentIndex >= myPath.size()-1)
+    if (renderer)
     {
-        _forward = false;
+        if (auto meshrenderer = dynamic_pointer_cast<MeshRenderer>(renderer))
+        {
+            meshrenderer->AddStructuredSetter(
+                std::static_pointer_cast<PathFinder>(shared_from_this()),
+                BufferType::SeaFIshParam
+            );
+
+            const auto& materials = meshrenderer->GetMaterials();
+
+            if (materials.empty())
+                return;
+
+            const auto& mat = materials[0];
+
+            auto& dre = InGameGlobal::main->GetRandomMachine();
+
+            int pathIndex = static_cast<int>(mat->GetPropertyFloat("_Path"));
+            std::wstring pathName = L"path" + std::to_wstring(pathIndex);
+            SetPass(pathName);
+
+            _moveSpeed = mat->GetPropertyFloat("_MoveSpeed") * randomMoveSpeed(dre);
+            _info.fishSpeed = mat->GetPropertyFloat("_Speed");
+            _info.fishWaveAmount = mat->GetPropertyFloat("_Power") * randomSpeed(dre);
+            const BoundingBox& box = meshrenderer->GetOriginBound();
+            _info.boundsSizeZ = box.Extents.z;
+            _info.boundsCenterZ = box.Center.z;
+
+            _pathOffset = GenerateRandomPointInSphere(mat->GetPropertyFloat("_Radius"));
+            _player = SceneManager::main->GetCurrentScene()->Find(L"seaPlayer");
+
+            const vector<vec3>& myPath = _pathList[_pathName].path;
+            _currentIndex = (std::rand() % myPath.size());
+
+            if (_currentIndex >= myPath.size() - 1)
+            {
+                _forward = false;
+            }
+
+            GetOwner()->_transform->SetWorldPosition(myPath[_currentIndex]);
+        }
     }
 
-    GetOwner()->_transform->SetWorldPosition(myPath[_currentIndex]);
+
+    if (SceneManager::main->GetCurrentScene()->GetSceneType() == SceneType::TestScene2)
+    {
+        vec3  _pathOffset = vec3(50, 50, 50);
+
+        std::wstring pathName = L"path" + std::to_wstring(99);
+        SetPass(pathName);
+        SetMoveSpeed(10.0f);
+
+
+
+        const vector<vec3>& myPath = _pathList[_pathName].path;
+        _currentIndex = (std::rand() % myPath.size());
+
+        if (_currentIndex >= myPath.size() - 1)
+        {
+            _forward = false;
+        }
+
+        GetOwner()->_transform->SetWorldPosition(myPath[_currentIndex]);
+    }
+
+
+
+
+
 }
 void PathFinder::Update()
 {
 
-   
-
-
-
-    if (_pathList.find(_pathName) == _pathList.end()) return;
+    if (_pathList.find(_pathName) == _pathList.end())
+    {
+        return;
+    }
 
     const vector<vec3>& myPath = _pathList[_pathName].path;
     int nextIndex = _forward ? _currentIndex + 1 : _currentIndex - 1;
@@ -210,6 +237,7 @@ void PathFinder::ReadPathFile(const std::wstring& fileName)
     if (!file.is_open())
     {
         std::wcout << L"Failed to open file: " << fileName << std::endl;
+        exit(0);
         return;
     }
 
@@ -233,8 +261,7 @@ void PathFinder::ReadPathFile(const std::wstring& fileName)
 	float hue = float(h % 360) / 360.f;
 	_pathList[fileName]._pathColor = vec3(hue, hue, hue);
 
-
-    /* cout << "라인 데이터: " << _pathList[fileName].path.size() << "개 읽음." << std::endl;*/
+     cout << "라인 데이터: " << _pathList[fileName].path.size() << "개 읽음." << std::endl;
 }
 
 vec3 PathFinder::GenerateRandomPointInSphere(float radius)

@@ -50,6 +50,7 @@ void CS_Main(int3 threadIndex : SV_DispatchThreadID)
     if (data.lifetime > changeDirTime)
     {
         data.dir.y *= -1;
+        normalize(data.dir);
         data.lifetime = -1.0f;
     }
     

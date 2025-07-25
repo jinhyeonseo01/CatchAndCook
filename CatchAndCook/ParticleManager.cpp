@@ -24,10 +24,10 @@ shared_ptr<GameObject> ParticleManager::GenParticle(float autodestroyTime, int p
 
 	shared_ptr<GameObject> object = SceneManager::main->GetCurrentScene()->CreateGameObject(L"Particle");
 
-	auto& particleComponent = object->AddComponent<ParticleComponent>();
+	auto particleComponent = object->AddComponent<ParticleComponent>();
 	particleComponent->SetParticle(buffer, autodestroyTime, particleCount, particleSize, speed, worldPos,worldNormal ,moveType, colorType,texture, clipingColor, dirChangeTime);
 	
-	auto& particleRenderer = object->AddComponent<ParticleRenderer>();
+	auto particleRenderer = object->AddComponent<ParticleRenderer>();
 
 	if (texture)
 	{

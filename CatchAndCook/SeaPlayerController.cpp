@@ -57,10 +57,6 @@ void SeaPlayerController::Start()
     _animations = GetOwner()->GetComponentWithChilds<AnimationListComponent>()->GetAnimations();
     _skined  =GetOwner()->GetRoot()->GetComponentWithChilds<SkinnedHierarchy>();
 
-    if (_skined == nullptr)
-    {
-        _skined = GetOwner()->AddComponent<SkinnedHierarchy>();
-    }
 
     if (_animations.find("shot") != _animations.end())
     {

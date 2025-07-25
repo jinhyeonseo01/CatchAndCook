@@ -6,6 +6,7 @@ static std::uniform_real_distribution<float> dist(-1.0f, 1.0f);
 static std::uniform_real_distribution<float> dist2(-0.1f, 0.1f);
 static std::uniform_real_distribution<float> dist3(0, 0.1f);
 static std::uniform_real_distribution<float> dist4(0, 1.0f);
+static std::uniform_real_distribution<float> dist5(0.5f, 1.0f);
 void ParticleComponent::Init()
 {
 }
@@ -119,6 +120,10 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 
 
 	vector<ParticleData> vecData(particleCount);
+	auto& gen = InGameGlobal::main->GetRandomMachine();
+
+	
+	
 
 	for (int i = 0; i < particleCount; ++i)
 	{
@@ -126,18 +131,19 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 		ParticleData data;
 
 		data.size = size;
-		auto& gen = InGameGlobal::main->GetRandomMachine();
+
 		
 		switch (moveType)
 		{
 		case ParticleMoveType::RadialSpread:
+		{
 			data.worldPos = worldPos;
 			data.dir = vec3(dist(gen), dist(gen), dist(gen));
 			data.velocity = speed;
 
 			data.dir.Normalize();
 			break;
-
+		}
 		case ParticleMoveType::BloodUnderwater:
 		{
 			data.worldPos = worldPos;
@@ -161,10 +167,28 @@ void ParticleComponent::SetParticle(shared_ptr<StructuredBuffer> strBuffer, floa
 			data.dir = vec3(0, y, 0);
 			//노말라이즈없이사용 속도다르게주기위해
 			data.velocity = speed;
-	
-
-		}
 			break;
+		}
+
+		case ParticleMoveType::Dive:
+		{
+			float angle = dist4(gen) * XM_2PI; 
+			float radius = 0.7f; 
+			float x = cos(angle) * radius;
+			float z = sin(angle) * radius;
+			data.worldPos = worldPos;  
+			data.worldPos.x += x;
+			data.worldPos.z += z;
+
+			vec3 divedir = data.worldPos - worldPos;
+			divedir.Normalize();
+
+			data.dir = vec3(divedir.x, 3.5f, divedir.z);
+			data.dir.Normalize();
+			data.velocity = speed * dist5(gen);
+			break;
+		}
+
 		default:
 			break;
 		}
