@@ -29,7 +29,6 @@ void PathFinder::Init()
 
 void PathFinder::Start()
 {
-    cout << "호잇" << endl;
 
    _firstQuat = GetOwner()->_transform->GetWorldRotation();
 
