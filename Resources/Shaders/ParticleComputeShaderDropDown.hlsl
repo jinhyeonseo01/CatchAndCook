@@ -51,6 +51,7 @@ void CS_Main(int3 threadIndex : SV_DispatchThreadID)
     {
         data.dir.y *= -1;
         normalize(data.dir);
+        data.velocity *= 1.2f;
         data.lifetime = -1.0f;
     }
     
