@@ -164,8 +164,7 @@ void GraphPathFinder::CalculatePath(float speed)
             vec3 velocity = avoidanceVel;
             vec3 newPos = currentPos + avoidanceVel * Time::main->GetDeltaTime();
             currentPos= GetOwner()->_transform->SetWorldPosition(newPos);
-            velocity.Normalize();
-            GetOwner()->_transform->LookUpSmooth(velocity, vec3::Up, 3.0f);
+       
         }
 
     }
