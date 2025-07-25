@@ -32,10 +32,6 @@ void FishMonster::Start()
 
 	_skined = GetOwner()->GetRoot()->GetComponentWithChilds<SkinnedHierarchy>();
 
-    if (_skined == nullptr)
-    {
-        _skined = GetOwner()->AddComponent<SkinnedHierarchy>();
-    }
 
     if (_animations.find("idle") != _animations.end())
     {

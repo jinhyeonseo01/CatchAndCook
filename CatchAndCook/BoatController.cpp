@@ -249,7 +249,8 @@ void BoatController::DivingSequnce()
 				{
 					GenParticle = true;
 					ComputeManager::main->StartChangeScene(0.3f);
-					/*ParticleManager::main->GenParticle(2.5f, 500, 0.2f, 20.0f, player->_transform->GetWorldPosition(), vec3(1, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Blue, vec4(1, 1, 1, 1));*/
+					ParticleManager::main->GenParticle(5.5f, 500, 2.5f, 20.0f, player->_transform->GetWorldPosition(), vec3(1, 0, 0), ParticleMoveType::Dive, ParticleColorType::Blue, vec4(0, 0, 0, 0),
+						ResourceManager::main->Get<Texture>(L"dive"),ResourceManager::main->Get<Shader>(L"ParticleComputeShaderDropDown"),nullptr,0.5f);
 				}
 
 				if (ComputeManager::main->IsChangeEffectEnd())
