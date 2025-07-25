@@ -210,6 +210,7 @@ void DebugCamera::Update()
 SeaCamera::SeaCamera() : Camera(CameraType::SeaCamera)
 {
     _type = CameraType::SeaCamera;
+    _cameraPos = vec3(123.4f, -20.1f, -258.0f);
 }
 
 SeaCamera::~SeaCamera()

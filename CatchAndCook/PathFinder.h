@@ -18,7 +18,7 @@ struct FishInfo
 	float boundsSizeZ;
 };
 
-class RenderBase;
+class RendererBase;
 
 class PathFinder :public Component, public RenderStructuredSetter
 {
