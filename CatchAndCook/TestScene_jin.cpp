@@ -130,7 +130,7 @@ void TestScene_jin::Init()
 	shared_ptr<GameObject> showGameMoeny = SceneManager::main->GetCurrentScene()->CreateGameObject(L"ShowGameMoeny");
 	showGameMoeny->AddComponent<ShowGameMoeny>();
 
-	{
+	/*{
 		auto object =SceneManager::main->GetCurrentScene()->Find(L"Fire_animationSprite");
 
 		if (object)
@@ -154,7 +154,7 @@ void TestScene_jin::Init()
 			animationSpriteComponent->SetFrameRate(2.0f);
 		}
 		
-	}
+	}*/
 
 }
 
