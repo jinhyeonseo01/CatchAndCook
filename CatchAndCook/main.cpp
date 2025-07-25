@@ -39,12 +39,12 @@ int main()
 		0L,
 		0L,
 		hInst,
-		LoadIcon(hInst, MAKEINTRESOURCE(IDI_ICON1)), // 큰 아이콘 설정
+		LoadIcon(hInst, MAKEINTRESOURCE(IDI_ICON2)), // 큰 아이콘 설정
 		NULL,
 		(HBRUSH)GetStockObject(WHITE_BRUSH),
 		NULL,
 		L"Catch&Cook",
-		LoadIcon(hInst, MAKEINTRESOURCE(IDI_ICON1))  // 작은 아이콘 설정
+		LoadIcon(hInst, MAKEINTRESOURCE(IDI_ICON2))  // 작은 아이콘 설정
 	};
 
 
