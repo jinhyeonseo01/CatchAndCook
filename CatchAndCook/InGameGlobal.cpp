@@ -58,6 +58,20 @@ void InGameGlobal::Init()
 	boxItems.push_back(itemData);
 
 
+	itemData.itemCode = 10;
+	itemData.itemCookType = -1;
+	boxItems.push_back(itemData);
+	itemData.itemCode = 11;
+	itemData.itemCookType = -1;
+	boxItems.push_back(itemData);
+	itemData.itemCode = 10;
+	itemData.itemCookType = -1;
+	boxItems.push_back(itemData);
+	itemData.itemCode = 11;
+	itemData.itemCookType = -1;
+	boxItems.push_back(itemData);
+
+
 
 
 

@@ -66,10 +66,12 @@ void NPCComponent::Start()
 		auto sit  = animationList->GetAnimations()["sitting"];
 		auto sitdown  = animationList->GetAnimations()["sitdown"];
 		auto situp  = animationList->GetAnimations()["situp"];
+		auto eat = animationList->GetAnimations()["eat"];
 		run->_speedMultiplier = 1.15f;
 
 		sitdown->_isLoop = false;
 		situp->_isLoop = false;
+		eat->_isLoop = false;
 		_skinnedHierarchy->Play(idle, 0.25);
 	}
 
@@ -722,17 +724,12 @@ void NPCEatting::Update()
 		auto idle = animationList->GetAnimations()["idle"];
 		auto run = animationList->GetAnimations()["run"];
 		auto sit = animationList->GetAnimations()["sitting"];
+		auto eat = animationList->GetAnimations()["eat"];
 		auto sitdown = animationList->GetAnimations()["sitdown"];
 		auto situp = animationList->GetAnimations()["situp"];
 
-
-		if (auto point = this->point.lock())
-		{
-			auto pos = npc->GetOwner()->_transform->GetWorldPosition();
-			npc->GetOwner()->_transform->SetWorldPosition(Vector3::Lerp(pos, this->point.lock()->_transform->GetWorldPosition(), std::clamp(_time, 0.0f, 1.0f)));
-			auto rot = npc->GetOwner()->_transform->GetWorldRotation();
-			npc->GetOwner()->_transform->SetWorldRotation(Quaternion::Slerp(rot, this->point.lock()->_transform->GetWorldRotation(), std::clamp(_time, 0.0f, 1.0f)));
-		}
+		Vector3 targetPos = this->point.lock()->_transform->GetWorldPosition();
+		auto pos = npc->GetOwner()->_transform->GetWorldPosition();
 
 		if (this->isSitBegin && !skinnedHierarchy->IsPlay())
 		{
@@ -741,17 +738,62 @@ void NPCEatting::Update()
 			skinnedHierarchy->Play(sit, 0.25);
 		}
 
-		if (this->isSit && !InGameMainField::GetMain()->shopOpen)
+		if (this->isSit)
 		{
-			this->isSit = false;
-			this->isSitEnd = true;
-			skinnedHierarchy->Play(situp, 0.25);
+			if (isEatting)
+			{
+				skinnedHierarchy->Play(eat, 0.0000000001);
+				isSit = false;
+			}
+			else
+			{
+				skinnedHierarchy->Play(sit, 0.25);
+			}
+			if (!InGameMainField::GetMain()->shopOpen)
+			{
+				this->isSit = false;
+				this->isSitEnd = true;
+				skinnedHierarchy->Play(situp, 0.25);
+			}
 		}
-		if (this->isSitEnd && !skinnedHierarchy->IsPlay())
+
+		if (this->isEatting)
 		{
-			this->isSitEnd = false;
-			npc->GetOwner()->_transform->SetWorldPosition(npc->GetOwner()->_transform->GetWorldPosition() - npc->GetOwner()->_transform->GetForward());
-			GetGroup()->ChangeState(StateType::goto_shop);
+			targetPos -= Vector3::Up * 0.29f;
+			if (!skinnedHierarchy->IsPlay())
+			{
+				npc->isEat = true;
+				this->isSit = false;
+				this->isSitEnd = true;
+				this->isEatting = false;
+				skinnedHierarchy->Play(situp, 0.0000000001);
+				InGameGlobal::main->gold += 5;
+			}
+			if (!InGameMainField::GetMain()->shopOpen)
+			{
+				this->isSit = false;
+				this->isSitEnd = true;
+				this->isEatting = false;
+				skinnedHierarchy->Play(situp, 0.0000000001);
+			}
+		}
+		
+		if (this->isSitEnd)
+		{
+			if (!skinnedHierarchy->IsPlay())
+			{
+				npc->GetOwner()->_transform->SetWorldPosition(pos = targetPos = npc->GetOwner()->_transform->GetWorldPosition() - npc->GetOwner()->_transform->GetForward() * 1.0f);
+				this->isSitEnd = false;
+				GetGroup()->ChangeState(StateType::goto_shop);
+			}
+		}
+
+
+		if (auto point = this->point.lock())
+		{
+			npc->GetOwner()->_transform->SetWorldPosition(Vector3::Lerp(pos, targetPos, std::clamp(_time, 0.0f, 1.0f)));
+			auto rot = npc->GetOwner()->_transform->GetWorldRotation();
+			npc->GetOwner()->_transform->SetWorldRotation(Quaternion::Slerp(rot, this->point.lock()->_transform->GetWorldRotation(), std::clamp(_time, 0.0f, 1.0f)));
 		}
 	}
 
@@ -761,8 +803,12 @@ void NPCEatting::Update()
 
 		if (selectedUI->GetComponent<GUINPCFood>()->eat)
 		{
-			GetGroup()->ChangeState(StateType::goto_shop);
-			npc->isEat = true;
+			isEatting = true;
+			if (selectedUI)
+			{
+				selectedUI->SetActiveSelf(false);
+				selectedUI = nullptr;
+			}
 		}
 	}
 }
@@ -828,14 +874,11 @@ void NPCEatting::End(const std::shared_ptr<StatePattern>& nextState)
 	auto npc = this->npc.lock();
 	auto point = this->point.lock();
 
+	isEatting = false;
+
 	if (point)
 	{
 		InGameMainField::GetMain()->shopTablePointsPool.push_back(point);
-	}
-	if (selectedUI)
-	{
-		selectedUI->SetActiveSelf(false);
-		selectedUI = nullptr;
 	}
 	//this->point
 }
