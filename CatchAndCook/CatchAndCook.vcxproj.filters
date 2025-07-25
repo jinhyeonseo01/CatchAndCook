@@ -446,6 +446,11 @@
     <ClCompile Include="GUIInventory.cpp" />
     <ClCompile Include="GUICookProgress.cpp" />
     <ClCompile Include="CookMargeObject.cpp" />
+    <ClCompile Include="AddDontDestroy.cpp" />
+    <ClCompile Include="GUIMenu.cpp" />
+    <ClCompile Include="GUIMenuToggle.cpp" />
+    <ClCompile Include="GUINPCFood.cpp" />
+    <ClCompile Include="ShowGameMoeny.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -841,6 +846,11 @@
     <ClInclude Include="UILookUp.h" />
     <ClInclude Include="GUICookProgress.h" />
     <ClInclude Include="CookMargeObject.h" />
+    <ClInclude Include="AddDontDestroy.h" />
+    <ClInclude Include="GUIMenu.h" />
+    <ClInclude Include="GUIMenuToggle.h" />
+    <ClInclude Include="GUINPCFood.h" />
+    <ClInclude Include="ShowGameMoeny.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath_LH.inl">
@@ -1091,5 +1101,13 @@
     <FxCompile Include="..\Resources\Shaders\PlayerShader_Face.hlsl">
       <Filter>998.HLSL\Graphics\JIN</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\ico\favicon.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Resources\Textures\main.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
 </Project>

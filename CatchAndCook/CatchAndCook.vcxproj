@@ -293,6 +293,7 @@
     <ClCompile Include="SeaPlayerController.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShadowManager.cpp" />
+    <ClCompile Include="ShowGameMoeny.cpp" />
     <ClCompile Include="simple_mesh_ext.cpp" />
     <ClCompile Include="simple_mesh_LH.cpp" />
     <ClCompile Include="SkinnedHierarchy.cpp" />
@@ -454,6 +455,7 @@
     <ClInclude Include="SeaPlayerController.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShadowManager.h" />
+    <ClInclude Include="ShowGameMoeny.h" />
     <ClInclude Include="simple_mesh_ext.h" />
     <ClInclude Include="simple_mesh_LH.h" />
     <ClInclude Include="SkinnedHierarchy.h" />

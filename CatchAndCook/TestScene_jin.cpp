@@ -16,6 +16,7 @@
 #include "EventComponent.h"
 #include "TextManager.h"
 #include "PathStamp.h"
+#include "ShowGameMoeny.h"
 
 
 void TestScene_jin::Init()
@@ -124,6 +125,9 @@ void TestScene_jin::Init()
 		}
 	}
 
+	
+	shared_ptr<GameObject> showGameMoeny = SceneManager::main->GetCurrentScene()->CreateGameObject(L"ShowGameMoeny");
+	showGameMoeny->AddComponent<ShowGameMoeny>();
 
 }
 
