@@ -451,6 +451,12 @@
     <ClCompile Include="GUIMenuToggle.cpp" />
     <ClCompile Include="GUINPCFood.cpp" />
     <ClCompile Include="ShowGameMoeny.cpp" />
+    <ClCompile Include="GUIMainMenu.cpp" />
+    <ClCompile Include="GUIMainUI.cpp" />
+    <ClCompile Include="GUIOption.cpp" />
+    <ClCompile Include="MainMenuScene.cpp" />
+    <ClCompile Include="GUIRecipe.cpp" />
+    <ClCompile Include="GUIRecipeTrigger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -851,6 +857,12 @@
     <ClInclude Include="GUIMenuToggle.h" />
     <ClInclude Include="GUINPCFood.h" />
     <ClInclude Include="ShowGameMoeny.h" />
+    <ClInclude Include="GUIMainMenu.h" />
+    <ClInclude Include="GUIMainUI.h" />
+    <ClInclude Include="GUIOption.h" />
+    <ClInclude Include="MainMenuScene.h" />
+    <ClInclude Include="GUIRecipe.h" />
+    <ClInclude Include="GUIRecipeTrigger.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath_LH.inl">
