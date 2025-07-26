@@ -28,6 +28,8 @@ void LightComponent::Init()
 	light->material.shininess = 61.0f;
 	//light->material.lightType = static_cast<int32>(LIGHT_TYPE::POINT_LIGHT);
 	//light->strength = vec3(1.0f, 1.0f, 1.0f);
+	light->onOff = 1;
+	LightManager::main->PushLight(light, SceneManager::main->GetCurrentScene()->GetSceneType());
 }
 
 void LightComponent::Start()
@@ -137,14 +139,13 @@ void LightComponent::Enable()
 {
 	Component::Enable();
 	light->onOff = 1;
-	LightManager::main->PushLight(light,SceneManager::main->GetCurrentScene()->GetSceneType());
 }
 
 void LightComponent::Disable()
 {
 	Component::Disable();
 	light->onOff = 0;
-	LightManager::main->RemoveLight(light, SceneManager::main->GetCurrentScene()->GetSceneType());
+	//LightManager::main->RemoveLight(light, SceneManager::main->GetCurrentScene()->GetSceneType());
 }
 
 void LightComponent::RenderBegin()

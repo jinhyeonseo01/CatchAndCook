@@ -63,7 +63,7 @@ public:
 		component->SetOwner(GetCast<GameObject>());
 		_components.push_back(parentComponent);
 		component->Init();
-		if (GetActive()) component->Enable();
+		//if (GetActive()) component->Enable();
 		SceneManager::main->GetCurrentScene()->AddStartQueue(GetCast<GameObject>());
 	}
 

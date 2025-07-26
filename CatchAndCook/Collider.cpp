@@ -97,7 +97,6 @@ void Collider::Start()
 void Collider::Update()
 {
 	Component::Update();
-
 	CalculateBounding();
 	ColliderManager::main->AddCollider(GetCast<Collider>());
 }
@@ -105,23 +104,14 @@ void Collider::Update()
 void Collider::Update2()
 {
 	Component::Update2();
-
 	CalculateBounding();
 }
 
 void Collider::Enable()
 {
 	Component::Enable();
+	ColliderManager::main->AddCollider(GetCast<Collider>());
 
-	ColliderManager::main->AddColliderForRay(GetCast<Collider>());
-
-	if (GetOwner()->GetType() == GameObjectType::Static)
-		CalculateBounding();
-	
-	groupId = PhysicsComponent::GetPhysicsGroupID(GetOwner());
-	if (auto obj = GetOwner()->GetComponentWithParents<PhysicsComponent>()) {
-		groupRootObject = obj->GetOwner();
-	}
 }
 
 void Collider::Disable()
