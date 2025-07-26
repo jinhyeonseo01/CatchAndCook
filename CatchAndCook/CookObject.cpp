@@ -186,7 +186,7 @@ void CookObject::Update()
 						process->type = 2;
 
 						//KSH
-						ParticleManager::main->GenParticle(20.0f, 200, 0.15f, 0.3f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::CookFire, ParticleColorType::Red, { 0,0,0,0 }
+						ParticleManager::main->GenParticle(15.0f, 200, 0.15f, 0.3f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::CookFire, ParticleColorType::Red, { 0,0,0,0 }
 						, ResourceManager::main->Get<Texture>(L"smokeTexture"));
 					}
 					if (GetOwner()->HasTag(GameObjectTag::CookType_Wash))
@@ -202,7 +202,7 @@ void CookObject::Update()
 						process->SetMaxTime(9);
 						process->type = 1;
 						//KSH
-						ParticleManager::main->GenParticle(15.0f, 200, 0.15f, 0.3f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::CookFire, ParticleColorType::Red, { 0,0,0,0 }
+						ParticleManager::main->GenParticle(12.0f, 200, 0.15f, 0.3f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::CookFire, ParticleColorType::Red, { 0,0,0,0 }
 						, ResourceManager::main->Get<Texture>(L"smokeTexture"));
 
 					}
