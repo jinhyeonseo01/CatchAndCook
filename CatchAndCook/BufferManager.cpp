@@ -123,12 +123,10 @@ void BufferManager::Init()
 
 	for(int i=0; i < MAX_FRAME_COUNT; ++i)
 	{
-		CreateInstanceBufferPool(i, BufferType::TransformInstanceParam, sizeof(Instance_Transform), 10000, 30);
+		CreateInstanceBufferPool(i, BufferType::TransformInstanceParam, sizeof(Instance_Transform), 10000, 35);
 		CreateInstanceBufferPool(i, BufferType::GizmoInstanceParam, sizeof(Instance_Gizmo), 250000, 1);
 	}
 	
-
-
 }
 
 void BufferManager::Reset()
@@ -158,7 +156,8 @@ void BufferManager::Reset()
 	{
 		auto& map = _structuredMap[CURRENT_CONTEXT_INDEX];
 
-		for (auto& ele : map) {
+		for (auto& ele : map) 
+		{
 			ele.second->Clear();
 		}
 	}
@@ -218,17 +217,17 @@ void BufferManager::Debug()
 	//		<< setw(12) << _bufferSceneMax[type] << '\n';
 	//}
 
-	//// Instance Buffer Map
-	//cout << "\n================= [Instance BufferMap] ==================\n";
-	//for (const auto& map : _instanceMap)
-	//{
-	//	for (const auto& [type, buffer] : map)
-	//	{
-	//		cout << "  [Buffer Type] " << BufferTypeToString(type) << '\n';
-	//		buffer->PrintCount();
-	//		cout << string(45, '-') << '\n';
-	//	}
-	//}
+	////// Instance Buffer Map
+	////cout << "\n================= [Instance BufferMap] ==================\n";
+	////for (const auto& map : _instanceMap)
+	////{
+	////	for (const auto& [type, buffer] : map)
+	////	{
+	////		cout << "  [Buffer Type] " << BufferTypeToString(type) << '\n';
+	////		buffer->PrintCount();
+	////		cout << string(45, '-') << '\n';
+	////	}
+	////}
 
 	//// Structured Buffer Map Summary
 	//cout << "\n============= [Structured Buffer - Scene Summary] =============\n";

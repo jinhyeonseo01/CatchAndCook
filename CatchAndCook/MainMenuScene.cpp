@@ -53,46 +53,6 @@ void MainMenuScene::Init()
 		meshRenderer->AddMesh(GeoMetryHelper::LoadRectangleBox(1.0f));
 	}
 
-
-	{
-		ShaderInfo info;
-		info._zTest = true;
-		info._stencilTest = false;
-		info.cullingType = CullingType::BACK;
-		info.cullingType = CullingType::NONE;
-		info._primitiveType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
-
-		shared_ptr<Shader> shader = ResourceManager::main->Load<Shader>(L"seatest", L"seatest.hlsl", GeoMetryProp,
-			ShaderArg{ {{"VS_Main","vs"},{"PS_Main","ps"},{"HS_Main","hs"},{"DS_Main","ds"}} }, info);
-
-		shared_ptr<Material> material = make_shared<Material>();
-
-		shared_ptr<GameObject> gameObject = CreateGameObject(L"sea");
-		auto meshRenderer = gameObject->AddComponent<MeshRenderer>();
-		auto a = gameObject->AddComponent<WaterController>();
-		a->Setting(L"sea_color_real.bin", L"sea_move_real.bin");
-		//meshRenderer->SetDebugShader(ResourceManager::main->Get<Shader>(L"DebugNormal_Sea"));
-		gameObject->_transform->SetLocalPosition(vec3(0, 44.5f, 0));
-
-
-
-		material = make_shared<Material>();
-		material->SetShader(shader);
-		material->SetPass(RENDER_PASS::Forward);
-		material->SetTexture("_cubemap_skyTexture", ResourceManager::main->_cubemap_skyTexture);
-		material->SetTexture("_cubemap_skyNTexture", ResourceManager::main->_cubemap_skyNTexture);
-		material->SetTexture("_cubemap_skyETexture", ResourceManager::main->_cubemap_skyETexture);
-		material->SetUseMaterialParams(true);
-		material->SetShadowCasting(false);
-		meshRenderer->AddMaterials({ material });
-
-		auto mesh = GeoMetryHelper::LoadGripMeshControlPoints(20000.0f, 20000.0f, 1000, 1000, false);
-		mesh->SetTopolgy(D3D_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
-		meshRenderer->AddMesh(mesh);
-		meshRenderer->SetCulling(false);
-
-	};
-
 	ColliderManager::main->SetCellSize(5);
 	ResourceManager::main->Load<SceneLoader>(L"mainMenu", L"../Resources/Datas/Scenes/MainMenu.json");
 	auto sceneLoader = ResourceManager::main->Get<SceneLoader>(L"mainMenu");
@@ -100,32 +60,6 @@ void MainMenuScene::Init()
 
 
 
-	{
-		auto object = SceneManager::main->GetCurrentScene()->Find(L"OnBoardEvent");
-		auto eventComponent = object->GetComponent<EventComponent>();
-		eventComponent->SetBindTag(GameObjectTag::Player);
-		eventComponent->SetBindMessage(L"F키를 눌러 탑승하세요", vec3(0.4f, 0.7f, 0.01f), vec2(0.5f, 0.3f), false);
-
-		eventComponent->BindOnCollisionBegin([=](shared_ptr<Collider>& collider)
-		{
-			eventComponent->ShowEventMessage(true);
-		});
-
-		eventComponent->BindOnCollisionEnd([=](shared_ptr<Collider>& collider)
-		{
-			eventComponent->ShowEventMessage(false);
-		});
-
-		eventComponent->BindOnUpdateBlock([](shared_ptr<Collider>& collider)
-		{
-			if (Input::main->GetKeyDown(KeyCode::F))
-			{
-				auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
-
-				player->GetComponent<PlayerController>()->SetOnBoard();
-			}
-		});
-	}
 
 
 }
