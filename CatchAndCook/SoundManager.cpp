@@ -114,7 +114,6 @@ void Sound::Play(const string& name, float volume, bool overlapped)
 
     if (overlapped == false && data._isPlaying)
     {
-        std::cout << "already playing" << "\n";
         return;
     }
 
