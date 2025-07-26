@@ -56,15 +56,21 @@ void InGameMainField::Update()
 		shopOpen = false;
 	}
 	float normTime = InGameGlobal::main->skyTime;
+
 	while (normTime >= 4)
 		normTime -= 4;
-	if (InGameGlobal::main->skyTime >= 0.9999 && InGameGlobal::main->skyTime < 2)
+	if (normTime >= 0.9999 && normTime < 2)
 	{
 		InGameGlobal::main->skyTime += Time::main->GetDeltaTime() * (1 / 180.0f);
 		InGameMainField::GetMain()->shopOpen = true;
 	}
 	else
 		InGameMainField::GetMain()->shopOpen = false;
+
+	if (normTime >= 3 && normTime < 4)
+	{
+		InGameGlobal::main->skyTime += Time::main->GetDeltaTime() * (1 / 180.0f);
+	}
 }
 
 void InGameMainField::Update2()
