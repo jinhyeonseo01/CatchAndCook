@@ -246,7 +246,6 @@ std::unordered_set<std::shared_ptr<Collider>> ColliderManager::GetPotentialColli
 std::unordered_set<std::shared_ptr<Collider>> ColliderManager::GetPotentialCollisionsDirect(const vector<vec3>& vec)
 {
 	std::unordered_set<std::shared_ptr<Collider>> potentialCollisions;
-	potentialCollisions.reserve(32);
 	const auto& occupiedCells = vec;
 	const auto& SceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
 

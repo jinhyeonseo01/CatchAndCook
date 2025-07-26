@@ -86,7 +86,7 @@ void Collider::Start()
 		groupRootObject = obj->GetOwner();
 	}
 
-	if (GetOwner()->GetType() == GameObjectType::Static && GetOwner()->GetActive())
+	if (GetOwner()->GetActive())
 	{
 		CalculateBounding();
 		ColliderManager::main->AddCollider(GetCast<Collider>());
@@ -98,7 +98,6 @@ void Collider::Update()
 {
 	Component::Update();
 	CalculateBounding();
-	ColliderManager::main->AddCollider(GetCast<Collider>());
 }
 
 void Collider::Update2()
