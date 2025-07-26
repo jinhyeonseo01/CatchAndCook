@@ -58,7 +58,7 @@ void CameraComponent::Update2()
 
 	Component::Update2();
 	auto trans = GetOwner()->_transform;
-	std::cout << to_string(trans->GetWorldPosition()) << "\n";
+	
 	SetCameraPos(trans->GetWorldPosition());
 	SetCameraRotation(trans->GetWorldRotation());
 }

@@ -99,36 +99,33 @@ void MainMenuScene::Init()
 	sceneLoader->Load(GetCast<Scene>());
 
 
+
 	{
+		auto object = SceneManager::main->GetCurrentScene()->Find(L"OnBoardEvent");
+		auto eventComponent = object->GetComponent<EventComponent>();
+		eventComponent->SetBindTag(GameObjectTag::Player);
+		eventComponent->SetBindMessage(L"F키를 눌러 탑승하세요", vec3(0.4f, 0.7f, 0.01f), vec2(0.5f, 0.3f), false);
 
+		eventComponent->BindOnCollisionBegin([=](shared_ptr<Collider>& collider)
 		{
-			auto object = SceneManager::main->GetCurrentScene()->Find(L"OnBoardEvent");
-			auto eventComponent = object->GetComponent<EventComponent>();
-			eventComponent->SetBindTag(GameObjectTag::Player);
-			eventComponent->SetBindMessage(L"Press F To Board", vec3(0.4f, 0.7f, 0.01f), vec2(0.3f, 0.3f), false);
+			eventComponent->ShowEventMessage(true);
+		});
 
-			eventComponent->BindOnCollisionBegin([=](shared_ptr<Collider>& collider)
-				{
-					eventComponent->ShowEventMessage(true);
-				});
+		eventComponent->BindOnCollisionEnd([=](shared_ptr<Collider>& collider)
+		{
+			eventComponent->ShowEventMessage(false);
+		});
 
-			eventComponent->BindOnCollisionEnd([=](shared_ptr<Collider>& collider)
-				{
-					eventComponent->ShowEventMessage(false);
-				});
+		eventComponent->BindOnUpdateBlock([](shared_ptr<Collider>& collider)
+		{
+			if (Input::main->GetKeyDown(KeyCode::F))
+			{
+				auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
 
-			eventComponent->BindOnUpdateBlock([](shared_ptr<Collider>& collider)
-				{
-					if (Input::main->GetKeyDown(KeyCode::F))
-					{
-						auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
-
-						player->GetComponent<PlayerController>()->SetOnBoard();
-					}
-				});
-		}
+				player->GetComponent<PlayerController>()->SetOnBoard();
+			}
+		});
 	}
-
 
 
 }

@@ -103,6 +103,7 @@ void TestScene_jin::Init()
 			auto eventComponent = object->GetComponent<EventComponent>();
 			eventComponent->SetBindTag(GameObjectTag::Player);
 			eventComponent->SetBindMessage(L"Press F To Board", vec3(0.4f, 0.7f, 0.01f), vec2(0.3f, 0.3f), false);
+			//eventComponent->SetBindMessage(L"F키를 눌러 탑승하세요", vec3(0.4f, 0.7f, 0.01f), vec2(0.5f, 0.3f), false);
 
 			eventComponent->BindOnCollisionBegin([=](shared_ptr<Collider>& collider)
 				{

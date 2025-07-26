@@ -1436,12 +1436,42 @@ void ChangeSceneCompute::Dispatch(ComPtr<ID3D12GraphicsCommandList>& cmdList, in
 	renderTarget->ResourceBarrier(D3D12_RESOURCE_STATE_COPY_DEST);
 	cmdList->CopyResource(renderTarget->GetResource().Get(), _pingTexture->GetResource().Get());
 
-	_data.toblack -= _speed * Time::main->GetDeltaTime();
-
-	if (_data.toblack < -0.1f)
+	switch (state)
 	{
-		_data.toblack = 1.0f;
-		_on = false;
+	case ChangeSceneState::None :
+		{
+		_data.toblack -= _speed * Time::main->GetDeltaTime();
+
+		if (_data.toblack < -0.1f)
+		{
+			_data.toblack = 1.0f;
+			_on = false;
+		}
+		break;
+		}
+
+	case ChangeSceneState::FadeIn:
+	{
+		_data.toblack += _speed * Time::main->GetDeltaTime();
+
+		if (_data.toblack >= 1.0f)
+		{
+			_data.toblack = 1.0f;
+			_on = false;
+		}
+		break;
+	}
+	case ChangeSceneState::FadeOut:
+	{
+		_data.toblack -= _speed * Time::main->GetDeltaTime();
+
+		if (_data.toblack < 0.0f)
+		{
+			_data.toblack = 0;
+			_on = false;
+		}
+		break;
+	}
 	}
 
 	renderTarget->ResourceBarrier(D3D12_RESOURCE_STATE_RENDER_TARGET);
@@ -1453,7 +1483,13 @@ void ChangeSceneCompute::StartChangeScene(float speed)
 {
 	_on = true;
 	_speed = speed;
-
+	state = ChangeSceneState::None;
+}
+void ChangeSceneCompute::StartChangeScene(float speed, ChangeSceneState state)
+{
+	_on = true;
+	_speed = speed;
+	this->state = state;
 }
 
 void ChangeSceneCompute::DispatchBegin(ComPtr<ID3D12GraphicsCommandList>& cmdList)

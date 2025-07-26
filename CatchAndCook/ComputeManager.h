@@ -509,6 +509,12 @@ struct ChangeSceneData
 	vec3 pad;
 };
 
+enum class ChangeSceneState
+{
+	None,
+	FadeIn,
+	FadeOut
+};
 
 class ChangeSceneCompute : public ComputeBase
 {
@@ -530,6 +536,7 @@ private:
 
 public:
     void StartChangeScene(float speed);
+	void StartChangeScene(float speed, ChangeSceneState state);
 
 
 private:
@@ -541,6 +548,9 @@ private:
 	bool _on = false;
 	float _speed{};
 	ChangeSceneData _data;
+
+	ChangeSceneState state = ChangeSceneState::None;
+	
 
 	friend class ComputeManager;
 };
