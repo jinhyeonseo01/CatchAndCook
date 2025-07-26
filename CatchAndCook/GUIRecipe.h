@@ -1,8 +1,9 @@
 ﻿#pragma once
-class GUIMenu : public Component
+
+class GUIRecipe : public Component
 {
 public:
-	~GUIMenu() override;
+	~GUIRecipe() override;
 	bool IsExecuteAble() override;
 	void Init() override;
 	void Start() override;
@@ -19,8 +20,5 @@ public:
 	void SetDestroy() override;
 	void Destroy() override;
 	void Reset() override;
-
-	std::vector<shared_ptr<GameObject>> buttons;
-	bool changeToggle = false;
 };
 

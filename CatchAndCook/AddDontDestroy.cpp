@@ -14,13 +14,12 @@ bool AddDontDestroy::IsExecuteAble()
 void AddDontDestroy::Init()
 {
 	Component::Init();
+	GetOwner()->GetScene()->SetDontDestroy(GetOwner());
 }
 
 void AddDontDestroy::Start()
 {
 	Component::Start();
-	GetOwner()->GetScene()->SetDontDestroy(GetOwner());
-	std::cout << "1234\n";
 }
 
 void AddDontDestroy::Update()

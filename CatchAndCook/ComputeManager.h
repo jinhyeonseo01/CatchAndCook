@@ -213,10 +213,12 @@ private:
 	void XBlur(ComPtr<ID3D12GraphicsCommandList>& cmdList, int x, int y, int z);
 	void YBlur(ComPtr<ID3D12GraphicsCommandList>& cmdList, int x, int y, int z);
 
+
+public:
+	bool _on = false;
 private:
 	int32 _blurCount = 3;
 
-	bool _on = false;
 
 	shared_ptr<Texture> _pingtexture;
 	shared_ptr<Texture> _pongtexture;
@@ -507,6 +509,12 @@ struct ChangeSceneData
 	vec3 pad;
 };
 
+enum class ChangeSceneState
+{
+	None,
+	FadeIn,
+	FadeOut
+};
 
 class ChangeSceneCompute : public ComputeBase
 {
@@ -528,8 +536,10 @@ private:
 
 public:
     void StartChangeScene(float speed);
+	void StartChangeScene(float speed, ChangeSceneState state);
 
 
+	ChangeSceneData _data;
 private:
 	shared_ptr<Texture> _pingTexture;
 	shared_ptr<Texture> _pongTexture;
@@ -538,7 +548,9 @@ private:
 
 	bool _on = false;
 	float _speed{};
-	ChangeSceneData _data;
+
+	ChangeSceneState state = ChangeSceneState::None;
+	
 
 	friend class ComputeManager;
 };
@@ -561,7 +573,9 @@ public:
 public:
 	void Resize();
 	void StartChangeScene(float speed);
+	void StartChangeScene(float speed,ChangeSceneState state);
 	bool IsChangeEffectEnd() { return  _changeSceneCompute->_on == false; }
+	bool IsChangeEffectZero() { return  _changeSceneCompute->_data.toblack <= 0; }
 
 public:
 

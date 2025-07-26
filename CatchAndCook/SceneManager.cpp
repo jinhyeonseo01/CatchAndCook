@@ -8,6 +8,7 @@
 #include "UITestScene.h"
 #include "CameraManager.h"
 #include "Camera.h"
+#include "MainMenuScene.h"
 std::unique_ptr<SceneManager> SceneManager::main = nullptr;
 
 shared_ptr<Scene> SceneManager::AddScene(SceneType type, bool initExecute)
@@ -17,6 +18,9 @@ shared_ptr<Scene> SceneManager::AddScene(SceneType type, bool initExecute)
 
 	switch (type)
 	{
+	case::SceneType::MainMenu:
+		scene = make_shared<MainMenuScene>();
+		break;
 	case::SceneType::TestScene:
 		scene = make_shared<TestScene>();
 		break;
@@ -59,9 +63,13 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 
 	switch (nextScene->GetSceneType())
 	{
+	case SceneType::MainMenu:
+		Sound::main->Play("main", 0.14f);
+		CameraManager::main->Setting(CameraType::ComponentCamera);
+		break;
 	case SceneType::TestScene2:
-		Sound::main->Play("main", 0.2f);
-		CameraManager::main->SetActiveCamera(CameraType::ComponentCamera);
+		Sound::main->Play("main", 0.14f);
+		CameraManager::main->Setting(CameraType::ComponentCamera);
 		break;
 	case SceneType::Sea01:
 		Sound::main->Play("underwater2", 0.4f);
@@ -79,7 +87,6 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 				obj->GetChildsAll(dontObj);
 		}
 	}
-	std::cout << to_string(dontObj.size()) << "\n";
 
 	for (auto& obj : dontObj)
 	{
@@ -90,14 +97,20 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 	if (currentScene != nullptr)
 	{
 		for (auto& obj : prevScene->_dont_destroy_gameObjects)
+		{
 			nextScene->_dont_destroy_gameObjects.push_back(obj);
+		}
 		currentScene->_dont_destroy_gameObjects.clear();
 		if (removeExecute)
 			currentScene->Release();
 	}
 
-
 	_currentScene = nextScene;
+
+	//
+	for (auto& obj : nextScene->_gameObjects)
+		for (auto& component : obj->GetComponentAll())
+			component->ChangeScene(currentScene, nextScene);
 
 	if (initExecute)
 		_currentScene->Init();

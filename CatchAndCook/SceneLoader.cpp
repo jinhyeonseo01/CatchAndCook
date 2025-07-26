@@ -248,10 +248,12 @@ void SceneLoader::LinkGameObject(json& jsonData)
         auto isDeactivate = jsonData["deactivate"].get<bool>();
 
         gameObject->SetName(std::to_wstring(jsonData["name"].get<std::string>()));
+        gameObject->SetScene(_scene);
 
         for (auto& componentGuid : jsonData["components"])
             gameObject->AddComponent(
 	            IGuid::FindObjectByGuid<Component>(std::to_wstring(componentGuid.get<std::string>())));
+
         if(isDeactivate)
             gameObject->SetType(GameObjectType::Deactivate);
         else

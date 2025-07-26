@@ -1,0 +1,177 @@
+﻿#include "pch.h"
+#include "GUIMainMenu.h"
+
+#include "Camera.h"
+#include "CameraManager.h"
+#include "Game.h"
+#include "GUIOption.h"
+#include "RectTransform.h"
+
+
+COMPONENT(GUIMainMenu);
+
+std::shared_ptr<GUIMainMenu> GUIMainMenu::main = nullptr;
+
+GUIMainMenu::~GUIMainMenu()
+{
+}
+
+bool GUIMainMenu::IsExecuteAble()
+{
+	return Component::IsExecuteAble();
+}
+
+void GUIMainMenu::Init()
+{
+	Component::Init();
+	main = GetCast<GUIMainMenu>();
+}
+
+void GUIMainMenu::Start()
+{
+	Component::Start();
+
+	GetOwner()->GetScene()->SetDontDestroy(GetOwner());
+
+	int i = 0;
+	while (auto obj = GetOwner()->GetChildByName(L"Button_" + to_wstring(i)))
+	{
+		buttons.push_back(obj);
+		++i;
+	}
+}
+
+void GUIMainMenu::Update()
+{
+	Component::Update();
+	Input::main->SetMouseLock(false);
+	for (int i = 0; i < buttons.size(); i++)
+	{
+		auto rect = buttons[i]->GetComponent<RectTransform>();
+		auto line = rect->GetOwner()->GetChildByName(L"Division");
+		if (line)
+		{
+			if (rect->IsBoundScreenPos(Input::main->GetMousePosition()))
+				line->SetActiveSelf(true);
+			else
+				line->SetActiveSelf(false);
+		}
+		if (Input::main->GetMouseDown(KeyCode::LeftMouse))
+		{
+			if (rect->IsBoundScreenPos(Input::main->GetMousePosition()))
+			{
+				switch (i)
+				{
+				case 0:
+				{
+					ComputeManager::main->StartChangeScene(1.0f, ChangeSceneState::FadeOut);
+					changeToggle = true;
+					break;
+				}
+				case 1:
+				{
+					ComputeManager::main->StartChangeScene(1.0f, ChangeSceneState::FadeOut);
+					changeToggle = true;
+					break;
+				}
+				case 2:
+				{
+					auto op = GetOwner()->GetChildByName(L"GUIOption");
+					if (op)
+						op->SetActiveSelf(true);
+					break;
+				}
+				case 3:
+				{
+
+					break;
+				}
+				case 4:
+				{
+					Game::main->Quit();
+					break;
+				}
+				}
+			}
+		}
+	}
+
+	if (changeToggle && ComputeManager::main->IsChangeEffectZero())
+	{
+		Scene::_changeScene = true;
+		changeToggle = false;
+	}
+
+	CameraManager::main->Setting(CameraType::ComponentCamera);
+}
+
+void GUIMainMenu::Update2()
+{
+	Component::Update2();
+}
+
+void GUIMainMenu::Enable()
+{
+	Component::Enable();
+}
+
+void GUIMainMenu::Disable()
+{
+	Component::Disable();
+}
+
+void GUIMainMenu::RenderBegin()
+{
+	Component::RenderBegin();
+}
+
+void GUIMainMenu::RenderEnd()
+{
+	Component::RenderEnd();
+}
+
+void GUIMainMenu::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
+{
+	Component::CollisionBegin(collider, other);
+}
+
+void GUIMainMenu::CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
+{
+	Component::CollisionEnd(collider, other);
+}
+
+void GUIMainMenu::ChangeParent(const std::shared_ptr<GameObject>& prev, const std::shared_ptr<GameObject>& current)
+{
+	Component::ChangeParent(prev, current);
+}
+
+void GUIMainMenu::ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene)
+{
+	Component::ChangeScene(currentScene, nextScene);
+	ComputeManager::main->StartChangeScene(1.0f, ChangeSceneState::FadeIn);
+	if (nextScene->_type == SceneType::MainMenu)
+	{
+		GetOwner()->SetActiveSelf(true);
+		Input::main->SetMouseLock(false);
+	}
+	else
+	{
+		GetOwner()->SetActiveSelf(false);
+		Input::main->SetMouseLock(true);
+	}
+}
+
+void GUIMainMenu::SetDestroy()
+{
+	Component::SetDestroy();
+}
+
+void GUIMainMenu::Destroy()
+{
+	Component::Destroy();
+}
+
+void GUIMainMenu::Reset()
+{
+	Component::Reset();
+}

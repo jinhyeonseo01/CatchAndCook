@@ -30,7 +30,6 @@ void PathFinder::Init()
 
 void PathFinder::Start()
 {
-
    _firstQuat = GetOwner()->_transform->GetWorldRotation();
 
    auto renderer = GetOwner()->GetComponentWithChilds<MeshRenderer>();

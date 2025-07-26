@@ -1,8 +1,10 @@
 ﻿#pragma once
-class GUIMenu : public Component
+
+
+class GUIMainUI : public Component
 {
 public:
-	~GUIMenu() override;
+	~GUIMainUI() override;
 	bool IsExecuteAble() override;
 	void Init() override;
 	void Start() override;
@@ -19,8 +21,5 @@ public:
 	void SetDestroy() override;
 	void Destroy() override;
 	void Reset() override;
-
-	std::vector<shared_ptr<GameObject>> buttons;
-	bool changeToggle = false;
 };
 

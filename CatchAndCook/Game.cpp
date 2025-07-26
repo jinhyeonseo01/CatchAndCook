@@ -28,6 +28,7 @@
 #include "GUIInventory.h"
 #include "InGameGlobal.h"
 #include "GUIItemBox.h"
+#include "GUIMainMenu.h"
 #include "Terrain.h"
 #include "PathStamp.h"
 #include "ShadowManager.h"
@@ -104,9 +105,10 @@ void Game::Init(HWND hwnd)
 	Sound::main = make_unique<Sound>();
 	Sound::main->Init();
 
+	SceneManager::main->AddScene(SceneType::MainMenu, true);
 	SceneManager::main->AddScene(SceneType::TestScene2, true);
 	SceneManager::main->AddScene(SceneType::Sea01, true);
-	SceneManager::main->ChangeScene(nullptr, SceneManager::main->FindScene(SceneType::TestScene2), false, false);
+	SceneManager::main->ChangeScene(nullptr, SceneManager::main->FindScene(SceneType::MainMenu), false, false);
 };
 
 void Game::PrevUpdate()
@@ -117,7 +119,22 @@ void Game::PrevUpdate()
 		InGameGlobal::main->gold += 1000;
 	}
 
-	if (Input::main->GetKeyDown(KeyCode::Esc) || _quit)
+	if (Input::main->GetKeyDown(KeyCode::Esc))
+	{
+		if (escStack.size() != 0)
+		{
+			int count = escStack.size();
+			escStack[escStack.size() - 1].second();
+			if (count == escStack.size())
+				escStack.erase(escStack.begin() + (escStack.size() - 1));
+		}
+		else
+		{
+			Quit();
+		}
+	}
+
+	if (_quit)
 	{
 		Core::main->Fence();
 		DestroyWindow(Core::main->GetHandle());
@@ -226,6 +243,8 @@ void Game::Release()
 {
 	GUIInventory::main = nullptr;
 	GUIItemBox::main = nullptr;
+	GUIMainMenu::main = nullptr;
+
 	ColliderManager::main.reset(nullptr);
 	SceneManager::main.reset(nullptr);
 	Gizmo::main.reset(nullptr);
@@ -237,6 +256,7 @@ void Game::Release()
 	Core::main.reset(nullptr);
 	IGuid::StaticRelease();
 
+	escStack.clear();
 	main = nullptr;
 }
 
@@ -273,8 +293,6 @@ void Game::CameraUpdate()
 			speed = 1000;
 		}
 	}
-
-
 
 	if (Input::main->GetKey(KeyCode::UpArrow))
 	{
@@ -348,4 +366,40 @@ void Game::SetHandle(HWND hwnd, HINSTANCE hInst)
 {
 	_hwnd = hwnd;
 	_hInstance = hInst;
+}
+
+void Game::AddFunction(const std::shared_ptr<GameObject>& obj, function<void()> func)
+{
+	if (std::ranges::find_if(escStack, [&](const auto& a)
+	{
+		return a.first == obj;
+	}) != escStack.end())
+		return;
+	escStack.push_back(make_pair(obj, func));
+}
+
+void Game::AddFunctionBack(const std::shared_ptr<GameObject>& obj, function<void()> func)
+{
+	auto it = std::ranges::find_if(escStack, [&](const auto& a)
+		{
+			return a.first == obj;
+		});
+	if (it != escStack.end()) {
+		escStack.erase(it);
+	}
+	escStack.push_back(make_pair(obj, func));
+}
+
+void Game::RemoveFunction(const std::shared_ptr<GameObject>& obj)
+{
+	while (true)
+	{
+		auto it = std::ranges::find_if(escStack, [&](const auto& a) {
+			return a.first == obj;
+			});
+		if (it != escStack.end())
+			escStack.erase(it);
+		else
+			break;
+	}
 }

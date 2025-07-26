@@ -39,7 +39,7 @@ void PlayerController::Init()
 void PlayerController::Start()
 {
 	Component::Start();
-	camera = FindObjectByType<CameraComponent>();
+	camera = GetOwner()->GetScene()->Find(L"Camera")->GetComponent<CameraComponent>();
 	_animationList = GetOwner()->GetComponentWithChilds<AnimationListComponent>();
 	_skinnedHierarchy = GetOwner()->GetComponentWithChilds<SkinnedHierarchy>();
 

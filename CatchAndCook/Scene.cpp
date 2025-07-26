@@ -23,7 +23,8 @@
 #include "TerrainManager.h"
 #include "Volumetric.h"
 
- bool Scene::_changeScene=false;
+bool Scene::_changeScene = false;
+SceneType Scene::_changeSceneType = SceneType::Sea01;
 
 void Scene::AddFrontGameObject(const std::shared_ptr<GameObject>& gameObject)
 {

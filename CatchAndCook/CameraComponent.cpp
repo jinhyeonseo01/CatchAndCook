@@ -35,6 +35,9 @@ void CameraComponent::Init()
 void CameraComponent::Start()
 {
 	Component::Start();
+	auto camera = std::static_pointer_cast<Camera>(GetCast<CameraComponent>());
+	CameraManager::main->AddCamera(CameraType::ComponentCamera, camera);
+	CameraManager::main->Setting(CameraType::ComponentCamera);
 	Calculate();
 }
 void CameraComponent::Update()
@@ -55,6 +58,7 @@ void CameraComponent::Update2()
 
 	Component::Update2();
 	auto trans = GetOwner()->_transform;
+	
 	SetCameraPos(trans->GetWorldPosition());
 	SetCameraRotation(trans->GetWorldRotation());
 }
@@ -98,4 +102,22 @@ void CameraComponent::Destroy()
 {
 	Component::Destroy();
 	CameraManager::main->RemoveCamera(CameraType::ComponentCamera);
+}
+
+void CameraComponent::RenderEnd()
+{
+	Component::RenderEnd();
+}
+
+void CameraComponent::ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene)
+{
+	Component::ChangeScene(currentScene, nextScene);
+	auto camera = std::static_pointer_cast<Camera>(GetCast<CameraComponent>());
+	CameraManager::main->AddCamera(CameraType::ComponentCamera, camera);
+	CameraManager::main->Setting(CameraType::ComponentCamera);
+}
+
+void CameraComponent::Reset()
+{
+	Component::Reset();
 }

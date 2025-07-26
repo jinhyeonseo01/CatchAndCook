@@ -1,4 +1,8 @@
 ﻿#include "pch.h"
+#include "MainMenuScene.h"
+
+
+#include "pch.h"
 #include "TestScene_jin.h"
 #include "Camera.h"
 #include "CameraManager.h"
@@ -20,7 +24,7 @@
 #include "BilboardComponent.h"
 #include "AnimationSpriteComponent.h"
 
-void TestScene_jin::Init()
+void MainMenuScene::Init()
 {
 	Scene::Init();
 
@@ -90,121 +94,84 @@ void TestScene_jin::Init()
 	};
 
 	ColliderManager::main->SetCellSize(5);
-	ResourceManager::main->Load<SceneLoader>(L"test", L"../Resources/Datas/Scenes/MainField2.json");
-	auto sceneLoader = ResourceManager::main->Get<SceneLoader>(L"test");
+	ResourceManager::main->Load<SceneLoader>(L"mainMenu", L"../Resources/Datas/Scenes/MainMenu.json");
+	auto sceneLoader = ResourceManager::main->Get<SceneLoader>(L"mainMenu");
 	sceneLoader->Load(GetCast<Scene>());
 
 
 
 	{
+		auto object = SceneManager::main->GetCurrentScene()->Find(L"OnBoardEvent");
+		auto eventComponent = object->GetComponent<EventComponent>();
+		eventComponent->SetBindTag(GameObjectTag::Player);
+		eventComponent->SetBindMessage(L"F키를 눌러 탑승하세요", vec3(0.4f, 0.7f, 0.01f), vec2(0.5f, 0.3f), false);
 
+		eventComponent->BindOnCollisionBegin([=](shared_ptr<Collider>& collider)
 		{
-			auto object = SceneManager::main->GetCurrentScene()->Find(L"OnBoardEvent");
-			auto eventComponent = object->GetComponent<EventComponent>();
-			eventComponent->SetBindTag(GameObjectTag::Player);
-			eventComponent->SetBindMessage(L"Press F To Board", vec3(0.4f, 0.7f, 0.01f), vec2(0.3f, 0.3f), false);
-			//eventComponent->SetBindMessage(L"F키를 눌러 탑승하세요", vec3(0.4f, 0.7f, 0.01f), vec2(0.5f, 0.3f), false);
+			eventComponent->ShowEventMessage(true);
+		});
 
-			eventComponent->BindOnCollisionBegin([=](shared_ptr<Collider>& collider)
-				{
-					eventComponent->ShowEventMessage(true);
-				});
+		eventComponent->BindOnCollisionEnd([=](shared_ptr<Collider>& collider)
+		{
+			eventComponent->ShowEventMessage(false);
+		});
 
-			eventComponent->BindOnCollisionEnd([=](shared_ptr<Collider>& collider)
-				{
-					eventComponent->ShowEventMessage(false);
-				});
+		eventComponent->BindOnUpdateBlock([](shared_ptr<Collider>& collider)
+		{
+			if (Input::main->GetKeyDown(KeyCode::F))
+			{
+				auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
 
-			eventComponent->BindOnUpdateBlock([](shared_ptr<Collider>& collider)
-				{
-					if (Input::main->GetKeyDown(KeyCode::F))
-					{
-						auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
-
-						player->GetComponent<PlayerController>()->SetOnBoard();
-					}
-				});
-		}
+				player->GetComponent<PlayerController>()->SetOnBoard();
+			}
+		});
 	}
 
-	
-	shared_ptr<GameObject> showGameMoeny = SceneManager::main->GetCurrentScene()->CreateGameObject(L"ShowGameMoeny");
-	showGameMoeny->AddComponent<ShowGameMoeny>();
-
-	/*{
-		auto object =SceneManager::main->GetCurrentScene()->Find(L"Fire_animationSprite");
-
-		if (object)
-		{
-
-			vector<shared_ptr<Texture>> _textures;
-			std::wstring path = L"../Resources/Textures/Sprite/jin/fire/";
-
-			for (const auto& entry : fs::directory_iterator(path))
-			{
-				std::wstring& path2 = entry.path().filename().wstring();
-				shared_ptr<Texture> texture = ResourceManager::main->Load<Texture>(path + path2, path + path2);
-				_textures.push_back(texture);
-			}
-
-			object->GetComponent<MeshRenderer>()->GetMaterial(0)->SetPass(RENDER_PASS::Forward);
-			object->AddComponent<BilboardComponent>();
-			auto animationSpriteComponent = object->AddComponent<AnimationSpriteComponent>();
-			animationSpriteComponent->SetTextures(_textures);
-			animationSpriteComponent->SetRoop(true);
-			animationSpriteComponent->SetFrameRate(2.0f);
-		}
-		
-	}*/
 
 }
 
-void TestScene_jin::Update()
+void MainMenuScene::Update()
 {
 	ColliderManager::main->SetCellSize(5);
 
-
-	PathStamp::main->Run();
-
- 	Scene::Update();
-
+	Scene::Update();
+	ComputeManager::main->_dofRender->_on = true;
+	InGameGlobal::main->skyTime += Time::main->GetDeltaTime() * 0.2f;
 }
 
-void TestScene_jin::RenderBegin()
+void MainMenuScene::RenderBegin()
 {
 	Scene::RenderBegin();
 }
 
-void TestScene_jin::Rendering()
+void MainMenuScene::Rendering()
 {
 
 	Scene::Rendering();
 
-	
+
 }
 
-void TestScene_jin::DebugRendering()
+void MainMenuScene::DebugRendering()
 {
 	Scene::DebugRendering();
 }
 
-void TestScene_jin::RenderEnd()
+void MainMenuScene::RenderEnd()
 {
 	Scene::RenderEnd();
 }
 
-void TestScene_jin::Finish()
+void MainMenuScene::Finish()
 {
 	Scene::Finish();
 
 	if (Scene::_changeScene)
 	{
+		ComputeManager::main->_dofRender->_on = false;
 		Scene::_changeScene = false;
-		if (_changeSceneType == SceneType::MainMenu)
-			SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::MainMenu), false, false);
-		else
-			SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::Sea01), false, false);
-
+		InGameGlobal::main->skyTime = 0;
+		SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::TestScene2), false, false);
 	}
 
 
@@ -212,11 +179,11 @@ void TestScene_jin::Finish()
 
 }
 
-TestScene_jin::~TestScene_jin()
+MainMenuScene::~MainMenuScene()
 {
 }
 
-void TestScene_jin::ComputePass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList)
+void MainMenuScene::ComputePass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& cmdList)
 {
 	ComputeManager::main->DispatchMainField(cmdList);
 }
