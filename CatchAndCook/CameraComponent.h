@@ -21,5 +21,8 @@ public:
 	void ChangeParent(const std::shared_ptr<GameObject>& prev, const std::shared_ptr<GameObject>& current) override;
 	void SetDestroy() override;
 	void Destroy() override;
+	void RenderEnd() override;
+	void ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene) override;
+	void Reset() override;
 };
 

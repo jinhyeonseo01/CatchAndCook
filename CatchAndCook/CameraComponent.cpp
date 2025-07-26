@@ -46,8 +46,6 @@ void CameraComponent::Update()
 	{
 		return;
 	}
-	auto camera = std::static_pointer_cast<Camera>(GetCast<CameraComponent>());
-	CameraManager::main->AddCamera(CameraType::ComponentCamera, camera);
 
 	Component::Update();
 	Calculate();
@@ -104,4 +102,22 @@ void CameraComponent::Destroy()
 {
 	Component::Destroy();
 	CameraManager::main->RemoveCamera(CameraType::ComponentCamera);
+}
+
+void CameraComponent::RenderEnd()
+{
+	Component::RenderEnd();
+}
+
+void CameraComponent::ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene)
+{
+	Component::ChangeScene(currentScene, nextScene);
+	auto camera = std::static_pointer_cast<Camera>(GetCast<CameraComponent>());
+	CameraManager::main->AddCamera(CameraType::ComponentCamera, camera);
+	CameraManager::main->Setting(CameraType::ComponentCamera);
+}
+
+void CameraComponent::Reset()
+{
+	Component::Reset();
 }
