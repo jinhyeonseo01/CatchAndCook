@@ -75,7 +75,7 @@ public:
 	bool isEatting = false;
 
 	std::shared_ptr<GameObject> selectedUI;
-
+	std::shared_ptr<GameObject> selectedCookObj;
 	std::weak_ptr<GameObject> point;
 };
 

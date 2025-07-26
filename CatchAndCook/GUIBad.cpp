@@ -78,9 +78,9 @@ void GUIBad::Update()
 			if (sleepObj->GetComponent<RectTransform>()->IsBoundCanvasPos(mousePos))
 			{
 				GetOwner()->SetActiveSelf(false);
-				selectedIndex = 0;
 				InGameGlobal::main->skyTime = ((((int)std::round(InGameGlobal::main->skyTime) / 4) + 1) * 4) + (selectedIndex - 1);
 				ComputeManager::main->SetChangeSceneState(ChangeSceneState::FadeOutIn, 1 / 2.0f);
+				selectedIndex = 0;
 			}
 		}
 	}

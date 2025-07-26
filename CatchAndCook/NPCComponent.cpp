@@ -744,6 +744,26 @@ void NPCEatting::Update()
 			{
 				skinnedHierarchy->Play(eat, 0.0000000001);
 				isSit = false;
+
+				vector<std::shared_ptr<GameObject>> foodObject;
+				npc->GetOwner()->GetScene()->Finds(L"$CookFood", foodObject);
+				float minDistance = 1000;
+
+				for (auto& obj : foodObject)
+				{
+					auto pos3 = obj->_transform->GetWorldPosition();
+					pos3.y = 0;
+					auto pos2 = npc->GetOwner()->_transform->GetWorldPosition();
+					pos2.y = 0;
+					auto dis = Vector3::Distance(pos3, pos2);
+					if (dis < minDistance)
+					{
+						selectedCookObj = obj;
+						minDistance = dis;
+					}
+				}
+				if (selectedCookObj)
+					selectedCookObj->SetActiveSelf(true);
 			}
 			else
 			{
@@ -882,6 +902,11 @@ void NPCEatting::End(const std::shared_ptr<StatePattern>& nextState)
 	if (point)
 	{
 		InGameMainField::GetMain()->shopTablePointsPool.push_back(point);
+	}
+	if (selectedCookObj)
+	{
+		selectedCookObj->SetActiveSelf(false);
+		selectedCookObj = nullptr;
 	}
 	//this->point
 }
