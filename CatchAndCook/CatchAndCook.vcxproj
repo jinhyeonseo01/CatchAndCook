@@ -203,6 +203,8 @@
     <ClCompile Include="Gizmo.cpp" />
     <ClCompile Include="GraphData.cpp" />
     <ClCompile Include="GraphPathFinder.cpp" />
+    <ClCompile Include="GUIBad.cpp" />
+    <ClCompile Include="GUIBadTrigger.cpp" />
     <ClCompile Include="GUIMainMenu.cpp" />
     <ClCompile Include="GUIMainUI.cpp" />
     <ClCompile Include="GUIMenu.cpp" />
@@ -381,6 +383,8 @@
     <ClInclude Include="Gizmo.h" />
     <ClInclude Include="GraphData.h" />
     <ClInclude Include="GraphPathFinder.h" />
+    <ClInclude Include="GUIBad.h" />
+    <ClInclude Include="GUIBadTrigger.h" />
     <ClInclude Include="GUIMainMenu.h" />
     <ClInclude Include="GUIMainUI.h" />
     <ClInclude Include="GUIMenu.h" />

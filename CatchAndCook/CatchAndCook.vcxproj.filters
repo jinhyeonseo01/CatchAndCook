@@ -501,6 +501,8 @@
     <ClCompile Include="UILookUp.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
+    <ClCompile Include="GUIBadTrigger.cpp" />
+    <ClCompile Include="GUIBad.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -951,6 +953,8 @@
     <ClInclude Include="UILookUp.h">
       <Filter>03.Component</Filter>
     </ClInclude>
+    <ClInclude Include="GUIBadTrigger.h" />
+    <ClInclude Include="GUIBad.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath_LH.inl">
