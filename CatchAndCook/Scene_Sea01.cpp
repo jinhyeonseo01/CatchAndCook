@@ -202,7 +202,7 @@ void Scene_Sea01::Init()
 					{
 						auto key = eventComponent->GetSharedState<bool>("EscapeKeyDown");
 						*key = true;
-						ComputeManager::main->StartChangeScene(0.3f);
+						ComputeManager::main->SetChangeSceneState(ChangeSceneState::FadeOut,1.0f);
 					}
 				});
 
@@ -210,7 +210,7 @@ void Scene_Sea01::Init()
 				{
 					auto key = eventComponent->GetSharedState<bool>("EscapeKeyDown");
 				
-					if (ComputeManager::main->IsChangeEffectEnd() && *key)
+					if (ComputeManager::main->GetChangeSceneState()== ChangeSceneState::FadeOutEnd && *key)
 					{
 						*key = false;
 						Scene::_changeScene = true;

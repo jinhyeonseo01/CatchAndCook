@@ -228,7 +228,6 @@ void Terrain::Destroy()
 
 void Terrain::CullingInstancing(Vector3 worldPos, Vector3 look)
 {
-
     Vector3 cameraPos = worldPos;
     Vector3 cameraLook = look;
     cameraLook.Normalize();

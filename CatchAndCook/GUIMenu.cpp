@@ -64,7 +64,7 @@ void GUIMenu::Update()
 				}
 				case 2:
 				{
-					ComputeManager::main->StartChangeScene(1.0f, ChangeSceneState::FadeOut);
+					ComputeManager::main->SetChangeSceneState(ChangeSceneState::FadeOut, 1.0f);
 					changeToggle = true;
 					//메인메뉴
 					break;
@@ -80,7 +80,7 @@ void GUIMenu::Update()
 		}
 	}
 
-	if (changeToggle && ComputeManager::main->IsChangeEffectZero())
+	if (changeToggle && ComputeManager::main->GetChangeSceneState()== ChangeSceneState::FadeOutEnd)
 	{
 		changeToggle = false;
 		Scene::_changeScene = true;
