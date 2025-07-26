@@ -190,19 +190,21 @@ void SeaPlayerController::KeyUpdate(vec3& inputDir, Quaternion& rotation, float 
 
         if (Input::main->GetKeyDown(KeyCode::Shift))
         {
-            _maxSpeed = 2500.0f;
+            _moveForce = 200.0f;
+            _maxSpeed = 1200.0f;
 
             if (_animations.find("idle") != _animations.end())
             {
                 if (_animations.find("idle") != _animations.end())
                 {
-                    _animations["idle"]->_speedMultiplier = 1.8f;
+                    _animations["idle"]->_speedMultiplier = 2.0f;
                 };
             };
         }
 
         if (Input::main->GetKeyUp(KeyCode::Shift))
         {
+            _moveForce = 100.0f;
             _maxSpeed = 800.0f;
 
             if (_animations.find("idle") != _animations.end())
@@ -428,7 +430,7 @@ void SeaPlayerController::SetState(SeaPlayerState state)
 
                 else if (ray.gameObject->HasTag(GameObjectTag::NONE) && !ray.gameObject->HasTag(GameObjectTag::EVENT))
                 {
-                    ParticleManager::main->GenParticle(2.5f, 500, 5.5f,20.0f, ray.worldPos, ray.normal, ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
+                    ParticleManager::main->GenParticle(2.5f, 500, 9.5f,46.0f, ray.worldPos, ray.normal, ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
                         , ResourceManager::main->Get<Texture>(L"smokeTexture"));
                 }
 
