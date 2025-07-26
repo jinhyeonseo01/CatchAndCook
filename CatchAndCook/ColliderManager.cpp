@@ -135,15 +135,6 @@ void ColliderManager::AddColliderForRay(const std::shared_ptr<Collider>& collide
 		_collidersForRay[SceneType].push_back(collider);
 }
 
-void ColliderManager::RemoveAColliderForRay(const std::shared_ptr<Collider>& collider)
-{
-
-	const auto& SceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
-
-	auto it = std::ranges::find(_collidersForRay[SceneType], collider);
-	if (it != _collidersForRay[SceneType].end())
-		_collidersForRay[SceneType].erase(it);
-}
 
 void ColliderManager::RemoveCollider(const std::shared_ptr<Collider>& collider)
 {

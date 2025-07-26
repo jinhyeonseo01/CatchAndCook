@@ -127,9 +127,7 @@ void Collider::Enable()
 void Collider::Disable()
 {
 	Component::Disable();
-
 	ColliderManager::main->RemoveCollider(GetCast<Collider>());
-	ColliderManager::main->RemoveAColliderForRay(GetCast<Collider>());
 }
 
 void Collider::RenderBegin()
