@@ -128,13 +128,15 @@ void EventComponent::SetBindMessage(const wstring& message, const vec3& pos, con
 		auto& renderer = text->AddComponent<MeshRenderer>();
 		auto& sprite = text->AddComponent<TextSprite>();
 		
+		constexpr int width = 1920;
+		constexpr int height = 1080;
 
 		sprite->SetLocalPos(pos);
 		sprite->SetSize(size);
 		sprite->SetText(message);
 
 		//sprite->CreateObject(550, 256, L"Arial", FontColor::WHITE, 60);
-		sprite->CreateObject(550, 256, L"Noto Sans KR", FontColor::WHITE, 60);
+		sprite->CreateObject(width*size.x, height*size.y, L"Noto Sans KR", FontColor::WHITE, 60);
 		shared_ptr<Material> material = make_shared<Material>();
 		material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
 		material->SetPass(RENDER_PASS::UI);
