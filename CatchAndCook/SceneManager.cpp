@@ -65,11 +65,11 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 	{
 	case SceneType::MainMenu:
 		Sound::main->Play("main", 0.14f);
-		CameraManager::main->SetActiveCamera(CameraType::ComponentCamera);
+		CameraManager::main->Setting(CameraType::ComponentCamera);
 		break;
 	case SceneType::TestScene2:
 		Sound::main->Play("main", 0.14f);
-		CameraManager::main->SetActiveCamera(CameraType::ComponentCamera);
+		CameraManager::main->Setting(CameraType::ComponentCamera);
 		break;
 	case SceneType::Sea01:
 		Sound::main->Play("underwater2", 0.4f);
@@ -97,7 +97,11 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 	if (currentScene != nullptr)
 	{
 		for (auto& obj : prevScene->_dont_destroy_gameObjects)
+		{
+			for (auto& component : obj->GetComponentAll())
+				component->ChangeScene(currentScene, nextScene);
 			nextScene->_dont_destroy_gameObjects.push_back(obj);
+		}
 		currentScene->_dont_destroy_gameObjects.clear();
 		if (removeExecute)
 			currentScene->Release();

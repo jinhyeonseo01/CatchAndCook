@@ -172,7 +172,6 @@ void MainMenuScene::Finish()
 		Scene::_changeScene = false;
 		InGameGlobal::main->skyTime = 0;
 		SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::TestScene2), false, false);
-
 	}
 
 

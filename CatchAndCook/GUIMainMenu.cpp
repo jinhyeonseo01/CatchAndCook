@@ -1,11 +1,15 @@
 ﻿#include "pch.h"
 #include "GUIMainMenu.h"
 
+#include "Camera.h"
+#include "CameraManager.h"
 #include "Game.h"
 #include "RectTransform.h"
 
 
 COMPONENT(GUIMainMenu);
+
+std::shared_ptr<GUIMainMenu> GUIMainMenu::main = nullptr;
 
 GUIMainMenu::~GUIMainMenu()
 {
@@ -19,11 +23,14 @@ bool GUIMainMenu::IsExecuteAble()
 void GUIMainMenu::Init()
 {
 	Component::Init();
+	main = GetCast<GUIMainMenu>();
 }
 
 void GUIMainMenu::Start()
 {
 	Component::Start();
+
+	GetOwner()->GetScene()->SetDontDestroy(GetOwner());
 
 	int i = 0;
 	while (auto obj = GetOwner()->GetScene()->Find(L"Button_" + to_wstring(i)))
@@ -49,7 +56,7 @@ void GUIMainMenu::Update()
 				{
 				case 0:
 				{
-					ComputeManager::main->StartChangeScene(1.0f);
+					ComputeManager::main->StartChangeScene(1.0f, ChangeSceneState::FadeOut);
 					changeToggle = true;
 					break;
 				}
@@ -78,11 +85,13 @@ void GUIMainMenu::Update()
 		}
 	}
 
-	if (changeToggle && ComputeManager::main->IsChangeEffectEnd())
+	if (changeToggle && ComputeManager::main->IsChangeEffectZero())
 	{
 		Scene::_changeScene = true;
 		changeToggle = false;
 	}
+
+	CameraManager::main->Setting(CameraType::ComponentCamera);
 }
 
 void GUIMainMenu::Update2()
@@ -128,6 +137,17 @@ void GUIMainMenu::ChangeParent(const std::shared_ptr<GameObject>& prev, const st
 void GUIMainMenu::ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene)
 {
 	Component::ChangeScene(currentScene, nextScene);
+	ComputeManager::main->StartChangeScene(1.0f, ChangeSceneState::FadeIn);
+	if (nextScene->_type == SceneType::MainMenu)
+	{
+		GetOwner()->SetActiveSelf(true);
+		Input::main->SetMouseLock(false);
+	}
+	else
+	{
+		GetOwner()->SetActiveSelf(false);
+		Input::main->SetMouseLock(true);
+	}
 }
 
 void GUIMainMenu::SetDestroy()

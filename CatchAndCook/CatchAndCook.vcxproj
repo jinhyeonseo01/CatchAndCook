@@ -204,6 +204,7 @@
     <ClCompile Include="GraphData.cpp" />
     <ClCompile Include="GraphPathFinder.cpp" />
     <ClCompile Include="GUIMainMenu.cpp" />
+    <ClCompile Include="GUIMainUI.cpp" />
     <ClCompile Include="GUIMenu.cpp" />
     <ClCompile Include="GUIMenuToggle.cpp" />
     <ClCompile Include="GUINPCFood.cpp" />
@@ -378,6 +379,7 @@
     <ClInclude Include="GraphData.h" />
     <ClInclude Include="GraphPathFinder.h" />
     <ClInclude Include="GUIMainMenu.h" />
+    <ClInclude Include="GUIMainUI.h" />
     <ClInclude Include="GUIMenu.h" />
     <ClInclude Include="GUIMenuToggle.h" />
     <ClInclude Include="GUINPCFood.h" />

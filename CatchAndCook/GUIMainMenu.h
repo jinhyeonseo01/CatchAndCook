@@ -4,6 +4,8 @@
 class GUIMainMenu : public Component
 {
 public:
+	static shared_ptr<GUIMainMenu> main;
+
 	std::vector<shared_ptr<GameObject>> buttons;
 
 	bool changeToggle = false;

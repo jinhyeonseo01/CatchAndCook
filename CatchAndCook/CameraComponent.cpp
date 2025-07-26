@@ -37,7 +37,7 @@ void CameraComponent::Start()
 	Component::Start();
 	auto camera = std::static_pointer_cast<Camera>(GetCast<CameraComponent>());
 	CameraManager::main->AddCamera(CameraType::ComponentCamera, camera);
-	CameraManager::main->SetActiveCamera(CameraType::ComponentCamera);
+	CameraManager::main->Setting(CameraType::ComponentCamera);
 	Calculate();
 }
 void CameraComponent::Update()
@@ -46,6 +46,8 @@ void CameraComponent::Update()
 	{
 		return;
 	}
+	auto camera = std::static_pointer_cast<Camera>(GetCast<CameraComponent>());
+	CameraManager::main->AddCamera(CameraType::ComponentCamera, camera);
 
 	Component::Update();
 	Calculate();

@@ -56,7 +56,9 @@ void GUIMenu::Update()
 				}
 				case 2:
 				{
-						//메인메뉴
+					ComputeManager::main->StartChangeScene(1.0f, ChangeSceneState::FadeOut);
+					changeToggle = true;
+					//메인메뉴
 					break;
 				}
 				case 3:
@@ -67,6 +69,17 @@ void GUIMenu::Update()
 				}
 			}
 		}
+	}
+
+	if (changeToggle && ComputeManager::main->IsChangeEffectZero())
+	{
+		changeToggle = false;
+		Scene::_changeScene = true;
+		Scene::_changeSceneType = SceneType::MainMenu;
+
+		auto menu = GetOwner()->GetScene()->Find(L"GUIMenu");
+		menu->SetActiveSelf(!menu->GetActiveSelf());
+
 	}
 }
 

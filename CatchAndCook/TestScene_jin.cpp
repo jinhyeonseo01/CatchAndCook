@@ -200,7 +200,10 @@ void TestScene_jin::Finish()
 	if (Scene::_changeScene)
 	{
 		Scene::_changeScene = false;
-		SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::Sea01), false, false);
+		if (_changeSceneType == SceneType::MainMenu)
+			SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::MainMenu), false, false);
+		else
+			SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::Sea01), false, false);
 
 	}
 

@@ -539,6 +539,7 @@ public:
 	void StartChangeScene(float speed, ChangeSceneState state);
 
 
+	ChangeSceneData _data;
 private:
 	shared_ptr<Texture> _pingTexture;
 	shared_ptr<Texture> _pongTexture;
@@ -547,7 +548,6 @@ private:
 
 	bool _on = false;
 	float _speed{};
-	ChangeSceneData _data;
 
 	ChangeSceneState state = ChangeSceneState::None;
 	
@@ -573,7 +573,9 @@ public:
 public:
 	void Resize();
 	void StartChangeScene(float speed);
+	void StartChangeScene(float speed,ChangeSceneState state);
 	bool IsChangeEffectEnd() { return  _changeSceneCompute->_on == false; }
+	bool IsChangeEffectZero() { return  _changeSceneCompute->_data.toblack <= 0; }
 
 public:
 

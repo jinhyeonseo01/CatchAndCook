@@ -28,6 +28,7 @@
 #include "GUIInventory.h"
 #include "InGameGlobal.h"
 #include "GUIItemBox.h"
+#include "GUIMainMenu.h"
 #include "Terrain.h"
 #include "PathStamp.h"
 #include "ShadowManager.h"
@@ -227,6 +228,8 @@ void Game::Release()
 {
 	GUIInventory::main = nullptr;
 	GUIItemBox::main = nullptr;
+	GUIMainMenu::main = nullptr;
+
 	ColliderManager::main.reset(nullptr);
 	SceneManager::main.reset(nullptr);
 	Gizmo::main.reset(nullptr);

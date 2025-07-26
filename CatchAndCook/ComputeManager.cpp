@@ -1319,6 +1319,11 @@ void ComputeManager::StartChangeScene(float speed)
 	_changeSceneCompute->StartChangeScene(speed);
 }
 
+void ComputeManager::StartChangeScene(float speed, ChangeSceneState state)
+{
+	_changeSceneCompute->StartChangeScene(speed, state);
+}
+
 Scattering::Scattering()
 {
 }
@@ -1465,10 +1470,9 @@ void ChangeSceneCompute::Dispatch(ComPtr<ID3D12GraphicsCommandList>& cmdList, in
 	{
 		_data.toblack -= _speed * Time::main->GetDeltaTime();
 
-		if (_data.toblack < 0.0f)
+		if (_data.toblack <= 0.0f)
 		{
 			_data.toblack = 0;
-			_on = false;
 		}
 		break;
 	}
