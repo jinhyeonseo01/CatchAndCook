@@ -87,7 +87,7 @@ void Scene_Sea01::Init()
 		shared_ptr<GameObject> gameObject = CreateGameObject(L"grid_orgins");
 		auto meshRenderer = gameObject->AddComponent<MeshRenderer>();
 		auto a = gameObject->AddComponent<WaterController>();
-		a->Setting(L"sea_color_sea.bin", L"sea_move_real.bin");
+		a->Setting(L"sea_color_sea2.bin", L"sea_move_real.bin");
 
 		//meshRenderer->SetDebugShader(ResourceManager::main->Get<Shader>(L"DebugNormal_Sea"));
 		gameObject->_transform->SetLocalPosition(vec3(0, 500.0f, 0));
@@ -283,9 +283,9 @@ void Scene_Sea01::Rendering()
 	auto& cmdList = Core::main->GetCmdList();
 	Core::main->GetRenderTarget()->ClearDepth();
 
-	//Profiler::Set("PASS : Shadow", BlockTag::CPU);  
-	//ShadowPass(cmdList);
-	//Profiler::Fin();
+	Profiler::Set("PASS : Shadow", BlockTag::CPU);  
+	ShadowPass(cmdList);
+	Profiler::Fin();
 
 	Profiler::Set("PASS : Deferred", BlockTag::CPU);
 	DeferredPass(cmdList);
@@ -410,7 +410,7 @@ void Scene_Sea01::ShadowPass(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& 
 						}
 					}
 
-		/*			SettingPrevData(renderStructure, RENDER_PASS::PASS::Shadow);*/
+					SettingPrevData(renderStructure, RENDER_PASS::PASS::Shadow);
 
 					if (renderStructure.renderer->isInstancing() == false)
 					{
