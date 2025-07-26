@@ -514,7 +514,8 @@ enum class ChangeSceneState
 	None,
 	FadeIn,
 	FadeOut,
-	FadeOutEnd
+	FadeOutEnd,
+	FadeOutIn,
 };
 
 class ChangeSceneCompute : public ComputeBase

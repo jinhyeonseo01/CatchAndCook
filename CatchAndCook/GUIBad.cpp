@@ -25,6 +25,13 @@ void GUIBad::Init()
 void GUIBad::Start()
 {
 	Component::Start();
+	int i = 0;
+	while (auto obj = GetOwner()->GetChildByName(L"Button_" + to_wstring(i)))
+	{
+		buttons.push_back(obj);
+		++i;
+	}
+	//Button_0
 }
 
 void GUIBad::Update()
@@ -35,6 +42,7 @@ void GUIBad::Update()
 		{
 			GetOwner()->SetActiveSelf(false);
 		});
+
 
 
 	Vector2 mousePos;
@@ -48,9 +56,31 @@ void GUIBad::Update()
 
 		if (auto exitObj = GetOwner()->GetChildByName(L"Exit"))
 		{
-			if (exitObj->GetComponent<RectTransform>()->IsBoundScreenPos(Input::main->GetMousePosition()))
+			if (exitObj->GetComponent<RectTransform>()->IsBoundCanvasPos(mousePos))
 			{
 				GetOwner()->SetActiveSelf(false);
+			}
+		}
+
+		for (int i = 0; i < buttons.size(); i++)
+		{
+			auto rect = buttons[i]->GetComponent<RectTransform>();
+
+			if (rect->IsBoundCanvasPos(mousePos))
+			{
+				selectedIndex = i;
+				break;
+			}
+		}
+
+		if (auto sleepObj = GetOwner()->GetChildByName(L"Button_Bad"))
+		{
+			if (sleepObj->GetComponent<RectTransform>()->IsBoundCanvasPos(mousePos))
+			{
+				GetOwner()->SetActiveSelf(false);
+				selectedIndex = 0;
+				InGameGlobal::main->skyTime = ((((int)std::round(InGameGlobal::main->skyTime) / 4) + 1) * 4) + (selectedIndex - 1);
+				ComputeManager::main->SetChangeSceneState(ChangeSceneState::FadeOutIn, 1 / 2.0f);
 			}
 		}
 	}

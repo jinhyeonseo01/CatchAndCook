@@ -1446,6 +1446,17 @@ void ChangeSceneCompute::Dispatch(ComPtr<ID3D12GraphicsCommandList>& cmdList, in
 		}
 		break;
 	}
+	case ChangeSceneState::FadeOutIn:
+	{
+		_data.toblack -= _speed * Time::main->GetDeltaTime();
+
+		if (_data.toblack <= 0.0f)
+		{
+			_data.toblack = 0.0f;
+			SetState(ChangeSceneState::FadeIn);
+		}
+		break;
+	}
 	case ChangeSceneState::FadeOut:
 	{
 		_data.toblack -= _speed * Time::main->GetDeltaTime();

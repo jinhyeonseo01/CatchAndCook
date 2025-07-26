@@ -2,6 +2,7 @@
 #include "GUIMainUI.h"
 
 #include "Game.h"
+#include "GUIInventory.h"
 
 
 COMPONENT(GUIMainUI)
@@ -91,6 +92,14 @@ void GUIMainUI::ChangeScene(const std::shared_ptr<Scene>& currentScene, const st
 	}
 	else
 		GetOwner()->SetActiveSelf(true);
+
+	if (GUIInventory::main)
+	{
+		if (nextScene->_type == SceneType::TestScene2)
+			GUIInventory::main->GetOwner()->SetActiveSelf(true);
+		else
+			GUIInventory::main->GetOwner()->SetActiveSelf(false);
+	}
 }
 
 void GUIMainUI::SetDestroy()

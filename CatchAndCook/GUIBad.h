@@ -2,6 +2,10 @@
 class GUIBad : public Component
 {
 public:
+
+	std::vector<std::shared_ptr<GameObject>> buttons;
+	int selectedIndex = 0;
+
 	~GUIBad() override;
 	bool IsExecuteAble() override;
 	void Init() override;
