@@ -141,7 +141,7 @@ void Terrain::Start()
                 };
 
                 renderer->SetMaterials(newMaterials);
-                renderer->SetSpecialMaterials();
+       /*         renderer->SetSpecialMaterials();*/
 
             }
         }
