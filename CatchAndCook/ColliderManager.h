@@ -36,8 +36,6 @@ public:
 	static unique_ptr<ColliderManager> main;
 
 	void AddCollider(const std::shared_ptr<Collider>& collider);
-	void AddColliderForRay(const std::shared_ptr<Collider>& collider);
-	void RemoveAColliderForRay(const std::shared_ptr<Collider>& collider);
 	void RemoveCollider(const std::shared_ptr<Collider>& collider);
 
 	void Update();

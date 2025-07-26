@@ -109,40 +109,20 @@ void ColliderManager::AddCollider(const std::shared_ptr<Collider>& collider)
 		if (collider->GetOwner()->GetType() == GameObjectType::Static)
 		{
 			if(std::ranges::find(_staticColliderGrids[SceneType][cell], collider) == _staticColliderGrids[SceneType][cell].end())
-				_staticColliderGrids[SceneType][cell].push_back(collider);
+				_staticColliderGrids[SceneType][cell].emplace_back(collider);
 		}
+
 		else if (collider->GetOwner()->GetType() == GameObjectType::Dynamic)
 		{
 			if (std::ranges::find(_dynamicColliderList[SceneType], collider) == _dynamicColliderList[SceneType].end())
-				_dynamicColliderList[SceneType].push_back(collider);
-			/*if (std::ranges::find(_dynamicColliderGrids[cell], collider) == _dynamicColliderGrids[cell].end())
-				_dynamicColliderGrids[cell].push_back(collider);
-			_dynamicColliderCashing[collider].push_back(cell);*/
+				_dynamicColliderList[SceneType].emplace_back(collider);
 		}
 	}
 
-	if (_colliderLinkTable[SceneType].find(collider) == _colliderLinkTable[SceneType].end()) {
-		_colliderLinkTable[SceneType][collider] = {};
-	}
-}
-
-void ColliderManager::AddColliderForRay(const std::shared_ptr<Collider>& collider)
-{
-	const auto& SceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
-
 	auto it = std::ranges::find(_collidersForRay[SceneType], collider);
 	if (it == _collidersForRay[SceneType].end())
-		_collidersForRay[SceneType].push_back(collider);
-}
+		_collidersForRay[SceneType].emplace_back(collider);
 
-void ColliderManager::RemoveAColliderForRay(const std::shared_ptr<Collider>& collider)
-{
-
-	const auto& SceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
-
-	auto it = std::ranges::find(_collidersForRay[SceneType], collider);
-	if (it != _collidersForRay[SceneType].end())
-		_collidersForRay[SceneType].erase(it);
 }
 
 void ColliderManager::RemoveCollider(const std::shared_ptr<Collider>& collider)
@@ -266,7 +246,6 @@ std::unordered_set<std::shared_ptr<Collider>> ColliderManager::GetPotentialColli
 std::unordered_set<std::shared_ptr<Collider>> ColliderManager::GetPotentialCollisionsDirect(const vector<vec3>& vec)
 {
 	std::unordered_set<std::shared_ptr<Collider>> potentialCollisions;
-	potentialCollisions.reserve(32);
 	const auto& occupiedCells = vec;
 	const auto& SceneType = SceneManager::main->GetCurrentScene()->GetSceneType();
 

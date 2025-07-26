@@ -58,6 +58,7 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 	auto currentScene = prevScene;
 	std::vector<std::shared_ptr<GameObject>> dontObj;
 
+
 	Core::main->FenceCurrentFrame();
 	Sound::main->StopAll();
 
@@ -73,7 +74,7 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 		break;
 	case SceneType::Sea01:
 		Sound::main->Play("underwater2", 0.4f);
-		CameraManager::main->SetActiveCamera(CameraType::SeaCamera);
+		CameraManager::main->Setting(CameraType::SeaCamera);
 		break;
 	default:
 		break;
@@ -114,6 +115,8 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 
 	if (initExecute)
 		_currentScene->Init();
+
+	ComputeManager::main->SetChangeSceneState(ChangeSceneState::FadeIn,1.0f);
 }
 
 std::shared_ptr<Scene> SceneManager::FindScene(SceneType type)

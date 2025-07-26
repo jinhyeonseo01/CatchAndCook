@@ -86,7 +86,7 @@ void Collider::Start()
 		groupRootObject = obj->GetOwner();
 	}
 
-	if (GetOwner()->GetType() == GameObjectType::Static && GetOwner()->GetActive())
+	if (GetOwner()->GetActive())
 	{
 		CalculateBounding();
 		ColliderManager::main->AddCollider(GetCast<Collider>());
@@ -97,39 +97,26 @@ void Collider::Start()
 void Collider::Update()
 {
 	Component::Update();
-
 	CalculateBounding();
-	ColliderManager::main->AddCollider(GetCast<Collider>());
 }
 
 void Collider::Update2()
 {
 	Component::Update2();
-
 	CalculateBounding();
 }
 
 void Collider::Enable()
 {
 	Component::Enable();
+	ColliderManager::main->AddCollider(GetCast<Collider>());
 
-	ColliderManager::main->AddColliderForRay(GetCast<Collider>());
-
-	if (GetOwner()->GetType() == GameObjectType::Static)
-		CalculateBounding();
-	
-	groupId = PhysicsComponent::GetPhysicsGroupID(GetOwner());
-	if (auto obj = GetOwner()->GetComponentWithParents<PhysicsComponent>()) {
-		groupRootObject = obj->GetOwner();
-	}
 }
 
 void Collider::Disable()
 {
 	Component::Disable();
-
 	ColliderManager::main->RemoveCollider(GetCast<Collider>());
-	ColliderManager::main->RemoveAColliderForRay(GetCast<Collider>());
 }
 
 void Collider::RenderBegin()
@@ -183,7 +170,6 @@ void Collider::SetDestroy()
 void Collider::Destroy()
 {
 	Component::Destroy();
-	cout << "DESTORY" << endl;
 	ColliderManager::main->RemoveCollider(GetCast<Collider>());
 
 }

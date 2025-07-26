@@ -513,7 +513,8 @@ enum class ChangeSceneState
 {
 	None,
 	FadeIn,
-	FadeOut
+	FadeOut,
+	FadeOutEnd
 };
 
 class ChangeSceneCompute : public ComputeBase
@@ -533,23 +534,19 @@ private:
 
 private:
 	virtual void Resize();
+	ChangeSceneState GetState() { return _state; }
+	void SetState(ChangeSceneState state, float speed = 1.0f) { _state = state; _speed = speed; }
 
 public:
-    void StartChangeScene(float speed);
-	void StartChangeScene(float speed, ChangeSceneState state);
-
-
 	ChangeSceneData _data;
 private:
 	shared_ptr<Texture> _pingTexture;
 	shared_ptr<Texture> _pongTexture;
 	shared_ptr<Shader> _shader;
 
-
-	bool _on = false;
 	float _speed{};
 
-	ChangeSceneState state = ChangeSceneState::None;
+	ChangeSceneState _state = ChangeSceneState::None;
 	
 
 	friend class ComputeManager;
@@ -572,10 +569,16 @@ public:
 
 public:
 	void Resize();
-	void StartChangeScene(float speed);
-	void StartChangeScene(float speed,ChangeSceneState state);
-	bool IsChangeEffectEnd() { return  _changeSceneCompute->_on == false; }
-	bool IsChangeEffectZero() { return  _changeSceneCompute->_data.toblack <= 0; }
+
+	void SetChangeSceneState(ChangeSceneState state, float speed = 1.0f)
+	{
+		_changeSceneCompute->SetState(state, speed);
+	}
+
+	ChangeSceneState GetChangeSceneState() const
+	{
+		return _changeSceneCompute->GetState();
+	}
 
 public:
 

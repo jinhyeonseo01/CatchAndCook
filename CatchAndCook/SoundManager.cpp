@@ -114,7 +114,6 @@ void Sound::Play(const string& name, float volume, bool overlapped)
 
     if (overlapped == false && data._isPlaying)
     {
-        std::cout << "already playing" << "\n";
         return;
     }
 
@@ -139,13 +138,7 @@ void Sound::Stop(const string& name)
             channel->stop();
         }
     }
-    for (auto& [name, soundData] : _soundDatas)
-    {
-        if (soundData.channel)
-        {
-            soundData.channel->isPlaying(&soundData._isPlaying);
-        }
-    }
+    _soundDatas[name]._isPlaying = false;
 }
 
 void Sound::StopAll()
@@ -181,15 +174,11 @@ void Sound::Pause(const string& name)
             bool paused = false;
             channel->getPaused(&paused);
             channel->setPaused(!paused);
+
+			paused ? _soundDatas[name]._isPlaying = false : _soundDatas[name]._isPlaying = true;
         }
     }
-    for (auto& [name, soundData] : _soundDatas)
-    {
-        if (soundData.channel)
-        {
-            soundData.channel->isPlaying(&soundData._isPlaying);
-        }
-    }
+    
 };
 
 

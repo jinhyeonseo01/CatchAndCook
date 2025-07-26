@@ -64,13 +64,13 @@ void GUIMainMenu::Update()
 				{
 				case 0:
 				{
-					ComputeManager::main->StartChangeScene(1.0f, ChangeSceneState::FadeOut);
+					ComputeManager::main->SetChangeSceneState(ChangeSceneState::FadeOut,1.0f);
 					changeToggle = true;
 					break;
 				}
 				case 1:
 				{
-					ComputeManager::main->StartChangeScene(1.0f, ChangeSceneState::FadeOut);
+					ComputeManager::main->SetChangeSceneState(ChangeSceneState::FadeOut, 1.0f);
 					changeToggle = true;
 					break;
 				}
@@ -96,7 +96,7 @@ void GUIMainMenu::Update()
 		}
 	}
 
-	if (changeToggle && ComputeManager::main->IsChangeEffectZero())
+	if (changeToggle && ComputeManager::main->GetChangeSceneState()==ChangeSceneState::FadeOutEnd)
 	{
 		Scene::_changeScene = true;
 		changeToggle = false;
@@ -148,7 +148,6 @@ void GUIMainMenu::ChangeParent(const std::shared_ptr<GameObject>& prev, const st
 void GUIMainMenu::ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene)
 {
 	Component::ChangeScene(currentScene, nextScene);
-	ComputeManager::main->StartChangeScene(1.0f, ChangeSceneState::FadeIn);
 	if (nextScene->_type == SceneType::MainMenu)
 	{
 		GetOwner()->SetActiveSelf(true);
