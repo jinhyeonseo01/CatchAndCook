@@ -50,8 +50,8 @@ void RectTransform::Start()
     {
         if (canvas->type == CanvasType::Overlay)
         {
-            std::cout << to_string(_rectTransformData.rectSize) << "A\n";
-            std::cout << to_string(canvas->resolution) << "A\n";
+           /* std::cout << to_string(_rectTransformData.rectSize) << "A\n";
+            std::cout << to_string(canvas->resolution) << "A\n";*/
 
 			_rectTransformData.rectSize = canvas->resolution;
 			_rectTransformData.pivot = Vector2(0.5f, 0.5f);
