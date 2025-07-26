@@ -8,6 +8,7 @@
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 HCURSOR g_cursor = NULL; // 전역 변수로 설정
 
 int main()
@@ -16,7 +17,7 @@ int main()
 //	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 //#endif
 
-	g_cursor = LoadCursorFromFile(L"../Resources/Cursor/cursor8.ani");
+	g_cursor = LoadCursorFromFile(L"../Resources/Cursor/cursor5.ani");
 	
 	if (g_cursor == NULL)
 	{

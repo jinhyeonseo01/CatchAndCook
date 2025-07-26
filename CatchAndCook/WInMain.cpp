@@ -5,18 +5,33 @@
 #define MAX_LOADSTRING 100
 
 HINSTANCE hInst;
-WCHAR szTitle[MAX_LOADSTRING] = L"My Window";
-WCHAR szWindowClass[MAX_LOADSTRING] = L"MyWindowClass";
+WCHAR szTitle[MAX_LOADSTRING] = L"Catch&Cook";
+WCHAR szWindowClass[MAX_LOADSTRING] = L"Catch&Cook";
 ATOM MyRegisterClass(HINSTANCE hInstance);
 BOOL InitInstance(HINSTANCE, int);
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 HWND hWnd;
+HCURSOR g_cursor = NULL;
 
 int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     LPWSTR lpCmdLine, int nCmdShow)
 {
+
+	g_cursor = LoadCursorFromFile(L"../Resources/Cursor/cursor5.ani");
+
+	if (g_cursor == NULL)
+	{
+		MessageBox(NULL, L"애니메이션 커서 로드 실패", L"에러", MB_OK | MB_ICONERROR);
+		return 1;
+	}
+	if (!g_cursor)
+	{
+		DWORD err = GetLastError();
+		std::wcerr << L"커서 로딩 실패, 오류 코드: " << err << std::endl;
+	}
+
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
@@ -38,31 +53,34 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			if (msg.message == WM_QUIT)
 				break;
 
-			if (!TranslateAccelerator(msg.hwnd, nullptr, &msg))
-			{
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
 		}
 		else
 		{
 			game->Run();
 		}
 	}
-	Game::main = nullptr;
+
     return (int)msg.wParam;
 }
 
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
-    WNDCLASSEXW wcex = {};
-    wcex.cbSize = sizeof(WNDCLASSEX);
-    wcex.style = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc = WndProc;
-    wcex.hInstance = hInstance;
-    wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-    wcex.lpszClassName = szWindowClass;
+	WNDCLASSEXW wcex = {};
+	wcex.cbSize = sizeof(WNDCLASSEX);
+	wcex.style = CS_HREDRAW | CS_VREDRAW;
+	wcex.lpfnWndProc = WndProc;
+	wcex.cbClsExtra = 0;
+	wcex.cbWndExtra = 0;
+	wcex.hInstance = hInstance;
+	wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON2));         // 큰 아이콘
+	wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+	wcex.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);             // 배경 브러시
+	wcex.lpszMenuName = nullptr;
+	wcex.lpszClassName = L"Catch&Cook";                                   // 클래스 이름
+	wcex.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON2));       // 작은 아이콘
+
 
     return RegisterClassExW(&wcex);
 }
@@ -82,6 +100,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 		wr.right - wr.left, wr.bottom - wr.top,
 		nullptr, nullptr,
 		hInstance, nullptr);
+
+
 
     if (!hWnd)
         return FALSE;
@@ -103,6 +123,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	switch (message)
 	{
+	case WM_SETCURSOR:
+	{
+		if (g_cursor && LOWORD(lParam) == HTCLIENT) 
+		{
+			SetCursor(g_cursor);
+			return TRUE; 
+		}
+		break; 
+	}
 
 	case WM_SIZE:
 	{

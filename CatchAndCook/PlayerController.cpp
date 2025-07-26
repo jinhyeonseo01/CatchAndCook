@@ -377,6 +377,7 @@ void PlayerController::CollisionBegin(const std::shared_ptr<Collider>& collider,
 {
 	Component::CollisionBegin(collider, other);
 
+
 }
 
 void PlayerController::CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
