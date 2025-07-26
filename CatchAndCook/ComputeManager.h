@@ -465,7 +465,7 @@ struct ScatteringData
 	float absorption = 485.356f;
 	vec2 Padding;
 
-	float density = 9.6f;
+	float density = 15.0f;
 	vec3 scatterColor = vec3(1.0f, 1.0f, 1.0f);
 
 	vec3 direction = vec3(0, 1, 0);
