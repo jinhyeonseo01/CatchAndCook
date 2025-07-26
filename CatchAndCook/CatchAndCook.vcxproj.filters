@@ -434,29 +434,73 @@
     <ClCompile Include="BilboardComponent.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
-    <ClCompile Include="Canvas.cpp" />
-    <ClCompile Include="CookObject.cpp" />
-    <ClCompile Include="CookItemBoxObject.cpp" />
-    <ClCompile Include="GUIItem.cpp" />
-    <ClCompile Include="GUISprite.cpp" />
-    <ClCompile Include="ImageRenderer.cpp" />
-    <ClCompile Include="GUIItemBox.cpp" />
-    <ClCompile Include="RectTransform.cpp" />
-    <ClCompile Include="UILookUp.cpp" />
-    <ClCompile Include="GUIInventory.cpp" />
-    <ClCompile Include="GUICookProgress.cpp" />
-    <ClCompile Include="CookMargeObject.cpp" />
-    <ClCompile Include="AddDontDestroy.cpp" />
-    <ClCompile Include="GUIMenu.cpp" />
-    <ClCompile Include="GUIMenuToggle.cpp" />
-    <ClCompile Include="GUINPCFood.cpp" />
     <ClCompile Include="ShowGameMoeny.cpp" />
-    <ClCompile Include="GUIMainMenu.cpp" />
-    <ClCompile Include="GUIMainUI.cpp" />
-    <ClCompile Include="GUIOption.cpp" />
-    <ClCompile Include="MainMenuScene.cpp" />
-    <ClCompile Include="GUIRecipe.cpp" />
-    <ClCompile Include="GUIRecipeTrigger.cpp" />
+    <ClCompile Include="CookItemBoxObject.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Canvas.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="AddDontDestroy.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="CookMargeObject.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="CookObject.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GUICookProgress.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIInventory.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIItem.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIItemBox.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIMainMenu.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIMainUI.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIMenu.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIMenuToggle.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GUINPCFood.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIOption.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIRecipe.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIRecipeTrigger.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="RectTransform.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageRenderer.cpp">
+      <Filter>03.Component\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="GUISprite.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenuScene.cpp">
+      <Filter>06.Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="UILookUp.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -840,29 +884,73 @@
     <ClInclude Include="BilboardComponent.h">
       <Filter>03.Component</Filter>
     </ClInclude>
-    <ClInclude Include="Canvas.h" />
-    <ClInclude Include="CookObject.h" />
-    <ClInclude Include="CookItemBoxObject.h" />
-    <ClInclude Include="GUIInventory.h" />
-    <ClInclude Include="GUIItem.h" />
-    <ClInclude Include="GUISprite.h" />
-    <ClInclude Include="ImageRenderer.h" />
-    <ClInclude Include="GUIItemBox.h" />
-    <ClInclude Include="RectTransform.h" />
-    <ClInclude Include="UILookUp.h" />
-    <ClInclude Include="GUICookProgress.h" />
-    <ClInclude Include="CookMargeObject.h" />
-    <ClInclude Include="AddDontDestroy.h" />
-    <ClInclude Include="GUIMenu.h" />
-    <ClInclude Include="GUIMenuToggle.h" />
-    <ClInclude Include="GUINPCFood.h" />
     <ClInclude Include="ShowGameMoeny.h" />
-    <ClInclude Include="GUIMainMenu.h" />
-    <ClInclude Include="GUIMainUI.h" />
-    <ClInclude Include="GUIOption.h" />
-    <ClInclude Include="MainMenuScene.h" />
-    <ClInclude Include="GUIRecipe.h" />
-    <ClInclude Include="GUIRecipeTrigger.h" />
+    <ClInclude Include="Canvas.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="AddDontDestroy.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="CookItemBoxObject.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="CookMargeObject.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="CookObject.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GUICookProgress.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIInventory.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIItem.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIItemBox.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIMainMenu.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIMainUI.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIMenu.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIMenuToggle.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GUINPCFood.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIOption.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIRecipe.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIRecipeTrigger.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="RectTransform.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageRenderer.h">
+      <Filter>03.Component\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="GUISprite.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenuScene.h">
+      <Filter>06.Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="UILookUp.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath_LH.inl">
@@ -1093,12 +1181,18 @@
     <FxCompile Include="..\Resources\Shaders\SpriteProgressCycle.hlsl">
       <Filter>998.HLSL\Graphics\KSH</Filter>
     </FxCompile>
-    <FxCompile Include="..\Resources\Shaders\GUISpriteShader.hlsl" />
-    <FxCompile Include="..\Resources\Shaders\TestTransparent_Total.hlsl" />
     <FxCompile Include="..\Resources\Shaders\changeScene.hlsl">
       <Filter>998.HLSL\Compute</Filter>
     </FxCompile>
-    <FxCompile Include="..\Resources\Shaders\ParticleComputeShaderDropDown.hlsl" />
+    <FxCompile Include="..\Resources\Shaders\TestTransparent_Total.hlsl">
+      <Filter>998.HLSL\Graphics\JIN</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\GUISpriteShader.hlsl">
+      <Filter>998.HLSL\Graphics\JIN</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shaders\ParticleComputeShaderDropDown.hlsl">
+      <Filter>998.HLSL\Graphics\KSH</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Resources\Shaders\WaterShader.hlsl">
