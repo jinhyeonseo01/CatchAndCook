@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "GUIMainUI.h"
 
+#include "Game.h"
 
 
 COMPONENT(GUIMainUI)
@@ -27,6 +28,16 @@ void GUIMainUI::Start()
 void GUIMainUI::Update()
 {
 	Component::Update();
+
+	auto menu = GetOwner()->GetScene()->Find(L"GUIMenu");
+	auto toggle = GetOwner()->GetScene()->Find(L"GUIMenuToggle");
+	if (!menu->GetActiveSelf())
+	{
+		Game::main->AddFunction(toggle, [=]() {
+			menu->SetActiveSelf(true);
+			Input::main->SetMouseLock(false);
+		});
+	}
 }
 
 void GUIMainUI::Update2()
@@ -42,6 +53,7 @@ void GUIMainUI::Enable()
 void GUIMainUI::Disable()
 {
 	Component::Disable();
+	Game::main->RemoveFunction(GetOwner());
 }
 
 void GUIMainUI::RenderBegin()

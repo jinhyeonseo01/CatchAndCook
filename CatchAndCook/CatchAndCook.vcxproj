@@ -208,6 +208,7 @@
     <ClCompile Include="GUIMenu.cpp" />
     <ClCompile Include="GUIMenuToggle.cpp" />
     <ClCompile Include="GUINPCFood.cpp" />
+    <ClCompile Include="GUIOption.cpp" />
     <ClCompile Include="InteractiveComponent.cpp" />
     <ClCompile Include="itemBoxComponent.cpp" />
     <ClCompile Include="MainMenuScene.cpp" />
@@ -383,6 +384,7 @@
     <ClInclude Include="GUIMenu.h" />
     <ClInclude Include="GUIMenuToggle.h" />
     <ClInclude Include="GUINPCFood.h" />
+    <ClInclude Include="GUIOption.h" />
     <ClInclude Include="InteractiveComponent.h" />
     <ClInclude Include="itemBoxComponent.h" />
     <ClInclude Include="MainMenuScene.h" />

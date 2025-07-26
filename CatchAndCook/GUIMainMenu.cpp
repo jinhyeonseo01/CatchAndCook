@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "CameraManager.h"
 #include "Game.h"
+#include "GUIOption.h"
 #include "RectTransform.h"
 
 
@@ -33,7 +34,7 @@ void GUIMainMenu::Start()
 	GetOwner()->GetScene()->SetDontDestroy(GetOwner());
 
 	int i = 0;
-	while (auto obj = GetOwner()->GetScene()->Find(L"Button_" + to_wstring(i)))
+	while (auto obj = GetOwner()->GetChildByName(L"Button_" + to_wstring(i)))
 	{
 		buttons.push_back(obj);
 		++i;
@@ -43,11 +44,18 @@ void GUIMainMenu::Start()
 void GUIMainMenu::Update()
 {
 	Component::Update();
-
+	Input::main->SetMouseLock(false);
 	for (int i = 0; i < buttons.size(); i++)
 	{
 		auto rect = buttons[i]->GetComponent<RectTransform>();
-
+		auto line = rect->GetOwner()->GetChildByName(L"Division");
+		if (line)
+		{
+			if (rect->IsBoundScreenPos(Input::main->GetMousePosition()))
+				line->SetActiveSelf(true);
+			else
+				line->SetActiveSelf(false);
+		}
 		if (Input::main->GetMouseDown(KeyCode::LeftMouse))
 		{
 			if (rect->IsBoundScreenPos(Input::main->GetMousePosition()))
@@ -62,12 +70,15 @@ void GUIMainMenu::Update()
 				}
 				case 1:
 				{
-
+					ComputeManager::main->StartChangeScene(1.0f, ChangeSceneState::FadeOut);
+					changeToggle = true;
 					break;
 				}
 				case 2:
 				{
-
+					auto op = GetOwner()->GetChildByName(L"GUIOption");
+					if (op)
+						op->SetActiveSelf(true);
 					break;
 				}
 				case 3:

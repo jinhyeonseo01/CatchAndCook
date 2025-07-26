@@ -12,6 +12,11 @@ public:
 	void CameraUpdate(); //temp
 	void SetHandle(HWND hwnd,HINSTANCE hInst);
 	void Quit() { _quit = true; };
+
+
+	void AddFunction(const std::shared_ptr<GameObject>& obj, function<void()>);
+	void AddFunctionBack(const std::shared_ptr<GameObject>& obj, function<void()>);
+	void RemoveFunction(const std::shared_ptr<GameObject>& obj);
 private:
 	HWND _hwnd;
 	HINSTANCE _hInstance;
@@ -19,6 +24,7 @@ private:
 	bool _fullScreen = false;
 	bool _quit = false;
 
+	std::vector<std::pair<std::shared_ptr<GameObject>, function<void()>>> escStack;
 
 	BoundingOrientedBox box;
 };

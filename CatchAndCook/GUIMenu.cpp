@@ -2,6 +2,7 @@
 #include "GUIMenu.h"
 
 #include "Game.h"
+#include "GUIOption.h"
 #include "RectTransform.h"
 
 
@@ -35,6 +36,11 @@ void GUIMenu::Update()
 {
 	Component::Update();
 
+	Game::main->AddFunction(GetOwner(), [=]()
+		{
+			GetOwner()->SetActiveSelf(false);
+		});
+
 	for (int i=0;i< buttons.size();i++)
 	{
 		auto rect = buttons[i]->GetComponent<RectTransform>();
@@ -52,6 +58,8 @@ void GUIMenu::Update()
 					}
 				case 1:
 				{
+					GetOwner()->GetScene()->Find(L"GUIOption")->SetActiveSelf(true);
+					GetOwner()->SetActiveSelf(false);
 					break;
 				}
 				case 2:
@@ -63,10 +71,11 @@ void GUIMenu::Update()
 				}
 				case 3:
 					{
-					Game::main->Quit();
+						Game::main->Quit();
 						break;
 					}
 				}
+				break;
 			}
 		}
 	}
@@ -96,6 +105,8 @@ void GUIMenu::Enable()
 void GUIMenu::Disable()
 {
 	Component::Disable();
+	Game::main->RemoveFunction(GetOwner());
+	Input::main->SetMouseLock(true);
 }
 
 void GUIMenu::RenderBegin()

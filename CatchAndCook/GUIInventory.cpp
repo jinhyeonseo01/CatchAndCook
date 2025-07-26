@@ -2,6 +2,7 @@
 #include "GUIInventory.h"
 
 #include "Canvas.h"
+#include "Game.h"
 #include "GUIItemBox.h"
 #include "RectTransform.h"
 

@@ -2,6 +2,7 @@
 #include "GUIItemBox.h"
 
 #include "Canvas.h"
+#include "Game.h"
 #include "GUIInventory.h"
 #include "RectTransform.h"
 
@@ -107,6 +108,11 @@ void GUIItemBox::Update()
 
 	SlotUpdate();
 
+	Game::main->AddFunction(GetOwner(), [=]()
+		{
+			GetOwner()->SetActiveSelf(false);
+		});
+
 	Vector2 mousePos;
 
 	if (auto canvas = GetOwner()->GetComponentWithParents<Canvas>())
@@ -185,6 +191,7 @@ void GUIItemBox::Enable()
 void GUIItemBox::Disable()
 {
 	Component::Disable();
+	Game::main->RemoveFunction(GetOwner());
 	Input::main->SetMouseLock(true);
 }
 
