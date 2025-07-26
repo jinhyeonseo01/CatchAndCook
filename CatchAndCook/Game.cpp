@@ -105,10 +105,10 @@ void Game::Init(HWND hwnd)
 	Sound::main = make_unique<Sound>();
 	Sound::main->Init();
 
-	SceneManager::main->AddScene(SceneType::MainMenu, false);
+	SceneManager::main->AddScene(SceneType::MainMenu, true);
 	SceneManager::main->AddScene(SceneType::TestScene2, true);
-	SceneManager::main->AddScene(SceneType::Sea01, false);
-	SceneManager::main->ChangeScene(nullptr, SceneManager::main->FindScene(SceneType::TestScene2), false, false);
+	SceneManager::main->AddScene(SceneType::Sea01, true);
+	SceneManager::main->ChangeScene(nullptr, SceneManager::main->FindScene(SceneType::MainMenu), false, false);
 };
 
 void Game::PrevUpdate()

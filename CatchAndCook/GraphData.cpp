@@ -27,9 +27,9 @@ void GraphData::GenVertices(const vec3& center, const vec3& extents, float spaci
         }
     }
 
-    std::cout << "Graph Vertices Count: "
+   /* std::cout << "Graph Vertices Count: "
         << "Left = " << datas[LeftRight::Left].size()
         << ", Right = " << datas[LeftRight::Right].size()
         << ", Total = " << datas[LeftRight::Left].size() + datas[LeftRight::Right].size()
-        << std::endl;
+        << std::endl;*/
 }

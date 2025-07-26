@@ -331,7 +331,7 @@ void InteractiveComponent::SetState(InteractiveState state)
 		ParticleManager::main->GenParticle(8.0f, 500, 6.0f, 30.0f, GetOwner()->_transform->GetWorldPosition() + offset, vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
 		, ResourceManager::main->Get<Texture>(L"success"));
 
-		wcout << GetOwner()->GetRoot()->GetName() << endl;
+	/*	wcout << GetOwner()->GetRoot()->GetName() << endl;*/
 		InGameGlobal::main->AddItem(GetOwner()->GetRoot()->GetName());
 
 		MiniGameTotalOnOff(false);

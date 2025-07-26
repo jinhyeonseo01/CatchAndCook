@@ -59,7 +59,7 @@ void Terrain::Start()
 
         for (int i = 0; i < _instancesObject.size(); i++)
         {
-            std::cout << "Instance Count (" << to_string(_instancesObject[i].lock()->GetName()) << ") : " << _instanceDatas[i].size() << std::endl;
+        /*    std::cout << "Instance Count (" << to_string(_instancesObject[i].lock()->GetName()) << ") : " << _instanceDatas[i].size() << std::endl;*/
             auto instanceBuffer = Core::main->GetBufferManager()->GetInstanceBufferPool(BufferType::TransformInstanceParam)->Alloc();
             memcpy(instanceBuffer->ptr, _instanceDatas[i].data(), _instanceDatas[i].size() * sizeof(Instance_Transform));
             instanceBuffer->SetIndex(_instanceDatas[i].size(), sizeof(Instance_Transform));
