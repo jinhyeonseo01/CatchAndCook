@@ -754,6 +754,9 @@ void NPCEatting::Update()
 				this->isSit = false;
 				this->isSitEnd = true;
 				skinnedHierarchy->Play(situp, 0.25);
+
+				if (selectedUI)
+					selectedUI->SetActiveSelf(false);
 			}
 		}
 

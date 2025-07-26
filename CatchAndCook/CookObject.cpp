@@ -178,11 +178,11 @@ void CookObject::Update()
 
 					if (GetOwner()->HasTag(GameObjectTag::CookType_Cut))
 					{
-						process->SetMaxTime(8);
+						process->SetMaxTime(7);
 					}
 					if (GetOwner()->HasTag(GameObjectTag::CookType_Bake))
 					{
-						process->SetMaxTime(15);
+						process->SetMaxTime(11);
 						process->type = 2;
 
 						//KSH
@@ -199,7 +199,7 @@ void CookObject::Update()
 					}
 					if (GetOwner()->HasTag(GameObjectTag::CookType_Boil))
 					{
-						process->SetMaxTime(10);
+						process->SetMaxTime(9);
 						process->type = 1;
 						//KSH
 						ParticleManager::main->GenParticle(15.0f, 200, 0.15f, 0.3f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::CookFire, ParticleColorType::Red, { 0,0,0,0 }

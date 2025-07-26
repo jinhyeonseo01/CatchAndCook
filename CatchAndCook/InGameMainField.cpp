@@ -58,8 +58,9 @@ void InGameMainField::Update()
 	float normTime = InGameGlobal::main->skyTime;
 	while (normTime >= 4)
 		normTime -= 4;
-	if (InGameGlobal::main->skyTime >= 0.9999 && InGameGlobal::main->skyTime <= 1.89)
+	if (InGameGlobal::main->skyTime >= 0.9999 && InGameGlobal::main->skyTime < 2)
 	{
+		InGameGlobal::main->skyTime += Time::main->GetDeltaTime() * (1 / 180.0f);
 		InGameMainField::GetMain()->shopOpen = true;
 	}
 	else
