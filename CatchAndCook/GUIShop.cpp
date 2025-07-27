@@ -44,10 +44,10 @@ void GUIShop::Start()
 	}
 
 	shopDatas.push_back(make_pair(1, ItemData(7, -1)));
-	shopDatas.push_back(make_pair(2, ItemData(3, -1)));
-	shopDatas.push_back(make_pair(2, ItemData(4, -1)));
-	shopDatas.push_back(make_pair(1, ItemData(5, -1)));
-	shopDatas.push_back(make_pair(1, ItemData(6, -1)));
+	//shopDatas.push_back(make_pair(2, ItemData(3, -1)));
+	//shopDatas.push_back(make_pair(2, ItemData(4, -1)));
+	//shopDatas.push_back(make_pair(1, ItemData(5, -1)));
+	//shopDatas.push_back(make_pair(1, ItemData(6, -1)));
 }
 
 void GUIShop::Update()
