@@ -281,6 +281,15 @@ void Model::Init(const wstring& path, VertexType vertexType)
 	}
 }
 
+void Model::ExportBinary()
+{
+	
+}
+
+void Model::ImportBinary(const wstring& path)
+{
+}
+
 void Model::DebugLog()
 {
 
