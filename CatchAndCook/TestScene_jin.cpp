@@ -21,6 +21,7 @@
 #include "AnimationSpriteComponent.h"
 #include "FireWorkManager.h"
 #include "FireWork.h"
+#include "GUIInventory.h"
 
 void TestScene_jin::Init()
 {
@@ -147,10 +148,13 @@ void TestScene_jin::Init()
 
 			eventComponent->BindOnUpdateBlock([](shared_ptr<Collider> collider)
 				{
-					//TODO : 폭죽있는지 검사하기
 					if (Input::main->GetKeyDown(KeyCode::F))
 					{
-						FireWorkManager::main->SetFire();
+						if (GUIInventory::main->GetItemDataIndex(GUIInventory::main->selectIndex).itemCode == 12)
+						{
+							auto itemData = GUIInventory::main->PopItemDataIndex(GUIInventory::main->selectIndex);
+							FireWorkManager::main->SetFire();
+						}
 					}
 				});
 		}
