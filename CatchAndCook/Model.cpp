@@ -12,6 +12,7 @@
 #include "Transform.h"
 #include "Mesh.h"
 #include "Vertex.h"
+#include "ModelJsonSerializer.h"
 
 AssimpPack::AssimpPack()
 {
@@ -197,7 +198,7 @@ void Model::Init(const wstring& path, VertexType vertexType)
 	auto model = GetCast<Model>();
 	auto str = wstr::split(path, L"/");
 	SetName(to_string(wstr::split(str[str.size() - 1], L".")[0]));
-
+	_path = path;
 	// -------- �Ž� ���� --------
 	_modelMeshList.reserve(scene->mNumMeshes);
 	for (int i = 0; i < scene->mNumMeshes; i++)
@@ -281,14 +282,54 @@ void Model::Init(const wstring& path, VertexType vertexType)
 	}
 }
 
-void Model::ExportBinary()
+void Model::ExportBinary(const wstring& path, const wstring& subKey)
 {
-	
+	auto subPath = wstr::split(_path, L"../Resources/");
+	auto bakingRootPath = L"../Resources/BakedModels/";
+	if (subPath.size() > 1)
+	{
+		auto splitSubPath = wstr::split(subPath[1], L"/");
+		auto subFolderPath = std::wstring();
+		for (size_t i = 0; i < splitSubPath.size() - 1; i++) {
+			subFolderPath = subFolderPath + splitSubPath[i] + L"/";
+		}
+		auto bakingFolderPath = bakingRootPath + subFolderPath;
+		auto bakingFullPath = bakingFolderPath + (splitSubPath[splitSubPath.size() - 1] + L".modelbin") + L"\0";
+
+		if (!std::filesystem::exists(bakingFolderPath))
+			std::filesystem::create_directories(bakingFolderPath);
+
+		std::ifstream file(to_string(bakingFullPath));
+
+		json exportModelJson;
+		//file << exportModelJson.json;
+		// 여기서 저장
+
+		file.close();
+	}
 }
 
-void Model::ImportBinary(const wstring& path)
+void Model::ImportBinary(const wstring& path, const wstring& subKey)
 {
+	auto subPath = wstr::split(path, L"../Resources/");
+	auto bakingRootPath = L"../Resources/BakedModels/";
+	if (subPath.size() > 1)
+	{
+		auto splitSubPath = wstr::split(subPath[1], L"/");
+		auto subFolderPath = std::wstring();
+		for (size_t i = 0; i < splitSubPath.size() - 1; i++) {
+			subFolderPath = subFolderPath + splitSubPath[i] + L"/";
+		}
+		auto bakingFolderPath = bakingRootPath + subFolderPath;
+		auto bakingFullPath = bakingFolderPath + (splitSubPath[splitSubPath.size() - 1] + L".assbin") + L"\0";
+
+		if (std::filesystem::exists(bakingFolderPath))
+		{
+
+		}
+	}
 }
+
 
 void Model::DebugLog()
 {
