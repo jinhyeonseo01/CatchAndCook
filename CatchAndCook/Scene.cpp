@@ -24,7 +24,8 @@
 #include "Volumetric.h"
 
 bool Scene::_changeScene = false;
-SceneType Scene::_changeSceneType = SceneType::Sea01;
+SceneType Scene::_changeSceneType = SceneType::TestScene2;
+SceneType Scene::_prevSceneType = SceneType::TestScene2;
 
 void Scene::AddFrontGameObject(const std::shared_ptr<GameObject>& gameObject)
 {

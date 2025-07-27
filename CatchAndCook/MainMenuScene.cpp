@@ -102,13 +102,12 @@ void MainMenuScene::Finish()
 
 	if (Scene::_changeScene)
 	{
+		cout << " MainMenuScene Change Scene to " << (int)Scene::_prevSceneType << endl;
 		ComputeManager::main->_dofRender->_on = false;
 		Scene::_changeScene = false;
 		InGameGlobal::main->skyTime = 0;
-		SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::TestScene2), false, false);
+		SceneManager::main->ChangeScene(SceneManager::main->FindScene(SceneType::MainMenu), SceneManager::main->FindScene(Scene::_prevSceneType), false, false);
 	}
-
-
 
 
 }

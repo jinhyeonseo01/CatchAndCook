@@ -211,6 +211,7 @@ void Scene_Sea01::Init()
 					if (ComputeManager::main->GetChangeSceneState()== ChangeSceneState::FadeOutEnd && *key)
 					{
 						*key = false;
+						Scene::_changeSceneType = SceneType::TestScene2;
 						Scene::_changeScene = true;
 					}
 				});
@@ -342,8 +343,7 @@ void Scene_Sea01::Finish()
 	if (_changeScene)
 	{
 		_changeScene = false;
-		CameraManager::main->SetActiveCamera(CameraType::ComponentCamera);
-		SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::TestScene2), false, false);
+		SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(Scene::_changeSceneType), false, false);
 		InGameGlobal::main->skyTime = 1.0f;
 	}
 

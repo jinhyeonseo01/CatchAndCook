@@ -267,6 +267,7 @@ void BoatController::DivingSequnce()
 
 					_fpressedCount = 0;
 					Scene::_changeScene = true;
+					Scene::_changeSceneType = SceneType::Sea01;
 					CameraManager::main->SetActiveCamera(CameraType::SeaCamera);
 				}
 

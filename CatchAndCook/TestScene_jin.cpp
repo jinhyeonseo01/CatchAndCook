@@ -152,6 +152,7 @@ void TestScene_jin::Init()
 					{
 						if (GUIInventory::main->GetItemDataIndex(GUIInventory::main->selectIndex).itemCode == 12)
 						{
+
 							auto itemData = GUIInventory::main->PopItemDataIndex(GUIInventory::main->selectIndex);
 							FireWorkManager::main->SetFire();
 						}
@@ -212,15 +213,9 @@ void TestScene_jin::Finish()
 	if (Scene::_changeScene)
 	{
 		Scene::_changeScene = false;
-		if (_changeSceneType == SceneType::MainMenu)
-			SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::MainMenu), false, false);
-		else
-			SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::Sea01), false, false);
+		SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(_changeSceneType), false, false);
 
 	}
-
-
-
 
 }
 
