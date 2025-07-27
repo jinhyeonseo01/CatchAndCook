@@ -74,7 +74,9 @@ void BoatController::Update()
 
 	if (Input::main->GetKeyDown(KeyCode::F))
 	{
-		if (_seq == Sequnce::Driving)
+		_fpressedCount++;
+
+		if (_seq == Sequnce::Driving && _fpressedCount ==2)
 		{
 			auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
 			_seq = Sequnce::turnRight;
@@ -91,7 +93,6 @@ void BoatController::Update()
 	if (_seq == Sequnce::Driving)
 	{
 		
-
 		if (Input::main->GetKey(KeyCode::W))
 		{
 			vec3 pos = GetOwner()->_transform->GetLocalPosition();
@@ -132,8 +133,7 @@ void BoatController::Update()
 
 void BoatController::Update2()
 {
-	if (_onBoard == false)
-		return;
+
 }
 
 void BoatController::Enable()
@@ -265,6 +265,7 @@ void BoatController::DivingSequnce()
 					_seq = Sequnce::Driving;
 					up = true;
 
+					_fpressedCount = 0;
 					Scene::_changeScene = true;
 					CameraManager::main->SetActiveCamera(CameraType::SeaCamera);
 				}

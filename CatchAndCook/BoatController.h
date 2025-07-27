@@ -32,10 +32,9 @@ public:
 	void ChangeParent(const std::shared_ptr<GameObject>& prev, const std::shared_ptr<GameObject>& current) override;
 	void SetDestroy() override;
 	void Destroy() override;
-
 	void SetOnBaord();
 
-	
+	int _fpressedCount = 0;
 
 private:
 	void DivingSequnce();
@@ -53,8 +52,6 @@ public:
 	static float _pitch;
 	static float _roll;
 
-	bool _FirstFcall = false;
-	
 	vec3 _right{};
 private:
 	bool _onBoard = false;
