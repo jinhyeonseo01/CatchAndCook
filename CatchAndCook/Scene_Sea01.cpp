@@ -342,9 +342,13 @@ void Scene_Sea01::Finish()
 	if (_changeScene)
 	{
 		_changeScene = false;
-		CameraManager::main->SetActiveCamera(CameraType::ComponentCamera);
-		SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::TestScene2), false, false);
-		InGameGlobal::main->skyTime = 1.0f;
+		if (_changeSceneType == SceneType::MainMenu)
+			SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::MainMenu), false, false);
+		else
+		{
+			SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::TestScene2), false, false);
+			InGameGlobal::main->skyTime = 1.0f;
+		}
 	}
 
 
