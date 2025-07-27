@@ -205,6 +205,7 @@
     <ClCompile Include="GraphPathFinder.cpp" />
     <ClCompile Include="GUIBad.cpp" />
     <ClCompile Include="GUIBadTrigger.cpp" />
+    <ClCompile Include="GUIDevelop.cpp" />
     <ClCompile Include="GUIMainMenu.cpp" />
     <ClCompile Include="GUIMainUI.cpp" />
     <ClCompile Include="GUIMenu.cpp" />
@@ -387,6 +388,7 @@
     <ClInclude Include="GraphPathFinder.h" />
     <ClInclude Include="GUIBad.h" />
     <ClInclude Include="GUIBadTrigger.h" />
+    <ClInclude Include="GUIDevelop.h" />
     <ClInclude Include="GUIMainMenu.h" />
     <ClInclude Include="GUIMainUI.h" />
     <ClInclude Include="GUIMenu.h" />

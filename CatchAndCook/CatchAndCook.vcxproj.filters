@@ -501,10 +501,21 @@
     <ClCompile Include="UILookUp.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
-    <ClCompile Include="GUIBadTrigger.cpp" />
-    <ClCompile Include="GUIBad.cpp" />
-    <ClCompile Include="NPCShopOwner.cpp" />
-    <ClCompile Include="GUIShop.cpp" />
+    <ClCompile Include="NPCShopOwner.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIShop.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIDevelop.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIBadTrigger.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIBad.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -955,10 +966,21 @@
     <ClInclude Include="UILookUp.h">
       <Filter>03.Component</Filter>
     </ClInclude>
-    <ClInclude Include="GUIBadTrigger.h" />
-    <ClInclude Include="GUIBad.h" />
-    <ClInclude Include="NPCShopOwner.h" />
-    <ClInclude Include="GUIShop.h" />
+    <ClInclude Include="NPCShopOwner.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIShop.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIDevelop.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIBadTrigger.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIBad.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath_LH.inl">

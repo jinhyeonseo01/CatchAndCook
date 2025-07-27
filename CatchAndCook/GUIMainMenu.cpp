@@ -83,7 +83,9 @@ void GUIMainMenu::Update()
 				}
 				case 3:
 				{
-
+					auto op = GetOwner()->GetChildByName(L"GUIDevelop");
+					if (op)
+						op->SetActiveSelf(true);
 					break;
 				}
 				case 4:
