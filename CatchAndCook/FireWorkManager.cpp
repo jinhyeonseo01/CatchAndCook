@@ -40,8 +40,7 @@
 
  void FireWorkManager::SetFire()
  {
-	 if (CheckAllFireWorkDone())
-	 {
+	 
 		 cout << " FireWorkManager::SetFire()" << _fireworks.size()  << endl;
 
 		 for (auto& firework : _fireworks)
@@ -55,7 +54,7 @@
 		 }
 
 		 _dobby->SetAnimation("magic");
-	 }
+	 
 
  }
 

@@ -137,7 +137,7 @@ void TestScene_jin::Init()
 			{
 				auto eventComponent = object->AddComponent<EventComponent>();
 				eventComponent->SetBindTag(GameObjectTag::Player);
-				eventComponent->SetBindMessage(L"F키를 눌러 폭죽을 넣으세요.", vec3(0.35f, 0.7f, 0.01f), vec2(0.5f, 0.5f), false);
+				eventComponent->SetBindMessage(L"도비: 나에게 폭죽을 주면 재밌는 마술을 보여줄게 ", vec3(0.25f, 0.7f, 0.01f), vec2(0.7f, 0.7f), false);
 
 				eventComponent->BindOnCollisionBegin([=](shared_ptr<Collider> collider)
 					{
@@ -155,9 +155,12 @@ void TestScene_jin::Init()
 						{
 							if (GUIInventory::main->GetItemDataIndex(GUIInventory::main->selectIndex).itemCode == 12)
 							{
-
-								auto itemData = GUIInventory::main->PopItemDataIndex(GUIInventory::main->selectIndex);
-								FireWorkManager::main->SetFire();
+								if (FireWorkManager::main->CheckAllFireWorkDone())
+								{
+									InGameGlobal::main->skyTime = 2.0f;
+									auto itemData = GUIInventory::main->PopItemDataIndex(GUIInventory::main->selectIndex);
+									FireWorkManager::main->SetFire();
+								}
 							}
 						}
 					});
