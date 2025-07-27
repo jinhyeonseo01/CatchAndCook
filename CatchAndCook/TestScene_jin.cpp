@@ -105,7 +105,7 @@ void TestScene_jin::Init()
 			auto object = SceneManager::main->GetCurrentScene()->Find(L"OnBoardEvent");
 			auto eventComponent = object->AddComponent<EventComponent>();
 			eventComponent->SetBindTag(GameObjectTag::Player);
-			eventComponent->SetBindMessage(L"F키를 눌러 탑승하세요", vec3(0.35f, 0.7f, 0.01f), vec2(0.5f, 0.5f), false);
+			eventComponent->SetBindMessage(L"E키를 눌러 탑승하세요", vec3(0.35f, 0.7f, 0.01f), vec2(0.5f, 0.5f), false);
 
 			eventComponent->BindOnCollisionBegin([=](shared_ptr<Collider> collider)
 				{
@@ -119,7 +119,7 @@ void TestScene_jin::Init()
 
 			eventComponent->BindOnUpdateBlock([](shared_ptr<Collider> collider)
 				{
-					if (Input::main->GetKeyDown(KeyCode::F))
+					if (Input::main->GetKeyDown(KeyCode::E))
 					{
 						auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
 						player->GetComponent<PlayerController>()->SetOnBoard();

@@ -72,10 +72,9 @@ void BoatController::Update()
 	if (_onBoard == false)
 		return;
 
-
-	if (_seq == Sequnce::Driving)
+	if (Input::main->GetKeyDown(KeyCode::F))
 	{
-		if (Input::main->GetKeyDown(KeyCode::F) && _FirstFcall == false)
+		if (_seq == Sequnce::Driving)
 		{
 			auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
 			_seq = Sequnce::turnRight;
@@ -85,8 +84,13 @@ void BoatController::Update()
 			{
 				_skined->Play(_animation["right_turn"], 0.1f);
 			};
+		}
 
-		};
+	};
+
+	if (_seq == Sequnce::Driving)
+	{
+		
 
 		if (Input::main->GetKey(KeyCode::W))
 		{
@@ -121,7 +125,7 @@ void BoatController::Update()
 
 
 
-	_FirstFcall = true;
+
 
 
 }
@@ -168,7 +172,6 @@ void BoatController::SetOnBaord()
 {
 	CameraManager::main->SetActiveCamera(CameraType::BoatCamera);
 	_onBoard = true;
-	_FirstFcall = true;
 	_skined->Play(_animation["idle"], 0.5f);
 
 }
