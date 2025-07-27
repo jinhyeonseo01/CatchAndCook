@@ -30,7 +30,7 @@ public:
 
 private:
 	fireballColor _color = fireballColor::yellow;
-	float _autoDestroyTime = 2.0f;
+	float _autoDestroyTime = 1.0f;
 	float _currTime = 0;
 };
 

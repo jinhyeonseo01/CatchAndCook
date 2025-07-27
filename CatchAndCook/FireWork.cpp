@@ -117,7 +117,6 @@ void FireWork::SpawnFireBall()
 		return;
 	}
 	
-	cout << "spwan" << endl;
 
 	auto exmeshRenderer = origin->GetComponent<MeshRenderer>();
 	std::vector<std::shared_ptr<Material>>& materials = exmeshRenderer->GetMaterials();

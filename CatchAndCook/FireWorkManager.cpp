@@ -30,10 +30,10 @@
 		 }
 	 }
 
-	 //for (auto& ele : _fireBalls)
-	 //{
-		// ele.second->SetActiveSelf(false);
-	 //}
+	 for (auto& ele : _fireBalls)
+	 {
+		 ele.second->SetActiveSelf(false);
+	 }
 
  };
 
