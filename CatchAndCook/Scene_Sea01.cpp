@@ -345,6 +345,7 @@ void Scene_Sea01::Finish()
 		_changeScene = false;
 		SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(Scene::_changeSceneType), false, false);
 		InGameGlobal::main->skyTime = 1.0f;
+
 	}
 
 

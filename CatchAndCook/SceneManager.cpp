@@ -121,6 +121,7 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 		_currentScene->Init();
 
 	ComputeManager::main->SetChangeSceneState(ChangeSceneState::FadeIn,1.0f);
+	Scene::_changeSceneType = SceneType::None;
 }
 
 std::shared_ptr<Scene> SceneManager::FindScene(SceneType type)
