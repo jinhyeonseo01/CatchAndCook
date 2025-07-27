@@ -158,11 +158,6 @@ void MeshRenderer::RenderBegin()
 		Gizmo::Box(GetBound(), vec4(0, 0, 1.0f, 1.0f));
 	}
 
-	if (GetOwner()->GetName() == L"Harpoon")
-	{
-		int a = 5;
-	}
-	
 	for (int i = 0; i < _mesh.size(); i++)
 	{
 		auto& currentMesh = _mesh[i];

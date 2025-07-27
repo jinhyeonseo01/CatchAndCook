@@ -85,13 +85,19 @@ void Core::RenderBegin()
 void Core::RenderEnd()
 {
     ComPtr<ID3D12GraphicsCommandList> cmdList = _cmdList[CURRENT_CONTEXT_INDEX];
-    {
 #ifdef  IMGUI_ON
-		Core::main->GetRenderTarget()->GetRenderTarget()->ResourceBarrier(D3D12_RESOURCE_STATE_RENDER_TARGET);
-        cmdList->SetDescriptorHeaps(1, _imguiHeap.GetAddressOf());
-        ImguiManager::main->Render();
-#endif //  IMGUI_ON
+    if (Input::main->GetKeyDown(KeyCode::F5))
+    {
+		ImguiManager::main->_on = !ImguiManager::main->_on;
     }
+
+    if (ImguiManager::main->_on)
+    {
+            Core::main->GetRenderTarget()->GetRenderTarget()->ResourceBarrier(D3D12_RESOURCE_STATE_RENDER_TARGET);
+            cmdList->SetDescriptorHeaps(1, _imguiHeap.GetAddressOf());
+            ImguiManager::main->Render();
+    }
+#endif //  IMGUI_ON
 
     _renderTarget->RenderEnd();
 

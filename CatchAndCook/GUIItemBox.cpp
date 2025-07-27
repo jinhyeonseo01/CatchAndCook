@@ -141,13 +141,13 @@ void GUIItemBox::Update()
 			{
 				_selectedItemData = slot->GetComponent<GUIItem>()->GetItemData();
 				_selectedIndex = i;//_slots
-				std::cout << "push\n";
+			/*	std::cout << "push\n";*/
 			}
 		}
 
 		if (Input::main->GetMouseUp(KeyCode::LeftMouse) && rt->IsBoundCanvasPos(mousePos))
 		{
-			std::cout << "pop\n";
+	/*		std::cout << "pop\n";*/
 			if (_selectedIndex != -1)
 			{
 				if (_selectedIndex == i)

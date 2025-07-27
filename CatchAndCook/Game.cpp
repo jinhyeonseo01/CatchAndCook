@@ -118,6 +118,11 @@ void Game::PrevUpdate()
 	{
 		InGameGlobal::main->gold += 10;
 	}
+	//제거
+	if (Input::main->GetKeyDown(KeyCode::C))
+	{
+		InGameGlobal::main->gold -= 1;
+	}
 
 	if (Input::main->GetKeyDown(KeyCode::Esc))
 	{

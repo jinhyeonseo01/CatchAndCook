@@ -195,6 +195,7 @@ void TextSprite::Update()
 {
 	if (_textChanged)
 	{
+		Clear();
 		TextManager::main->UpdateToSysMemory(_text, _textHandle, _sysMemory, 4);
 		_spriteImage->UpdateDynamicTexture(_sysMemory, 4);
 		_spriteImage->CopyCpuToGpu();
@@ -268,6 +269,9 @@ void TextSprite::SetData(Material* material)
 
 void TextSprite::CreateObject(int width, int height, const WCHAR* font, FontColor color, float fontsize)
 {
+	_width = width;
+	_height = height;
+
 	_textHandle = TextManager::main->AllocTextStrcture(width, height, font, color, fontsize);
 	_sysMemory = new BYTE[(width * height * 4)];
 	_spriteImage = make_shared<Texture>();
@@ -327,6 +331,21 @@ void TextSprite::CreateObject(int width, int height, const WCHAR* font, FontColo
 	_sprtieTextureParam.texSamplePos.y = 0;
 	_sprtieTextureParam.texSampleSize.x = width;
 	_sprtieTextureParam.texSampleSize.y = height;
+}
+
+void TextSprite::Clear()
+{
+	DWORD* pDest = (DWORD*)_sysMemory;
+
+	for (DWORD y = 0; y < _height; y++)
+	{
+		for (DWORD x = 0; x < _width; x++)
+		{
+			pDest[x + _width * y] = 0x00'00'00'00;
+		}
+	}
+
+
 }
 
 /*****************************************************************

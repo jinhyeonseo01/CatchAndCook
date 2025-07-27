@@ -50,13 +50,8 @@ void ImguiManager::Init()
 
 void ImguiManager::Render()
 {
-    if (Input::main->GetKeyDown(KeyCode::F5))
-    {
-        _IMGUION = !_IMGUION;
-    }
 
-    if (!_IMGUION)
-        return;
+ 
 
 
 
