@@ -45,6 +45,16 @@ void GUIMenu::Update()
 	{
 		auto rect = buttons[i]->GetComponent<RectTransform>();
 
+		if (rect->IsBoundScreenPos(Input::main->GetMousePosition()))
+		{
+			if (prevSelectedButtonUI != i)
+			{
+				prevSelectedButtonUI = i;
+				Sound::main->PlayImmediate("j_button_swap", 0.085f);
+			}
+		}
+
+
 		if (Input::main->GetMouseDown(KeyCode::LeftMouse))
 		{
 			if (rect->IsBoundScreenPos(Input::main->GetMousePosition()))
@@ -75,6 +85,7 @@ void GUIMenu::Update()
 						break;
 					}
 				}
+				Sound::main->PlayImmediate("j_button_click", 2.0f);
 				break;
 			}
 		}

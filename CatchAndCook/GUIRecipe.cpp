@@ -48,6 +48,7 @@ void GUIRecipe::Update()
 			if (exitObj->GetComponent<RectTransform>()->IsBoundScreenPos(Input::main->GetMousePosition()))
 			{
 				GetOwner()->SetActiveSelf(false);
+				Sound::main->PlayImmediate("j_button_swap", 0.1f);
 			}
 		}
 	}

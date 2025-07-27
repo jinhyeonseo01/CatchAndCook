@@ -10,6 +10,8 @@ public:
 
 	bool changeToggle = false;
 
+	int prevSelectedButtonUI = -1;
+
 	~GUIMainMenu() override;
 	bool IsExecuteAble() override;
 	void Init() override;

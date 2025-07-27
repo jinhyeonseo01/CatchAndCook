@@ -125,6 +125,18 @@ void Sound::Play(const string& name, float volume, bool overlapped)
 
 }
 
+void Sound::PlayImmediate(const string& name, float volume, bool overlapped)
+{
+    auto it = _soundDatas.find(name);
+    if (it == _soundDatas.end())
+        return;
+    SoundData& data = it->second;
+    FMOD_RESULT result = _system->playSound(data.sound, nullptr, false, &data.channel);
+    ERRCHECK(result);
+    if (data.channel)
+        data.channel->setVolume(_masterVolume * volume);
+}
+
 void Sound::Stop(const string& name)
 {
     auto it = _soundDatas.find(name);

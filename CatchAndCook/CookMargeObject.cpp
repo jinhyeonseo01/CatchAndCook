@@ -139,7 +139,7 @@ void CookMargeObject::Update()
 					else if (GUIInventory::main->GetItemDataIndex(GUIInventory::main->selectIndex).itemCode == -1 && HasOwnSlot())
 					{
 						cookType = 1;
-
+						Sound::main->PlayImmediate("j_button_swap", 0.1f);
 						std::vector<shared_ptr<GameObject>> cookUIs;
 						GetOwner()->GetScene()->Finds(L"CookUI_Cooking", cookUIs);
 						if (cookUIs.size() != 0)
@@ -204,6 +204,8 @@ void CookMargeObject::Update()
 					target->_transform->SetWorldPosition(GetOwner()->_transform->GetLocalPosition() + Vector3::Up * 1.65);
 				}
 
+				Sound::main->PlayImmediate("j_f", 2.0f);
+
 				bool found = false;
 				for (auto cookRes : InGameGlobal::main->cookTable)
 				{
@@ -244,6 +246,7 @@ void CookMargeObject::Update()
 
 				for (auto& item : itemDatas)
 					item.Clear();
+				
 			}
 		}
 	}

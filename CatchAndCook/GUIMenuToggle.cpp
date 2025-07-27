@@ -33,6 +33,7 @@ void GUIMenuToggle::Update()
 		if (rect->IsBoundScreenPos(Input::main->GetMousePosition()))
 		{
 			auto menu = GetOwner()->GetScene()->Find(L"GUIMenu");
+			Sound::main->PlayImmediate("j_button_click", 2.0f);
 			menu->SetActiveSelf(!menu->GetActiveSelf());
 		}
 	}

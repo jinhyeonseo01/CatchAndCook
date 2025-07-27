@@ -45,6 +45,7 @@ void GUIMainMenu::Update()
 {
 	Component::Update();
 	Input::main->SetMouseLock(false);
+	//Sound::main->Play("main", 0.14f);
 	for (int i = 0; i < buttons.size(); i++)
 	{
 		auto rect = buttons[i]->GetComponent<RectTransform>();
@@ -52,9 +53,18 @@ void GUIMainMenu::Update()
 		if (line)
 		{
 			if (rect->IsBoundScreenPos(Input::main->GetMousePosition()))
+			{
 				line->SetActiveSelf(true);
+				if (prevSelectedButtonUI != i)
+				{
+					prevSelectedButtonUI = i;
+					Sound::main->PlayImmediate("j_button_swap", 0.085f);
+				}
+			}
 			else
+			{
 				line->SetActiveSelf(false);
+			}
 		}
 		if (Input::main->GetMouseDown(KeyCode::LeftMouse))
 		{
@@ -94,6 +104,7 @@ void GUIMainMenu::Update()
 					break;
 				}
 				}
+				Sound::main->PlayImmediate("j_button_click", 2.0f);
 			}
 		}
 	}

@@ -59,6 +59,7 @@ void GUIBad::Update()
 			if (exitObj->GetComponent<RectTransform>()->IsBoundCanvasPos(mousePos))
 			{
 				GetOwner()->SetActiveSelf(false);
+				Sound::main->PlayImmediate("j_button_click", 2.0f);
 			}
 		}
 
@@ -69,6 +70,7 @@ void GUIBad::Update()
 			if (rect->IsBoundCanvasPos(mousePos))
 			{
 				selectedIndex = i;
+				Sound::main->PlayImmediate("j_button_swap", 0.1f);
 				break;
 			}
 		}
@@ -81,6 +83,7 @@ void GUIBad::Update()
 				InGameGlobal::main->skyTime = ((((int)std::round(InGameGlobal::main->skyTime) / 4) + 1) * 4) + (selectedIndex - 1);
 				ComputeManager::main->SetChangeSceneState(ChangeSceneState::FadeOutIn, 1 / 2.0f);
 				selectedIndex = 0;
+				Sound::main->PlayImmediate("j_button_click", 2.0f);
 			}
 		}
 	}

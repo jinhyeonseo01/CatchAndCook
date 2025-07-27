@@ -34,6 +34,7 @@ void NPCShopOwner::Update()
 	if (onTrigger && Input::main->GetKeyDown(KeyCode::F))
 	{
 		GetOwner()->GetScene()->Find(L"GUIShop")->SetActiveSelf(true);
+		Sound::main->PlayImmediate("j_button_swap", 0.1f);
 		Input::main->SetMouseLock(false);
 	}
 }
