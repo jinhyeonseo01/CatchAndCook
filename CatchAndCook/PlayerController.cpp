@@ -410,7 +410,6 @@ void PlayerController::SetOnBoard()
 
 	auto boatSeat = SceneManager::main->GetCurrentScene()->Find(L"BoatSeat");
 	GetOwner()->GetRoot()->SetParent(boatSeat);
-
 	GetOwner()->_transform->SetLocalPosition(vec3(0, 0, 0));
 	GetOwner()->_transform->SetLocalRotation(vec3(0, 0, 0));
 

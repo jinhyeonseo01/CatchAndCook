@@ -70,9 +70,8 @@ void BoatController::Update()
 	if (_onBoard == false)
 		return;
 
-
-
-	if (Input::main->GetKeyDown(KeyCode::F))
+	
+	if (Input::main->GetKeyDown(KeyCode::F)  && _FirstFcall == false)
 	{
 		if (_seq == Sequnce::Driving)
 		{
@@ -98,7 +97,6 @@ void BoatController::Update()
 
 		if (Input::main->GetKey(KeyCode::W))
 		{
-
 			vec3 pos = GetOwner()->_transform->GetLocalPosition();
 			GetOwner()->_transform->SetLocalPosition(pos + GetOwner()->_transform->GetForward() * dt * 20.0f);
 		}
@@ -122,9 +120,8 @@ void BoatController::Update()
 
 
 
+	_FirstFcall = false;
 
-
-	
 
 }
 
@@ -168,8 +165,9 @@ void BoatController::Destroy()
 
 void BoatController::SetOnBaord()
 {
-	_onBoard = true;
 	CameraManager::main->SetActiveCamera(CameraType::BoatCamera);
+	_onBoard = true;
+	_FirstFcall = true;
 	_skined->Play(_animation["idle"], 0.5f);
 
 }

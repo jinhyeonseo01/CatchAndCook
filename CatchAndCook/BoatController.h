@@ -53,7 +53,7 @@ public:
 	static float _pitch;
 	static float _roll;
 
-
+	bool _FirstFcall = false;
 	
 	vec3 _right{};
 private:

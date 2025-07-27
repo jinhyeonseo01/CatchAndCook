@@ -119,7 +119,6 @@ void TestScene_jin::Init()
 					if (Input::main->GetKeyDown(KeyCode::F))
 					{
 						auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
-
 						player->GetComponent<PlayerController>()->SetOnBoard();
 					}
 				});
