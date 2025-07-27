@@ -1,68 +1,69 @@
 ﻿#include "pch.h"
-#include "GUIBadTrigger.h"
+#include "NPCShopOwner.h"
 
 #include "Collider.h"
 #include "PhysicsComponent.h"
 #include "Transform.h"
 
-COMPONENT(GUIBadTrigger)
+COMPONENT(NPCShopOwner)
 
-GUIBadTrigger::~GUIBadTrigger()
+NPCShopOwner::~NPCShopOwner()
 {
+
 }
 
-bool GUIBadTrigger::IsExecuteAble()
+bool NPCShopOwner::IsExecuteAble()
 {
 	return Component::IsExecuteAble();
 }
 
-void GUIBadTrigger::Init()
+void NPCShopOwner::Init()
 {
 	Component::Init();
 }
 
-void GUIBadTrigger::Start()
+void NPCShopOwner::Start()
 {
 	Component::Start();
 }
 
-void GUIBadTrigger::Update()
+void NPCShopOwner::Update()
 {
 	Component::Update();
 
 	if (onTrigger && Input::main->GetKeyDown(KeyCode::F))
 	{
-		GetOwner()->GetScene()->Find(L"GUIBad")->SetActiveSelf(true);
+		GetOwner()->GetScene()->Find(L"GUIShop")->SetActiveSelf(true);
 		Input::main->SetMouseLock(false);
 	}
 }
 
-void GUIBadTrigger::Update2()
+void NPCShopOwner::Update2()
 {
 	Component::Update2();
 }
 
-void GUIBadTrigger::Enable()
+void NPCShopOwner::Enable()
 {
 	Component::Enable();
 }
 
-void GUIBadTrigger::Disable()
+void NPCShopOwner::Disable()
 {
 	Component::Disable();
 }
 
-void GUIBadTrigger::RenderBegin()
+void NPCShopOwner::RenderBegin()
 {
 	Component::RenderBegin();
 }
 
-void GUIBadTrigger::RenderEnd()
+void NPCShopOwner::RenderEnd()
 {
 	Component::RenderEnd();
 }
 
-void GUIBadTrigger::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
+void NPCShopOwner::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
 {
 	Component::CollisionBegin(collider, other);
 	if (collider->IsTrigger())
@@ -71,10 +72,9 @@ void GUIBadTrigger::CollisionBegin(const std::shared_ptr<Collider>& collider, co
 		{
 			if (physics->GetOwner()->HasTag(GameObjectTag::Player))
 			{
-				auto ui = GetOwner()->GetScene()->Find(L"GUIBadTriggerUI");
-				if (ui)
+				if (auto ui = GetOwner()->GetScene()->Find(L"NPCShopOwnerTriggerUI"))
 				{
-					ui->_transform->SetWorldPosition(GetOwner()->_transform->GetWorldPosition() + Vector3::Up * 1.35);
+					ui->_transform->SetWorldPosition(GetOwner()->_transform->GetWorldPosition() + Vector3::Up * 2.05);
 					ui->SetActiveSelf(true);
 					onTrigger = true;
 				}
@@ -83,16 +83,17 @@ void GUIBadTrigger::CollisionBegin(const std::shared_ptr<Collider>& collider, co
 	}
 }
 
-void GUIBadTrigger::CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
+void NPCShopOwner::CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
 {
 	Component::CollisionEnd(collider, other);
+
 	if (collider->IsTrigger())
 	{
 		if (auto physics = other->GetOwner()->GetComponentWithParents<PhysicsComponent>())
 		{
 			if (physics->GetOwner()->HasTag(GameObjectTag::Player))
 			{
-				auto ui = GetOwner()->GetScene()->Find(L"GUIBadTriggerUI");
+				auto ui = GetOwner()->GetScene()->Find(L"NPCShopOwnerTriggerUI");
 				if (ui)
 				{
 					ui->SetActiveSelf(false);
@@ -103,27 +104,27 @@ void GUIBadTrigger::CollisionEnd(const std::shared_ptr<Collider>& collider, cons
 	}
 }
 
-void GUIBadTrigger::ChangeParent(const std::shared_ptr<GameObject>& prev, const std::shared_ptr<GameObject>& current)
+void NPCShopOwner::ChangeParent(const std::shared_ptr<GameObject>& prev, const std::shared_ptr<GameObject>& current)
 {
 	Component::ChangeParent(prev, current);
 }
 
-void GUIBadTrigger::ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene)
+void NPCShopOwner::ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene)
 {
 	Component::ChangeScene(currentScene, nextScene);
 }
 
-void GUIBadTrigger::SetDestroy()
+void NPCShopOwner::SetDestroy()
 {
 	Component::SetDestroy();
 }
 
-void GUIBadTrigger::Destroy()
+void NPCShopOwner::Destroy()
 {
 	Component::Destroy();
 }
 
-void GUIBadTrigger::Reset()
+void NPCShopOwner::Reset()
 {
 	Component::Reset();
 }

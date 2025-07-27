@@ -52,7 +52,7 @@ void ShowGameMoeny::Update()
 		return;
 
 	prevMoney = InGameGlobal::main->gold;
-	_text->GetComponent<TextSprite>()->SetText(std::to_wstring(InGameGlobal::main->gold));
+	_text->GetComponent<TextSprite>()->SetText(std::to_wstring(InGameGlobal::main->gold) + L"    ");
 
 }
 

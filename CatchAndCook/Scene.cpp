@@ -825,12 +825,14 @@ void Scene::CameraControl()
     {
         type = CameraType::DebugCamera;
         CameraManager::main->Setting(type);
+		Input::main->SetMouseLock(false);
     }
 
     if (Input::main->GetKeyDown(KeyCode::F2))
     {
         type = CameraType::ComponentCamera;
         CameraManager::main->Setting(type);
+        Input::main->SetMouseLock(true);
     }
 
     if (Input::main->GetKeyDown(KeyCode::F3))

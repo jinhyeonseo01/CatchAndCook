@@ -503,6 +503,8 @@
     </ClCompile>
     <ClCompile Include="GUIBadTrigger.cpp" />
     <ClCompile Include="GUIBad.cpp" />
+    <ClCompile Include="NPCShopOwner.cpp" />
+    <ClCompile Include="GUIShop.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -955,6 +957,8 @@
     </ClInclude>
     <ClInclude Include="GUIBadTrigger.h" />
     <ClInclude Include="GUIBad.h" />
+    <ClInclude Include="NPCShopOwner.h" />
+    <ClInclude Include="GUIShop.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath_LH.inl">

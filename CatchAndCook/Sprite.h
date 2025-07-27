@@ -115,7 +115,12 @@ public:
 
 	void SetTexture(shared_ptr<Texture> texture) = delete;
 public:
-	void SetText(const wstring& text) { _text = text; _textChanged = true; }
+	void SetText(const wstring& text)
+	{
+		if (_text != text)
+			_textChanged = true;
+		_text = text;
+	}
 	void CreateObject(int width, int height, const WCHAR* font, FontColor color, float fontsize);
 
 private:

@@ -55,6 +55,7 @@ void PlayerController::Start()
 		run->_speedMultiplier = 1.15f;
 	}
 
+	//Input::main->SetMouseLock(true);
 
 	_GenPos = GetOwner()->_transform->GetWorldPosition();
 	_GenRotate = GetOwner()->_transform->GetWorldRotation();

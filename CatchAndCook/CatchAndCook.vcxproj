@@ -213,9 +213,11 @@
     <ClCompile Include="GUIOption.cpp" />
     <ClCompile Include="GUIRecipe.cpp" />
     <ClCompile Include="GUIRecipeTrigger.cpp" />
+    <ClCompile Include="GUIShop.cpp" />
     <ClCompile Include="InteractiveComponent.cpp" />
     <ClCompile Include="itemBoxComponent.cpp" />
     <ClCompile Include="MainMenuScene.cpp" />
+    <ClCompile Include="NPCShopOwner.cpp" />
     <ClCompile Include="PercentComponent.cpp" />
     <ClCompile Include="GUICookProgress.cpp" />
     <ClCompile Include="GUIInventory.cpp" />
@@ -393,9 +395,11 @@
     <ClInclude Include="GUIOption.h" />
     <ClInclude Include="GUIRecipe.h" />
     <ClInclude Include="GUIRecipeTrigger.h" />
+    <ClInclude Include="GUIShop.h" />
     <ClInclude Include="InteractiveComponent.h" />
     <ClInclude Include="itemBoxComponent.h" />
     <ClInclude Include="MainMenuScene.h" />
+    <ClInclude Include="NPCShopOwner.h" />
     <ClInclude Include="PercentComponent.h" />
     <ClInclude Include="GUICookProgress.h" />
     <ClInclude Include="GUIInventory.h" />
