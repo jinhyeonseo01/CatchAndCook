@@ -1098,6 +1098,8 @@ void ResourceManager::CreateDefaultTexture()
 	Load<Texture>(L"Icon_Water", L"Textures/Icon_Water.png");
 	Load<Texture>(L"success", L"Textures/success.png");
 	Load<Texture>(L"dive", L"Textures/dive.png");
+	Load<Texture>(L"success_red", L"Textures/success_red.png");
+	Load<Texture>(L"success_green", L"Textures/success_green.png");
 }
 
 void ResourceManager::CreateDefaultAnimation()

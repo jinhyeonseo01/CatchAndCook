@@ -195,6 +195,9 @@
     <ClCompile Include="CookMargeObject.cpp" />
     <ClCompile Include="EffectComponent.cpp" />
     <ClCompile Include="EventComponent.cpp" />
+    <ClCompile Include="FireBall.cpp" />
+    <ClCompile Include="FireWork.cpp" />
+    <ClCompile Include="FireWorkManager.cpp" />
     <ClCompile Include="FishMonster.cpp" />
     <ClCompile Include="CookObject.cpp" />
     <ClCompile Include="CookItemBoxObject.cpp" />
@@ -378,6 +381,9 @@
     <ClInclude Include="CookMargeObject.h" />
     <ClInclude Include="EffectComponent.h" />
     <ClInclude Include="EventComponent.h" />
+    <ClInclude Include="FireBall.h" />
+    <ClInclude Include="FireWork.h" />
+    <ClInclude Include="FireWorkManager.h" />
     <ClInclude Include="FishMonster.h" />
     <ClInclude Include="CookObject.h" />
     <ClInclude Include="CookItemBoxObject.h" />

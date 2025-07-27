@@ -19,6 +19,8 @@
 #include "ShowGameMoeny.h"
 #include "BilboardComponent.h"
 #include "AnimationSpriteComponent.h"
+#include "FireWorkManager.h"
+#include "FireWork.h"
 
 void TestScene_jin::Init()
 {
@@ -155,6 +157,7 @@ void TestScene_jin::Init()
 		
 	}*/
 
+	FireWorkManager::main->LateInit();
 }
 
 void TestScene_jin::Update()
@@ -165,6 +168,12 @@ void TestScene_jin::Update()
 	PathStamp::main->Run();
 
  	Scene::Update();
+
+	if (Input::main->GetKeyDown(KeyCode::X))
+	{
+		FireWorkManager::main->SetFire();
+
+	}
 
 }
 

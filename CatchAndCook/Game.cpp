@@ -34,6 +34,7 @@
 #include "ShadowManager.h"
 #include "ParticleManager.h"
 #include "SoundManager.h"
+#include "FireWorkManager.h"
 
 std::shared_ptr<Game> Game::main = nullptr;
 
@@ -105,10 +106,12 @@ void Game::Init(HWND hwnd)
 	Sound::main = make_unique<Sound>();
 	Sound::main->Init();
 
-	SceneManager::main->AddScene(SceneType::MainMenu, true);
+	FireWorkManager::main = make_unique<FireWorkManager>();
+
+	SceneManager::main->AddScene(SceneType::MainMenu, false);
 	SceneManager::main->AddScene(SceneType::TestScene2, true);
-	SceneManager::main->AddScene(SceneType::Sea01, true);
-	SceneManager::main->ChangeScene(nullptr, SceneManager::main->FindScene(SceneType::MainMenu), false, false);
+	SceneManager::main->AddScene(SceneType::Sea01, false);
+	SceneManager::main->ChangeScene(nullptr, SceneManager::main->FindScene(SceneType::TestScene2), false, false);
 };
 
 void Game::PrevUpdate()
@@ -259,6 +262,7 @@ void Game::Release()
 	Time::main.reset(nullptr);
 	Input::main.reset(nullptr);
 	Core::main.reset(nullptr);
+	FireWorkManager::main.reset(nullptr);
 	IGuid::StaticRelease();
 
 	escStack.clear();
