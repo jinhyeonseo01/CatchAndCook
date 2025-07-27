@@ -91,6 +91,8 @@ void FireWork::SpawnFireBall()
 {
 	fireballColor color = static_cast<fireballColor>(rand() % _maxColor);
 
+
+
 	shared_ptr<GameObject> origin;
 
 	switch (color)
@@ -114,6 +116,8 @@ void FireWork::SpawnFireBall()
 		wcout << L"FireWork::SpawnFireBall() : origin is nullptr" << endl;
 		return;
 	}
+	
+	cout << "spwan" << endl;
 
 	auto exmeshRenderer = origin->GetComponent<MeshRenderer>();
 	std::vector<std::shared_ptr<Material>>& materials = exmeshRenderer->GetMaterials();
