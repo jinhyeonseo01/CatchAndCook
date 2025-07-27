@@ -117,6 +117,7 @@ public:
 public:
 	void SetText(const wstring& text) { _text = text; _textChanged = true; }
 	void CreateObject(int width, int height, const WCHAR* font, FontColor color, float fontsize);
+	void Clear();
 
 private:
 	bool _textChanged = true;
@@ -124,6 +125,9 @@ private:
 	shared_ptr<TextHandle> _textHandle;
 	SprtieTextureParam _sprtieTextureParam;
 	BYTE* _sysMemory = nullptr;
+
+	int _width{};
+	int _height{};
 };
 
 

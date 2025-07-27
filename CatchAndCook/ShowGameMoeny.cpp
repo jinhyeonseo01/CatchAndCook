@@ -26,7 +26,6 @@ void ShowGameMoeny::Init()
 
 		sprite->SetLocalPos(vec3(0.06f, 0.03f, 0));
 		sprite->SetSize(vec2(Xsize, Ysize));
-		/*sprite->SetText(L"3333333333333333333333333333333333333333");*/
 		sprite->CreateObject(1920* Xsize, 1080* Ysize, L"Arial", FontColor::WHITE, 60);
 
 		//sprite->SetClipingColor(vec4(0.5f, 0.5f, 0.5f, 0.5f));
