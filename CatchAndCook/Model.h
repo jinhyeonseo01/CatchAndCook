@@ -52,6 +52,8 @@ public:
 	string _modelName;
 
 	void Init(const wstring& path, VertexType vertexType);
+	void ExportBinary();
+	void ImportBinary(const wstring& path);
 	void DebugLog();
 
 	void SetName(const string& name)
