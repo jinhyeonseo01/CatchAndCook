@@ -267,11 +267,14 @@ void InteractiveComponent::UpdateState()
 	case InteractiveState::GAMEON:
 		if (ActionFunc::OnClickAction(KeyCode::LeftMouse, _exitMessage->GetComponent<Sprite>().get()))
 		{
+			Sound::main->Play("j_button_click", 0.3f, true);
 			SetState(InteractiveState::ONCOLLISION);
 		}
 
 		if (ActionFunc::OnClickAction(KeyCode::LeftMouse, _stopMessage->GetComponent<Sprite>().get()))
 		{
+			Sound::main->Play("j_button_click", 0.3f, true);
+
 			if (_progressBar->GetComponent<ProgressCycleComponent>()->isInAnswer())
 			{
 				SetState(InteractiveState::SUCCESS);
@@ -324,14 +327,13 @@ void InteractiveComponent::SetState(InteractiveState state)
 		break;
 	case InteractiveState::SUCCESS:
 	{
-		Sound::main->Play("success", 0.3f, true);
+		Sound::main->Play("success", 0.1f, true);
 
 		static vec3 offset = vec3(0, 20.0f, 0);
 
 		ParticleManager::main->GenParticle(8.0f, 500, 6.0f, 30.0f, GetOwner()->_transform->GetWorldPosition() + offset, vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
 		, ResourceManager::main->Get<Texture>(L"success"));
 
-	/*	wcout << GetOwner()->GetRoot()->GetName() << endl;*/
 		InGameGlobal::main->AddItem(GetOwner()->GetRoot()->GetName());
 
 		MiniGameTotalOnOff(false);
@@ -340,7 +342,7 @@ void InteractiveComponent::SetState(InteractiveState state)
 		break;
 	}
 	case InteractiveState::FAIL:
-		Sound::main->Play("fail",0.3f, true);
+		Sound::main->Play("fail",0.1f, true);
 		MiniGameTotalOnOff(false);
 		_seaPlayerController->SetMoveLock(false);
 		SetState(InteractiveState::ONCOLLISION);

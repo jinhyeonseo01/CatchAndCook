@@ -178,14 +178,14 @@ void CookObject::Update()
 
 					if (GetOwner()->HasTag(GameObjectTag::CookType_Cut))
 					{
-						Sound::main->Play("j_cut", 1.2f);
+						Sound::main->Play("j_cut", 0.25f);
 						process->SetMaxTime(7);
 					}
 					if (GetOwner()->HasTag(GameObjectTag::CookType_Bake))
 					{
 						process->SetMaxTime(11);
 						process->type = 2;
-						Sound::main->Play("j_fire", 0.5f);
+						Sound::main->Play("j_fire", 0.25f);
 						//KSH
 						ParticleManager::main->GenParticle(15.0f, 200, 0.15f, 0.3f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::CookFire, ParticleColorType::Red, { 0,0,0,0 }
 						, ResourceManager::main->Get<Texture>(L"smokeTexture"));
@@ -194,7 +194,7 @@ void CookObject::Update()
 					{
 						process->SetMaxTime(5);
 
-						Sound::main->Play("j_wash", 0.42f);
+						Sound::main->Play("j_wash", 0.20f);
 						//KSH
 						ParticleManager::main->GenParticle(8.0f, 200, 0.15f, 0.3f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::CookFire, ParticleColorType::Red, { 0,0,0,0 }
 						, ResourceManager::main->Get<Texture>(L"bubble"));
@@ -203,7 +203,7 @@ void CookObject::Update()
 					{
 						process->SetMaxTime(9);
 						process->type = 1;
-						Sound::main->Play("j_boil", 0.2f);
+						Sound::main->Play("j_boil", 0.15f);
 						//KSH
 						ParticleManager::main->GenParticle(12.0f, 200, 0.15f, 0.3f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::CookFire, ParticleColorType::Red, { 0,0,0,0 }
 						, ResourceManager::main->Get<Texture>(L"smokeTexture"));

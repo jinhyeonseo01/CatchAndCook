@@ -351,10 +351,10 @@ void PlayerController::MoveControl()
 
 	}
 
-	if (Input::main->GetKeyDown(KeyCode::J))
-	{
-		SetOnBoard();
-	}
+	//if (Input::main->GetKeyDown(KeyCode::J))
+	//{
+	//	SetOnBoard();
+	//}
 
 }
 

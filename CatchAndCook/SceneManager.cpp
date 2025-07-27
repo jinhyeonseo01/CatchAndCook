@@ -76,7 +76,7 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 		CameraManager::main->Setting(CameraType::ComponentCamera);
 		break;
 	case SceneType::Sea01:
-		Sound::main->Play("underwater", 0.06f);
+		Sound::main->Play("underwater", 0.25f);
 		Sound::main->Play("sea", 0.14f);
 		CameraManager::main->Setting(CameraType::SeaCamera);
 		break;
