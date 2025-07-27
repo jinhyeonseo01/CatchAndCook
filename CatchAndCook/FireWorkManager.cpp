@@ -41,7 +41,7 @@
  void FireWorkManager::SetFire()
  {
 	 
-		 cout << " FireWorkManager::SetFire()" << _fireworks.size()  << endl;
+	
 
 		 for (auto& firework : _fireworks)
 		 {

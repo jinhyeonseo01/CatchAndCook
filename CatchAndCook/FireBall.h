@@ -26,10 +26,13 @@ public:
 	void SetDestroy() override;
 	void Destroy() override;
 
+	void SetSpeed(float speed) { _speed = speed; }
+	void SetAutoDestoryTime(float time) { _autoDestroyTime = time; }
 	void SetColor(fireballColor color) { _color = color; }
 
 private:
 	fireballColor _color = fireballColor::yellow;
+	float _speed = 100.0f;
 	float _autoDestroyTime = 1.0f;
 	float _currTime = 0;
 };
