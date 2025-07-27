@@ -40,6 +40,7 @@ std::unordered_set<ModelImExporter*> ModelImExporter::_imexporters;
 void ModelImExporter::Clear()
 {
 	_imexporters.clear();
+	_importers.clear();
 }
 
 void ModelImExporter::Begin()
@@ -191,6 +192,13 @@ std::shared_ptr<GameObject> Model::CreateGameObject(const std::shared_ptr<Scene>
 void Model::Init(const wstring& path, VertexType vertexType)
 {
 	InitGuid();
+
+	if (BakingJsonLoadMode && vertexType == VertexType::Vertex_Static)
+	{
+		ImportBinary(path, L"");
+	}
+
+
 	std::shared_ptr<AssimpPack> pack = std::make_shared<AssimpPack>();
 	pack->Init(path);
 	const aiScene* scene = pack->GetScene();
@@ -326,8 +334,8 @@ void Model::Init(const wstring& path, VertexType vertexType)
 	}
 
 
-
-	ExportBinary(_path, L"");
+	if (BakingJsonLoadMode && vertexType == VertexType::Vertex_Static)
+		ExportBinary(_path, L"");
 }
 
 void Model::ExportBinary(const wstring& path, const wstring& subKey)
@@ -379,7 +387,35 @@ void Model::ImportBinary(const wstring& path, const wstring& subKey)
 
 		if (std::filesystem::exists(bakingFolderPath))
 		{
+			json j;
+			std::ifstream file(to_string(bakingFullPath));
 
+			//json exportModelJson;
+			//file << exportModelJson.json;
+			// 여기서 저장
+			file >> j;
+			Begin();
+			std::vector<std::shared_ptr<ModelNode>> mn;
+			std::vector<std::shared_ptr<ModelMesh>> mm;
+			for (auto& [key, value] : j.items()) {
+				ModelImExporter* im;
+				if (value["type"] == "ModelNode") {
+					auto obj = std::make_shared<ModelNode>();
+					mn.push_back(obj);
+					im = reinterpret_cast<ModelImExporter*>(obj.get());
+				}
+				if (value["type"] == "ModelMesh") {
+					auto obj = std::make_shared<ModelMesh>();
+					mm.push_back(obj);
+					im = reinterpret_cast<ModelImExporter*>(obj.get());
+				}
+
+			}
+			for (auto& data : ModelImExporter::_importers)
+				data.second->ImportModel(j[data.first], path, subKey);
+			Clear();
+
+			file.close();
 		}
 	}
 }

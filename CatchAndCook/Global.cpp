@@ -9,6 +9,7 @@ int WINDOW_HEIGHT = 720;
 bool Initalize = false;
 
 bool BakingLoadMode = true;
+bool BakingJsonLoadMode = false;
 
 DXGI_FORMAT SWAP_CHAIN_FORMAT = DXGI_FORMAT_R8G8B8A8_UNORM;
 DXGI_FORMAT DEPTH_STENCIL_FORMAT = DXGI_FORMAT_D32_FLOAT;

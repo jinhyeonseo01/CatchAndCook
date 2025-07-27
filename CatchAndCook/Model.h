@@ -37,7 +37,9 @@ public:
 	static void Clear();
 	static void Begin();
 	static bool Add(ModelImExporter* imexporter);
+
 	static std::unordered_set<ModelImExporter*> _imexporters;
+	static std::unordered_map<string, ModelImExporter*> _importers;
 };
 
 

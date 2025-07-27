@@ -7,6 +7,7 @@ extern int WINDOW_HEIGHT;
 extern bool Initalize;
 
 extern bool BakingLoadMode;
+extern bool BakingJsonLoadMode;
 
 //
 extern DXGI_FORMAT SWAP_CHAIN_FORMAT;
