@@ -11,7 +11,6 @@ public:
 
 public:
 	void LateInit();
-
 	void PushFireWork(shared_ptr<GameObject>& firework){_fireworks.push_back(firework);}
 	void PushDobby(shared_ptr<Dobby>& dobby) { _dobby = dobby; }
 

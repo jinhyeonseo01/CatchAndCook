@@ -248,6 +248,7 @@ void BoatController::DivingSequnce()
 				if (GenParticle == false)
 				{
 					GenParticle = true;
+					Sound::main->Play("dive", 0.3f);
 					ComputeManager::main->SetChangeSceneState(ChangeSceneState::FadeOut,1.0f);
 					ParticleManager::main->GenParticle(5.5f, 500, 3.5f, 30.0f, player->_transform->GetWorldPosition(), vec3(1, 0, 0), ParticleMoveType::Dive, ParticleColorType::Blue, vec4(0, 0, 0, 0),
 						ResourceManager::main->Get<Texture>(L"dive"),ResourceManager::main->Get<Shader>(L"ParticleComputeShaderDropDown"),nullptr,0.4f);

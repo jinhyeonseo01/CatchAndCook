@@ -41,8 +41,6 @@
  void FireWorkManager::SetFire()
  {
 	 
-	
-
 		 for (auto& firework : _fireworks)
 		 {
 			 auto fireworkComponent = firework->GetComponent<FireWork>();
@@ -53,6 +51,7 @@
 			 }
 		 }
 
+		 Sound::main->Play("firework", 0.3f);
 		 _dobby->SetAnimation("magic");
 	 
 

@@ -1,8 +1,6 @@
 ﻿#pragma once
 #include "GUIItem.h"
 
-
-
 class InGameGlobal
 {
 
@@ -19,7 +17,6 @@ public:
 	
 public:
 	void AddItem(const wstring& name);
-
 public: 
 	float skyTime = 0;
 	int gold = 0;

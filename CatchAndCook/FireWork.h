@@ -35,7 +35,7 @@ private:
 	const float _fireBallResponTime = 3.0f;
 	bool _on =false;
 
-	static const int _maxFireBall = 10;
+	static const int _maxFireBall = 8;
 	static const int _maxColor = 3;
 	int _fireBallCount = 0;
 

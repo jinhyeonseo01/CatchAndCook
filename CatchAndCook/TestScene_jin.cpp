@@ -177,13 +177,12 @@ void TestScene_jin::Init()
 void TestScene_jin::Update()
 {
 	ColliderManager::main->SetCellSize(5);
-
-
-	PathStamp::main->Run();
-
  	Scene::Update();
 
-
+	if (FireWorkManager::main->CheckAllFireWorkDone())
+	{
+		Sound::main->Stop("firework");
+	}
 }
 
 void TestScene_jin::RenderBegin()
