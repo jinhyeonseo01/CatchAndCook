@@ -56,8 +56,6 @@ void Scene::Init()
 	_finalShader = std::make_shared<Material>();
 	_finalShader->SetShader(ResourceManager::main->Get<Shader>(L"finalShader"));
     _finalShader->SetPass(RENDER_PASS::Forward);
-
-
 }
 
 void Scene::Update()
@@ -552,7 +550,7 @@ void Scene::FinalRender(ComPtr<ID3D12GraphicsCommandList>& cmdList)
     Core::main->GetRenderTarget()->RenderBegin();
 
     auto mesh = ResourceManager::main->Get<Mesh>(L"finalMesh");
-    auto shader = _finalShader->GetShader();
+    auto& shader = _finalShader->GetShader();
 
     cmdList->SetPipelineState(shader->_pipelineState.Get());
 
