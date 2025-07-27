@@ -36,6 +36,7 @@ string& ModelGuid::GetMGuid()
 }
 
 std::unordered_set<ModelImExporter*> ModelImExporter::_imexporters;
+std::unordered_map<string, ModelImExporter*> ModelImExporter::_importers;
 
 void ModelImExporter::Clear()
 {
