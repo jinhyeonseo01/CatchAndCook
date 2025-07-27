@@ -68,11 +68,11 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 	switch (nextScene->GetSceneType())
 	{
 	case SceneType::MainMenu:
-		Sound::main->Play("main", 0.14f);
+		Sound::main->Play("main_1", 0.44f);
 		CameraManager::main->Setting(CameraType::ComponentCamera);
 		break;
 	case SceneType::TestScene2:
-		Sound::main->Play("main", 0.14f);
+		Sound::main->Play("main_2", 0.225f);
 		CameraManager::main->Setting(CameraType::ComponentCamera);
 		break;
 	case SceneType::Sea01:

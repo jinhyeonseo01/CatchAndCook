@@ -187,12 +187,24 @@ void PlayerController::MoveControl()
 			auto idle = animationList->GetAnimations()["idle"];
 			auto run = animationList->GetAnimations()["run"];
 			if (targetLookWorldDirectionDelayed.Length() < 0.15 && targetLookWorldDirection == Vector3::Zero)
+			{
 				skinnedHierarchy->Play(idle, 0.25);
+				Sound::main->Stop("j_walk");
+				Sound::main->Stop("j_run");
+			}
 			else
 				if (Input::main->GetKey(KeyCode::Shift))
+				{
 					skinnedHierarchy->Play(run, 0.25);
+					Sound::main->Play("j_run", 2.0f);
+					Sound::main->Stop("j_walk");
+				}
 				else
+				{
 					skinnedHierarchy->Play(walk, 0.25);
+					Sound::main->Play("j_walk", 0.45f);
+					Sound::main->Stop("j_run");
+				}
 		}
 	}
 

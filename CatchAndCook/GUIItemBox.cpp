@@ -160,6 +160,7 @@ void GUIItemBox::Update()
 							//아이템을 인벤토리로
 							RemoveItemDataIndex(i);
 							GUIInventory::main->PushItemData(_selectedItemData);
+							Sound::main->PlayImmediate("j_button_click", 2.0f);
 						}
 					}
 				}

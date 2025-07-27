@@ -178,13 +178,14 @@ void CookObject::Update()
 
 					if (GetOwner()->HasTag(GameObjectTag::CookType_Cut))
 					{
+						Sound::main->Play("j_cut", 1.2f);
 						process->SetMaxTime(7);
 					}
 					if (GetOwner()->HasTag(GameObjectTag::CookType_Bake))
 					{
 						process->SetMaxTime(11);
 						process->type = 2;
-
+						Sound::main->Play("j_fire", 0.5f);
 						//KSH
 						ParticleManager::main->GenParticle(15.0f, 200, 0.15f, 0.3f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::CookFire, ParticleColorType::Red, { 0,0,0,0 }
 						, ResourceManager::main->Get<Texture>(L"smokeTexture"));
@@ -193,6 +194,7 @@ void CookObject::Update()
 					{
 						process->SetMaxTime(5);
 
+						Sound::main->Play("j_wash", 0.42f);
 						//KSH
 						ParticleManager::main->GenParticle(8.0f, 200, 0.15f, 0.3f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::CookFire, ParticleColorType::Red, { 0,0,0,0 }
 						, ResourceManager::main->Get<Texture>(L"bubble"));
@@ -201,6 +203,7 @@ void CookObject::Update()
 					{
 						process->SetMaxTime(9);
 						process->type = 1;
+						Sound::main->Play("j_boil", 0.2f);
 						//KSH
 						ParticleManager::main->GenParticle(12.0f, 200, 0.15f, 0.3f, _particleGenPos, vec3(0, 0, 0), ParticleMoveType::CookFire, ParticleColorType::Red, { 0,0,0,0 }
 						, ResourceManager::main->Get<Texture>(L"smokeTexture"));
@@ -208,6 +211,8 @@ void CookObject::Update()
 					}
 					process->Clear();
 					process->Play();
+
+					Sound::main->PlayImmediate("j_button_swap", 0.085f);
 				}
 			}
 		}
@@ -226,7 +231,14 @@ void CookObject::Update()
 			{
 				ele->SetActiveSelf(false);
 			}
-
+			if (GetOwner()->HasTag(GameObjectTag::CookType_Cut))
+				Sound::main->Stop("j_cut");
+			if (GetOwner()->HasTag(GameObjectTag::CookType_Bake))
+				Sound::main->Stop("j_fire");
+			if (GetOwner()->HasTag(GameObjectTag::CookType_Wash))
+				Sound::main->Stop("j_wash");
+			if (GetOwner()->HasTag(GameObjectTag::CookType_Boil))
+				Sound::main->Stop("j_boil");
 			//KSH (성공시 이펙트인데 밑으로 옮겨야되는데 어디로 옮겨야될지모르겠음.)
 
 

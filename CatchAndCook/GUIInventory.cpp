@@ -111,6 +111,7 @@ void GUIInventory::Update()
 		if (Input::main->GetKeyDown(KeyCode::Num1 + i))
 		{
 			selectIndex = i;
+			Sound::main->PlayImmediate("j_button_swap", 0.12f);
 			break;
 		}
 	}
@@ -143,6 +144,7 @@ void GUIInventory::Update()
 				if (GUIItemBox::main->HasEmptySlot())
 				{
 					//아이템을 인벤토리로
+					Sound::main->PlayImmediate("j_button_click", 2.0f);
 					GUIItemBox::main->PushItemData(PopItemDataIndex(i));
 				}
 			}

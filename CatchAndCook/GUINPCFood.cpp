@@ -64,6 +64,7 @@ void GUINPCFood::Update()
 	if (nearDis && Input::main->GetKeyDown(KeyCode::F)) {
 		eat = true;
 		GUIInventory::main->PopItemDataIndex(GUIInventory::main->selectIndex);
+		Sound::main->PlayImmediate("j_f", 2.2f);
 	}
 }
 

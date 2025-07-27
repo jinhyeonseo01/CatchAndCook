@@ -33,6 +33,7 @@ void GUIBadTrigger::Update()
 	if (onTrigger && Input::main->GetKeyDown(KeyCode::F))
 	{
 		GetOwner()->GetScene()->Find(L"GUIBad")->SetActiveSelf(true);
+		Sound::main->PlayImmediate("j_button_swap", 0.12f);
 		Input::main->SetMouseLock(false);
 	}
 }

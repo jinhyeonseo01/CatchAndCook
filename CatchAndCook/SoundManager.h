@@ -22,6 +22,7 @@ public:
 	void SetVolume(const string& name, float volume);
 	void SetMasterVolume(float volume);
 	void Play(const string& name, float volume =1.0f, bool overlapped=false);
+	void PlayImmediate(const string& name, float volume = 1.0f, bool overlapped = false);
 	void Stop(const string& name);
 	void StopAll();
 	void Pause(const string& name);

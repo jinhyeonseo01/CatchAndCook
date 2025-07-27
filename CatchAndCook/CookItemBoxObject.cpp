@@ -39,6 +39,8 @@ void CookItemBoxObject::Update()
 			if (GUIItemBox::main)
 			{
 				GUIItemBox::main->GetOwner()->SetActiveSelf(true);
+				Sound::main->PlayImmediate("j_button_swap", 0.085f);
+				Sound::main->PlayImmediate("j_cool", 3.0f);
 			}
 		}
 	}

@@ -35,6 +35,7 @@ void GUIRecipeTrigger::Update()
 	{
 		GetOwner()->GetScene()->Find(L"GUIRecipe")->SetActiveSelf(true);
 		Input::main->SetMouseLock(false);
+		Sound::main->PlayImmediate("j_button_swap", 0.1f);
 	}
 }
 

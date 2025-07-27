@@ -22,5 +22,6 @@ public:
 
 	std::vector<shared_ptr<GameObject>> buttons;
 	bool changeToggle = false;
+	int prevSelectedButtonUI = -1;
 };
 

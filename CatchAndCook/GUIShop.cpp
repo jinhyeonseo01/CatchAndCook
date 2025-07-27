@@ -75,6 +75,7 @@ void GUIShop::Update()
 			if (exitObj->GetComponent<RectTransform>()->IsBoundScreenPos(Input::main->GetMousePosition()))
 			{
 				GetOwner()->SetActiveSelf(false);
+				Sound::main->PlayImmediate("j_button_click", 2.0f);
 			}
 		}
 	}
@@ -116,6 +117,7 @@ void GUIShop::Update()
 					if (InGameGlobal::main->gold >= shopDatas[i].first)
 					{
 						InGameGlobal::main->gold -= shopDatas[i].first;
+						Sound::main->PlayImmediate("j_button_click", 2.0f);
 						if (GUIInventory::main && GUIInventory::main->HasEmptySlot())
 						{
 							GUIInventory::main->PushItemData(shopDatas[i].second);
