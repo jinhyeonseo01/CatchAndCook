@@ -1,6 +1,7 @@
 ﻿#pragma once
+#include "Model.h"
 
-class ModelNode : public std::enable_shared_from_this<ModelNode>
+class ModelNode : public std::enable_shared_from_this<ModelNode>, public ModelImExporter
 {
 private:
 	std::vector<int> _meshIndexList;
@@ -81,10 +82,12 @@ public:
 
 	std::shared_ptr<GameObject> CreateGameObject(const std::shared_ptr<Scene>& scene,
 		const std::shared_ptr<GameObject>& parent);
+	void ExportPreprocess() override;
+	void ExportModel(json& j, const wstring& path, const wstring& subKey) override;
+	void ImportModel(json& j, const wstring& path, const wstring& subKey) override;
+	void ImpoetPostprocess() override;
+	~ModelNode() override;
 
-
-
-public:
 	Matrix _localTransform = Matrix::Identity;
 
 	Matrix _localTPose = Matrix::Identity;

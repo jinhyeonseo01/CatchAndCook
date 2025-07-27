@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 
-class Bone
+class Bone : public ModelImExporter
 {
 	std::string _targetNodeName;
 	std::string _boneName;

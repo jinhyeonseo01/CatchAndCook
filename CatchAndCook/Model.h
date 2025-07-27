@@ -1,12 +1,46 @@
 ﻿#pragma once
 #include "GameObject.h"
+#include "nlohmann/json.hpp"
 
+using json = nlohmann::json;
 
 class Animation;
 class Scene;
 class Bone;
 class ModelMesh;
 class ModelNode;
+
+
+class ModelGuid
+{
+public:
+	string modelGuid;
+
+	ModelGuid();
+	virtual ~ModelGuid();
+
+	void SetMGuid(const string& guid);
+	string& GetMGuid();
+};
+
+class ModelImExporter : public ModelGuid
+{
+public:
+	virtual void ExportPreprocess(){};
+	virtual void ExportModel(json& j, const wstring& path, const wstring& subKey)
+	{
+		j["guid"] = modelGuid;
+	};
+	virtual void ImportModel(json& j, const wstring& path, const wstring& subKey){};
+	virtual void ImpoetPostprocess() {};
+
+	static void Clear();
+	static void Begin();
+	static bool Add(ModelImExporter* imexporter);
+	static std::unordered_set<ModelImExporter*> _imexporters;
+};
+
+
 
 class AssimpPack : public std::enable_shared_from_this<AssimpPack>
 {
@@ -22,7 +56,7 @@ public:
 	void Init(std::wstring path, bool xFlip = false);
 };
 
-class Model : public IGuid
+class Model : public IGuid, public ModelImExporter
 {
 public:
 	std::vector<std::shared_ptr<ModelMesh>> _modelMeshList;
@@ -90,6 +124,14 @@ private:
 	std::shared_ptr<ModelNode> AddNode(aiNode* rootNode);
 	void SetOriginalParentWithChilds(const std::shared_ptr<ModelNode>& prent);
 
+public:
+	~Model() override;
+	void ExportPreprocess() override;
+	void ExportModel(json& j, const wstring& path, const wstring& subKey) override;
+	void ImportModel(json& j, const wstring& path, const wstring& subKey) override;
+	void ImpoetPostprocess() override;
+
 private:
 	int _boneAllocator = 0;
 };
+

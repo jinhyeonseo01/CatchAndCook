@@ -14,6 +14,50 @@
 #include "Vertex.h"
 #include "ModelJsonSerializer.h"
 
+
+ModelGuid::ModelGuid()
+{
+	SetMGuid(to_string(Guid::GetNewGuid()));
+}
+
+ModelGuid::~ModelGuid()
+{
+
+}
+
+void ModelGuid::SetMGuid(const string& guid)
+{
+	this->modelGuid = guid;
+}
+
+string& ModelGuid::GetMGuid()
+{
+	return modelGuid;
+}
+
+std::unordered_set<ModelImExporter*> ModelImExporter::_imexporters;
+
+void ModelImExporter::Clear()
+{
+	_imexporters.clear();
+}
+
+void ModelImExporter::Begin()
+{
+
+}
+
+bool ModelImExporter::Add(ModelImExporter* imexporter)
+{
+	if (_imexporters.count(imexporter) == 0)
+	{
+		_imexporters.emplace(imexporter);
+		return true;
+	}
+	return false;
+}
+
+
 AssimpPack::AssimpPack()
 {
 }
@@ -280,6 +324,10 @@ void Model::Init(const wstring& path, VertexType vertexType)
 	for (int i = 0; i < scene->mNumAnimations; i++) {
 		LoadAnimation(scene->mAnimations[i], scene->mRootNode);
 	}
+
+
+
+	ExportBinary(_path, L"");
 }
 
 void Model::ExportBinary(const wstring& path, const wstring& subKey)
@@ -294,17 +342,23 @@ void Model::ExportBinary(const wstring& path, const wstring& subKey)
 			subFolderPath = subFolderPath + splitSubPath[i] + L"/";
 		}
 		auto bakingFolderPath = bakingRootPath + subFolderPath;
-		auto bakingFullPath = bakingFolderPath + (splitSubPath[splitSubPath.size() - 1] + L".modelbin") + L"\0";
+		auto bakingFullPath = bakingFolderPath + (splitSubPath[splitSubPath.size() - 1] + L".json") + L"\0";
 
 		if (!std::filesystem::exists(bakingFolderPath))
 			std::filesystem::create_directories(bakingFolderPath);
 
-		std::ifstream file(to_string(bakingFullPath));
+		std::ofstream file(to_string(bakingFullPath));
 
 		json exportModelJson;
 		//file << exportModelJson.json;
 		// 여기서 저장
+		Begin();
+		ExportPreprocess();
+		for (auto& data : ModelImExporter::_imexporters)
+			data->ExportModel(exportModelJson[data->GetMGuid()], path, subKey);
+		Clear();
 
+		file << exportModelJson;
 		file.close();
 	}
 }
@@ -321,7 +375,7 @@ void Model::ImportBinary(const wstring& path, const wstring& subKey)
 			subFolderPath = subFolderPath + splitSubPath[i] + L"/";
 		}
 		auto bakingFolderPath = bakingRootPath + subFolderPath;
-		auto bakingFullPath = bakingFolderPath + (splitSubPath[splitSubPath.size() - 1] + L".assbin") + L"\0";
+		auto bakingFullPath = bakingFolderPath + (splitSubPath[splitSubPath.size() - 1] + L".json") + L"\0";
 
 		if (std::filesystem::exists(bakingFolderPath))
 		{
@@ -645,4 +699,137 @@ void Model::SetOriginalParentWithChilds(const std::shared_ptr<ModelNode>& curren
 			childNode->SetOriginalParent(currentNode);
 		SetOriginalParentWithChilds(childNode);
 	}
+}
+
+Model::~Model()
+{
+}
+
+
+
+
+
+
+
+
+void Model::ExportPreprocess()
+{
+	ModelImExporter::ExportPreprocess();
+	if (Add(this))
+	{
+		for (auto& data : _modelMeshList)
+			data->ExportPreprocess();
+		for (auto& data : _modelNodeList)
+			data->ExportPreprocess();
+		for (auto& data : _modelOriginalNodeList)
+			data->ExportPreprocess();
+		for (auto& data : _modelBoneList)
+			data->ExportPreprocess();
+
+		for (auto const& [name, meshList] : _nameToMeshsTable)
+			for (auto const& meshPtr : meshList)
+				meshPtr->ExportPreprocess();
+
+		for (auto const& [name, nodePtr] : _nameToNodeTable)
+			nodePtr->ExportPreprocess();
+		
+
+		for (auto const& [name, nodePtr] : _nameToOriginalNodeTable)
+			nodePtr->ExportPreprocess();
+
+		for (auto const& [name, bonePtr] : _nameToBoneTable)
+			bonePtr->ExportPreprocess();
+	}
+}
+
+void Model::ExportModel(json& j, const wstring& path, const wstring& subKey)
+{
+	ModelImExporter::ExportModel(j, path, subKey);
+	j["type"] = "Model";
+
+	for (auto& data : _modelMeshList)
+		j["_modelMeshList"].push_back(data->GetMGuid());
+	for (auto& data : _modelNodeList)
+		j["_modelNodeList"].push_back(data->GetMGuid());
+	for (auto& data : _modelOriginalNodeList)
+		j["_modelOriginalNodeList"].push_back(data->GetMGuid());
+	for (auto& data : _modelBoneList)
+		j["_modelBoneList"].push_back(data->GetMGuid());
+
+	for (auto const& [name, meshList] : _nameToMeshsTable) {
+		json arr = json::array();
+		for (auto const& meshPtr : meshList) {
+			if (meshPtr)
+				arr.push_back(meshPtr->GetMGuid());
+			else
+				arr.push_back(nullptr);
+		}
+		j["_nameToMeshsTable"][name] = std::move(arr);
+	}
+
+	j["_nameToNodeTable"] = json::object();
+	for (auto const& [name, nodePtr] : _nameToNodeTable) {
+		if (nodePtr)
+			j["_nameToNodeTable"][name] = nodePtr->GetMGuid();
+		else
+			j["_nameToNodeTable"][name] = nullptr;
+	}
+
+	// 2) _nameToOriginalNodeTable
+	j["_nameToOriginalNodeTable"] = json::object();
+	for (auto const& [name, nodePtr] : _nameToOriginalNodeTable) {
+		if (nodePtr)
+			j["_nameToOriginalNodeTable"][name] = nodePtr->GetMGuid();
+		else
+			j["_nameToOriginalNodeTable"][name] = nullptr;
+	}
+
+	// 3) _nameToBoneTable
+	j["_nameToBoneTable"] = json::object();
+	for (auto const& [name, bonePtr] : _nameToBoneTable) {
+		if (bonePtr)
+			j["_nameToBoneTable"][name] = bonePtr->GetMGuid();
+		else
+			j["_nameToBoneTable"][name] = nullptr;
+	}
+
+
+	if (_rootNode)
+		j["_rootNode"] = _rootNode->GetMGuid();
+	else
+		j["_rootNode"] = nullptr;
+	
+	if (_rootBoneNode)
+		j["_rootBoneNode"] = _rootBoneNode->GetMGuid();
+	else
+		j["_rootBoneNode"] = nullptr;
+	j["_modelName"] = _modelName;
+	j["_path"] = to_string(_path);
+
+	// 4) _nameToAnimationTable
+	/*
+	j["_nameToAnimationTable"] = json::object();
+	for (auto const& [name, animPtr] : _nameToAnimationTable) {
+		if (animPtr)
+			j["_nameToAnimationTable"][name] = animPtr->GetMGuid();
+		else
+			j["_nameToAnimationTable"][name] = nullptr;
+	}
+	*/
+
+	/*
+	 *
+	std::unordered_map<std::string, std::shared_ptr<Animation>> _nameToAnimationTable;
+	std::vector<std::shared_ptr<Animation>> _animationList;
+	 */
+}
+
+void Model::ImportModel(json& json, const wstring& path, const wstring& subKey)
+{
+	ModelImExporter::ImportModel(json, path, subKey);
+}
+
+void Model::ImpoetPostprocess()
+{
+	ModelImExporter::ImpoetPostprocess();
 }
