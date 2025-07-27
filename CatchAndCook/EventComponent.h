@@ -45,10 +45,10 @@ public:
 	void ShowEventMessage(bool show);
 	void SetBindTag(GameObjectTag tag) { bindTag = tag; }
 	void SetBindMessage(const wstring& message, const vec3& pos , const vec2& size , bool active);
-	void BindOnUpdateBlock(const std::function<void(std::shared_ptr<Collider>)>& func) { _OnUpdateBlock.push_back(func); }
-	void BindOnUpdateAlways(const std::function<void(std::shared_ptr<Collider>)>& func) { _OnUpdateAlways.push_back(func); }
-	void BindOnCollisionBegin(const std::function<void(std::shared_ptr<Collider>)>& func) { _OnCollisionBegins.push_back(func); }
-	void BindOnCollisionEnd(const std::function<void(std::shared_ptr<Collider>)>& func) { _OnCollisionEnds.push_back(func); }
+	void BindOnUpdateBlock(const std::function<void(std::shared_ptr<Collider>)> func) { _OnUpdateBlock.push_back(func); }
+	void BindOnUpdateAlways(const std::function<void(std::shared_ptr<Collider>)> func) { _OnUpdateAlways.push_back(func); }
+	void BindOnCollisionBegin(const std::function<void(std::shared_ptr<Collider>)> func) { _OnCollisionBegins.push_back(func); }
+	void BindOnCollisionEnd(const std::function<void(std::shared_ptr<Collider>)> func) { _OnCollisionEnds.push_back(func); }
 
 private:
 	std::unordered_map<string, std::shared_ptr<void>> _sharedStates;

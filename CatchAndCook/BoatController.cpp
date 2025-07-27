@@ -60,6 +60,8 @@ void BoatController::Start()
 
 void BoatController::Update()
 {
+	float dt = Time::main->GetDeltaTime();
+
 	if (auto transform = GetOwner()->_transform)
 	{
 		vec3 pos = transform->GetWorldPosition();
@@ -71,10 +73,9 @@ void BoatController::Update()
 		return;
 
 
-
-	if (Input::main->GetKeyDown(KeyCode::F))
+	if (_seq == Sequnce::Driving)
 	{
-		if (_seq == Sequnce::Driving)
+		if (Input::main->GetKeyDown(KeyCode::F) && _FirstFcall == false)
 		{
 			auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
 			_seq = Sequnce::turnRight;
@@ -84,25 +85,23 @@ void BoatController::Update()
 			{
 				_skined->Play(_animation["right_turn"], 0.1f);
 			};
+
+		};
+
+		if (Input::main->GetKey(KeyCode::W))
+		{
+			vec3 pos = GetOwner()->_transform->GetLocalPosition();
+			GetOwner()->_transform->SetLocalPosition(pos + GetOwner()->_transform->GetForward() * dt * 20.0f);
 		}
-	};
 
-	if (_seq == Sequnce::Driving)
-	{
 
-		float dt = Time::main->GetDeltaTime();
+	
 		Quaternion quat = CalCulateYawPitchRoll();
 		Quaternion yawOnlyQuat = Quaternion::CreateFromYawPitchRoll(_yaw * D2R, 0, 0);
 
 		GetOwner()->_transform->SetLocalRotation(yawOnlyQuat);
 
-		if (Input::main->GetKey(KeyCode::W))
-		{
-
-			vec3 pos = GetOwner()->_transform->GetLocalPosition();
-			GetOwner()->_transform->SetLocalPosition(pos + GetOwner()->_transform->GetForward() * dt * 20.0f);
-		}
-
+	
 		auto ray = ColliderManager::main->RayCastForMyCell({ GetOwner()->_transform->GetLocalPosition(), GetOwner()->_transform->GetForward() }, 1.0f, GetOwner());
 
 		if (ray.isHit)
@@ -122,9 +121,8 @@ void BoatController::Update()
 
 
 
+	_FirstFcall = true;
 
-
-	
 
 }
 
@@ -168,11 +166,10 @@ void BoatController::Destroy()
 
 void BoatController::SetOnBaord()
 {
-	_onBoard = true;
-
-	_skined->Play(_animation["idle"], 0.5f);
-
 	CameraManager::main->SetActiveCamera(CameraType::BoatCamera);
+	_onBoard = true;
+	_FirstFcall = true;
+	_skined->Play(_animation["idle"], 0.5f);
 
 }
 

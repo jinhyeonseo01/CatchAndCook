@@ -2,8 +2,8 @@
 #include "IGuid.h"
 #include "guid_utility.h"
 
-
 std::unordered_map<std::wstring, std::weak_ptr<IGuid>> IGuid::_GuidTable{};
+
 uint64_t IGuid::idAllocator = 0;
 
 void IGuid::StaticInit()

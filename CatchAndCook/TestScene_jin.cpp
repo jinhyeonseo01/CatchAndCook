@@ -19,6 +19,8 @@
 #include "ShowGameMoeny.h"
 #include "BilboardComponent.h"
 #include "AnimationSpriteComponent.h"
+#include "FireWorkManager.h"
+#include "FireWork.h"
 
 void TestScene_jin::Init()
 {
@@ -104,23 +106,51 @@ void TestScene_jin::Init()
 			eventComponent->SetBindTag(GameObjectTag::Player);
 			eventComponent->SetBindMessage(L"F키를 눌러 탑승하세요", vec3(0.35f, 0.7f, 0.01f), vec2(0.5f, 0.5f), false);
 
-			eventComponent->BindOnCollisionBegin([=](shared_ptr<Collider>& collider)
+			eventComponent->BindOnCollisionBegin([=](shared_ptr<Collider> collider)
 				{
 					eventComponent->ShowEventMessage(true);
 				});
 
-			eventComponent->BindOnCollisionEnd([=](shared_ptr<Collider>& collider)
+			eventComponent->BindOnCollisionEnd([=](shared_ptr<Collider> collider)
 				{
 					eventComponent->ShowEventMessage(false);
 				});
 
-			eventComponent->BindOnUpdateBlock([](shared_ptr<Collider>& collider)
+			eventComponent->BindOnUpdateBlock([](shared_ptr<Collider> collider)
 				{
 					if (Input::main->GetKeyDown(KeyCode::F))
 					{
 						auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
-
 						player->GetComponent<PlayerController>()->SetOnBoard();
+					}
+				});
+		}
+	}
+
+	{
+
+		{
+			auto object = SceneManager::main->GetCurrentScene()->Find(L"EventBoom");
+			auto eventComponent = object->AddComponent<EventComponent>();
+			eventComponent->SetBindTag(GameObjectTag::Player);
+			eventComponent->SetBindMessage(L"F키를 눌러 폭죽을 넣으세요.", vec3(0.35f, 0.7f, 0.01f), vec2(0.5f, 0.5f), false);
+
+			eventComponent->BindOnCollisionBegin([=](shared_ptr<Collider> collider)
+				{
+					eventComponent->ShowEventMessage(true);
+				});
+
+			eventComponent->BindOnCollisionEnd([=](shared_ptr<Collider> collider)
+				{
+					eventComponent->ShowEventMessage(false);
+				});
+
+			eventComponent->BindOnUpdateBlock([](shared_ptr<Collider> collider)
+				{
+					//TODO : 폭죽있는지 검사하기
+					if (Input::main->GetKeyDown(KeyCode::F))
+					{
+						FireWorkManager::main->SetFire();
 					}
 				});
 		}
@@ -129,33 +159,7 @@ void TestScene_jin::Init()
 	
 	shared_ptr<GameObject> showGameMoeny = SceneManager::main->GetCurrentScene()->CreateGameObject(L"ShowGameMoeny");
 	showGameMoeny->AddComponent<ShowGameMoeny>();
-
-	/*{
-		auto object =SceneManager::main->GetCurrentScene()->Find(L"Fire_animationSprite");
-
-		if (object)
-		{
-
-			vector<shared_ptr<Texture>> _textures;
-			std::wstring path = L"../Resources/Textures/Sprite/jin/fire/";
-
-			for (const auto& entry : fs::directory_iterator(path))
-			{
-				std::wstring& path2 = entry.path().filename().wstring();
-				shared_ptr<Texture> texture = ResourceManager::main->Load<Texture>(path + path2, path + path2);
-				_textures.push_back(texture);
-			}
-
-			object->GetComponent<MeshRenderer>()->GetMaterial(0)->SetPass(RENDER_PASS::Forward);
-			object->AddComponent<BilboardComponent>();
-			auto animationSpriteComponent = object->AddComponent<AnimationSpriteComponent>();
-			animationSpriteComponent->SetTextures(_textures);
-			animationSpriteComponent->SetRoop(true);
-			animationSpriteComponent->SetFrameRate(2.0f);
-		}
-		
-	}*/
-
+	FireWorkManager::main->LateInit();
 }
 
 void TestScene_jin::Update()
@@ -166,6 +170,11 @@ void TestScene_jin::Update()
 	PathStamp::main->Run();
 
  	Scene::Update();
+	if (Input::main->GetKeyDown(KeyCode::X))
+	{
+		FireWorkManager::main->SetFire();
+	}
+
 
 }
 
