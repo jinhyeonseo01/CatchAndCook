@@ -169,10 +169,8 @@ void BoatController::Destroy()
 void BoatController::SetOnBaord()
 {
 	_onBoard = true;
-
-	_skined->Play(_animation["idle"], 0.5f);
-
 	CameraManager::main->SetActiveCamera(CameraType::BoatCamera);
+	_skined->Play(_animation["idle"], 0.5f);
 
 }
 

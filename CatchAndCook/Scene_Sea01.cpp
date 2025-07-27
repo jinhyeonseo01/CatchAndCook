@@ -183,20 +183,18 @@ void Scene_Sea01::Init()
 			eventComponent->SetSharedState("EscapeKeyDown", make_shared<bool>(false));
 			eventComponent->SetBindTag(GameObjectTag::Player);
 			eventComponent->SetBindMessage(L"F키를 눌러 탑승하세요", vec3(0.35f, 0.7f, 0.01f), vec2(0.5f, 0.5f), false);
-			eventComponent->BindOnCollisionBegin([=](shared_ptr<Collider>& collider)
+			eventComponent->BindOnCollisionBegin([=](shared_ptr<Collider> collider)
 				{
 					eventComponent->ShowEventMessage(true);
 				});
 
-			eventComponent->BindOnCollisionEnd([=](shared_ptr<Collider>& collider)
+			eventComponent->BindOnCollisionEnd([=](shared_ptr<Collider> collider)
 				{
 					eventComponent->ShowEventMessage(false);
 				});
 
 	
-
-
-			eventComponent->BindOnUpdateBlock([=](shared_ptr<Collider>& collider)
+			eventComponent->BindOnUpdateBlock([=](shared_ptr<Collider> collider)
 				{
 					if (Input::main->GetKeyDown(KeyCode::F))
 					{
@@ -206,7 +204,7 @@ void Scene_Sea01::Init()
 					}
 				});
 
-			eventComponent->BindOnUpdateAlways([=](shared_ptr<Collider>& collider)
+			eventComponent->BindOnUpdateAlways([=](shared_ptr<Collider> collider)
 				{
 					auto key = eventComponent->GetSharedState<bool>("EscapeKeyDown");
 				
