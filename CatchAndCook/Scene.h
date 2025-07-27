@@ -77,6 +77,7 @@ public:
 	SceneType& GetSceneType() { return _type; }
 
 	static bool _changeScene;
+	static SceneType _prevSceneType;
 	static SceneType _changeSceneType;
 
 	void Release();

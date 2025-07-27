@@ -1,18 +1,15 @@
 ﻿#pragma once
 #include "Component.h"
 
-enum fireballColor
-{
-	yellow,
-	red,
-	green
-};
-class FireBall :public Component
-{
-public:
-	FireBall() {};
-	~FireBall() override = default;
+class SkinnedHierarchy;
+class Animation;
 
+class Dobby :public Component
+{
+
+public:
+	~Dobby() override;
+	bool IsExecuteAble() override;
 	void Init() override;
 	void Start() override;
 	void Update() override;
@@ -26,15 +23,12 @@ public:
 	void SetDestroy() override;
 	void Destroy() override;
 
-	void SetSpeed(float speed) { _speed = speed; }
-	void SetAutoDestoryTime(float time) { _autoDestroyTime = time; }
-	void SetColor(fireballColor color) { _color = color; }
-	void SetParticleSize(float size) { _Paritlcesize = size; }
+public:
+	void SetAnimation(const std::string& name);
 private:
-	fireballColor _color = fireballColor::yellow;
-	float _speed = 100.0f;
-	float _Paritlcesize = 10.0f;
-	float _autoDestroyTime = 1.0f;
-	float _currTime = 0;
+	std::unordered_map<string, std::shared_ptr<Animation>> _animations;
+	std::shared_ptr<SkinnedHierarchy> _skined;
+
+
 };
 

@@ -1,6 +1,9 @@
 ﻿#include "pch.h"
 #include "FireBall.h"
 #include "Transform.h"
+
+
+
 void FireBall::Init()
 {
 }
@@ -18,7 +21,8 @@ void FireBall::Update()
 		GetOwner()->SetDestroy();
 	}
 
-	GetOwner()->_transform->SetLocalPosition(GetOwner()->_transform->GetLocalPosition() + vec3(0,1,0)* 100.0f * Time::main->GetDeltaTime());
+
+	GetOwner()->_transform->SetLocalPosition(GetOwner()->_transform->GetLocalPosition() + vec3(0,1,0)* _speed * Time::main->GetDeltaTime());
 }
 
 void FireBall::Update2()
@@ -58,15 +62,15 @@ void FireBall::Destroy()
 	switch (_color)
 	{
 	case yellow:
-		ParticleManager::main->GenParticle(2.0f, 500, 15.0f, 20.0f, GetOwner()->_transform->GetWorldPosition(), vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
+		ParticleManager::main->GenParticle(3.0f, 200, _Paritlcesize, 10.0f, GetOwner()->_transform->GetWorldPosition(), vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
 		, ResourceManager::main->Get<Texture>(L"success"));
 		break;
 	case red:
-		ParticleManager::main->GenParticle(2.0f, 500, 15.0f, 20.0f, GetOwner()->_transform->GetWorldPosition(), vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
+		ParticleManager::main->GenParticle(3.0f, 200, _Paritlcesize, 15.0f, GetOwner()->_transform->GetWorldPosition(), vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
 		, ResourceManager::main->Get<Texture>(L"success_red"));
 		break;
 	case green:
-		ParticleManager::main->GenParticle(2.0f, 500, 15.0f, 20.0f, GetOwner()->_transform->GetWorldPosition(), vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
+		ParticleManager::main->GenParticle(3.0f, 200, _Paritlcesize, 20.0f, GetOwner()->_transform->GetWorldPosition(), vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
 		, ResourceManager::main->Get<Texture>(L"success_green"));
 		break;
 	default:

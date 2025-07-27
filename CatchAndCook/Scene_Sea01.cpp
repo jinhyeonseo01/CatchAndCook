@@ -211,6 +211,7 @@ void Scene_Sea01::Init()
 					if (ComputeManager::main->GetChangeSceneState()== ChangeSceneState::FadeOutEnd && *key)
 					{
 						*key = false;
+						Scene::_changeSceneType = SceneType::TestScene2;
 						Scene::_changeScene = true;
 					}
 				});
@@ -342,13 +343,9 @@ void Scene_Sea01::Finish()
 	if (_changeScene)
 	{
 		_changeScene = false;
-		if (_changeSceneType == SceneType::MainMenu)
-			SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::MainMenu), false, false);
-		else
-		{
-			SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::TestScene2), false, false);
-			InGameGlobal::main->skyTime = 1.0f;
-		}
+		SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(Scene::_changeSceneType), false, false);
+		InGameGlobal::main->skyTime = 1.0f;
+
 	}
 
 

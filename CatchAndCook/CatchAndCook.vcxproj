@@ -193,6 +193,7 @@
     <ClCompile Include="ComputeManager.cpp" />
     <ClCompile Include="convert_assimp.cpp" />
     <ClCompile Include="CookMargeObject.cpp" />
+    <ClCompile Include="Dobby.cpp" />
     <ClCompile Include="EffectComponent.cpp" />
     <ClCompile Include="EventComponent.cpp" />
     <ClCompile Include="FireBall.cpp" />
@@ -380,6 +381,7 @@
     <ClInclude Include="convert_assimp.h" />
     <ClInclude Include="convert_directx.h" />
     <ClInclude Include="CookMargeObject.h" />
+    <ClInclude Include="Dobby.h" />
     <ClInclude Include="EffectComponent.h" />
     <ClInclude Include="EventComponent.h" />
     <ClInclude Include="FireBall.h" />

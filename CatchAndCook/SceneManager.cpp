@@ -55,6 +55,9 @@ shared_ptr<Scene> SceneManager::AddScene(SceneType type, bool initExecute)
 
 void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_ptr<Scene>& nextScene, bool initExecute, bool removeExecute)
 {
+	if (prevScene)
+		Scene::_prevSceneType = prevScene->_type;
+
 	auto currentScene = prevScene;
 	std::vector<std::shared_ptr<GameObject>> dontObj;
 
@@ -106,6 +109,7 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 			currentScene->Release();
 	}
 
+
 	_currentScene = nextScene;
 
 	//
@@ -117,7 +121,7 @@ void SceneManager::ChangeScene(const shared_ptr<Scene>& prevScene, const shared_
 		_currentScene->Init();
 
 	ComputeManager::main->SetChangeSceneState(ChangeSceneState::FadeIn,1.0f);
-	Scene::_changeSceneType = SceneType::None;
+
 }
 
 std::shared_ptr<Scene> SceneManager::FindScene(SceneType type)

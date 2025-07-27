@@ -124,7 +124,15 @@ void FireWork::SpawnFireBall()
 
 	shared_ptr<GameObject> fireBall = SceneManager::main->GetCurrentScene()->CreateGameObject(L"FireBall");
 	auto fireBallComponent =fireBall->AddComponent<FireBall>();
+
+	auto& dre = InGameGlobal::main->GetRandomMachine();
+
+	uniform_real_distribution<float> randomSpeed(0.8f, 1.5f);
+	float random = randomSpeed(dre);
+	fireBallComponent->SetSpeed(100.0f * random);
+	fireBallComponent->SetAutoDestoryTime(1.5f * random);
 	fireBallComponent->SetColor(color);
+	fireBallComponent->SetParticleSize(10.0f * random);
 	fireBall->_transform->SetWorldPosition(GetOwner()->_transform->GetWorldPosition());
 
 	auto meshRenderer = fireBall->AddComponent<MeshRenderer>();

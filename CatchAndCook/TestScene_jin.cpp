@@ -105,36 +105,7 @@ void TestScene_jin::Init()
 			auto object = SceneManager::main->GetCurrentScene()->Find(L"OnBoardEvent");
 			auto eventComponent = object->AddComponent<EventComponent>();
 			eventComponent->SetBindTag(GameObjectTag::Player);
-			eventComponent->SetBindMessage(L"E키를 눌러 탑승하세요", vec3(0.35f, 0.7f, 0.01f), vec2(0.5f, 0.5f), false);
-
-			eventComponent->BindOnCollisionBegin([=](shared_ptr<Collider> collider)
-				{
-					eventComponent->ShowEventMessage(true);
-				});
-
-			eventComponent->BindOnCollisionEnd([=](shared_ptr<Collider> collider)
-				{
-					eventComponent->ShowEventMessage(false);
-				});
-
-			eventComponent->BindOnUpdateBlock([](shared_ptr<Collider> collider)
-				{
-					if (Input::main->GetKeyDown(KeyCode::E))
-					{
-						auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
-						player->GetComponent<PlayerController>()->SetOnBoard();
-					}
-				});
-		}
-	}
-
-	{
-
-		{
-			auto object = SceneManager::main->GetCurrentScene()->Find(L"EventBoom");
-			auto eventComponent = object->AddComponent<EventComponent>();
-			eventComponent->SetBindTag(GameObjectTag::Player);
-			eventComponent->SetBindMessage(L"F키를 눌러 폭죽을 넣으세요.", vec3(0.35f, 0.7f, 0.01f), vec2(0.5f, 0.5f), false);
+			eventComponent->SetBindMessage(L"F키를 눌러 탑승하세요", vec3(0.35f, 0.7f, 0.01f), vec2(0.5f, 0.5f), false);
 
 			eventComponent->BindOnCollisionBegin([=](shared_ptr<Collider> collider)
 				{
@@ -150,13 +121,50 @@ void TestScene_jin::Init()
 				{
 					if (Input::main->GetKeyDown(KeyCode::F))
 					{
-						if (GUIInventory::main->GetItemDataIndex(GUIInventory::main->selectIndex).itemCode == 12)
-						{
-							auto itemData = GUIInventory::main->PopItemDataIndex(GUIInventory::main->selectIndex);
-							FireWorkManager::main->SetFire();
-						}
+						auto player = SceneManager::main->GetCurrentScene()->Find(L"player");
+						player->GetComponent<PlayerController>()->SetOnBoard();
 					}
 				});
+		}
+	}
+
+	{
+
+		{
+			auto object = SceneManager::main->GetCurrentScene()->Find(L"EventBoom");
+
+			if (object)
+			{
+				auto eventComponent = object->AddComponent<EventComponent>();
+				eventComponent->SetBindTag(GameObjectTag::Player);
+				eventComponent->SetBindMessage(L"도비: 나에게 폭죽을 주면 재밌는 마술을 보여줄게 ", vec3(0.25f, 0.7f, 0.01f), vec2(0.7f, 0.7f), false);
+
+				eventComponent->BindOnCollisionBegin([=](shared_ptr<Collider> collider)
+					{
+						eventComponent->ShowEventMessage(true);
+					});
+
+				eventComponent->BindOnCollisionEnd([=](shared_ptr<Collider> collider)
+					{
+						eventComponent->ShowEventMessage(false);
+					});
+
+				eventComponent->BindOnUpdateBlock([](shared_ptr<Collider> collider)
+					{
+						if (Input::main->GetKeyDown(KeyCode::F))
+						{
+							if (GUIInventory::main->GetItemDataIndex(GUIInventory::main->selectIndex).itemCode == 12)
+							{
+								if (FireWorkManager::main->CheckAllFireWorkDone())
+								{
+									InGameGlobal::main->skyTime = 2.0f;
+									auto itemData = GUIInventory::main->PopItemDataIndex(GUIInventory::main->selectIndex);
+									FireWorkManager::main->SetFire();
+								}
+							}
+						}
+					});
+			}
 		}
 	}
 
@@ -174,10 +182,6 @@ void TestScene_jin::Update()
 	PathStamp::main->Run();
 
  	Scene::Update();
-	if (Input::main->GetKeyDown(KeyCode::X))
-	{
-		FireWorkManager::main->SetFire();
-	}
 
 
 }
@@ -212,15 +216,9 @@ void TestScene_jin::Finish()
 	if (Scene::_changeScene)
 	{
 		Scene::_changeScene = false;
-		if (_changeSceneType == SceneType::MainMenu)
-			SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::MainMenu), false, false);
-		else
-			SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(SceneType::Sea01), false, false);
+		SceneManager::main->ChangeScene(SceneManager::main->GetCurrentScene(), SceneManager::main->FindScene(_changeSceneType), false, false);
 
 	}
-
-
-
 
 }
 
