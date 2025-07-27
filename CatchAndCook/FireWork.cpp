@@ -132,6 +132,7 @@ void FireWork::SpawnFireBall()
 	fireBallComponent->SetSpeed(100.0f * random);
 	fireBallComponent->SetAutoDestoryTime(1.5f * random);
 	fireBallComponent->SetColor(color);
+	fireBallComponent->SetParticleSize(10.0f * random);
 	fireBall->_transform->SetWorldPosition(GetOwner()->_transform->GetWorldPosition());
 
 	auto meshRenderer = fireBall->AddComponent<MeshRenderer>();

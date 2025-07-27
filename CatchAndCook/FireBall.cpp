@@ -62,15 +62,15 @@ void FireBall::Destroy()
 	switch (_color)
 	{
 	case yellow:
-		ParticleManager::main->GenParticle(2.0f, 500, 8.0f, 12.0f, GetOwner()->_transform->GetWorldPosition(), vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
+		ParticleManager::main->GenParticle(3.0f, 500, _Paritlcesize, 10.0f, GetOwner()->_transform->GetWorldPosition(), vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
 		, ResourceManager::main->Get<Texture>(L"success"));
 		break;
 	case red:
-		ParticleManager::main->GenParticle(2.0f, 500, 8.0f, 12.0f, GetOwner()->_transform->GetWorldPosition(), vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
+		ParticleManager::main->GenParticle(3.0f, 500, _Paritlcesize, 15.0f, GetOwner()->_transform->GetWorldPosition(), vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
 		, ResourceManager::main->Get<Texture>(L"success_red"));
 		break;
 	case green:
-		ParticleManager::main->GenParticle(2.0f, 500, 8.0f, 12.0f, GetOwner()->_transform->GetWorldPosition(), vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
+		ParticleManager::main->GenParticle(3.0f, 500, _Paritlcesize, 20.0f, GetOwner()->_transform->GetWorldPosition(), vec3(0, 0, 0), ParticleMoveType::RadialSpread, ParticleColorType::Red, { 0,0,0,0 }
 		, ResourceManager::main->Get<Texture>(L"success_green"));
 		break;
 	default:

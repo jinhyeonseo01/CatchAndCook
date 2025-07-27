@@ -29,10 +29,11 @@ public:
 	void SetSpeed(float speed) { _speed = speed; }
 	void SetAutoDestoryTime(float time) { _autoDestroyTime = time; }
 	void SetColor(fireballColor color) { _color = color; }
-
+	void SetParticleSize(float size) { _Paritlcesize = size; }
 private:
 	fireballColor _color = fireballColor::yellow;
 	float _speed = 100.0f;
+	float _Paritlcesize = 10.0f;
 	float _autoDestroyTime = 1.0f;
 	float _currTime = 0;
 };
