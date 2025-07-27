@@ -132,32 +132,36 @@ void TestScene_jin::Init()
 
 		{
 			auto object = SceneManager::main->GetCurrentScene()->Find(L"EventBoom");
-			auto eventComponent = object->AddComponent<EventComponent>();
-			eventComponent->SetBindTag(GameObjectTag::Player);
-			eventComponent->SetBindMessage(L"F키를 눌러 폭죽을 넣으세요.", vec3(0.35f, 0.7f, 0.01f), vec2(0.5f, 0.5f), false);
 
-			eventComponent->BindOnCollisionBegin([=](shared_ptr<Collider> collider)
-				{
-					eventComponent->ShowEventMessage(true);
-				});
+			if (object)
+			{
+				auto eventComponent = object->AddComponent<EventComponent>();
+				eventComponent->SetBindTag(GameObjectTag::Player);
+				eventComponent->SetBindMessage(L"F키를 눌러 폭죽을 넣으세요.", vec3(0.35f, 0.7f, 0.01f), vec2(0.5f, 0.5f), false);
 
-			eventComponent->BindOnCollisionEnd([=](shared_ptr<Collider> collider)
-				{
-					eventComponent->ShowEventMessage(false);
-				});
-
-			eventComponent->BindOnUpdateBlock([](shared_ptr<Collider> collider)
-				{
-					if (Input::main->GetKeyDown(KeyCode::F))
+				eventComponent->BindOnCollisionBegin([=](shared_ptr<Collider> collider)
 					{
-						if (GUIInventory::main->GetItemDataIndex(GUIInventory::main->selectIndex).itemCode == 12)
-						{
+						eventComponent->ShowEventMessage(true);
+					});
 
-							auto itemData = GUIInventory::main->PopItemDataIndex(GUIInventory::main->selectIndex);
-							FireWorkManager::main->SetFire();
+				eventComponent->BindOnCollisionEnd([=](shared_ptr<Collider> collider)
+					{
+						eventComponent->ShowEventMessage(false);
+					});
+
+				eventComponent->BindOnUpdateBlock([](shared_ptr<Collider> collider)
+					{
+						if (Input::main->GetKeyDown(KeyCode::F))
+						{
+							if (GUIInventory::main->GetItemDataIndex(GUIInventory::main->selectIndex).itemCode == 12)
+							{
+
+								auto itemData = GUIInventory::main->PopItemDataIndex(GUIInventory::main->selectIndex);
+								FireWorkManager::main->SetFire();
+							}
 						}
-					}
-				});
+					});
+			}
 		}
 	}
 

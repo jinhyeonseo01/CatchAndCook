@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "FireWorkManager.h"
 #include "FireWork.h"
+#include "Dobby.h"
  unique_ptr<FireWorkManager> FireWorkManager::main=nullptr;
 
  void FireWorkManager::LateInit()
@@ -39,8 +40,8 @@
 
  void FireWorkManager::SetFire()
  {
-	/* if (CheckAllFireWorkDone())
-	 {*/
+	 if (CheckAllFireWorkDone())
+	 {
 		 cout << " FireWorkManager::SetFire()" << _fireworks.size()  << endl;
 
 		 for (auto& firework : _fireworks)
@@ -52,7 +53,10 @@
 				 fireworkComponent->Shot();
 			 }
 		 }
-	 /*}*/
+
+		 _dobby->SetAnimation("magic");
+	 }
+
  }
 
  shared_ptr<GameObject> FireWorkManager::GetFireBall(fireballColor color)
