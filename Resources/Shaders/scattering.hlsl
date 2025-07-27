@@ -103,11 +103,6 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
 //    float3 viewPos = ReconstructViewPos(pixel);
 //    float3 worldPos = mul(float4(viewPos, 1.0f), InvertViewMatrix).xyz;
 
-//    //viewDir: 픽셀에서 카메라(또는 관찰자) 방향으로 향하는 단위 벡터  
-//    //lightDir: 픽셀에서 빛(광원) 방향으로 향하는 단위 벡터
-//    //light -  > direction = vec3(-0.024f, 1.0f, 0.899f);
-//    //light -  > position = vec3(769.f, 1282.f, 750.0f);
-    
 //    float3 lightToPixel = normalize(mainLight.position - worldPos); // 픽셀에서 광원으로 나가는방향
 //    float3 lightDir = normalize(-mainLight.direction); //픽셀에서 광원으로 향하는방향
 

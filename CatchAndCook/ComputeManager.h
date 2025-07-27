@@ -303,7 +303,7 @@ private:
 
 struct UnderWaterParam
 {
-	/*vec3 g_fogColor = vec3(0, 0.256f, 0.350f);*/
+	//vec3 g_fogColor = vec3(0, 0.256f, 0.350f);
 
 	vec3 g_fogColor = vec3(0, 0.269f, 0.438f);
 	float g_fog_power = 5.109f;
@@ -450,13 +450,13 @@ private:
 //{
 //	float phaseG = 0.453f;
 //	float absorption = 3.6f;
-//	vec2 Padding;
+//	vec2 Padding{};
 //
 //	float density = 15.0f;
 //	vec3 scatterColor = vec3(0, 1, 0.375f);
 //
 //	vec3 direction = vec3(0, 1, 0);
-//	float padding;
+//	float padding{};
 //};
 
 struct ScatteringData

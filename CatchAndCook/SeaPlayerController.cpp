@@ -445,7 +445,7 @@ void SeaPlayerController::SetState(SeaPlayerState state)
         _weapons->Shot();
         _fireEffect->SetActiveSelf(true);
         _fireEffect->GetComponent<AnimationSpriteComponent>()->Reset();
-        Sound::main->Play("shot",0.5f,true);
+        Sound::main->Play("shot",0.7f,true);
 
         break;
     }
