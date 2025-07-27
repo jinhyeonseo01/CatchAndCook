@@ -60,7 +60,7 @@ shared_ptr<StructuredBuffer> ParticleManager::AllocParticleBuffer()
 {
 	if (_strBufferPool.empty())
 	{
-		//cout << "버퍼 추가됨" << "현재 풀갯수" << _currentPoolCount << endl;
+		cout << "버퍼 추가됨" << "현재 풀갯수" << _currentPoolCount << endl;
 		Init();
 	}
 

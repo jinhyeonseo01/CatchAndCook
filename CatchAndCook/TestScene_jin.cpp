@@ -182,10 +182,6 @@ void TestScene_jin::Update()
 	PathStamp::main->Run();
 
  	Scene::Update();
-	if (Input::main->GetKeyDown(KeyCode::X))
-	{
-		FireWorkManager::main->SetFire();
-	}
 
 
 }
