@@ -434,7 +434,6 @@
     <ClCompile Include="BilboardComponent.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
-    <ClCompile Include="ShowGameMoeny.cpp" />
     <ClCompile Include="CookItemBoxObject.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
@@ -514,6 +513,21 @@
       <Filter>03.Component</Filter>
     </ClCompile>
     <ClCompile Include="GUIBad.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="FireWorkManager.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="FireWork.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="FireBall.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Dobby.cpp">
+      <Filter>03.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="ShowGameMoeny.cpp">
       <Filter>03.Component</Filter>
     </ClCompile>
   </ItemGroup>
@@ -899,7 +913,6 @@
     <ClInclude Include="BilboardComponent.h">
       <Filter>03.Component</Filter>
     </ClInclude>
-    <ClInclude Include="ShowGameMoeny.h" />
     <ClInclude Include="Canvas.h">
       <Filter>03.Component</Filter>
     </ClInclude>
@@ -979,6 +992,21 @@
       <Filter>03.Component</Filter>
     </ClInclude>
     <ClInclude Include="GUIBad.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="FireWorkManager.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="FireWork.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="FireBall.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Dobby.h">
+      <Filter>03.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ShowGameMoeny.h">
       <Filter>03.Component</Filter>
     </ClInclude>
   </ItemGroup>

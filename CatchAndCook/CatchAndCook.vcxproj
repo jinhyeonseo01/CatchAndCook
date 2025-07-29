@@ -222,7 +222,6 @@
     <ClCompile Include="InteractiveComponent.cpp" />
     <ClCompile Include="itemBoxComponent.cpp" />
     <ClCompile Include="MainMenuScene.cpp" />
-    <ClCompile Include="ModelJsonSerializer.cpp" />
     <ClCompile Include="NPCShopOwner.cpp" />
     <ClCompile Include="PercentComponent.cpp" />
     <ClCompile Include="GUICookProgress.cpp" />
@@ -410,7 +409,6 @@
     <ClInclude Include="InteractiveComponent.h" />
     <ClInclude Include="itemBoxComponent.h" />
     <ClInclude Include="MainMenuScene.h" />
-    <ClInclude Include="ModelJsonSerializer.h" />
     <ClInclude Include="NPCShopOwner.h" />
     <ClInclude Include="PercentComponent.h" />
     <ClInclude Include="GUICookProgress.h" />
