@@ -111,7 +111,7 @@ The third-person game project developed by designing and building a C++20 and Di
 ![image](./docs/Animation121.gif)  
 
 * * *  
-<br><br><br>  
+<br><br>  
 
 ## Pipeline Flow
 ![image](./docs/Flow%20Chart.png)  
@@ -120,7 +120,7 @@ The third-person game project developed by designing and building a C++20 and Di
 ![image](./docs/Flow%20Chart%20Pass.png)  
 
 * * *  
-<br><br><br>  
+<br><br>  
 
 ## Implementation Details
 
@@ -185,7 +185,7 @@ The third-person game project developed by designing and building a C++20 and Di
 ![image](./docs/Animation105.gif)  
 
 * * *  
-<br><br><br>  
+<br><br>  
 
 ## Development Tasks
 #### 공동 개발
