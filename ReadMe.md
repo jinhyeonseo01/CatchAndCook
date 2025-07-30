@@ -1,5 +1,12 @@
 # Catch & Cook
-C++ 20과 DirectX 12 기반의 프레임워크 및 렌더링 파이프라인을 설계·구축하여 개발된 3인칭 게임 프로젝트.
+![Static Badge](https://img.shields.io/badge/C%2B%2B-%2300599C?style=for-the-badge&logo=cplusplus)
+![Static Badge](https://img.shields.io/badge/Graphics%20API-Directx12-76B900?style=for-the-badge&logo=nvidia&logoColor=%2376B900)
+![License Badge](https://img.shields.io/github/license/jinhyeonseo01/CatchAndCook?style=for-the-badge)
+![GitHub Repo stars](https://img.shields.io/github/stars/jinhyeonseo01/CatchAndCook?style=for-the-badge&logo=github)
+![GitHub Release](https://img.shields.io/github/v/release/jinhyeonseo01/CatchAndCook?style=for-the-badge&logo=Github)  
+
+C++ 20과 DirectX 12 기반의 프레임워크 및 렌더링 파이프라인을 설계·구축하여 개발된 3인칭 게임 프로젝트.  
+
 <details>
 <summary>English</summary>
 
@@ -37,20 +44,32 @@ The third-person game project developed by designing and building a C++20 and Di
  - ImGUI  
  - Assimp  
  - FMOD  
+ - Unity ( *Level Design* )  
 
 ### 개발 기간
  - **8개월 (2025.01.15 ~ 2025.07.28)**  
 
 ### 팀원 / 역할 분담
-| 이름                        | 역할(한글)           |
+| 이름                        | 역할               |
 |----------------------------|----------------------|
 | **진현서 / Jin Hyeon Seo (Clrain)** | [클라이언트 – 육지 파트 ( *Client – Land Content* )](#jin) |
 | **김상혁 / Kim Sang Hyuk**          | [클라이언트 – 해상 파트 ( *Client – Maritime Content* )](#kim) | 
+
+**(Directx12의 기반 렌더링 및 로직 파이프라인 전반의 대부분을 공동으로 상의하며 함께 설계함.)**
+
 
 ### 게임 개요  
    - 육지와 해상이 나뉘어진 공간에서 플레이
    - 낮에는 식당을 경영하기 위하여 직접 해상에서 재료들을 수급하고, 밤에는 손님들에게 음식을 제공하여 돈을 버는 방식
    - 성장형 경영 타이쿤 게임.  
+<details>
+<summary>English</summary>
+
+ - Set in an environment split between land and sea  
+ - During the day, you source ingredients directly from the sea to run your restaurant; at night, you serve food to customers to earn money  
+ - A growth‑oriented management tycoon game  
+</details>  
+
 
 <details>
 <summary>줄거리</summary>
@@ -86,7 +105,7 @@ The third-person game project developed by designing and building a C++20 and Di
 ![image](./docs/Animation117.gif)  
 
 #### 부둣가 / Dockside
-![image](./docs/Animation117.gif)  
+![image](./docs/Animation119.gif)  
 
 #### 바닷속 / UnderWater
 ![image](./docs/Animation121.gif)  
