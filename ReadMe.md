@@ -10,6 +10,16 @@ The third-person game project developed by designing and building a C++20 and Di
 
 ![image](./docs/Main2.png)  
 
+<details>
+<summary>More</summary>
+
+![image](./docs/Main.png)  
+![image](./docs/Main3.png)  
+![image](./docs/Main4.png)  
+
+</details>  
+
+
 ### 개발 목적
  - C++20과 DirectX 12를 활용해 렌더링 파이프라인 프레임워크를 직접 설계·구축하고, 이를 기반으로 플레이 가능한 3인칭 게임을 개발하기 위함  
  - 이 과정을 통해 그래픽스 및 코어 엔진 엔지니어링에 대한 이해를 심화하기 위함  
@@ -20,7 +30,6 @@ The third-person game project developed by designing and building a C++20 and Di
  - To design and implement a rendering‑pipeline framework using C++20 and DirectX 12, and develop a playable third‑person game based on it  
  - To deepen my understanding of graphics and core‑engine engineering through this process  
 </details>  
-<br>
 
 ### 사용 기술 & 서드파티
  - C++ 20 (*MSVC*)  
@@ -35,8 +44,8 @@ The third-person game project developed by designing and building a C++20 and Di
 ### 팀원 / 역할 분담
 | 이름                        | 역할(한글)           |
 |----------------------------|----------------------|
-| **진현서 / Jin Hyeon Seo (Clrain)** | [클라이언트 – 육지 파트 (* Client – Land Content* )](#jin) |
-| **김상혁 / Kim Sang Hyuk**          | [클라이언트 – 해상 파트 (* Client – Maritime Content* )](#kim) | 
+| **진현서 / Jin Hyeon Seo (Clrain)** | [클라이언트 – 육지 파트 ( *Client – Land Content* )](#jin) |
+| **김상혁 / Kim Sang Hyuk**          | [클라이언트 – 해상 파트 ( *Client – Maritime Content* )](#kim) | 
 
 ### 게임 개요  
    - 육지와 해상이 나뉘어진 공간에서 플레이
@@ -122,6 +131,9 @@ The third-person game project developed by designing and building a C++20 and Di
 ### Terrain Tessellation  
 ![image](./docs/Animation81.gif)  
 ![image](./docs/Animation99.gif)  
+
+### Deferred Rendering (Lots of Additional Light)   
+![image](./docs/Deferred.png)  
 
 ### Post Processing  
 #### Final Visualization
