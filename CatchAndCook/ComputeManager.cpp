@@ -355,7 +355,7 @@ void GodRay::Dispatch(ComPtr<ID3D12GraphicsCommandList>& cmdList, int x, int y, 
 		param.decay = 0.95;
 		param.exposure = 0.235 * 
 			std::clamp((mainLight->direction.Dot(-Vector3(cameraParam.cameraLook)) * 0.5 + 0.5) * 1.5, 0.0, 1.0)
-			* std::clamp((1 - mainLight->intensity) * 1.5f, 0.2f, 0.7f);
+			* std::clamp((1 - mainLight->intensity) * 1.5f, 0.2f, 0.8f);
 		param.exposure = std::max(param.exposure, 0.0f);
 
 		if (param.exposure <= 0.01)

@@ -12,7 +12,6 @@
 #include "Transform.h"
 #include "Mesh.h"
 #include "Vertex.h"
-#include "ModelJsonSerializer.h"
 
 AssimpPack::AssimpPack()
 {
