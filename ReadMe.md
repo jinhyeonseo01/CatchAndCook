@@ -77,7 +77,7 @@ The third-person game project developed by designing and building a C++20 and Di
    - 망망대해 위에 어느 한 섬. 희귀한 광물 **미스라이트**가 풍부한 것으로 알려진 이 섬에는 무역상인들을 중심으로 한 모험가와 귀족상단이 주둔하여 광물을 채집하고 무역을 하고 있었다. 사람은 모여있고, 돈은 많고, 먹을 것은 부족한 이 섬에서 주인공은 식장을 개업하기로 하는데...  
 </details>  
 
-* * *  
+<br><br>  
 
 ## Project Overview  
 **Youtube - Devlog**  
@@ -111,6 +111,7 @@ The third-person game project developed by designing and building a C++20 and Di
 ![image](./docs/Animation121.gif)  
 
 * * *  
+<br><br><br>  
 
 ## Pipeline Flow
 ![image](./docs/Flow%20Chart.png)  
@@ -119,6 +120,7 @@ The third-person game project developed by designing and building a C++20 and Di
 ![image](./docs/Flow%20Chart%20Pass.png)  
 
 * * *  
+<br><br><br>  
 
 ## Implementation Details
 
@@ -183,6 +185,7 @@ The third-person game project developed by designing and building a C++20 and Di
 ![image](./docs/Animation105.gif)  
 
 * * *  
+<br><br><br>  
 
 ## Development Tasks
 #### 공동 개발
