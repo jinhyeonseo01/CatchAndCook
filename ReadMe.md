@@ -41,9 +41,9 @@ The third-person game project developed by designing and building a C++20 and Di
 ### 사용 기술 & 서드파티
  - C++ 20 (*MSVC*)  
  - DirectX12  
- - ImGUI  
- - Assimp  
- - FMOD  
+ - [ImGUI](https://github.com/ocornut/imgui)  
+ - [Assimp](https://github.com/assimp/assimp)  
+ - [FMOD](https://www.fmod.com)  
  - Unity ( *Level Design Tools* )  
    - [Asset Store](https://assetstore.unity.com/packages/tools/utilities/scene-object-json-exporter-322005)
 
@@ -80,7 +80,7 @@ The third-person game project developed by designing and building a C++20 and Di
 
 <br><br>  
 
-## Project Overview  
+# Project Overview  
 **Youtube - Devlog**  
  - [[Devlog] DirectX12 - Post Processing](https://youtu.be/-TeBrZH87XQ)  
  - [[Devlog] DirectX12 - Character NPR Toon Shader](https://youtu.be/TLnCw8tBEnE)  
@@ -114,6 +114,8 @@ The third-person game project developed by designing and building a C++20 and Di
 * * *  
 <br><br>  
 
+# Technical Overview
+
 ## Pipeline Flow
 ![image](./docs/Flow%20Chart.png)  
 
@@ -123,12 +125,13 @@ The third-person game project developed by designing and building a C++20 and Di
 * * *  
 <br><br>  
 
-## Implementation Details
+## Technologies Used
 
 ### Skinned Mesh Rendering
 ![image](./docs/Animation87.gif)  
 
 ### NavMesh & PathFinding  
+[[ YouTube ] DirectX12 - Collision & PathFinding](https://youtu.be/xzuFgoVAOT0)  
 ![image](./docs/Animation79.gif)  
 ![image](./docs/Animation84.gif)  
 
@@ -147,6 +150,7 @@ The third-person game project developed by designing and building a C++20 and Di
 
 ### Cascade Shadow Mapping (CSM)  
 **4‑Cascade LOD**
+[[ YouTube ] DirectX12 - Cascade Shadow Mapping](https://youtu.be/0_6SBgFWlvk)  
 ![image](./docs/Animation109.gif)  
 ![image](./docs/Animation107.gif)  
 
@@ -159,6 +163,7 @@ The third-person game project developed by designing and building a C++20 and Di
 
 ### Post Processing  
 #### Final Visualization
+[[ YouTube ] DirectX12 - Post Processing](https://youtu.be/-TeBrZH87XQ)  
 ![image](./docs/Animation93.gif)  
 ![image](./docs/Animation54.gif)  
 
@@ -169,9 +174,11 @@ The third-person game project developed by designing and building a C++20 and Di
 ![image](./docs/Animation58.gif)  
 
 ### Stylized Water Shader
+[[ YouTube ] DirectX12 - Stylized Water Shader](https://youtu.be/ExiXoHy73so) 
 ![image](./docs/Animation88.gif)  
 
 ### Character Non-Photo Realistic (NPR) based Shading
+[[ YouTube ] DirectX12 - Character NPR Toon Shader](https://youtu.be/TLnCw8tBEnE)  
 #### SDF Face Shadow
 ![image](./docs/Animation46.gif)  
 
@@ -182,8 +189,18 @@ The third-person game project developed by designing and building a C++20 and Di
 ![image](./docs/Animation97.gif)  
 
 **(+Rim Light, Simple GI)**
-#### Seawater Visualization & Waves
+### Seawater Visualization & Waves
 ![image](./docs/Animation105.gif)  
+
+### Unity-based Level-Design(*Scene*) Loader
+
+![image](./docs/Scene%20Loader.png)  
+
+#### Scene&Object Json Exporter  
+**The project’s functionality was modularized and released as an asset.**  
+[Click to visit the Asset Store](https://assetstore.unity.com/packages/tools/utilities/scene-object-json-exporter-322005)  
+
+![Asset Store](./docs/Asset%20Store.png)  
 
 * * *  
 <br><br>  
