@@ -1,6 +1,6 @@
 # Catch & Cook
 ![Static Badge](https://img.shields.io/badge/C%2B%2B-%2300599C?style=for-the-badge&logo=cplusplus)
-![Static Badge](https://img.shields.io/badge/Graphics%20API-Directx12-76B900?style=for-the-badge&logo=nvidia&logoColor=%2376B900)
+![Static Badge](https://img.shields.io/badge/Graphics%20API-DirectX12-76B900?style=for-the-badge&logo=nvidia&logoColor=%2376B900)
 ![License Badge](https://img.shields.io/github/license/jinhyeonseo01/CatchAndCook?style=for-the-badge)
 ![GitHub Repo stars](https://img.shields.io/github/stars/jinhyeonseo01/CatchAndCook?style=for-the-badge&logo=github)
 ![GitHub Release](https://img.shields.io/github/v/release/jinhyeonseo01/CatchAndCook?style=for-the-badge&logo=Github)  
@@ -40,11 +40,12 @@ The third-person game project developed by designing and building a C++20 and Di
 
 ### 사용 기술 & 서드파티
  - C++ 20 (*MSVC*)  
- - Directx12  
+ - DirectX12  
  - ImGUI  
  - Assimp  
  - FMOD  
- - Unity ( *Level Design* )  
+ - Unity ( *Level Design Tools* )  
+   - [Asset Store](https://assetstore.unity.com/packages/tools/utilities/scene-object-json-exporter-322005)
 
 ### 개발 기간
  - **8개월 (2025.01.15 ~ 2025.07.28)**  
@@ -55,7 +56,7 @@ The third-person game project developed by designing and building a C++20 and Di
 | **진현서 / Jin Hyeon Seo (Clrain)** | [클라이언트 – 육지 파트 ( *Client – Land Content* )](#jin) |
 | **김상혁 / Kim Sang Hyuk**          | [클라이언트 – 해상 파트 ( *Client – Maritime Content* )](#kim) | 
 
-**(Directx12의 기반 렌더링 및 로직 파이프라인 전반의 대부분을 공동으로 상의하며 함께 설계함.)**
+**(DirectX12의 기반 렌더링 및 로직 파이프라인 전반의 대부분을 공동으로 상의하며 함께 설계함.)**
 
 
 ### 게임 개요  
@@ -306,3 +307,4 @@ The third-person game project developed by designing and building a C++20 and Di
 * * *  
 
 Middle Present Execute : https://drive.google.com/file/d/1GvVb6xl6p1NtAi3A1yd_0g4KXDfFq1Eu/view?usp=drive_link
+Last Present Execute : https://drive.google.com/file/d/1mJVY8-xbjTHjggJgFJks5_SR9z3ktg3_/view?usp=sharing
