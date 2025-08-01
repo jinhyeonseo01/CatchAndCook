@@ -1,36 +1,46 @@
+ï»¿
 
+// 4ê°œ
+s0 = ë¦¬ë‹ˆì–´
+s1 = í¬ì¸íŠ¸
+s2 = ë¹„ë“±ë°© 4x
+s3 = ë¹„ë“±ë°© 8x
+s4 = ë¹„ë“±ë°© 16x
+s5 = ê·¸ë¦¼ì ìƒ˜í”Œë§
 
-// 4°³
-s0 = ¸®´Ï¾î
-s1 = Æ÷ÀÎÆ®
-s2 = ºñµî¹æ 4x
-s3 = ºñµî¹æ 8x
-s4 = ºñµî¹æ 16x
-s5 = ±×¸²ÀÚ »ùÇÃ¸µ
+// 16ê°œ
+Shaow_Texture :  register(t20);
+PositionTexture : register(t21);
+NormalTexture : register(t22);
+AlbedoTexture : register(t23);
+depthTexture : register(t24);
 
-// 8°³
-t10 shadow_texture
-t11 opaque_texture
-t12 depth_texture
-
-// ÁöÄÑ¾ßÇÒ ÀÌ¸§ ±ÔÄ¢
+// ì§€ì¼œì•¼í•  ì´ë¦„ ê·œì¹™
 diffuse_texture : _BaseMap
 normal_texture : _BumpMap
 specular_texture : _SpecGlossMap
 emissive_texture : _EmissionMap
 
-b8°³
-//°íÁ¤
+b12ê°œ
+//ê³ ì •
 b0 = Glocal GameDatas (Time , value , windowSize ) 
 b1 = Transform 
 b2 = Camera
 b3 = MainLight
-b4 = MatrialParam
+b4 = Instance
+b5 = Bone
+b6 = material
 
 //dynamcic System
-b5 = SpriteData
-b5 = SkinnedData
+b5 = 
+b5 = 
 b6 = 
 b7 = 
 
+//dynamcic System
+t30 = Transform
+t31 = SKINNED
 
+
+#define SKINNED // ìŠ¤í‚¨ë“œ í™œì„±í™”
+#define INSTANCE //ì¸í’‹ ì—˜ë¦¬ë¨¼íŠ¸ ì¸ìŠ¤í„´ì‹± í™œì„±í™”

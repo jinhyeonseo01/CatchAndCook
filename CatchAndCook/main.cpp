@@ -1,36 +1,54 @@
-#include "pch.h"
-
+Ôªø#include "pch.h"
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
 #include "Game.h"
 #include "Shader.h"
+#include "resource.h"
 
-unique_ptr<Game> game;
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+HCURSOR g_cursor = NULL; // Ï†ÑÏó≠ Î≥ÄÏàòÎ°ú ÏÑ§Ï†ï
 
 int main()
 {
+	//#ifdef _DEBUG
+//	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+//#endif
 
-#ifdef _DEBUG
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-#endif
+	g_cursor = LoadCursorFromFile(L"../Resources/Cursor/cursor5.ani");
+	
+	if (g_cursor == NULL)
+	{
+		MessageBox(NULL, L"Ïï†ÎãàÎ©îÏù¥ÏÖò Ïª§ÏÑú Î°úÎìú Ïã§Ìå®", L"ÏóêÎü¨", MB_OK | MB_ICONERROR);
+		return 1;
+	}
+	if (!g_cursor)
+	{
+		DWORD err = GetLastError();
+		std::wcerr << L"Ïª§ÏÑú Î°úÎî© Ïã§Ìå®, Ïò§Î•ò ÏΩîÎìú: " << err << std::endl;
+	}
 
 
-	WNDCLASSEX wc = { sizeof(WNDCLASSEX),
-				CS_CLASSDC,
-				WndProc,
-				0L,
-				0L,
-				GetModuleHandle(NULL),
-				NULL,
-				NULL,
-				NULL,
-				NULL,
-				L"Game", // lpszClassName, L-string
-				NULL };
+	HINSTANCE hInst = GetModuleHandle(NULL);
 
-	// https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerclassa?redirectedfrom=MSDN
+	WNDCLASSEX wc = {
+		sizeof(WNDCLASSEX),
+		CS_CLASSDC,
+		WndProc,
+		0L,
+		0L,
+		hInst,
+		LoadIcon(hInst, MAKEINTRESOURCE(IDI_ICON2)), // ÌÅ∞ ÏïÑÏù¥ÏΩò ÏÑ§Ï†ï
+		NULL,
+		(HBRUSH)GetStockObject(WHITE_BRUSH),
+		NULL,
+		L"Catch&Cook",
+		LoadIcon(hInst, MAKEINTRESOURCE(IDI_ICON2))  // ÏûëÏùÄ ÏïÑÏù¥ÏΩò ÏÑ§Ï†ï
+	};
+
+
 	if (!RegisterClassEx(&wc)) {
 		cout << "RegisterClassEx() failed." << endl;
 	}
@@ -40,60 +58,84 @@ int main()
 
 	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, false);
 
-	// ¿©µµøÏ∏¶ ∏∏µÈ∂ß ¿ßø°º≠ ∞ËªÍ«— wr ªÁøÎ
-	HWND hwnd = CreateWindow(wc.lpszClassName, L"Game",
+	// ÏúàÎèÑÏö∞Î•º ÎßåÎì§Îïå ÏúÑÏóêÏÑú Í≥ÑÏÇ∞Ìïú wr ÏÇ¨Ïö©
+	HWND hwnd = CreateWindow(wc.lpszClassName, L"Catch&Cook",
 		WS_OVERLAPPEDWINDOW,
-		100, // ¿©µµøÏ ¡¬√¯ ªÛ¥‹¿« x ¡¬«•
-		100, // ¿©µµøÏ ¡¬√¯ ªÛ¥‹¿« y ¡¬«•
-		wr.right - wr.left, // ¿©µµøÏ ∞°∑Œ πÊ«‚ «ÿªÛµµ
-		wr.bottom - wr.top, // ¿©µµøÏ ºº∑Œ πÊ«‚ «ÿªÛµµ
+		100, // ÏúàÎèÑÏö∞ Ï¢åÏ∏° ÏÉÅÎã®Ïùò x Ï¢åÌëú
+		100, // ÏúàÎèÑÏö∞ Ï¢åÏ∏° ÏÉÅÎã®Ïùò y Ï¢åÌëú
+		wr.right - wr.left, // ÏúàÎèÑÏö∞ Í∞ÄÎ°ú Î∞©Ìñ• Ìï¥ÏÉÅÎèÑ
+		wr.bottom - wr.top, // ÏúàÎèÑÏö∞ ÏÑ∏Î°ú Î∞©Ìñ• Ìï¥ÏÉÅÎèÑ
 		NULL, NULL, wc.hInstance, NULL);
-
-
 
 	ShowWindow(hwnd, SW_SHOWDEFAULT);
 	UpdateWindow(hwnd);
 
-	game = make_unique<Game>();
+	auto game = Game::main = make_shared<Game>();
+	game->SetHandle(hwnd, hInst);
 	game->Init(hwnd);
 
 	MSG msg = {};
 
 
-	while (WM_QUIT != msg.message) {
+	while (WM_QUIT != msg.message) 
+	{
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
+
 		else
 		{
-			game->Run();
+		/*	 auto frameStart = std::chrono::high_resolution_clock::now();*/
+
+			game->Run(); // Í≤åÏûÑ ÌîÑÎ†àÏûÑ Ïã§Ìñâ
+
+			//auto frameEnd = std::chrono::high_resolution_clock::now();
+			//std::chrono::duration<float> frameDuration = frameEnd - frameStart;
+
+			//// 10 FPS ‚Üí ÌîÑÎ†àÏûÑÎãπ 100ms Í∞ÑÍ≤© Ïú†ÏßÄ
+			//float targetFrameTime = 1.0f / 10.0f;
+			//float sleepTime = targetFrameTime - frameDuration.count();
+
+			//if (sleepTime > 0.0f) {
+   //         std::this_thread::sleep_for(std::chrono::duration<float>(sleepTime));
+			//}
 		}
 	}
 
-
+	Game::main = nullptr;
 	game->Release();
-	game.reset(nullptr);
+	game = nullptr;
 
 	DestroyWindow(hwnd);
 	UnregisterClass(wc.lpszClassName, wc.hInstance);
 
-#ifdef _DEBUG
-	_CrtDumpMemoryLeaks();
-#endif
+//#ifdef _DEBUG
+//	_CrtDumpMemoryLeaks();
+//#endif
 
 	return 0;
 };
 
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+		return true;
+
 	    InputEvent eventDesc;
 	    std::memset(&eventDesc, 0, sizeof(InputEvent));
 	    eventDesc.type = InputType::Event;
 		
 		switch (msg)
 		{
+		case WM_SETCURSOR:
+			if (g_cursor && LOWORD(lParam) == HTCLIENT) // ÌÅ¥ÎùºÏù¥Ïñ∏Ìä∏ ÏòÅÏó≠Ïùº ÎïåÎßå
+			{
+				SetCursor(g_cursor);
+				return TRUE;
+			}
+			break;
 
 		case WM_SIZE:
 		{
@@ -103,6 +145,10 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				GetClientRect(hWnd, &rect);
 				WINDOW_WIDTH = rect.right - rect.left;
 				WINDOW_HEIGHT = rect.bottom - rect.top;
+
+				if (WINDOW_WIDTH <= 0 || WINDOW_HEIGHT <= 0)
+					break;
+
 				Core::main->ResizeWindowSize();
 			}
 			break;
@@ -184,16 +230,18 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	    }
 	    case WM_MOUSEWHEEL:
 	    {
-	        int deltaZ = (wParam >> 16) & 0xffff;
+	        short deltaZ = (wParam >> 16) & 0xffff;
 	        char sign = std::sign(deltaZ);
 	        eventDesc.type = InputType::Mouse;
 	        eventDesc.mouse.posX = 0;
 	        eventDesc.mouse.posY = deltaZ;
-	        eventDesc.mouse.isDown = sign < 0;
-	        eventDesc.mouse.isUp = sign > 0;
-	        eventDesc.mouse.isCtrl = wParam & MK_CONTROL;
-	        eventDesc.mouse.isShift = wParam & MK_SHIFT;
-	        eventDesc.keyCode = KeyCode::CenterMouse;
+			eventDesc.mouse.isDown = true;
+			eventDesc.mouse.isUp = true;
+			eventDesc.mouse.isCtrl = wParam & MK_CONTROL;
+			eventDesc.mouse.isShift = wParam & MK_SHIFT;
+			eventDesc.keyCode = (sign > 0) ? KeyCode::WheelUpMouse : KeyCode::WheelDownMouse;
+			eventDesc.mouse.wheelDelta= GET_WHEEL_DELTA_WPARAM(wParam);
+			eventDesc.mouse.wheelDeltaH = GET_WHEEL_DELTA_WPARAM(wParam);
 	        Input::main->_eventQueue.push(eventDesc);
 	        break;
 	    }

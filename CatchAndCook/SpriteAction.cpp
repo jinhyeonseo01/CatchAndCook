@@ -1,15 +1,10 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "SpriteAction.h"
 #include "Sprite.h"
 
-bool ActionCommand::_UpdateEnable=true;
 
-void ActionFunc::OnClickAction(KeyCode key, Sprite* sprite)
+bool ActionFunc::OnClickAction(KeyCode key, Sprite* sprite)
 {
-
-    if (ActionCommand::_UpdateEnable == false)
-        return;
-
     if (Input::main->GetMouseDown(key))
     {
         auto pos = Input::main->GetMouseDownPosition(key);
@@ -17,30 +12,26 @@ void ActionFunc::OnClickAction(KeyCode key, Sprite* sprite)
         float normalizedX = static_cast<float>(pos.x) / WINDOW_WIDTH;
         float normalizedY = static_cast<float>(pos.y) / WINDOW_HEIGHT;
 
-        if (normalizedX >= (sprite->_ndcPos.x) &&
-            normalizedX <= (sprite->_ndcPos.x + sprite->_ndcSize.x) &&
-            normalizedY >= (sprite->_ndcPos.y) &&
-            normalizedY <= (sprite->_ndcPos.y + sprite->_ndcSize.y))
+        if (normalizedX >= (sprite->_ndcWorldPos.x) &&
+            normalizedX <= (sprite->_ndcWorldPos.x + sprite->_ndcSize.x) &&
+            normalizedY >= (sprite->_ndcWorldPos.y) &&
+            normalizedY <= (sprite->_ndcWorldPos.y + sprite->_ndcSize.y))
         {
-            sprite->_spriteWorldParam.alpha -= 0.1f;
-
-            for (auto& child : sprite->_children)
-            {
-                child->_spriteWorldParam.alpha -= 0.1f;
-            }
+            return true;
         }
-    } 
+
+        return false;
+    }
+
+    return false;
 }
 
 void ActionFunc::OnDragAction(KeyCode key, Sprite* sprite)
 {
-    if (ActionCommand::_UpdateEnable == false)
-        return;
-
     static Sprite* _dragSprite = nullptr;
-    static vec2 _lastMousePos; // ÀÌÀü ¸¶¿ì½º À§Ä¡ ÃßÀû º¯¼ö
+    static vec2 _lastMousePos; // ì´ì „ ë§ˆìš°ìŠ¤ ìœ„ì¹˜ ì¶”ì  ë³€ìˆ˜
 
-    // ¿ìÅ¬¸¯ ½ÃÀÛ
+    // ìš°í´ë¦­ ì‹œìž‘
     if (Input::main->GetMouseDown(key))
     {
         vec2 pos = Input::main->GetMouseDownPosition(key);
@@ -50,40 +41,32 @@ void ActionFunc::OnDragAction(KeyCode key, Sprite* sprite)
 
         _lastMousePos = pos;
 
-        if (normalizedX >= (sprite->_ndcPos.x) &&
-            normalizedX <= (sprite->_ndcPos.x + sprite->_ndcSize.x) &&
-            normalizedY >= (sprite->_ndcPos.y) &&
-            normalizedY <= (sprite->_ndcPos.y + sprite->_ndcSize.y))
+        if (normalizedX >= (sprite->_ndcWorldPos.x) &&
+            normalizedX <= (sprite->_ndcWorldPos.x + sprite->_ndcSize.x) &&
+            normalizedY >= (sprite->_ndcWorldPos.y) &&
+            normalizedY <= (sprite->_ndcWorldPos.y + sprite->_ndcSize.y))
         {
             _dragSprite = sprite;
-
         }
     }
 
-    // µå·¡±× Áß
+    // ë“œëž˜ê·¸ ì¤‘
     if (_dragSprite && Input::main->GetMouse(key))
     {
         vec2 pos = Input::main->GetMousePosition();
-        vec2 delta = pos - _lastMousePos; 
+        vec2 delta = pos - _lastMousePos;
 
-        delta.x = delta.x * (_dragSprite->_firstWindowSize.x / WINDOW_WIDTH);
-        delta.y = delta.y * (_dragSprite->_firstWindowSize.y / WINDOW_HEIGHT);
+        delta.x = delta.x ;
+        delta.y = delta.y ;
 
-        _dragSprite->SetPos(vec3(_dragSprite->_screenPos.x + delta.x,
-            _dragSprite->_screenPos.y + delta.y,
-            _dragSprite->_spriteWorldParam.ndcPos.z));
+        _dragSprite->SetLocalPos(vec3(_dragSprite->_screenLocalPos.x + delta.x,
+            _dragSprite->_screenLocalPos.y + delta.y,
+            0.1f));
 
-        for (auto& child : _dragSprite->_children)
-        {
-            child->SetPos(vec3(child->_screenPos.x + delta.x,
-                child->_screenPos.y + delta.y,
-                child->_spriteWorldParam.ndcPos.z));
-        }
-
-        _lastMousePos = pos; 
+        _lastMousePos = pos;
     }
 
-    // ¿ìÅ¬¸¯ Á¾·á
+    // ìš°í´ë¦­ ì¢…ë£Œ
     if (_dragSprite && Input::main->GetMouseUp(key))
     {
         _dragSprite = nullptr;
@@ -92,9 +75,6 @@ void ActionFunc::OnDragAction(KeyCode key, Sprite* sprite)
 
 void ActionFunc::DisableMouseAction(KeyCode key, Sprite* sprite)
 {
-    if (ActionCommand::_UpdateEnable == false)
-        return;
-
     if (Input::main->GetMouseDown(key))
     {
         auto pos = Input::main->GetMouseDownPosition(key);
@@ -102,14 +82,12 @@ void ActionFunc::DisableMouseAction(KeyCode key, Sprite* sprite)
         float normalizedX = static_cast<float>(pos.x) / WINDOW_WIDTH;
         float normalizedY = static_cast<float>(pos.y) / WINDOW_HEIGHT;
 
-        if (normalizedX >= (sprite->_ndcPos.x) &&
-            normalizedX <= (sprite->_ndcPos.x + sprite->_ndcSize.x) &&
-            normalizedY >= (sprite->_ndcPos.y) &&
-            normalizedY <= (sprite->_ndcPos.y + sprite->_ndcSize.y))
+        if (normalizedX >= (sprite->_ndcWorldPos.x) &&
+            normalizedX <= (sprite->_ndcWorldPos.x + sprite->_ndcSize.x) &&
+            normalizedY >= (sprite->_ndcWorldPos.y) &&
+            normalizedY <= (sprite->_ndcWorldPos.y + sprite->_ndcSize.y))
         {
-            ActionCommand::_UpdateEnable = false;
-            sprite->_parent.lock()->_renderEnable = false;
-            sprite->_renderEnable = false;
+            sprite->GetOwner()->SetActiveSelf(!sprite->GetOwner()->GetActive());
         }
     }
 }
@@ -118,14 +96,7 @@ void ActionFunc::EnableDisableKeyAction(KeyCode key, Sprite* sprite)
 {
     if (Input::main->GetKeyDown(key))
     {
-        ActionCommand::_UpdateEnable = !ActionCommand::_UpdateEnable;
-
-        sprite->_renderEnable = !sprite->_renderEnable;
-
-        for (auto& child : sprite->_children)
-        {
-            child->_renderEnable = !child->_renderEnable;
-        }
+        sprite->GetOwner()->SetActiveSelf(!sprite->GetOwner()->GetActive());
     }
 }
 

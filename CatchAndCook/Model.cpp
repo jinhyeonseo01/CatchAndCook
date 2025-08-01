@@ -1,5 +1,7 @@
-#include "pch.h"
+Ôªø#include "pch.h"
 #include "Model.h"
+
+#include "Animation.h"
 #include "Bone.h"
 #include "GameObject.h"
 #include "Component.h"
@@ -21,51 +23,119 @@ AssimpPack::~AssimpPack()
 
 void AssimpPack::Init(std::wstring path, bool xFlip)
 {
-	auto p = std::filesystem::path(path);
-	assert(std::filesystem::exists(p));
+	//importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
+	//
 
-    importer = std::make_shared<Assimp::Importer>();
+	bool bakedLoad = false;
 
-    unsigned int flag = //aiProcess_MakeLeftHanded | // øﬁº’ ¡¬«•∞Ë∑Œ ∫Ø∞Ê
-        //aiProcess_ConvertToLeftHanded |
-        aiProcess_FlipWindingOrder | //CW, CCW πŸ≤Ÿ¥¬∞≈¿”.
-        aiProcess_FlipUVs | // ∏ª±◊¥Î∑Œ uv¿« y√‡¿ª µ⁄¡˝¿Ω. ±◊∏Æ∞Ì bitangentµµ µ⁄¡˝¿Ω.
-        aiProcess_Triangulate | // 4∞¢«¸ 5∞¢«¸¿ª 3∞¢«¸¿∏∑Œ
-        //aiProcess_GenSmoothNormals | // Normal¿Ã æ¯¿∏∏È Smmoth Normal ª˝º∫
-        aiProcess_GenNormals | // Normal¿Ã æ¯¿∏∏È Normal ª˝º∫
-        //aiProcess_ImproveCacheLocality | // ªÔ∞¢«¸ ∞≥º±. ¿ﬂ µ«∏È ƒ—∫∏±‚ ƒ≥Ω√»˜∆Æ¿≤¿ª ¿ß«ÿ ªÔ∞¢«¸ ¿Á¡§∑ƒ«‘.
-        //aiProcess_GenUVCoords | // UVæ¯¿∏∏È UV ∞ËªÍ«œ∞‘[ Ω√≈∞±‚
-        aiProcess_CalcTangentSpace | // ≈∫¡®∆Æ ∞ËªÍ
-        //aiProcess_SplitLargeMeshes |// ∏≈Ω¨∞° ≥ π´ ≈¨∂ß ¬…∞≥¥¬∞≈ ∏≈Ω¨ ≈¨∂ß ∑ª¥ı∏µ ¿Ø∏Æ.
-        //aiProcess_Debone | º’Ω«æ¯¿Ã ª¿ ¡¶∞≈. ∞¡ æ≤¡ˆ∏ª¿⁄.
-        //aiProcess_RemoveComponent | // (animations, materials, light sources, cameras, textures, vertex components ¡¶∞≈
-        //aiProcess_PreTransformVertices | // root Node∏¶ ¡¶ø‹«— ∏µÁ «œ¿ß ≥ÎµÂµÈ ¿¸∫Œ ∆Ú≈∫»≠. ∞Ë√˛ ¡¶∞≈.
-        //aiProcess_ValidateDataStructure | // ø¨∞· ¿Ø»øº∫ ∞ÀªÁ
-        //aiProcess_RemoveRedundantMaterials | // ¡ﬂ∫π¿Ã≥™ æ»æ≤¥¬∞≈ ¡¶∞≈
-        //aiProcess_FixInfacingNormals | //¿ﬂ∏¯ ø¨∞·µ«º≠ ∞Ì¿Â≥≠ ≥Î∏÷ ¿Á¥Î∑Œ ºˆ¡§
-        //aiProcess_FindDegenerates | //ªÔ∞¢«¸ø°º≠ ¡°¿Ã ∞„√ƒπˆ∏Æ∏È ∂Û¿Œ¿Ã≥™ ¡°¿Ã µ«πˆ∏Æ¥¬µ•, ¿Ã∞… Line¿Ã≥™ Point∑Œ ∫Ø»Ø«œ¥¬∞≈¿”. æ»æ≤¥¬∞‘ ≥™¿Ω.
-        //aiProcess_FindInvalidData | //¿Ø»ø«œ¡ˆ æ ¥¬ µ•¿Ã≈Õ ∞®¡ˆ»ƒ ºˆ¡§, π˝º± UV∏¶ ¡¶∞≈«‘. ¿Ã∑∏∞‘ ¡¶∞≈«œ∞Ì ≥™∏È aiProcess_GenNormals∞∞¿∫∞‘ ªı∑”∞‘ ª˝º∫«ÿ¡Ÿ∞≈¿”. æ÷¥œ∏ﬁ¿Ãº«ø°º≠µµ ¿Ã¡°¿Ã ¿÷¥Ÿ∞Ì«‘.
-        //aiProcess_GenUVCoords  | //UV∏¶ ¿⁄√º¿˚¿∏∑Œ ∞ËªÍ«‘. ∏µ®∏µ≈¯ø°º≠ ª˝º∫«œ¥¬∞… √ﬂ√µ«œ∞Ì, UV∞° æ¯¿∏∏È ªı∑”∞‘ ª˝º∫«œ¥¬∞≈¿”.
-        //aiProcess_FindInstances | //≥ π´ ∏≈Ω¨∞° ∏π¿ª∂ß ≈∞≥™∫Ω. ¥¿∏Æ¥Ÿ¥¬∞≈∞∞¿Ω. ∞∞¿∫ ¿Á¡˙¿Œ ∏≈Ω¨µÈ¿ª «œ≥™∑Œ «’√ƒπˆ∏Æ¥¬ ±‚¥…¿ŒµÌ.
-        //aiProcess_OptimizeMeshes |// ∏≈Ω¨ ∏¶ ¡Ÿø©¡÷¥¬ √÷¿˚»≠ ø…º«¿ŒµÌ. aiProcess_OptimizeGraph∂˚ ∞∞¿Ã æ≤¥¬∞‘ ¡¡∞Ì, #aiProcess_SplitLargeMeshes and #aiProcess_SortByPType.∂˚ »£»Øµ .
-        //∞¡ æ»≈∞¥¬∞‘ ≥™¿ªµÌ. π∫∞° πÿø° ø…º«¿Ã∂˚ »£»Øµ«¥¬ ∏æÁ¿Œµ•, πÿø° ø…º«¿ª ∏¯æ∏.
-        //aiProcess_OptimizeGraph |//« ø‰æ¯¥¬ ≥ÎµÂ∏¶ ªË¡¶«‘. ≥ÎµÂ∞° ≈¬±◊∑Œ æ≤¿œ∂ß ¥©∂Ùµ«¥¬ πÆ¡¶∞° ¿’≥™∫Ω, æ»≈∞¥¬∞‘ ≥™¿ªµÌ. ∞Ë√˛±∏¡∂∞° º’Ω«µ»¥Ÿ∞Ì «‘.
-        aiProcess_TransformUVCoords | //UVø° ¥Î«ÿº≠ ∫Ø»Ø√≥∏Æ «—¥Ÿ∞Ì «œ¥¬∞≈∞∞¿Ω. ≈ÿΩ∫√ƒ ¿ÃªÛ«ÿ¡ˆ∏È ≤®πˆ∏Æµµ∑œ
-        aiProcess_JoinIdenticalVertices// ¡ﬂ∫π¡¶∞≈ »ƒ ¿Œµ¶Ω∫ πˆ∆€ ±‚π›¿∏∑Œ ∫Ø»Ø
-        //aiProcess_SortByPType // ∆˙∏Æ∞Ô¿ª ≈∏¿‘∫∞∑Œ ¿Á¡§∑ƒ«‘. aiProcess_Triangulate æ≤∏È æÓ¬˜«« ªÔ∞¢«¸∏∏ ≥≤æ∆º≠ « ø‰ æ¯¿Ω. ¿œ¥‹ ≥÷æÓ~ 
-        | aiProcess_GlobalScale;
-    if (!xFlip)
-    {
-        flag |= aiProcess_MakeLeftHanded;
-        scene = importer->ReadFile(std::to_string(path + L"\0"), flag);
-    }
-    else
-    {
-        scene = importer->ReadFile(std::to_string(path + L"\0"), flag);
-        MakeLeftHandedProcess leftHandedProcess;
-        leftHandedProcess.Execute(const_cast<aiScene*>(scene));
-    }
-	assert(scene != nullptr);
+	if (BakingLoadMode)
+	{
+		importer = std::make_shared<Assimp::Importer>();
+
+		auto subPath = wstr::split(path, L"../Resources/");
+		auto bakingRootPath = L"../Resources/BakedModels/";
+		if (subPath.size() > 1)
+		{
+			auto splitSubPath = wstr::split(subPath[1], L"/");
+			auto subFolderPath = std::wstring();
+			for (size_t i = 0; i < splitSubPath.size() - 1; i++) {
+				subFolderPath = subFolderPath + splitSubPath[i] + L"/";
+			}
+			auto bakingFolderPath = bakingRootPath + subFolderPath;
+			auto bakingFullPath = bakingFolderPath + (splitSubPath[splitSubPath.size() - 1] + L".assbin") + L"\0";
+
+			if (std::filesystem::exists(bakingFolderPath)) {
+				scene = importer->ReadFile(std::to_string(bakingFullPath), 0);
+				if (scene != nullptr)
+					bakedLoad = true;
+			}
+		}
+	}
+	if (!bakedLoad)
+	{
+		importer = std::make_shared<Assimp::Importer>();
+		auto p = std::filesystem::path(path);
+		assert(std::filesystem::exists(p));
+
+		unsigned int flag = //aiProcess_MakeLeftHanded | // ÔøΩﬁºÔøΩ ÔøΩÔøΩ«•ÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ
+			//aiProcess_ConvertToLeftHanded |
+			aiProcess_FlipWindingOrder | //CW, CCW ÔøΩŸ≤Ÿ¥¬∞ÔøΩÔøΩÔøΩ.
+			aiProcess_FlipUVs | // ÔøΩÔøΩÔøΩ◊¥ÔøΩÔøΩ uvÔøΩÔøΩ yÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ. ÔøΩ◊∏ÔøΩÔøΩÔøΩ bitangentÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ.
+			aiProcess_Triangulate | // 4ÔøΩÔøΩÔøΩÔøΩ 5ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ 3ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ
+			//aiProcess_GenSmoothNormals | // NormalÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ Smmoth Normal ÔøΩÔøΩÔøΩÔøΩ
+			aiProcess_GenNormals | // NormalÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ Normal ÔøΩÔøΩÔøΩÔøΩ
+			//aiProcess_ImproveCacheLocality | // ÔøΩÔ∞¢ÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ. ÔøΩÔøΩ ÔøΩ«∏ÔøΩ ÔøΩ—∫ÔøΩÔøΩÔøΩ ƒ≥ÔøΩÔøΩÔøΩÔøΩ∆ÆÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔ∞¢ÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ.
+			//aiProcess_GenUVCoords | // UVÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ UV ÔøΩÔøΩÔøΩÔøΩœ∞ÔøΩ[ ÔøΩÔøΩ≈∞ÔøΩÔøΩ
+			aiProcess_CalcTangentSpace | // ≈∫ÔøΩÔøΩ∆Æ ÔøΩÔøΩÔøΩ
+			//aiProcess_SplitLargeMeshes |// ÔøΩ≈ΩÔøΩÔøΩÔøΩ ÔøΩ πÔøΩ ≈¨ÔøΩÔøΩ ÔøΩ…∞ÔøΩÔøΩ¬∞ÔøΩ ÔøΩ≈ΩÔøΩ ≈¨ÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ.
+			//aiProcess_Debone | ÔøΩ’Ω«æÔøΩÔøΩÔøΩ ÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ. ÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ.
+			//aiProcess_RemoveComponent | // (animations, materials, light sources, cameras, textures, vertex components ÔøΩÔøΩÔøΩÔøΩ
+			//aiProcess_PreTransformVertices | // root NodeÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩ≈∫»≠. ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ.
+			//aiProcess_ValidateDataStructure | // ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩ»øÔøΩÔøΩ ÔøΩÀªÔøΩ
+			//aiProcess_RemoveRedundantMaterials | // ÔøΩﬂ∫ÔøΩÔøΩÃ≥ÔøΩ ÔøΩ»æÔøΩÔøΩ¬∞ÔøΩ ÔøΩÔøΩÔøΩÔøΩ
+			aiProcess_FixInfacingNormals | //ÔøΩﬂ∏ÔøΩ ÔøΩÔøΩÔøΩÔøΩ«ºÔøΩ ÔøΩÔøΩÔøΩÂ≥≠ ÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ
+			//aiProcess_FindDegenerates | //ÔøΩÔ∞¢ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩƒπÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÃ≥ÔøΩ ÔøΩÔøΩÔøΩÔøΩ ÔøΩ«πÔøΩÔøΩÔøΩÔøΩ¬µÔøΩ, ÔøΩÃ∞ÔøΩ LineÔøΩÃ≥ÔøΩ PointÔøΩÔøΩ ÔøΩÔøΩ»ØÔøΩœ¥¬∞ÔøΩÔøΩÔøΩ. ÔøΩ»æÔøΩÔøΩ¬∞ÔøΩ ÔøΩÔøΩÔøΩÔøΩ.
+			//aiProcess_FindInvalidData | //ÔøΩÔøΩ»øÔøΩÔøΩÔøΩÔøΩ ÔøΩ ¥ÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ, ÔøΩÔøΩÔøΩÔøΩ UVÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ. ÔøΩÃ∑ÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩœ∞ÔøΩ ÔøΩÔøΩÔøΩÔøΩ aiProcess_GenNormalsÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩ”∞ÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩŸ∞ÔøΩÔøΩÔøΩ. ÔøΩ÷¥œ∏ÔøΩÔøΩÃº«øÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩ÷¥Ÿ∞ÔøΩÔøΩÔøΩ.
+			//aiProcess_GenUVCoords  | //UVÔøΩÔøΩ ÔøΩÔøΩ√ºÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩ. ÔøΩµ®∏ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩœ¥¬∞ÔøΩ ÔøΩÔøΩ√µÔøΩœ∞ÔøΩ, UVÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩ”∞ÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩœ¥¬∞ÔøΩÔøΩÔøΩ.
+			//aiProcess_FindInstances | //ÔøΩ πÔøΩ ÔøΩ≈ΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ≈∞ÔøΩÔøΩÔøΩÔøΩ. ÔøΩÔøΩÔøΩÔøΩÔøΩŸ¥¬∞≈∞ÔøΩÔøΩÔøΩ. ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩ≈ΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩœ≥ÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩƒπÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩŒµÔøΩ.
+			//aiProcess_OptimizeMeshes |// ÔøΩ≈ΩÔøΩ ÔøΩÔøΩ ÔøΩŸøÔøΩÔøΩ÷¥ÔøΩ ÔøΩÔøΩÔøΩÔøΩ»≠ ÔøΩ…ºÔøΩÔøΩŒµÔøΩ. aiProcess_OptimizeGraphÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩ¬∞ÔøΩ ÔøΩÔøΩÔøΩÔøΩ, #aiProcess_SplitLargeMeshes and #aiProcess_SortByPType.ÔøΩÔøΩ »£»ØÔøΩÔøΩ.
+			//ÔøΩÔøΩ ÔøΩÔøΩ≈∞ÔøΩ¬∞ÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ. ÔøΩÔøΩÔøΩÔøΩ ÔøΩÿøÔøΩ ÔøΩ…ºÔøΩÔøΩÃ∂ÔøΩ »£»ØÔøΩ«¥ÔøΩ ÔøΩÔøΩÔøΩÔøΩŒµÔøΩ, ÔøΩÿøÔøΩ ÔøΩ…ºÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ.
+			//aiProcess_OptimizeGraph |//ÔøΩ øÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÂ∏¶ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ. ÔøΩÔøΩÂ∞° ÔøΩ¬±◊∑ÔøΩ ÔøΩÔøΩÔøΩœ∂ÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩ«¥ÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩ’≥ÔøΩÔøΩÔøΩ, ÔøΩÔøΩ≈∞ÔøΩ¬∞ÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ. ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩ’Ω«µ»¥Ÿ∞ÔøΩ ÔøΩÔøΩ.
+			aiProcess_TransformUVCoords | //UVÔøΩÔøΩ ÔøΩÔøΩÔøΩÿºÔøΩ ÔøΩÔøΩ»Ø√≥ÔøΩÔøΩ ÔøΩ—¥Ÿ∞ÔøΩ ÔøΩœ¥¬∞≈∞ÔøΩÔøΩÔøΩ. ÔøΩÿΩÔøΩÔøΩÔøΩ ÔøΩÃªÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ
+			aiProcess_JoinIdenticalVertices// ÔøΩﬂ∫ÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩ ÔøΩŒµÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩ»Ø
+			//aiProcess_SortByPType // ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ≈∏ÔøΩ‘∫ÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ. aiProcess_Triangulate ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔ∞¢ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩ∆ºÔøΩ ÔøΩ øÔøΩ ÔøΩÔøΩÔøΩÔøΩ. ÔøΩœ¥ÔøΩ ÔøΩ÷æÔøΩ~ 
+			| aiProcess_GlobalScale;
+		xFlip = true;
+		if (!xFlip)
+		{
+			flag |= aiProcess_MakeLeftHanded;
+			scene = importer->ReadFile(std::to_string(path + L"\0"), flag);
+		}
+		else
+		{
+			scene = importer->ReadFile(std::to_string(path + L"\0"), flag);
+		}
+		if (scene == nullptr)
+		{
+			std::cout << "assimp load failed : path not found (" << std::to_string(path) << "\n";
+			assert(scene != nullptr);
+		}
+		if (!xFlip)
+		{
+
+		}
+		else
+		{
+			MakeLeftHandedProcess leftHandedProcess;
+			leftHandedProcess.Execute(const_cast<aiScene*>(scene));
+		}
+	}
+
+	if (BakingLoadMode && (!bakedLoad))
+	{
+		auto exporter = std::make_shared<Assimp::Exporter>();
+
+		auto subPath = wstr::split(path, L"../Resources/");
+		auto bakingRootPath = L"../Resources/BakedModels/";
+		if (subPath.size() > 1)
+		{
+			auto splitSubPath = wstr::split(subPath[1], L"/");
+			auto subFolderPath = std::wstring();
+			for (size_t i = 0; i < splitSubPath.size() - 1; i++) {
+				subFolderPath = subFolderPath + splitSubPath[i] + L"/";
+			}
+			auto bakingFolderPath = bakingRootPath + subFolderPath;
+			auto bakingFullPath = bakingFolderPath + (splitSubPath[splitSubPath.size() - 1] + L".assbin") + L"\0";
+
+			if (!std::filesystem::exists(bakingFolderPath))
+				std::filesystem::create_directories(bakingFolderPath);
+
+			aiReturn result = exporter->Export(scene, "assbin", to_string(bakingFullPath).c_str());
+			if (result != aiReturn_SUCCESS)
+				std::cerr << "Assbin Export failed: " << exporter->GetErrorString() << "\n";
+			
+		}
+	}
 }
 
 std::shared_ptr<GameObject> Model::CreateGameObject(const std::shared_ptr<Scene>& scene)
@@ -75,13 +145,60 @@ std::shared_ptr<GameObject> Model::CreateGameObject(const std::shared_ptr<Scene>
 
 void Model::Init(const wstring& path, VertexType vertexType)
 {
+	InitGuid();
 	std::shared_ptr<AssimpPack> pack = std::make_shared<AssimpPack>();
 	pack->Init(path);
 	const aiScene* scene = pack->GetScene();
+	//aiMetadata* metadata = scene->mMetaData;
+	//for(unsigned int i = 0; i < metadata->mNumProperties; ++i) {
+	//	aiString key = metadata->mKeys[i];
+	//	aiMetadataEntry entry = metadata->mValues[i];
 
-	// ¿”Ω√
+	//	std::cout << "Key: " << key.C_Str() << " - ";
+
+	//	switch(entry.mType) {
+	//	case AI_AISTRING:
+	//	std::cout << "Value (String): " << static_cast<aiString*>(entry.mData)->C_Str();
+	//	break;
+	//	case AI_INT32:
+	//	std::cout << "Value (Int32): " << *static_cast<int32_t*>(entry.mData);
+	//	break;
+	//	case AI_UINT64:
+	//	std::cout << "Value (UInt64): " << *static_cast<uint64_t*>(entry.mData);
+	//	break;
+	//	case AI_FLOAT:
+	//	std::cout << "Value (Float): " << *static_cast<float*>(entry.mData);
+	//	break;
+	//	case AI_DOUBLE:
+	//	std::cout << "Value (Double): " << *static_cast<double*>(entry.mData);
+	//	break;
+	//	case AI_AIVECTOR3D:
+	//	{
+	//		aiVector3D vec = *static_cast<aiVector3D*>(entry.mData);
+	//		std::cout << "Value (Vector3D): (" << vec.x << ", " << vec.y << ", " << vec.z << ")";
+	//	}
+	//	break;
+	//	default:
+	//	std::cout << "Unknown type.";
+	//	break;
+	//	}
+	//	std::cout << std::endl;
+	//}
+	aiMetadata* metadata = scene->mMetaData;
+	for(unsigned int i = 0; i < metadata->mNumProperties; ++i) {
+		aiString key = metadata->mKeys[i];
+		aiMetadataEntry entry = metadata->mValues[i];
+		if(string(key.C_Str()) == "OriginalUpAxis")
+			if(std::abs(*static_cast<int32_t*>(entry.mData)) != 1)
+				std::cout << string("Model Warring : Axis Error. Need Unity Fix Tools.\n") << std::to_string(path) <<"\n";
+	}
+	// ÔøΩ”ΩÔøΩ
+
 	auto model = GetCast<Model>();
-	// -------- ∏≈Ω¨ ª˝º∫ --------
+	auto str = wstr::split(path, L"/");
+	SetName(to_string(wstr::split(str[str.size() - 1], L".")[0]));
+	_path = path;
+	// -------- ÔøΩ≈ΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ --------
 	_modelMeshList.reserve(scene->mNumMeshes);
 	for (int i = 0; i < scene->mNumMeshes; i++)
 	{
@@ -96,14 +213,14 @@ void Model::Init(const wstring& path, VertexType vertexType)
 		{
 			case VertexType::Vertex_Skinned:
 			{
-				LoadVertex(currentAIMesh, currentModelMesh->skinnedMeshList);
+				LoadVertex(currentAIMesh, currentMesh, currentModelMesh->skinnedMeshList);
 				LoadBone(currentAIMesh, currentModelMesh);
 				currentMesh->Init(currentModelMesh->skinnedMeshList, indexList);
 				break;
 			}
 			case VertexType::Vertex_Static:
 			{
-				LoadVertex(currentAIMesh, currentModelMesh->staticMeshList);
+				LoadVertex(currentAIMesh, currentMesh, currentModelMesh->staticMeshList);
 				currentMesh->Init(currentModelMesh->staticMeshList, indexList);
 				break;
 			}
@@ -113,10 +230,105 @@ void Model::Init(const wstring& path, VertexType vertexType)
 		currentModelMesh->SetIndex(i);
 		_modelMeshList.push_back(currentModelMesh);
 	}
-	_rootNode = AddNode(scene->mRootNode);
 
+	LoadNode(scene->mRootNode);
+	SetNodeData();
+    LoadRootBone(const_cast<aiScene*>(scene));
 
+	SetOriginalParentWithChilds(_rootNode);
+
+	for (auto& node : _nameToNodeTable | views::values)
+	{
+		//std::cout << node->GetName() << "\n";
+		if (node->GetName() != node->GetOriginalName())
+		{
+			Vector3 pos, scale;
+			Quaternion rot;
+			node->GetLocalSRT().Decompose(scale, rot, pos);
+			auto& data = node->GetOriginalName();
+			auto originalNode = FindNodeByName(data);
+
+			if (data + "_$AssimpFbx$_PreRotation" == node->GetName())
+				originalNode->SetLocalPreRotation(rot);
+			if (data + "_$AssimpFbx$_Rotation" == node->GetName())
+				originalNode->SetLocalRotation(rot);
+			if (data + "_$AssimpFbx$_PostRotation" == node->GetName())
+				originalNode->SetLocalPostRotation(rot);
+			if (data + "_$AssimpFbx$_Scaling" == node->GetName())
+				originalNode->SetLocalScale(scale);
+			if (data + "_$AssimpFbx$_Translation" == node->GetName())
+				originalNode->SetLocalPosition(pos);
+		}
+
+		if (auto parent = node->GetParent())
+		{
+			//node->SetOriginalParent(FindNodeByName(parent->GetOriginalName()));
+
+		/*	std::cout << "current : " << node->GetName() << "\n";
+			std::cout << "  parent : " << parent->GetName() << "\n";
+			std::cout << "  origin parent : " << node->GetOriginalParent()->GetName() << "\n\n";
+			std::cout << "  origin : " << node->hasPosition << "\n";
+			std::cout << "  origin : " << node->hasScale << "\n";
+			std::cout << "  origin : " << node->hasPreRotation << "\n";
+			std::cout << "  origin : " << node->hasPostRotation << "\n";*/
+		}
+	}
+
+	_rootNode->CalculateTPoseNode(nullptr);
+
+	for (int i = 0; i < scene->mNumAnimations; i++) {
+		LoadAnimation(scene->mAnimations[i], scene->mRootNode);
+	}
 }
+
+void Model::ExportBinary(const wstring& path, const wstring& subKey)
+{
+	auto subPath = wstr::split(_path, L"../Resources/");
+	auto bakingRootPath = L"../Resources/BakedModels/";
+	if (subPath.size() > 1)
+	{
+		auto splitSubPath = wstr::split(subPath[1], L"/");
+		auto subFolderPath = std::wstring();
+		for (size_t i = 0; i < splitSubPath.size() - 1; i++) {
+			subFolderPath = subFolderPath + splitSubPath[i] + L"/";
+		}
+		auto bakingFolderPath = bakingRootPath + subFolderPath;
+		auto bakingFullPath = bakingFolderPath + (splitSubPath[splitSubPath.size() - 1] + L".modelbin") + L"\0";
+
+		if (!std::filesystem::exists(bakingFolderPath))
+			std::filesystem::create_directories(bakingFolderPath);
+
+		std::ifstream file(to_string(bakingFullPath));
+
+		json exportModelJson;
+		//file << exportModelJson.json;
+		// Ïó¨Í∏∞ÏÑú Ï†ÄÏû•
+
+		file.close();
+	}
+}
+
+void Model::ImportBinary(const wstring& path, const wstring& subKey)
+{
+	auto subPath = wstr::split(path, L"../Resources/");
+	auto bakingRootPath = L"../Resources/BakedModels/";
+	if (subPath.size() > 1)
+	{
+		auto splitSubPath = wstr::split(subPath[1], L"/");
+		auto subFolderPath = std::wstring();
+		for (size_t i = 0; i < splitSubPath.size() - 1; i++) {
+			subFolderPath = subFolderPath + splitSubPath[i] + L"/";
+		}
+		auto bakingFolderPath = bakingRootPath + subFolderPath;
+		auto bakingFullPath = bakingFolderPath + (splitSubPath[splitSubPath.size() - 1] + L".assbin") + L"\0";
+
+		if (std::filesystem::exists(bakingFolderPath))
+		{
+
+		}
+	}
+}
+
 
 void Model::DebugLog()
 {
@@ -125,12 +337,14 @@ void Model::DebugLog()
 
 
 template <>
-void Model::LoadVertex<Vertex_Skinned>(aiMesh* assimp_mesh, std::vector<Vertex_Skinned>& vertexs)
+void Model::LoadVertex<Vertex_Skinned>(aiMesh* assimp_mesh, std::shared_ptr<Mesh> mesh, std::vector<Vertex_Skinned>& vertexs)
 {
 	auto mesh2 = std::make_shared<Mesh>();
 
 	vertexs.reserve(assimp_mesh->mNumVertices);
 	Vertex_Skinned vert;
+	Vector3 min = Vector3(10000, 10000, 10000);
+	Vector3 max = -min;
 	for (int j = 0; j < assimp_mesh->mNumVertices; j++)
 	{
 		vert = {};
@@ -147,15 +361,21 @@ void Model::LoadVertex<Vertex_Skinned>(aiMesh* assimp_mesh, std::vector<Vertex_S
 		vert.boneWeight = Vector4::Zero;
 		vert.boneId = Vector4(-1, -1, -1, -1);
 		vertexs.push_back(vert);
+
+		Vector3::Min(min, vert.position, min);
+		Vector3::Max(max, vert.position, max);
 	}
+	mesh->SetBound(BoundingBox((max + min) / 2, (max - min) / 2));
 }
 
 template <>
-void Model::LoadVertex<Vertex_Static>(aiMesh* assimp_mesh, std::vector<Vertex_Static>& vertexs)
+void Model::LoadVertex<Vertex_Static>(aiMesh* assimp_mesh, std::shared_ptr<Mesh> mesh, std::vector<Vertex_Static>& vertexs)
 {
 	auto mesh2 = std::make_shared<Mesh>();
 	vertexs.reserve(assimp_mesh->mNumVertices);
 	Vertex_Static vert;
+	Vector3 min = Vector3(100000, 100000, 100000);
+	Vector3 max = -min;
 	for (int j = 0; j < assimp_mesh->mNumVertices; j++)
 	{
 		vert = {};
@@ -164,8 +384,14 @@ void Model::LoadVertex<Vertex_Static>(aiMesh* assimp_mesh, std::vector<Vertex_St
 			vert.normal = convert_assimp::Format(assimp_mesh->mNormals[j]);
 		if (assimp_mesh->HasTextureCoords(0))
 			vert.uv = vec2(convert_assimp::Format(assimp_mesh->mTextureCoords[0][j]));
+		if(assimp_mesh->HasTangentsAndBitangents())
+			vert.tangent = convert_assimp::Format(assimp_mesh->mTangents[j]);
 		vertexs.push_back(vert);
+
+		Vector3::Min(min, vert.position, min);
+		Vector3::Max(max, vert.position, max);
 	}
+	mesh->SetBound(BoundingBox((max + min) / 2, (max - min) / 2));
 }
 
 void Model::LoadIndex(aiMesh* assimp_mesh, std::vector<uint32_t>& indexs)
@@ -197,7 +423,6 @@ void Model::LoadBone(aiMesh* currentAIMesh, const std::shared_ptr<ModelMesh>& cu
 		if (boneNode != nullptr)
 			nodeName = convert_assimp::Format(currentAIBone->mNode->mName);
 
-
 		auto bone = FindBoneByName(boneName);
 		if (bone == nullptr)
 		{
@@ -217,11 +442,14 @@ void Model::LoadBone(aiMesh* currentAIMesh, const std::shared_ptr<ModelMesh>& cu
 
 			const int MAX_BONE_COUNT = 4;
 
-			// ∏’¿˙ æ»æ≤¥¬ ID∞° ¿÷¥¬¡ˆ ºˆªˆ
-			for (int l = MAX_BONE_COUNT - 1; l >= 0; --l)
-				if (idArray[l] == -1)
+			// ÔøΩÔøΩÔøΩÔøΩ ÔøΩ»æÔøΩÔøΩÔøΩ IDÔøΩÔøΩ ÔøΩ÷¥ÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ
+			for(int l = 0; l < MAX_BONE_COUNT; ++l)
+				if(idArray[l] == -1)
+				{
 					findIndex = l;
-			// ∞°¿Â ¿€¿∫∞≈ ºˆªˆ
+					break;
+				}
+			// ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ
 			if (findIndex == -1)
 			{
 				float minW = currentAIBone->mWeights[boneVertexIndex].mWeight;
@@ -234,7 +462,7 @@ void Model::LoadBone(aiMesh* currentAIMesh, const std::shared_ptr<ModelMesh>& cu
 					}
 				}
 			}
-			// ºˆªˆ º∫∞¯Ω√ ∞ªΩ≈.
+			// ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ.
 			if (findIndex != -1)
 			{
 				(&currentVertex.boneId.x)[findIndex] = static_cast<float>(bone->GetIndex());
@@ -242,14 +470,143 @@ void Model::LoadBone(aiMesh* currentAIMesh, const std::shared_ptr<ModelMesh>& cu
 			}
 		}
 	}
+
+	// IndexÎßå Ï°¥Ïû¨ÌïòÎäî ÏºÄÏù¥Ïä§Ïóê ÎåÄÌïú Ï≤òÎ¶¨
+	for(int boneIndex = 0; boneIndex < currentAIMesh->mNumBones; boneIndex++)
+	{
+		aiBone* currentAIBone = currentAIMesh->mBones[boneIndex];
+		std::string boneName = convert_assimp::Format(currentAIBone->mName);
+		std::string nodeName = boneName;
+		aiNode* boneNode = currentAIBone->mNode;
+		if(boneNode != nullptr)
+			nodeName = convert_assimp::Format(currentAIBone->mNode->mName);
+
+		auto bone = FindBoneByName(boneName);
+		if(bone == nullptr)
+		{
+			bone = std::make_shared<Bone>();
+			bone->SetName(boneName);
+			bone->SetNodeName(nodeName);
+			bone->SetTransformMatrix(convert_assimp::Format(currentAIBone->mOffsetMatrix));
+			AddBone(bone);
+		}
+
+		if(currentAIBone->mNumWeights == 0)
+		{
+			for(int boneVertexIndex = 0; boneVertexIndex < vertexs.size(); boneVertexIndex++)
+			{
+				auto& currentVertex = vertexs[boneVertexIndex];
+				int findIndex = -1;
+				float* idArray = &currentVertex.boneId.x;
+
+				const int MAX_BONE_COUNT = 4;
+
+				for(int l = 0; l < MAX_BONE_COUNT; ++l)
+					if(idArray[l] == -1)
+					{
+						findIndex = l;
+						break;
+					}
+
+				if((currentVertex.boneId.x + currentVertex.boneId.y + currentVertex.boneId.z + currentVertex.boneId.w == -4) && findIndex != -1)
+				{
+					(&currentVertex.boneId.x)[findIndex] = static_cast<float>(bone->GetIndex());
+					(&currentVertex.boneWeight.x)[findIndex] = 1;
+				}
+			}
+		}
+	}
+
 	for (int vertexIndex = 0; vertexIndex < vertexs.size(); vertexIndex++)
 	{
 		auto& currentVertex = vertexs[vertexIndex];
-		if (currentVertex.boneWeight.LengthSquared() > 1)
-			currentVertex.boneWeight.Normalize();
+
+		currentVertex.boneWeight.Normalize();
 	}
 	
 }
+
+void Model::LoadNode(aiNode* root)
+{
+	_rootNode = AddNode(root);
+}
+
+void Model::LoadAnimation(aiAnimation* aiAnim, aiNode* root)
+{
+	auto anim = std::make_shared<Animation>();
+	anim->Init(GetCast<Model>(), aiAnim, root);
+	_animationList.push_back(anim);
+	auto keyName = GetName() + "|" + to_string(anim->GetName());
+	_nameToAnimationTable[keyName] = anim;
+	ResourceManager::main->Add(to_wstring(keyName), anim);
+}
+
+void Model::LoadRootBone(aiScene* scene)
+{
+	if (_modelBoneList.empty())
+		return;
+
+	auto& boneName = _modelBoneList[0]->GetName();
+
+	//for (auto& ele : _modelBoneList)
+	//{
+	//	cout << ele->GetName() << endl;
+	//}
+	
+	aiNode* node = scene->mRootNode->FindNode(boneName.c_str());
+	if (!node)
+	{
+		cout << "Ïî¨Ïóê Î≥∏ÏóÜÏùå: " << boneName << endl;
+		return;
+	}
+
+
+	aiNode* rootBoneNode = node;
+	while (rootBoneNode->mParent)
+	{
+		std::string parentName = convert_assimp::Format(rootBoneNode->mParent->mName);
+
+		bool parentIsBone = false;
+
+		for (auto& bone : _modelBoneList)
+		{
+			if (bone->GetName() == parentName)
+			{
+				parentIsBone = true;
+				break;
+			}
+		}
+
+		if (!parentIsBone)
+			break;
+
+		rootBoneNode = rootBoneNode->mParent;
+	}
+
+
+	std::string rootBoneName = convert_assimp::Format(rootBoneNode->mName);
+	auto it = _nameToNodeTable.find(rootBoneName);
+
+	if (it != _nameToNodeTable.end())
+	{
+		_rootBoneNode = it->second;
+	}
+	else
+	{
+		std::cout << "_nameToNodeTable Ïóê Î£®Ìä∏Î≥∏ÏóÜÏùå: " << rootBoneName << std::endl;
+	}
+}
+
+void Model::SetNodeData()
+{
+	for (auto& bone : _modelBoneList)
+	{
+		auto currentNode = FindNodeByName(bone->GetNodeName());
+		currentNode->AddBoneIndex(bone->GetIndex());
+		currentNode->SetDynamic(false);
+	}
+}
+
 
 void Model::AddBone(const std::shared_ptr<Bone>& bone)
 {
@@ -265,11 +622,26 @@ std::shared_ptr<ModelNode> Model::AddNode(aiNode* rootNode)
 {
 	auto currentNode = std::make_shared<ModelNode>();
 	currentNode->Init(GetCast<Model>(), rootNode);
-	_modelNodeList.push_back(currentNode);
 	
 	for (int i = 0; i < rootNode->mNumChildren; i++) {
-		AddNode(rootNode->mChildren[i])->SetParent(currentNode);
+		auto child = AddNode(rootNode->mChildren[i]);
+		child->SetParent(currentNode);
 	}
 
 	return currentNode;
+}
+
+void Model::SetOriginalParentWithChilds(const std::shared_ptr<ModelNode>& currentNode)
+{
+	for (auto& child : currentNode->GetChilds())
+	{
+		auto childNode = child.lock();
+		if (currentNode->GetName() == "LeftLeg")
+			int a = 0;
+		if (currentNode->GetName() != currentNode->GetOriginalName())
+			childNode->SetOriginalParent(currentNode->GetOriginalParent());
+		else
+			childNode->SetOriginalParent(currentNode);
+		SetOriginalParentWithChilds(childNode);
+	}
 }

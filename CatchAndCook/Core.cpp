@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Core.h"
 #include "RenderTarget.h"
 #include "RootSignature.h"
@@ -6,12 +6,16 @@
 #include "BufferPool.h"
 #include "Mesh.h"
 #include "Shader.h"
-#include "BufferPool.h"
 #include "GameObject.h"
 #include "BufferManager.h"
 #include "Material.h"
 #include "MeshRenderer.h"
+#include "Profiler.h"
 #include "SceneManager.h"
+#include "ComputeManager.h"
+#include "ImguiManager.h"
+#include "LightManager.h"
+
 unique_ptr<Core> Core::main=nullptr;
 
 Core::Core()
@@ -29,9 +33,17 @@ void Core::Init(HWND hwnd)
 
     _hwnd = hwnd;
 
-    AdjustWinodwSize();
-
     InitDirectX12();
+
+    {
+#ifdef  IMGUI_ON
+        D3D12_DESCRIPTOR_HEAP_DESC desc = {};
+        desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+        desc.NumDescriptors = 1;
+        desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE; 
+        _device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&_imguiHeap));
+#endif
+    }
 
     _bufferManager = make_shared<BufferManager>();
     _bufferManager->Init();
@@ -39,60 +51,99 @@ void Core::Init(HWND hwnd)
     _renderTarget = make_shared<RenderTarget>();
     _renderTarget->Init(_swapChain);
 
+	_gBuffer = make_shared<GBuffer>();
+	_gBuffer->Init();
+
+    _shadowBuffer = make_shared<ShadowBuffer>();
+    _shadowBuffer->Init();
+
+	_dsReadTexture = make_shared<Texture>();
+	_dsReadTexture->CreateStaticTexture(DXGI_FORMAT_R32_TYPELESS, D3D12_RESOURCE_STATE_COMMON, WINDOW_WIDTH, WINDOW_HEIGHT, TextureUsageFlags::SRV, false, true);
+
+    _rtReadTexture = make_shared<Texture>();
+    _rtReadTexture->CreateStaticTexture(DXGI_FORMAT_R8G8B8A8_UNORM, D3D12_RESOURCE_STATE_COMMON, WINDOW_WIDTH, WINDOW_HEIGHT, TextureUsageFlags::SRV, false, true);
+
     _rootSignature = make_shared<RootSignature>();
     _rootSignature->Init();
-
 
 
     Initalize = true;
 }
 
-void Core::AdjustWinodwSize()
-{
-    RECT rect = { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT };
-    ::AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
-}
-
-
-
 void Core::RenderBegin()
 {
-    ThrowIfFailed(_cmdMemory->Reset());
-    ThrowIfFailed(_cmdList->Reset(_cmdMemory.Get(), nullptr));
+    ComPtr<ID3D12GraphicsCommandList> cmdList = _cmdList[CURRENT_CONTEXT_INDEX];
+	ComPtr<ID3D12CommandAllocator> cmdMemory = _cmdMemory[CURRENT_CONTEXT_INDEX];
 
-    _cmdList->SetGraphicsRootSignature(_rootSignature->GetGraphicsRootSignature().Get());
-    _cmdList->SetDescriptorHeaps(1, _bufferManager->GetTable()->GetDescriptorHeap().GetAddressOf());
-
-    _renderTarget->RenderBegin(); //임시
-    _renderTarget->ClearDepth(); //임시 
+    ThrowIfFailed(cmdMemory->Reset());
+    ThrowIfFailed(cmdList->Reset(cmdMemory.Get(), nullptr));
+    cmdList->SetGraphicsRootSignature(_rootSignature->GetGraphicsRootSignature().Get());
+    cmdList->SetComputeRootSignature(_rootSignature->GetComputeRootSignature().Get());
+    cmdList->SetDescriptorHeaps(1, _bufferManager->GetTable()->GetDescriptorHeap().GetAddressOf());
 }
-
 
 void Core::RenderEnd()
 {
+    ComPtr<ID3D12GraphicsCommandList> cmdList = _cmdList[CURRENT_CONTEXT_INDEX];
+#ifdef  IMGUI_ON
+    if (Input::main->GetKeyDown(KeyCode::F5))
+    {
+		ImguiManager::main->_on = !ImguiManager::main->_on;
+    }
+
+    if (ImguiManager::main->_on)
+    {
+            Core::main->GetRenderTarget()->GetRenderTarget()->ResourceBarrier(D3D12_RESOURCE_STATE_RENDER_TARGET);
+            cmdList->SetDescriptorHeaps(1, _imguiHeap.GetAddressOf());
+            ImguiManager::main->Render();
+    }
+#endif //  IMGUI_ON
+
     _renderTarget->RenderEnd();
 
-    _cmdList->Close();
+    //IMGUIRENDER
+    cmdList->Close();
 
-    ID3D12CommandList* ppCommandLists[] = { _cmdList.Get() };
+    ID3D12CommandList* ppCommandLists[] = { cmdList.Get() };
     _cmdQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
-
+ 
     Fence();
 
-    _swapChain->Present(1, 0);
+    uint32 SyncInterval = 0;
+    uint32 uiSyncInterval = SyncInterval;
+    uint32 uiPresentFlags = 0;
+
+    if (!uiSyncInterval)
+    {
+        uiPresentFlags = DXGI_PRESENT_ALLOW_TEARING;
+    }
+
+     ThrowIfFailed(_swapChain->Present(uiSyncInterval, uiPresentFlags));
+
     _renderTarget->ChangeIndex();
+
+	CURRENT_CONTEXT_INDEX = (CURRENT_CONTEXT_INDEX + 1) % MAX_FRAME_COUNT;
+ 
+
     _bufferManager->Reset();
+    g_debug_deferred_count = 0;
+	g_debug_forward_count = 0;
+	g_debug_draw_call = 0;
+    g_debug_deferred_culling_count = 0;
+    g_debug_forward_culling_count = 0;
+    g_debug_shadow_draw_call = 0;
+
 }
 
 
-void Core::FlushResCMDQueue()
+void Core::ExcuteCommandQueue()
 {
     _resCmdList->Close();
 
     ID3D12CommandList* cmdListArr[] = { _resCmdList.Get() };
     _cmdQueue->ExecuteCommandLists(_countof(cmdListArr), cmdListArr);
 
-    Fence();
+    FenceCurrentFrame();
 
     _resCmdMemory->Reset();
     _resCmdList->Reset(_resCmdMemory.Get(), nullptr);
@@ -100,40 +151,106 @@ void Core::FlushResCMDQueue()
 
 void Core::ResizeWindowSize()
 {
-    Fence();
-    AdjustWinodwSize();
+    FenceCurrentFrame();
     _renderTarget->ResizeWindowSize(_swapChain,_swapChainFlags);
+    _gBuffer->Init();
+    ResizeTexture(_dsReadTexture, WINDOW_WIDTH, WINDOW_HEIGHT);
+    ResizeTexture(_rtReadTexture, WINDOW_WIDTH, WINDOW_HEIGHT);
+	ComputeManager::main->Resize();
+
 }
-
-
 
 
 void Core::Fence()
 {
-    // Advance the fence value to mark commands up to this fence point.
     _fenceValue++;
-
     _cmdQueue->Signal(_fence.Get(), _fenceValue);
+	_lastFenceValue[CURRENT_CONTEXT_INDEX] = _fenceValue;
 
-    if (_fence->GetCompletedValue() < _fenceValue)
-    {
-        // Fire event when GPU hits current fence.  
-        _fence->SetEventOnCompletion(_fenceValue, _fenceEvent);
+    uint64 nextFenceValue = _lastFenceValue[(CURRENT_CONTEXT_INDEX + 1) % MAX_FRAME_COUNT];
 
-        // Wait until the GPU hits current fence event is fired.
+    if (_fence->GetCompletedValue() < nextFenceValue)
+    { 
+        _fence->SetEventOnCompletion(nextFenceValue, _fenceEvent);
         ::WaitForSingleObject(_fenceEvent, INFINITE);
     }
 }
 
+void Core::FenceCurrentFrame()
+{
+    _fenceValue++;
+    _cmdQueue->Signal(_fence.Get(), _fenceValue);
 
+    const uint64 ExpectedFenceValue = _fenceValue;
+
+    if (_fence->GetCompletedValue() < ExpectedFenceValue)
+    {
+        _fence->SetEventOnCompletion(ExpectedFenceValue, _fenceEvent);
+        WaitForSingleObject(_fenceEvent, INFINITE);
+    }
+
+}
+
+//void Core::FenceAll()
+//{
+//    for (uint32 i = 0; i < MAX_FRAME_COUNT; ++i)
+//    {
+//        _fenceValue++;
+//        _cmdQueue->Signal(_fence.Get(), _fenceValue);
+//        _lastFenceValue[CURRENT_CONTEXT_INDEX] = _fenceValue;
+//    }
+//
+//	for (uint32 i = 0; i < MAX_FRAME_COUNT; ++i)
+//	{
+//		if (_fence->GetCompletedValue() < _lastFenceValue[i])
+//		{
+//			_fence->SetEventOnCompletion(_lastFenceValue[i], _fenceEvent);
+//			WaitForSingleObject(_fenceEvent, INFINITE);
+//		}
+//	}
+//}
+
+
+void Core::CopyTexture(const std::shared_ptr<Texture>& destTexture, const std::shared_ptr<Texture>& sourceTexture)
+{
+    ComPtr<ID3D12GraphicsCommandList> cmdList = Core::main->GetCmdList();
+
+    auto prevDestState = destTexture->_state;
+    auto prevSourceState = sourceTexture->_state;
+
+    sourceTexture->ResourceBarrier(D3D12_RESOURCE_STATE_COPY_SOURCE);
+    destTexture->ResourceBarrier(D3D12_RESOURCE_STATE_COPY_DEST);
+
+    cmdList->CopyResource(destTexture->GetResource().Get(), sourceTexture->GetResource().Get());
+
+    sourceTexture->ResourceBarrier(prevSourceState);
+    destTexture->ResourceBarrier(prevDestState);
+}
+
+void Core::ResizeTexture(std::shared_ptr<Texture>& texture, int w, int h)
+{
+
+    if (HasFlag(texture->_usageFlags, TextureUsageFlags::RTV)) {
+        Core::main->GetBufferManager()->GetTextureBufferPool()->FreeRTVHandle(texture->GetRTVCpuHandle());
+    }
+    if (HasFlag(texture->_usageFlags, TextureUsageFlags::UAV)) {
+        Core::main->GetBufferManager()->GetTextureBufferPool()->FreeSRVHandle(texture->GetUAVCpuHandle());
+    }
+    if (HasFlag(texture->_usageFlags, TextureUsageFlags::SRV)) {
+        Core::main->GetBufferManager()->GetTextureBufferPool()->FreeSRVHandle(texture->GetSRVCpuHandle());
+    }
+    if (HasFlag(texture->_usageFlags, TextureUsageFlags::DSV)) {
+        Core::main->GetBufferManager()->GetTextureBufferPool()->FreeDSVHandle(texture->GetDSVCpuHandle());
+    }
+
+    texture->CreateStaticTexture(texture->GetFormat(), D3D12_RESOURCE_STATE_COMMON, w, h, texture->_usageFlags, texture->_jump, texture->_detphShared);
+}
 
 void Core::InitDirectX12()
 {
-
-    CreateDevice(true, true);
+    CreateDevice(false, false);
     CreateCmdQueue();
     CreateSwapChain();
-
 }
 
 void Core::CreateDevice(bool EnableDebugLayer, bool EnableGBV)
@@ -164,7 +281,7 @@ void Core::CreateDevice(bool EnableDebugLayer, bool EnableGBV)
             ID3D12Debug5* pDebugController5 = nullptr;
             if (S_OK == pDebugController->QueryInterface(IID_PPV_ARGS(&pDebugController5)))
             {
-                pDebugController5->SetEnableGPUBasedValidation(TRUE);
+                pDebugController5->SetEnableGPUBasedValidation(FALSE);
                 pDebugController5->SetEnableAutoName(TRUE);
                 pDebugController5->Release();
             }
@@ -272,9 +389,15 @@ void Core::CreateCmdQueue()
     desc.NodeMask = 0;
 
     ThrowIfFailed(_device->CreateCommandQueue(&desc, IID_PPV_ARGS(&_cmdQueue)));
-    ThrowIfFailed(_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&_cmdMemory)));
-    ThrowIfFailed(_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, _cmdMemory.Get(), nullptr, IID_PPV_ARGS(&_cmdList)));
-    ThrowIfFailed(_cmdList->Close());
+
+    for (int i = 0; i < MAX_FRAME_COUNT; ++i)
+    {
+        ThrowIfFailed(_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&_cmdMemory[i])));
+        ThrowIfFailed(_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, _cmdMemory[i].Get(), nullptr, IID_PPV_ARGS(&_cmdList[i])));
+        ThrowIfFailed(_cmdList[i]->Close());
+    }
+
+   
 
 
     ThrowIfFailed(_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&_resCmdMemory)));
@@ -311,7 +434,6 @@ void Core::SetDebugLayerInfo()
         pInfoQueue = nullptr;
     }
 }
-
 
 
 

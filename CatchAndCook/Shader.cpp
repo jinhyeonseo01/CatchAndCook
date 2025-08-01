@@ -1,4 +1,4 @@
-#include "pch.h"
+Ôªø#include "pch.h"
 #include "Shader.h"
 #include "RenderTarget.h"
 #include "Vertex.h"
@@ -53,36 +53,31 @@ void ShaderInfo::SetDSTexture(const std::shared_ptr<Texture>& DSTexture)
     DSVFormat = DSTexture->GetFormat();
 }
 
-void Shader::InitPipeLine(const std::vector<VertexProp>& prop)
+void Shader::InitPipeLine(const std::vector<VertexProp>& vertexProp)
 {
     auto device = Core::main->GetDevice();
 
-    SelectorInfo vertexSetInfo = SelectorInfo::GetInfo(prop);
+    SelectorInfo vertexSetInfo = SelectorInfo::GetInfo(vertexProp);
 
-    std::vector<D3D12_INPUT_ELEMENT_DESC> _inputElementDesc;
-    _inputElementDesc.resize(vertexSetInfo.propCount);
-
-    for (int i = 0; i < _inputElementDesc.size(); i++)
+    std::vector<D3D12_INPUT_ELEMENT_DESC> _inputElementDesc = vertexSetInfo.GetVertexDescs();
+    if(!_instanceProp.empty())
     {
-        D3D12_INPUT_ELEMENT_DESC elementDesc = {};
-        std::string name = PropNameStrings[static_cast<int>(vertexSetInfo.props[i])].c_str();
-        elementDesc.SemanticName = PropNameStrings[static_cast<int>(vertexSetInfo.props[i])].c_str();
-        elementDesc.SemanticIndex = vertexSetInfo.propInfos[i].index;
-        elementDesc.InputSlot = 0;
-        elementDesc.AlignedByteOffset = vertexSetInfo.propInfos[i].byteOffset;
-        elementDesc.InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
-        elementDesc.InstanceDataStepRate = 0;
-        elementDesc.Format = DXGI_FORMAT_R32_FLOAT;
-        if (vertexSetInfo.propInfos[i].size == 1) elementDesc.Format = DXGI_FORMAT_R32_FLOAT;
-        else if (vertexSetInfo.propInfos[i].size == 2) elementDesc.Format = DXGI_FORMAT_R32G32_FLOAT;
-        else if (vertexSetInfo.propInfos[i].size == 3) elementDesc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
-        else if (vertexSetInfo.propInfos[i].size == 4) elementDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-        _inputElementDesc[i] = elementDesc;
+        SelectorInfo instanceSetInfo = SelectorInfo::GetInfo(_instanceProp);
+        std::vector<D3D12_INPUT_ELEMENT_DESC> descs = instanceSetInfo.GetInstanceDescs();
+        for(auto& instanceDesc : descs)
+            _inputElementDesc.push_back(instanceDesc);
     }
 
     _pipelineDesc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
-    _pipelineDesc.pRootSignature = Core::main->GetRootSignature()->GetGraphicsRootSignature().Get();
-
+    if (_info._computeShader)
+    {
+        _cspipelineDesc.pRootSignature = Core::main->GetRootSignature()->GetComputeRootSignature().Get();
+    }
+    else
+    {
+        _pipelineDesc.pRootSignature = Core::main->GetRootSignature()->GetGraphicsRootSignature().Get();
+    }
+  
     _pipelineDesc.InputLayout = { _inputElementDesc.data(), static_cast<unsigned int>(_inputElementDesc.size()) };
 
     if (!_info._depthOnly)
@@ -104,13 +99,7 @@ void Shader::InitPipeLine(const std::vector<VertexProp>& prop)
     _pipelineDesc.SampleDesc.Count = 1;
     _pipelineDesc.SampleDesc.Quality = 0;
     _pipelineDesc.DSVFormat = _info.DSVFormat;
-    //_pipelineDesc.
 
-    //Material, Animation, Object, Camera, Scene
-
-    //_pipelineState->
-
-    //CD3DX12_RASTERIZER_DESC2 resterizerDesc {D3D12_DEFAULT};
     CD3DX12_RASTERIZER_DESC resterizerDesc{ D3D12_DEFAULT };
 
     resterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
@@ -135,13 +124,14 @@ void Shader::InitPipeLine(const std::vector<VertexProp>& prop)
         resterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
         break;
     }
+
     _pipelineDesc.RasterizerState = resterizerDesc;
     _pipelineDesc.RasterizerState.FrontCounterClockwise = _info._wise == FrontWise::CCW ? TRUE : FALSE;
-    _pipelineDesc.RasterizerState.DepthClipEnable = TRUE; // ±Ì¿Ã∞™ π¸¿ß π€ ¬©∂Û≥ø.
+    _pipelineDesc.RasterizerState.DepthClipEnable = TRUE; // ÍπäÏù¥Í∞í Î≤îÏúÑ Î∞ñ Ïß§ÎùºÎÉÑ.
     _pipelineDesc.RasterizerState.AntialiasedLineEnable = _info.cullingType == CullingType::WIREFRAME ? TRUE : FALSE;
-    _pipelineDesc.RasterizerState.DepthBias = 0;
-    _pipelineDesc.RasterizerState.SlopeScaledDepthBias = 0.0f;
-    _pipelineDesc.RasterizerState.DepthBiasClamp = 0.0f;
+    _pipelineDesc.RasterizerState.DepthBias = _info.depthBias;
+    _pipelineDesc.RasterizerState.SlopeScaledDepthBias = _info.slopeScaledDepthBias;
+    _pipelineDesc.RasterizerState.DepthBiasClamp = _info.depthBiasClamp;
 
     CD3DX12_DEPTH_STENCIL_DESC depthStencilDesc{ D3D12_DEFAULT };
     depthStencilDesc.DepthEnable = _info._zTest ? TRUE : FALSE;
@@ -168,17 +158,16 @@ void Shader::InitPipeLine(const std::vector<VertexProp>& prop)
     default: depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
         break;
     }
+
     depthStencilDesc.DepthWriteMask = _info._zWrite ? D3D12_DEPTH_WRITE_MASK_ALL : D3D12_DEPTH_WRITE_MASK_ZERO;
-
-
     depthStencilDesc.StencilEnable = _info._stencilTest ? TRUE : FALSE;
     depthStencilDesc.StencilReadMask = 0xFF;
     depthStencilDesc.StencilWriteMask = 0xFF;
-
     depthStencilDesc.FrontFace.StencilFailOp = _info._stencilFailOp;
     depthStencilDesc.FrontFace.StencilDepthFailOp = _info._stencilDepthFailOp;
     depthStencilDesc.FrontFace.StencilPassOp = _info._stencilPassOp;
     depthStencilDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+
     switch (_info._stencilComp)
     {
     case CompOper::Always: depthStencilDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS;
@@ -202,12 +191,9 @@ void Shader::InitPipeLine(const std::vector<VertexProp>& prop)
     }
 
     depthStencilDesc.BackFace = depthStencilDesc.FrontFace;
-
     _pipelineDesc.DepthStencilState = depthStencilDesc;
-
-    //_pipelineDesc.BlendState.AlphaToCoverageEnable = FALSE; // « ø‰ø° µ˚∂Û TRUE∑Œ º≥¡§
-    //_pipelineDesc.BlendState.IndependentBlendEnable = TRUE; // ø©∑Ø ∑ª¥ı ≈∏∞Ÿø° ¥Î«ÿ ¥Ÿ∏• ∫Ì∑ªµ˘ º≥¡§¿ª ø¯«“ ∞ÊøÏ TRUE∑Œ º≥¡§
-
+    _pipelineDesc.BlendState.AlphaToCoverageEnable = FALSE; // ÌïÑÏöîÏóê Îî∞Îùº TRUEÎ°ú ÏÑ§Ï†ï
+    _pipelineDesc.BlendState.IndependentBlendEnable = FALSE; // Ïó¨Îü¨ Î†åÎçî ÌÉÄÍ≤üÏóê ÎåÄÌï¥ Îã§Î•∏ Î∏îÎ†åÎî© ÏÑ§Ï†ïÏùÑ ÏõêÌï† Í≤ΩÏö∞ TRUEÎ°ú ÏÑ§Ï†ï
 
     for (int i = 0; i < 8; i++)
     {
@@ -236,6 +222,16 @@ void Shader::InitPipeLine(const std::vector<VertexProp>& prop)
                 blendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
                 blendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
                 break;
+            case BlendType::PremultipliedAlpha:
+     /*           Out.rgb = = Src.rgb + Dst.rgb * (1 - Src.a)*/
+                blendDesc.BlendEnable = TRUE;
+                blendDesc.SrcBlend = D3D12_BLEND_ONE;
+                blendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+                blendDesc.BlendOp = D3D12_BLEND_OP_ADD;
+                blendDesc.SrcBlendAlpha = D3D12_BLEND_ONE;
+                blendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
+				blendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+				break;
             case BlendType::Add:
                 blendDesc.BlendEnable = TRUE;
                 blendDesc.LogicOpEnable = FALSE;
@@ -271,6 +267,13 @@ void Shader::InitPipeLine(const std::vector<VertexProp>& prop)
                 blendDesc.DestBlend = D3D12_BLEND_INV_DEST_COLOR;
                 blendDesc.BlendOp = D3D12_BLEND_OP_ADD;
                 break;
+            case BlendType::BlendFactor:
+                blendDesc.BlendEnable = TRUE;  // Î∏îÎ†åÎìú ÌôúÏÑ±Ìôî
+                blendDesc.LogicOpEnable = FALSE;  // ÎÖºÎ¶¨ Ïó∞ÏÇ∞ ÏÇ¨Ïö© Ïïà Ìï®
+                blendDesc.SrcBlend = D3D12_BLEND_BLEND_FACTOR;
+                blendDesc.DestBlend = D3D12_BLEND_INV_BLEND_FACTOR;
+                blendDesc.BlendOp = D3D12_BLEND_OP_ADD;  // Î∏îÎ†åÎìú Ïó∞ÏÇ∞ÏùÄ ÎçîÌïòÍ∏∞
+                blendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
             }
         }
         else
@@ -296,9 +299,36 @@ void Shader::InitPipeLine(const std::vector<VertexProp>& prop)
             _pipelineDesc.HS = _shaderCodeTable[shaderCode.first]->_shaderByteCode;
         if (shaderCode.first == "ds")
             _pipelineDesc.DS = _shaderCodeTable[shaderCode.first]->_shaderByteCode;
+        if (shaderCode.first == "cs")
+            _cspipelineDesc.CS = _shaderCodeTable[shaderCode.first]->_shaderByteCode;
     }
 
-    ThrowIfFailed(device->CreateGraphicsPipelineState(&_pipelineDesc, IID_PPV_ARGS(&_pipelineState)));
+    if (_info._computeShader)
+    {
+        ThrowIfFailed(device->CreateComputePipelineState(&_cspipelineDesc, IID_PPV_ARGS(&_pipelineState)));
+    }
+    else 
+    {
+        ThrowIfFailed(device->CreateGraphicsPipelineState(&_pipelineDesc, IID_PPV_ARGS(&_pipelineState)));
+    }
+   
+}
+
+void Shader::SetMacro(const std::vector<D3D_SHADER_MACRO>& macros)
+{
+    _macros = macros;
+    if(_macros.size() == 0 || _macros[_macros.size() - 1].Name != nullptr)
+        _macros.push_back(D3D_SHADER_MACRO(nullptr, nullptr));
+}
+
+void Shader::SetInjector(const std::vector<BufferType>& injectors)
+{
+    _cbufferInjectorTypes = injectors;
+}
+
+void Shader::SetInstanceProp(const std::vector<VertexProp>& props)
+{
+    _instanceProp = props;
 }
 
 void Shader::SetInfo(const ShaderInfo& info)
@@ -463,8 +493,17 @@ void Shader::Profile()
                 case D3D_RETURN_TYPE_UNORM:
                     registerInfo.elementType = "float";
                     break;
+                case D3D_RETURN_TYPE_SNORM:
+                    registerInfo.elementType = "float";
+                    break;
+                case D3D_RETURN_TYPE_DOUBLE:
+                    registerInfo.elementType = "double";
+                    break;
+                case D3D_RETURN_TYPE_MIXED:
+                    registerInfo.elementType = "struct";
+                    break;
                 case 0:
-                    // SRV∞° æ∆¥“∞ÊøÏ
+                    // SRVÍ∞Ä ÏïÑÎãêÍ≤ΩÏö∞
                     break;
                 default:
                     std::cout << "Unknown Return Type: " << bindDesc.ReturnType << "\n";
@@ -533,8 +572,12 @@ void Shader::Profile()
                     registerInfo.bufferType = "textureCubeArray";
                     break;
                 }
-                if (registerInfo.registerType)
+                if(registerInfo.registerType == 't')
+                {
                     _profileInfo.tRegisterTable.push_back(registerInfo.registerIndex);
+                    _profileInfo.maxTRegister = std::max(_profileInfo.maxTRegister,registerInfo.registerIndex);
+                }
+
                 registerInfo.registerTypeString = registerInfo.registerType +
                     std::to_string(registerInfo.registerIndex);
                 str::trim(registerInfo.registerTypeString);
@@ -544,6 +587,10 @@ void Shader::Profile()
                     _profileInfo._nameToRegisterTable.emplace(registerInfo.name, registerInfo);
                     _profileInfo.registers.push_back(registerInfo);
                 }
+                if(registerInfo.registerType == 't' && registerInfo.bufferType == "buffer")
+                {
+                    _profileInfo.structuredBuffers.push_back(registerInfo);
+                }
             }
         }
     }
@@ -552,11 +599,17 @@ void Shader::Profile()
 int Shader::GetRegisterIndex(const std::string& name)
 {
     auto iter = _profileInfo._nameToRegisterTable.find(name);
+
     if (iter != _profileInfo._nameToRegisterTable.end())
         return iter->second.registerIndex;
 
     return -1;
 }
+std::vector<ShaderRegisterInfo>& Shader::GetTRegisterStructured()
+{
+    return _profileInfo.structuredBuffers;
+}
+
 std::vector<int>& Shader::GetTRegisterIndexs()
 {
     return _profileInfo.tRegisterTable;
@@ -591,7 +644,7 @@ std::shared_ptr<ShaderCode> Shader::LoadBlob(std::wstring path, std::string endP
 
         ComPtr<ID3DBlob> _shaderBlob;
 
-        HRESULT resurt = ::D3DCompileFromFile(shaderPath.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE
+        HRESULT resurt = ::D3DCompileFromFile(shaderPath.c_str(),_macros.data(), D3D_COMPILE_STANDARD_FILE_INCLUDE
             , functionName.c_str(), version.c_str(), compileFlag, 0,
             _shaderBlob.GetAddressOf(), shaderCode->_errorBlob.GetAddressOf());
 
@@ -606,16 +659,17 @@ std::shared_ptr<ShaderCode> Shader::LoadBlob(std::wstring path, std::string endP
         shaderCode->_blob = _shaderBlob;
         
     }
+
     if (ext == L".cso" || ext == L".CSO")
     {
         std::ifstream shaderFile(shaderPath, std::ios::binary | std::ios::ate);
         if (!shaderFile.is_open())
-            std::cout << "Shader Compile Failed\n" << "πÃ∏Æ ƒƒ∆ƒ¿œ µ» Ω¶¿Ã¥ı ∞Ê∑Œ Ω«∆–\n";
+            std::cout << "Shader Compile Failed\n" << "ÎØ∏Î¶¨ Ïª¥ÌååÏùº Îêú ÏâêÏù¥Îçî Í≤ΩÎ°ú Ïã§Ìå®\n";
         std::streamsize size = shaderFile.tellg();
         shaderFile.seekg(0, std::ios::beg);
         shaderCode->_shaderPrecompiledBuffer.resize(size);
         if (!shaderFile.read(shaderCode->_shaderPrecompiledBuffer.data(), size))
-            std::cout << "Shader Compile Failed\n" << "πÃ∏Æ ƒƒ∆ƒ¿œ µ» Ω¶¿Ã¥ı ¿–±‚ Ω«∆–\n";
+            std::cout << "Shader Compile Failed\n" << "ÎØ∏Î¶¨ Ïª¥ÌååÏùº Îêú ÏâêÏù¥Îçî ÏùΩÍ∏∞ Ïã§Ìå®\n";
 
         shaderCode->_shaderByteCode.pShaderBytecode = shaderCode->_shaderPrecompiledBuffer.data();
         shaderCode->_shaderByteCode.BytecodeLength = shaderCode->_shaderPrecompiledBuffer.size();
@@ -624,9 +678,9 @@ std::shared_ptr<ShaderCode> Shader::LoadBlob(std::wstring path, std::string endP
     return shaderCode;
 }
 
-void Shader::Init(const std::wstring& path, std::vector<VertexProp>& prop, ShaderArg& shaderParams, const ShaderInfo& info)
+void Shader::Init(const std::wstring& path, const std::vector<VertexProp>& prop, const ShaderArg& shaderParams, const ShaderInfo& info)
 {
- 
+	_name = to_string(path);
     for (auto& pair : shaderParams.shaderParams)
     {
         auto shaderCodeData = LoadBlob(path, pair.first, pair.second);

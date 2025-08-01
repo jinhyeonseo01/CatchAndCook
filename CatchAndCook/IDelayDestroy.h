@@ -1,7 +1,7 @@
-#pragma once
+ï»¿#pragma once
 
-// SCENE -> Æ®¸®±¸Á¶ / MATERIAL CAMERA MESHRENDER SCRIPTS LIGHT  / RENDERPASS / MODEL / RESOURCEMANAGER / INSTANCING
-// 1.12 Àü±îÁö ¿£Áø±¸Á¶¿Ï¼º.
+// SCENE -> íŠ¸ë¦¬êµ¬ì¡° / MATERIAL CAMERA MESHRENDER SCRIPTS LIGHT  / RENDERPASS / MODEL / RESOURCEMANAGER / INSTANCING
+// 1.12 ì „ê¹Œì§€ ì—”ì§„êµ¬ì¡°ì™„ì„±.
 
 
 class IDelayDestroy
@@ -9,6 +9,7 @@ class IDelayDestroy
 private:
     bool _destroy = false;
 
+public:
     bool IsFirst() const { return _first; };
     void FirstOff() { _first = false; };
     void SetFirst(bool first) { _first = first; };

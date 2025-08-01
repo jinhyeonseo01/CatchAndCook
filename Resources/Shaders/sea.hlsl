@@ -1,30 +1,11 @@
-#include "GLOBAL.hlsl"
+#include "Global_b0.hlsl"
+#include "Transform_b1.hlsl"
+#include "Camera_b2.hlsl"
+#include "Light_b3.hlsl"
 
-Texture2D g_tex_0 : register(t0);
-SamplerState g_sam_0 : register(s0);
 
 #define PI 3.14159f
 
-cbuffer test : register(b1)
-{
-    row_major matrix WorldMat;
-}
-
-cbuffer cameraParams : register(b2)
-{
-    row_major Matrix ViewMatrix;
-    row_major Matrix ProjectionMatrix;
-    row_major Matrix VPMatrix;
-    row_major Matrix InvertViewMatrix;
-    row_major Matrix InvertProjectionMatrix;
-    row_major Matrix InvertVPMatrix;
-
-    float4 cameraPos;
-    float4 cameraLook;
-    float4 cameraUp;
-    float4 cameraFrustumData;
-    float4 cameraScreenData;
-};
 
 cbuffer popo : register(b7)
 {
@@ -37,7 +18,6 @@ struct VS_IN
     float3 pos : POSITION;
     float2 uv : TEXCOORD0;
     float3 normal : NORMAL;
-    uint vertexID : SV_VertexID;
 };
 
 struct VS_OUT
@@ -48,10 +28,12 @@ struct VS_OUT
     float3 worldNormal : NORMAL;
 };
 
+Texture2D g_tex_0 : register(t0);
+
 VS_IN WaveGeneration(VS_IN input)
 {
     const int waveCount = 3;
-    float amplitudes[waveCount] = { 9.0f, 6.0f, 4.0f };
+    float amplitudes[waveCount] = { 11.0f, 9.0f, 7.0f };
     float wavelengths[waveCount] = { 500.0f, 300.0f, 200.0f };
     float speeds[waveCount] = { 0.5f, 1.0f, 0.8f };
 
@@ -63,8 +45,8 @@ VS_IN WaveGeneration(VS_IN input)
     };
 
     float3 modifiedPos = input.pos;
-    float dHdX = 0.0f; // x πÊ«‚ ∆ÌπÃ∫–
-    float dHdZ = 0.0f; // z πÊ«‚ ∆ÌπÃ∫–
+    float dHdX = 0.0f; 
+    float dHdZ = 0.0f; 
 
     for (int i = 0; i < waveCount; i++)
     {
@@ -78,7 +60,7 @@ VS_IN WaveGeneration(VS_IN input)
 
         modifiedPos.y += amplitudes[i] * wave;
 
-        // ∆ÌπÃ∫– ∞ËªÍ
+        // Ìé∏ÎØ∏Î∂Ñ Í≥ÑÏÇ∞
         float dWavedX = frequency * waveDerivative * direction.x;
         float dWavedZ = frequency * waveDerivative * direction.y;
 
@@ -86,7 +68,7 @@ VS_IN WaveGeneration(VS_IN input)
         dHdZ += amplitudes[i] * dWavedZ;
     }
 
-    // π˝º± ∫§≈Õ ∞ËªÍ
+    // Î≤ïÏÑ† Î≤°ÌÑ∞ Í≥ÑÏÇ∞
     float3 normal = normalize(float3(-dHdX, 1.0f, -dHdZ));
 
     VS_IN result;
@@ -95,26 +77,46 @@ VS_IN WaveGeneration(VS_IN input)
 
     return result;
 }
+
 VS_OUT VS_Main(VS_IN input)
 {
     VS_OUT output = (VS_OUT) 0;
 
     VS_IN result = WaveGeneration(input);
  
-    // ø˘µÂ, ∫‰, «¡∑Œ¡ßº« ∫Ø»Ø
-    float4 worldPos = mul(float4(result.pos, 1.0f), WorldMat);
+    // ÏõîÎìú, Î∑∞, ÌîÑÎ°úÏ†ùÏÖò Î≥ÄÌôò
+    float4 worldPos = mul(float4(result.pos, 1.0f), LocalToWorldMatrix);
     
     output.worldPos = worldPos.xyz;
-
-    
     output.pos = mul(worldPos, VPMatrix);
     output.uv = input.uv;
-    output.worldNormal = normalize(mul(float4(result.normal, 0.0f), WorldMat).xyz);
-    
+    output.worldNormal = normalize(mul(float4(result.normal, 0.0f), LocalToWorldMatrix).xyz);
     return output;
 }
 
 float4 PS_Main(VS_OUT input) : SV_Target
 {
-    return g_tex_0.Sample(g_sam_0, input.uv );
+    float3 color;
+    
+    float4 worldPos = mul(input.pos, InvertVPMatrix);
+    float3 WolrdNormal = input.worldNormal;
+    float3 toEye = normalize(g_eyeWorld - worldPos.xyz);
+
+    for (int i = 0; i < g_lightCount; ++i)
+    {
+        if (g_lights[i].mateiral.lightType == 0)
+        {
+            color += ComputeDirectionalLight(g_lights[i], g_lights[i].mateiral,worldPos.xyz, WolrdNormal.xyz, toEye);
+        }
+        else if (g_lights[i].mateiral.lightType == 1)
+        {
+            color += ComputePointLight(g_lights[i], g_lights[i].mateiral, worldPos.xyz, WolrdNormal.xyz, toEye);
+        }
+        else if (g_lights[i].mateiral.lightType == 2)
+        {
+            color += ComputeSpotLight(g_lights[i], g_lights[i].mateiral, worldPos.xyz, WolrdNormal.xyz, toEye);
+        }
+    }
+    
+    return float4(color, 1.0f);
 }

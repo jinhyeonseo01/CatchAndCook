@@ -1,0 +1,63 @@
+﻿#pragma once
+#include "Component.h"
+
+class AnimationListComponent;
+class SkinnedHierarchy;
+class CameraComponent;
+
+enum Sequnce
+{
+	Driving,
+	turnRight,
+	Walk,
+	Dive,
+	Reset
+};
+
+class BoatController :public Component
+{
+
+public:
+	~BoatController() override;
+	bool IsExecuteAble() override;
+	void Init() override;
+	void Start() override;
+	void Update() override;
+	void Update2() override;
+	void Enable() override;
+	void Disable() override;
+	void RenderBegin() override;
+	void CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other) override;
+	void CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other) override;
+	void ChangeParent(const std::shared_ptr<GameObject>& prev, const std::shared_ptr<GameObject>& current) override;
+	void SetDestroy() override;
+	void Destroy() override;
+	void SetOnBaord();
+
+	int _fpressedCount = 0;
+
+private:
+	void DivingSequnce();
+
+	SeaParam* _seaParam;
+	Sequnce _seq = Sequnce::Driving;
+	Quaternion CalCulateYawPitchRoll();
+	vec3		_GenPos{};
+	Quaternion  _GenRotate{};
+
+public:
+	static float heightOffset;
+	static float SpringArmLength;
+	static float  _yaw;
+	static float _pitch;
+	static float _roll;
+
+	vec3 _right{};
+private:
+	bool _onBoard = false;
+
+	shared_ptr<Camera> _camera;
+	shared_ptr<SkinnedHierarchy> _skined;
+	std::unordered_map<string, std::shared_ptr<Animation>>  _animation;
+};
+

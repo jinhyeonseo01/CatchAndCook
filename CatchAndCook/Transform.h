@@ -1,9 +1,10 @@
-#pragma once
+ï»¿#pragma once
 #include "Component.h"
 
 struct CBufferContainer;
+class Material;
 
-class Transform : public Component
+class Transform : public Component, public RenderStructuredSetter
 {
 public:
 	Transform();
@@ -18,14 +19,13 @@ public:
 	void Disable() override;
 	void Destroy() override;
 	void RenderBegin() override;
-	void Collision(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other) override;
-	
+	void CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other) override;
+    void CollisionEnd(const std::shared_ptr<Collider>& collider,const std::shared_ptr<Collider>& other) override;
 
-    void PushData();
-	void SetData();
+    bool IsExecuteAble() override;
+	virtual void SetData(StructuredBuffer* buffer = nullptr ,Material* material=nullptr) override;
 
 public:
-
     vec3 SetForward(const vec3& dir );
     vec3 SetUp(const vec3& dir );
     vec3 SetRight(const vec3& dir );
@@ -34,33 +34,39 @@ public:
     vec3 GetUp();
     vec3 GetRight();
 
-    vec3 GetLocalEuler();
+    vec3 GetLocalEuler() const;
     const vec3& SetLocalRotation(const vec3& euler);
-    vec3 GetLocalPosition();
+    vec3& GetLocalPosition();
     const vec3& SetLocalPosition(const vec3& worldPos);
-    vec3 GetLocalScale();
+    vec3 GetLocalScale() const;
     const vec3& SetLocalScale(const vec3& worldScale);
-    Quaternion GetLocalRotation();
+    Quaternion GetLocalRotation() const;
     const Quaternion& SetLocalRotation(const Quaternion& quaternion);
 
     vec3 GetWorldPosition();
     const vec3& SetWorldPosition(const vec3& worldPos);
     vec3 GetWorldScale();
     const vec3& SetWorldScale(const vec3& worldScale);
+    vec3 GetWorldEuler();
     Quaternion GetWorldRotation();
     const Quaternion& SetWorldRotation(const Quaternion& quaternion);
 
+    void SetVelocity(const vec3& velocity) { _velocity = velocity; }
+    void SetVelocity(vec3&& velocity) { _velocity = std::move(velocity);}
+	vec3 GetVelocity() const { return _velocity; }
+     
     bool GetLocalToWorldMatrix(OUT Matrix& localToWorldMatrix);
     bool GetLocalToWorldMatrix_BottomUp(Matrix& localToWorld);
     bool GetLocalSRTMatrix(Matrix& localSRT);
     bool SetLocalSRTMatrix(Matrix& localSRT);
-    bool CheckLocalSRTUpdate();
-    bool CheckLocalMatrixUpdate();
+    bool CheckNeedLocalSRTUpdate() const;
+    bool CheckNeedLocalMatrixUpdate() const;
     bool CheckLocalToWorldMatrixUpdate();
-    void TopDownLocalToWorldUpdate(const Matrix& parentLocalToWorld, bool isParentUpdate = false);
+    bool TopDownLocalToWorldUpdate(const Matrix& parentLocalToWorld, bool isParentUpdate = false);
     bool BottomUpLocalToWorldUpdate();
 
-    void LookUp(const vec3& dir, const vec3& up);
+    void LookUp(const vec3& dir, const vec3& up, const Quaternion& orgin = Quaternion::Identity);
+	void LookUpSmooth(const vec3& dir, const vec3& up, float speed , const Quaternion& orgin = Quaternion::Identity);
 
     vec3 LocalToWorld_Position(const vec3& value);
     vec3 LocalToWorld_Direction(const vec3& value);
@@ -70,12 +76,14 @@ public:
     vec3 WorldToLocal_Direction(const vec3& value);
     Quaternion WorldToLocal_Quaternion(const Quaternion& value);
 
+	bool IsLocalSRTChanged() const { return _isLocalSRTChanged; }
+	bool IsLocalToWorldChanged() const { return _isLocalToWorldChanged; }
+    void SetPivotOffset(const vec3& pivotOffset) { _pivotOffset = pivotOffset; }
 
 public:
-    bool _isLocalSRTChanged = true; //ÀÌ°Å È°¼ºÈ­½Ã ½Ã ¿ùµå¸ÅÆ®¸¯½º °»½Å.isLocalToWorldChanged ÀÌ°Å È°¼ºÈ­
-    bool _isLocalToWorldChanged = true; //ºÎ¸ğ°¡ local ¾÷µ¥ÀÌÆ® or ºÎ¸ğ world º¯°æ½Ã ÀÌ°Å true.worldtrsº¯°æ.
 
-private:
+	vec3 _velocity = vec3::Zero;
+    vec3 _pivotOffset = vec3::Zero;
     vec3 _localPosition = vec3::Zero;
     vec3 _localScale = vec3::One;
     Quaternion _localRotation = Quaternion::Identity;
@@ -84,15 +92,21 @@ private:
     vec3 _up = vec3::Up;
     vec3 _right = vec3::Right;
 
-    Matrix _prevLocalSRTMatrix = Matrix::Identity;
-    Matrix _localSRTMatrix = Matrix::Identity; // prev¶û ºñ±³ÈÄ °»½Å/ °»½Å½Ã islocal¸Ó½Ã±â true ¾Æ´Ï¸é false
+    Matrix _localSRTMatrix = Matrix::Identity; // prevë‘ ë¹„êµí›„ ê°±ì‹ / ê°±ì‹ ì‹œ islocalë¨¸ì‹œê¸° true ì•„ë‹ˆë©´ false
     Matrix _localToWorldMatrix = Matrix::Identity;
 
-    bool _needLocalUpdated = true; // ³ª ÀÚ½ÅÀÌ SRT °»½Å ÇØ¾ßÇØ.
-    bool _needLocalToWorldUpdated = true; // ºÎ¸ğ°¡ ¾÷µ¥ÀÌÆ® ‰çÀ»¶§ ³»°¡ º¯°æµÇ¾î¾ßÇÔÀ» Ç¥±â, À§¿¡²¨¶ûÀº ¿ªÇÒÀÌ Á¶±İ ´Ù¸¥°Ô. À§¿¡²« ÀÚ±â ±âÁØÀÌ¶ó, Àü ÇÁ·¹ÀÓÀÌ¶û °°À¸¸é ¹Ù²î´Âµ¥, ÀÌ°Ç ³»°¡ ¹Ù²î±â Àü±îÁö ¾È²¨Áü
+    bool _isLocalSRTChanged = true; // ì´ì „ í”„ë ˆì„ê³¼ SRTê°€ ë‹¬ë¼ì¡Œì„ë•Œ
+    bool _isLocalToWorldChanged = true; // ì´ì „ í”„ë ˆì„ê³¼ L2Wê°€ ë‹¬ë¼ì¡Œì„ë•Œ
+
+    bool _needLocalSRTUpdated = true; // ë‚˜ ìì‹ ì´ SRT ê°±ì‹  í•´ì•¼í•´.
+    bool _needLocalMatrixUpdated = true;
+    bool _needLocalToWorldUpdated = true; // ë¶€ëª¨ê°€ ì—…ë°ì´íŠ¸ ë¬ì„ë•Œ ë‚´ê°€ ë³€ê²½ë˜ì–´ì•¼í•¨ì„ í‘œê¸°, ìœ„ì—êº¼ë‘ì€ ì—­í• ì´ ì¡°ê¸ˆ ë‹¤ë¥¸ê²Œ. ìœ„ì—ê»€ ìê¸° ê¸°ì¤€ì´ë¼, ì „ í”„ë ˆì„ì´ë‘ ê°™ìœ¼ë©´ ë°”ë€ŒëŠ”ë°, ì´ê±´ ë‚´ê°€ ë°”ë€Œê¸° ì „ê¹Œì§€ ì•ˆêº¼ì§
+    CBufferContainer* _cbufferContainer;
+
+    friend class SkinnedHierarchy;
+	friend class ImguiManager;
 
 
-    CBufferContainer* _container;
 };
 
 

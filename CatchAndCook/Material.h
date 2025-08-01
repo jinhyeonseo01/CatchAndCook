@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "BufferManager.h"
 #include "IGuid.h"
@@ -10,72 +10,110 @@ class Shader;
 class Texture;
 
 
-struct MaterialParams
-{
-	void SetInt(uint8 index, int32 value) { intParams[index] = value; }
-	void Setfloat(uint8 index, float value) { floatParams[index] = value; }
-	void SetMatrix(int index, Matrix mat) { MatrixParams[index] = mat; }
-	void SetVec4(uint8 index, vec4 vector) { vec4Params[index] = vector; }
-
-	array<int32, 4>		intParams { 0 }; 
-	array<vec4, 4>		vec4Params { vec4::One, vec4::One, vec4::One, vec4::One };
-	array<float, 4>		floatParams { 0 }; 
-	array<Matrix, 2>	MatrixParams { Matrix::Identity, Matrix::Identity };
-};
-
 class Material : public IGuid
 {
 public:
-	Material() {};
+	Material() ;
 	Material(bool useMaterialParams) : _useMaterialParams(useMaterialParams) {};
 	virtual ~Material();
 
-	void SetShader(std::shared_ptr<Shader> shader) { _shader = shader; }
+	void SetShader(std::shared_ptr<Shader> shader)
+	{
+		_shader = shader;
+		_shaderInjectors.clear();
 
-	void SetPass(RENDER_PASS::PASS pass) {_pass = pass;};
+		for (auto& type : shader->_cbufferInjectorTypes)
+			_shaderInjectors.push_back(InjectorManager::main->Get(type));
+	}
+
+	void SetPass(RENDER_PASS::PASS pass) { _pass = pass; };
 	RENDER_PASS::PASS& GetPass() { return _pass; };
 
-	void SetTexture(std::string name, const std::shared_ptr<Texture>& field);
-	shared_ptr<Shader> GetShader() { return _shader; }
+	void SetStencilIndex(int index) { _stencilIndex = index; };
+	int GetStencilIndex() const { return _stencilIndex; };
+
+	/*void SetHandle(std::string name, D3D12_CPU_DESCRIPTOR_HANDLE& handle);*/
+	void SetTexture(std::string name, std::shared_ptr<Texture> texture);
+	shared_ptr<Shader>& GetShader() { return _shader; }
 
 public:
+	void AllocTextureTable();
+	void AllocTextureLongTable();
 	void PushData();
 	void SetData();
+	void PushHandle();
+	void PushLongHandle();
+	bool CheckHandle();
+	bool CheckLongHandle();
+	void SetUseMaterialParams(bool use) { _useMaterialParams = use; }
 
-
-	void SetInjector(const std::vector<std::shared_ptr<ICBufferInjector>>& injectors) { _injectors = injectors; }
+	void SetInjector(const std::vector<std::shared_ptr<ICBufferInjector>>& injectors) { _customInjectors = injectors; }
+	void SetPreDepthNormal(bool preDepthNormal) { _preDepthNormal = preDepthNormal; }
+	bool GetPreDepthNormal() const { return _preDepthNormal; }
+	void SetShadowCasting(bool shadowCasting) { _shadowCasting = shadowCasting; }
+	bool GetShadowCasting() const { return _shadowCasting; }
+	void SetSetDataOff(bool setDataOff) { _setDataOff = setDataOff; }
+	bool GetSetDataOff() const { return _setDataOff; }
 
 	int GetPropertyInt(const std::string& name) { return _propertyInts[name]; };
 	void SetPropertyInt(const std::string& name, int data) { _propertyInts[name] = data; };
 	float GetPropertyFloat(const std::string& name) { return _propertyFloats[name]; };
 	void SetPropertyFloat(const std::string& name, float data) { _propertyFloats[name] = data; };
-	vec4 GetPropertyVector(const std::string& name) { return _propertyVectors[name]; };
+	vec4 GetPropertyVector(const std::string& name);
 	void SetPropertyVector(const std::string& name, const vec4& data) { _propertyVectors[name] = data; };
 	Matrix GetPropertyMatrix(const std::string& name) { return _propertyMatrixs[name]; };
 	void SetPropertyMatrix(const std::string& name, const Matrix& data) { _propertyMatrixs[name] = data; };
 
-	tableContainer _tableContainer;
+	shared_ptr<Texture>& GetPropertyTexture(const std::string& name) { return _propertyTexture[name]; };
 
-private:
-	void PushTexture();
+	bool HasPropertyInt(const std::string& name);
+	bool HasPropertyFloat(const std::string& name);
+	bool HasPropertyVector(const std::string& name);
+	bool HasPropertyMatrix(const std::string& name);
+
+	static void AllocDefualtTextureHandle();
+
+	void SetBlendFactor(const std::array<float, 4>& factor) { _blendFactor = factor; }
+	const std::array<float, 4>& GetBlendFactor() const { return _blendFactor; }
+
+	std::shared_ptr<Material> Clone();
+	void CopyProperties(std::shared_ptr<Material>& dest);
+
+	TableContainer _tableContainer;
+	TableContainer _tableLongContainer;
+	static TableContainer _defualtTableContainer;
+
+	uint32 GetID() {
+		return _instanceID;
+	}
+
+public:
+	std::array<float, 4> _blendFactor = { 0.8f, 0.8f, 0.8f, 0.8f };
+	uint32 _instanceID = 0;
 private:
 	shared_ptr<Shader> _shader;
 
-	std::unordered_map<std::string, int> _propertyInts; // Bool °ª
-	std::unordered_map<std::string, float> _propertyFloats; // 0~1 ½º,¹«½º´Ï½º Á¤º¸
+	std::unordered_map<std::string, int> _propertyInts; // Bool ê°’
+	std::unordered_map<std::string, float> _propertyFloats; // 0~1 ìŠ¤,ë¬´ìŠ¤ë‹ˆìŠ¤ ì •ë³´
 	std::unordered_map<std::string, vec4> _propertyVectors; // Color 
 	std::unordered_map<std::string, Matrix> _propertyMatrixs; // 
-	std::unordered_map<std::string, shared_ptr<Texture>> _propertyTextures;
+	std::unordered_map<std::string, D3D12_CPU_DESCRIPTOR_HANDLE> _propertyHandle;
+	std::unordered_map<std::string, std::shared_ptr<Texture>> _propertyTexture;
 
 	CBufferContainer* _cbufferContainer;
-	MaterialParams _params; // Ãß°¡ Á¤º¸ÇÔ¼ö ³Ñ°Ü¼­ µ¥ÀÌÅÍ ³Ö´Â ¼Â ÀÛ¾÷
 	bool _useMaterialParams = false;
 	RENDER_PASS::PASS _pass = RENDER_PASS::Forward;
+	bool _preDepthNormal = false;
+	bool _shadowCasting = true;
+	int _stencilIndex = 0;
 
-	std::vector<std::shared_ptr<ICBufferInjector>> _injectors;
+	bool _setDataOff = false;
+
+	static uint32 _instanceIDGenator;
+
+	std::vector<std::shared_ptr<ICBufferInjector>> _customInjectors;
+	std::vector<std::shared_ptr<ICBufferInjector>> _shaderInjectors;
 };
-
-
 
 //
 //class TestSubMaterialParamInjector : public ICBufferInjector
@@ -95,11 +133,11 @@ private:
 //		memcpy(_cbufferContainer->ptr, &param, sizeof(TestSubMaterialParam));
 //	}
 //
-//	void SetData(const std::shared_ptr<Shader>& shader) override
+//	void AddAtData(const std::shared_ptr<Shader>& shader) override
 //	{
-//		int index = GetStaticRegisterIndex();
-//		if (shader) index = shader->GetRegisterIndex(cbufferName);
-//		if (index != -1) Core::main->GetCmdList()->SetGraphicsRootConstantBufferView(
-//			index, _cbufferContainer->GPUAdress);
+//		int textAllocator = GetStaticRegisterIndex();
+//		if (shader) textAllocator = shader->GetRegisterIndex(cbufferName);
+//		if (textAllocator != -1) Core::main->GetCmdList()->SetGraphicsRootConstantBufferView(
+//			textAllocator, _cbufferContainer->GPUAdress);
 //	}
 //};

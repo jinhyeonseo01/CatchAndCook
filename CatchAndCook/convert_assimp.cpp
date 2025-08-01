@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 
 DirectX::SimpleMath::Matrix convert_assimp::Format(const aiMatrix4x4& mat)
 {
@@ -52,7 +52,8 @@ DirectX::SimpleMath::Vector2 convert_assimp::Format(const aiVector2D& from)
 
 DirectX::SimpleMath::Quaternion convert_assimp::Format(const aiQuaternion& pOrientation)
 {
-    return DirectX::SimpleMath::Quaternion(pOrientation.x, pOrientation.y, pOrientation.z, pOrientation.w);
+    Quaternion q = DirectX::SimpleMath::Quaternion(pOrientation.x, pOrientation.y, pOrientation.z, pOrientation.w);
+    return q;
 }
 
 DirectX::SimpleMath::Color convert_assimp::Format(const aiColor4D& color)

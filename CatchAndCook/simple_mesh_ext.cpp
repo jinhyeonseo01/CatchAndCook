@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "simple_mesh_ext.h"
 /*
 namespace DirectX

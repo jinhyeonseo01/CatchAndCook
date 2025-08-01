@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "BufferPool.h"
 #include "Core.h"
 
@@ -76,11 +76,13 @@ void CBufferPool::Reset()
 
 CBufferContainer* CBufferPool::Alloc(uint32 count)
 {
-	assert(_currentIndex <= _count);
+	assert(_currentIndex < _count);
 	CBufferContainer* data = &_container[_currentIndex];
-	_currentIndex+=count;
+	_currentIndex += data->count = count;
+	data->isAlloc = true;
 	return data;
 }
+
 
 
 /*************************
@@ -88,7 +90,19 @@ CBufferContainer* CBufferPool::Alloc(uint32 count)
 *  TextureBuffer Pool    *
 *                        *
 **************************/
+D3D12_CPU_DESCRIPTOR_HANDLE CBufferPool::cbufferTableHandle = {0};
 
+void CBufferPool::SetCBufferTable(CBufferContainer* cbuffer, int registerIndex)
+{
+	int index = registerIndex - CBV_ROOT_INDEX_COUNT;
+	assert(index >= 0);
+	TableContainer table = Core::main->GetBufferManager()->GetTable()->Alloc(CBV_TABLE_COUNT);
+	if (cbufferTableHandle.ptr != NULL)
+		Core::main->GetBufferManager()->GetTable()->CopyHandles(table.CPUHandle, cbufferTableHandle, CBV_TABLE_COUNT);
+	cbufferTableHandle = table.CPUHandle;
+	Core::main->GetBufferManager()->GetTable()->CopyHandle(cbufferTableHandle, cbuffer->CPUHandle, index);
+	Core::main->GetCmdList()->SetGraphicsRootDescriptorTable(CBV_TABLE_INDEX, table.GPUHandle);
+}
 
 void TextureBufferPool::Init(int32 SrvUavCount, int32 RTVCount ,int32 DSVCount)
 {
@@ -216,12 +230,11 @@ void TextureBufferPool::AllocDSVDescriptorHandle(D3D12_CPU_DESCRIPTOR_HANDLE* ha
 	}
 
 	CD3DX12_CPU_DESCRIPTOR_HANDLE DescriptorHandle(_dsvHeap.heap->GetCPUDescriptorHandleForHeapStart(), index, _dsvHeap.handleIncrementSize);
+	//_dsvHeap.heap->GetGPUDescriptorHandleForHeapStart()
 	*handle = DescriptorHandle;
 	_dsvHeap.currentIndex++;
 
 }
-
-
 
 int32 TextureBufferPool::AllocSRV()
 {
@@ -278,9 +291,7 @@ int32 TextureBufferPool::AllocDSV()
 void DescritporTable::Init(uint32 count)
 {
 
-
 	_count = count;
-
 
 	D3D12_DESCRIPTOR_HEAP_DESC desc;
 	desc.NumDescriptors = _count;
@@ -294,22 +305,19 @@ void DescritporTable::Init(uint32 count)
 	_cpuHandle = _heap->GetCPUDescriptorHandleForHeapStart();
 	_gpuHandle = _heap->GetGPUDescriptorHandleForHeapStart();
 
-
 }
 
-tableContainer DescritporTable::Alloc(uint32 count)
+TableContainer DescritporTable::Alloc(uint32 count)
 {
 	if (count + _currentIndex >= _count) assert(false);
 
-	tableContainer container;
+	TableContainer container;
 
 	container.CPUHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(_cpuHandle, _currentIndex, _size);
 	container.GPUHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(_gpuHandle, _currentIndex, _size);
 
 	_currentIndex += count;
-
 	return container;
-
 }
 
 void DescritporTable::CopyHandle(D3D12_CPU_DESCRIPTOR_HANDLE& destHandle, D3D12_CPU_DESCRIPTOR_HANDLE& sourceHandle, uint32 index)
@@ -318,8 +326,91 @@ void DescritporTable::CopyHandle(D3D12_CPU_DESCRIPTOR_HANDLE& destHandle, D3D12_
 	Core::main->GetDevice()->CopyDescriptorsSimple(1, dest, sourceHandle, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 }
 
+void DescritporTable::CopyHandles(D3D12_CPU_DESCRIPTOR_HANDLE& destHandle, D3D12_CPU_DESCRIPTOR_HANDLE& sourceHandle,
+	uint32 size)
+{
+	CD3DX12_CPU_DESCRIPTOR_HANDLE dest(destHandle, 0, _size);
+	Core::main->GetDevice()->CopyDescriptorsSimple(size, dest, sourceHandle, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+}
+
 void DescritporTable::Reset()
 {
 	_currentIndex = 0;
 }
 
+InstanceBufferPool::InstanceBufferPool()
+{
+}
+
+InstanceBufferPool::~InstanceBufferPool()
+{
+}
+
+void InstanceBufferPool::Init(uint32 size, uint32 elementCount, uint32 bufferCount)
+{
+
+	_elementSize = size;
+	_elementCount = elementCount;
+	_bufferCount = bufferCount;
+	_bufferSize = static_cast<uint64>(_elementSize) * _elementCount;
+
+	uint64 fullSize = _bufferSize * _bufferCount;
+
+	Core::main->GetDevice()->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer(fullSize),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&_resource));
+
+
+	BYTE* ptr = nullptr;
+	CD3DX12_RANGE writeRange(0,0);
+	_resource->Map(0,&writeRange,reinterpret_cast<void**>(&ptr));
+	offsetPtr = ptr;
+	_containers.resize(_bufferCount);
+
+
+	D3D12_VERTEX_BUFFER_VIEW	_vertexBufferView = {};
+	_vertexBufferView.BufferLocation = _resource->GetGPUVirtualAddress();
+	_vertexBufferView.StrideInBytes = _elementSize;
+	_vertexBufferView.SizeInBytes = _bufferSize;
+
+	for(int i = 0; i < _bufferCount; i++)
+	{
+
+		_containers[i]._bufferView = _vertexBufferView;
+		_containers[i].ptr = ptr;
+		_containers[i].elementCount = _elementCount;
+		_containers[i].writeOffset = 0;
+		_containers[i].isAlloc = false;
+
+		_vertexBufferView.BufferLocation += _bufferSize;
+		ptr += _bufferSize;
+	}
+}
+
+void InstanceBufferPool::Reset()
+{
+	for(int i=0; i< _containers.size(); i++)
+	{
+		_containers[i].isAlloc = false;
+		_containers[i].writeOffset = 0;
+	}
+}
+
+InstanceBufferContainer* InstanceBufferPool::Alloc()
+{
+	for(int i=0; i<	_containers.size(); i++)
+	{
+		if(!_containers[i].isAlloc)
+		{
+			_containers[i].isAlloc = true;
+			_containers[i].writeOffset = 0;
+			return &_containers[i];
+		}
+	}
+	assert(false);
+	return nullptr;
+}

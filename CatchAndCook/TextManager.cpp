@@ -1,4 +1,4 @@
-#pragma once
+Ôªø
 #include "pch.h"
 #include "TextManager.h"
 
@@ -13,37 +13,41 @@ void TextManager::Init()
 
 }
 
-void TextManager::UpdateToSysMemory(const wstring& text, shared_ptr<TextHandle>& handle , BYTE* memory )
+void TextManager::UpdateToSysMemory(const wstring& text, shared_ptr<TextHandle>& handle, BYTE* memory, int dataSize)
 {
     IDWriteTextLayout* textLayout = nullptr;
 
-    //≈ÿΩ∫∆Æ∑π¿Ãæ∆øÙ ª˝º∫
-    ThrowIfFailed(_factory->CreateTextLayout(text.c_str(), text.length(), handle->font.Get(), 1024, handle->height, &textLayout));
+    //ÌÖçÏä§Ìä∏Î†àÏù¥ÏïÑÏõÉ ÏÉùÏÑ±
+    ThrowIfFailed(_factory->CreateTextLayout(text.c_str(), text.length(), handle->font.Get(),handle->width, handle->height, &textLayout));
 
     DWRITE_TEXT_METRICS metrics = {};
 
-    //Rendering To ∫Ò∆Æ∏ 
+    //Rendering To ÎπÑÌä∏Îßµ
     if (textLayout)
     {
         textLayout->GetMetrics(&metrics);
 
-        // ≈∏∞Ÿº≥¡§
+        // ÌÉÄÍ≤üÏÑ§Ï†ï
         _context->SetTarget(handle->bitMapGpu.Get());
 
-        // æ»∆ºæŸ∏ÆæÓΩÃ∏µÂ º≥¡§
+        // ÏïàÌã∞Ïï®Î¶¨Ïñ¥Ïã±Î™®Îìú ÏÑ§Ï†ï
         _context->SetTextAntialiasMode(D2D1_TEXT_ANTIALIAS_MODE_GRAYSCALE);
 
-        // ≈ÿΩ∫∆Æ ∑ª¥ı∏µ
+        // ÌÖçÏä§Ìä∏ Î†åÎçîÎßÅ
         _context->BeginDraw();
 
-        if (handle->fontcolor == FontColor::WHITE)
+        if (handle->fontColor == FontColor::WHITE)
         {
             _context->Clear(D2D1::ColorF(D2D1::ColorF::Black));
         }
 
-        else if (handle->fontcolor == FontColor::BLACK)
+        else if (handle->fontColor == FontColor::BLACK)
         {
             _context->Clear(D2D1::ColorF(D2D1::ColorF::White));
+        }
+        else if(handle->fontColor == FontColor::CUSTOM)
+        {
+            _context->Clear(D2D1::ColorF(0,0,0,0));
         }
 
         _context->SetTransform(D2D1::Matrix3x2F::Identity());
@@ -54,7 +58,7 @@ void TextManager::UpdateToSysMemory(const wstring& text, shared_ptr<TextHandle>&
         // is lost. It will be handled during the next call to Present.
         _context->EndDraw();
 
-        // æ»∆ºæŸ∏ÆæÓΩÃ ∏µÂ ∫π±∏    
+        // ÏïàÌã∞Ïï®Î¶¨Ïñ¥Ïã± Î™®Îìú Î≥µÍµ¨    
         _context->SetTextAntialiasMode(D2D1_TEXT_ANTIALIAS_MODE_DEFAULT);
         _context->SetTarget(nullptr);
 
@@ -81,8 +85,8 @@ void TextManager::UpdateToSysMemory(const wstring& text, shared_ptr<TextHandle>&
 
     for (DWORD y = 0; y < (DWORD)height; y++)
     {
-        memcpy(pDest, pSrc, width * 4);
-        pDest += handle->width*4;
+        memcpy(pDest, pSrc, width * dataSize);
+        pDest += handle->width * dataSize;
         pSrc += mappedRect.pitch;
     }
 
@@ -119,19 +123,28 @@ void TextManager::PrintFontAll()
 
 }
 
-shared_ptr<TextHandle> TextManager::AllocTextStrcture(int width, int height, const WCHAR* font, FontColor color, float fontsize)
+shared_ptr<TextHandle> TextManager::AllocTextStrcture(int width, int height, const WCHAR* font, FontColor color, float fontsize, vec4 fontColor)
 {
     shared_ptr<TextHandle> textHandle = make_shared<TextHandle>();
 
     textHandle->width = width;
     textHandle->height = height;
     textHandle->fontSize = fontsize;
-    textHandle->brush = _brushMap[color];
-    textHandle->fontcolor = color;
+    textHandle->fontColor = color;
+    if(color == FontColor::CUSTOM)
+    {
+        ComPtr<ID2D1SolidColorBrush> brush;
+        ThrowIfFailed(_context->CreateSolidColorBrush(D2D1::ColorF(fontColor.x,fontColor.y ,fontColor.z,fontColor.w), &brush));
+        textHandle->brush = brush;
+    }
+    else
+    {
+        textHandle->brush = _brushMap[color];
+    }
    
     uint32 dpi = ::GetDpiForWindow(Core::main->GetHandle());
 
-    //∫Ò∆Æ∏  ª˝º∫
+    //ÎπÑÌä∏Îßµ ÏÉùÏÑ±
     {
         D2D1_BITMAP_PROPERTIES1 bitmapProperties =
             BitmapProperties1(
@@ -152,7 +165,7 @@ shared_ptr<TextHandle> TextManager::AllocTextStrcture(int width, int height, con
         ThrowIfFailed(_context->CreateBitmap(size_u, nullptr, 0, &bitmapProperties, textHandle->bitMapRead.GetAddressOf()));
     }
 
-    //∆˘∆Æª˝º∫
+    //Ìè∞Ìä∏ÏÉùÏÑ±
     {
         ThrowIfFailed(_factory->CreateTextFormat(
             font,
@@ -165,8 +178,30 @@ shared_ptr<TextHandle> TextManager::AllocTextStrcture(int width, int height, con
             &textHandle->font
         ));
 
+        switch(textHandle->pivotX)
+        {
+        case TextPivot::Left:
         ThrowIfFailed(textHandle->font.Get()->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING));
+        break;
+        case TextPivot::Middle:
+        ThrowIfFailed(textHandle->font.Get()->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER));
+        break;
+        case TextPivot::Right:
+        ThrowIfFailed(textHandle->font.Get()->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_TRAILING));
+        break;
+        }
+        switch(textHandle->pivotY)
+        {
+        case TextPivot::Top:
         ThrowIfFailed(textHandle->font.Get()->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR));
+        break;
+        case TextPivot::Middle:
+        ThrowIfFailed(textHandle->font.Get()->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER));
+        break;
+        case TextPivot::Bottom:
+        ThrowIfFailed(textHandle->font.Get()->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_FAR));
+        break;
+        }
     };
 
     return textHandle;
@@ -174,59 +209,59 @@ shared_ptr<TextHandle> TextManager::AllocTextStrcture(int width, int height, con
 
 void TextManager::InitD2D()
 {
-    // D3D12 ¿Âƒ° π◊ ∏Ì∑… ≈• ∞°¡Æø¿±‚.
+    // D3D12 Ïû•Ïπò Î∞è Î™ÖÎ†π ÌÅê Í∞ÄÏ†∏Ïò§Í∏∞.
     auto d3d_device = Core::main->GetDevice().Get();
     auto d3d_cmdQueue = Core::main->GetCmdQueue().Get();
 
     uint32 d3d11DeviceFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
-    D2D1_FACTORY_OPTIONS d2dFactoryOptions = {};  // D2D1 ∆—≈‰∏Æ ø…º« (µπˆ±◊ ∑π∫ß º≥¡§)
+    D2D1_FACTORY_OPTIONS d2dFactoryOptions = {};  // D2D1 Ìå©ÌÜ†Î¶¨ ÏòµÏÖò (ÎîîÎ≤ÑÍ∑∏ Î†àÎ≤® ÏÑ§Ï†ï)
 
-    // D2D1 ∆—≈‰∏Æ π◊ D3D11 ∞¸∑√ ¿Œ≈Õ∆‰¿ÃΩ∫ ∆˜¿Œ≈Õ º±æ
+    // D2D1 Ìå©ÌÜ†Î¶¨ Î∞è D3D11 Í¥ÄÎ†® Ïù∏ÌÑ∞ÌéòÏù¥Ïä§ Ìè¨Ïù∏ÌÑ∞ ÏÑ†Ïñ∏
     ID2D1Factory3* factory = nullptr;
     ID3D11Device* device = nullptr;
     ID3D11DeviceContext* d3d11Context = nullptr;
     ID3D11On12Device* d3d11On12Device = nullptr;
 
-    // D2D1 ∆—≈‰∏Æø°º≠ µπˆ±◊ ∑π∫ß¿ª º≥¡§«’¥œ¥Ÿ.
+    // D2D1 Ìå©ÌÜ†Î¶¨ÏóêÏÑú ÎîîÎ≤ÑÍ∑∏ Î†àÎ≤®ÏùÑ ÏÑ§Ï†ïÌï©ÎãàÎã§.
     d3d11DeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
     d2dFactoryOptions.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
 
-    // D3D11On12 ¿Âƒ°∏¶ ª˝º∫«’¥œ¥Ÿ. D3D12 ¿Âƒ°∏¶ ªÁøÎ«œø© D3D11 ¿Âƒ°∏¶ ∏∏µÁ »ƒ, D3D11On12Device∏¶ æÚΩ¿¥œ¥Ÿ.
+    // D3D11On12 Ïû•ÏπòÎ•º ÏÉùÏÑ±Ìï©ÎãàÎã§. D3D12 Ïû•ÏπòÎ•º ÏÇ¨Ïö©ÌïòÏó¨ D3D11 Ïû•ÏπòÎ•º ÎßåÎì† ÌõÑ, D3D11On12DeviceÎ•º ÏñªÏäµÎãàÎã§.
     ThrowIfFailed(D3D11On12CreateDevice(
-        d3d_device,                           // ±‚¡∏ D3D12 ¿Âƒ°
-        d3d11DeviceFlags,                     // D3D11 ¿Âƒ° «√∑°±◊
-        nullptr,                              // √ﬂ∞°¿˚¿Œ ¿¸ø™ ∏Æº“Ω∫ (ø©±‚º≠¥¬ ªÁøÎ«œ¡ˆ æ ¿Ω)
-        0,                                     // ¿¸ø™ ∏Æº“Ω∫ ∞≥ºˆ
-        (IUnknown**)&d3d_cmdQueue,             // D3D12 ∏Ì∑… ≈•
-        1,                                     // ∏Ì∑… ≈• ∞≥ºˆ
-        0,                                     // ≈•¿« ≈∏¿Ãπ÷ (ªÁøÎ«œ¡ˆ æ ¿Ω)
-        &device,                               // π›»Øµ… D3D11 ¿Âƒ°
-        &d3d11Context,                         // π›»Øµ… D3D11 ¿Âƒ° ƒ¡≈ÿΩ∫∆Æ
-        nullptr                                // π›»Øµ… DXGI ¿Âƒ° (ø©±‚º≠¥¬ ªÁøÎ«œ¡ˆ æ ¿Ω)
+        d3d_device,                           // Í∏∞Ï°¥ D3D12 Ïû•Ïπò
+        d3d11DeviceFlags,                     // D3D11 Ïû•Ïπò ÌîåÎûòÍ∑∏
+        nullptr,                              // Ï∂îÍ∞ÄÏ†ÅÏù∏ Ï†ÑÏó≠ Î¶¨ÏÜåÏä§ (Ïó¨Í∏∞ÏÑúÎäî ÏÇ¨Ïö©ÌïòÏßÄ ÏïäÏùå)
+        0,                                     // Ï†ÑÏó≠ Î¶¨ÏÜåÏä§ Í∞úÏàò
+        (IUnknown**)&d3d_cmdQueue,             // D3D12 Î™ÖÎ†π ÌÅê
+        1,                                     // Î™ÖÎ†π ÌÅê Í∞úÏàò
+        0,                                     // ÌÅêÏùò ÌÉÄÏù¥Î∞ç (ÏÇ¨Ïö©ÌïòÏßÄ ÏïäÏùå)
+        &device,                               // Î∞òÌôòÎê† D3D11 Ïû•Ïπò
+        &d3d11Context,                         // Î∞òÌôòÎê† D3D11 Ïû•Ïπò Ïª®ÌÖçÏä§Ìä∏
+        nullptr                                // Î∞òÌôòÎê† DXGI Ïû•Ïπò (Ïó¨Í∏∞ÏÑúÎäî ÏÇ¨Ïö©ÌïòÏßÄ ÏïäÏùå)
     ));
 
-    // D3D11On12 ¿Âƒ°ø°º≠ D3D11 ¿Âƒ° ¿Œ≈Õ∆‰¿ÃΩ∫∏¶ ∞°¡Æø…¥œ¥Ÿ.
+    // D3D11On12 Ïû•ÏπòÏóêÏÑú D3D11 Ïû•Ïπò Ïù∏ÌÑ∞ÌéòÏù¥Ïä§Î•º Í∞ÄÏ†∏ÏòµÎãàÎã§.
     ThrowIfFailed(device->QueryInterface(IID_PPV_ARGS(&d3d11On12Device)));
 
-    // D2D1 ¿Âƒ° ª˝º∫ ø…º« º≥¡§
+    // D2D1 Ïû•Ïπò ÏÉùÏÑ± ÏòµÏÖò ÏÑ§Ï†ï
     D2D1_DEVICE_CONTEXT_OPTIONS deviceOptions = D2D1_DEVICE_CONTEXT_OPTIONS_NONE;
 
-    // D2D1 ∆—≈‰∏Æ∏¶ ª˝º∫«’¥œ¥Ÿ.
+    // D2D1 Ìå©ÌÜ†Î¶¨Î•º ÏÉùÏÑ±Ìï©ÎãàÎã§.
     ThrowIfFailed(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof(ID2D1Factory3), &d2dFactoryOptions, (void**)&factory));
 
-    // D3D11On12 ¿Âƒ°ø°º≠ IDXGIDevice∏¶ æÚæÓø…¥œ¥Ÿ. (D2D∞° D3D11On12 ¿Âƒ°∏¶ ªÁøÎ«“ ºˆ ¿÷µµ∑œ «œ±‚ ¿ß«‘)
+    // D3D11On12 Ïû•ÏπòÏóêÏÑú IDXGIDeviceÎ•º ÏñªÏñ¥ÏòµÎãàÎã§. (D2DÍ∞Ä D3D11On12 Ïû•ÏπòÎ•º ÏÇ¨Ïö©Ìï† Ïàò ÏûàÎèÑÎ°ù ÌïòÍ∏∞ ÏúÑÌï®)
     IDXGIDevice* pDXGIDevice = nullptr;
     ThrowIfFailed(d3d11On12Device->QueryInterface(IID_PPV_ARGS(&pDXGIDevice)));
 
-    // D2D1 ∆—≈‰∏Æø°º≠ D3D11On12 ¿Âƒ°∏¶ ±‚π›¿∏∑Œ D2D1 ¿Âƒ° ª˝º∫
+    // D2D1 Ìå©ÌÜ†Î¶¨ÏóêÏÑú D3D11On12 Ïû•ÏπòÎ•º Í∏∞Î∞òÏúºÎ°ú D2D1 Ïû•Ïπò ÏÉùÏÑ±
     ThrowIfFailed(factory->CreateDevice(pDXGIDevice, _device.GetAddressOf()));
 
-    // D2D1 ¿Âƒ°∑Œ∫Œ≈Õ D2D1 µπŸ¿ÃΩ∫ ƒ¡≈ÿΩ∫∆Æ ª˝º∫
+    // D2D1 Ïû•ÏπòÎ°úÎ∂ÄÌÑ∞ D2D1 ÎîîÎ∞îÏù¥Ïä§ Ïª®ÌÖçÏä§Ìä∏ ÏÉùÏÑ±
     ThrowIfFailed(_device->CreateDeviceContext(deviceOptions, _context.GetAddressOf()));
 
     ThrowIfFailed(DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory5), (IUnknown**)&_factory));
 
-    // D3D11On12 ¿Âƒ° π◊ ∞¸∑√ ∞¥√ºµÈ¿« ∏ﬁ∏∏Æ «ÿ¡¶
+    // D3D11On12 Ïû•Ïπò Î∞è Í¥ÄÎ†® Í∞ùÏ≤¥Îì§Ïùò Î©îÎ™®Î¶¨ Ìï¥Ï†ú
     if (device)
     {
         device->Release();

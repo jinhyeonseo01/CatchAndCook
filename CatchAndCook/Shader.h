@@ -1,5 +1,6 @@
-#pragma once
+ï»¿#pragma once
 
+class ICBufferInjector;
 class Vertex;
 class RenderTarget;
 class Texture;
@@ -34,11 +35,13 @@ enum class FrontWise
 enum class BlendType
 {
     AlphaBlend = 0, //FinalColor = SrcColor * SrcAlpha + DestColor * (1 - SrcAlpha)
+	PremultipliedAlpha, //FinalColor = SrcColor + DestColor * (1 - SrcAlpha)
     Add, //FinalColor = SrcColor + DestColor
     Multiple, //FinalColor = SrcColor * DestColor
     ColorDodge, //FinalColor = DestColor / (1 - SrcColor)
     Subtract, //FinalColor = DestColor - SrcColor
     Screen, // FinalColor = 1 - (1 - SrcColor) * (1 - DestColor)
+    BlendFactor,
 };
 
 struct ShaderStructPropertyInfo
@@ -98,9 +101,11 @@ class ShaderProfileInfo
 public:
     std::vector<ShaderRegisterInfo> registers;
     std::vector<ShaderCBufferInfo> cbuffers;
+    std::vector<ShaderRegisterInfo> structuredBuffers;
     std::vector<int> tRegisterTable;
+    int maxTRegister = 0;
 
-    //shader shaderType names ´ÜÀ§·Î
+    //shader shaderType names ë‹¨ìœ„ë¡œ
     std::unordered_map<std::string, ShaderStructInfo> _typeToStructTable;
     std::unordered_map<std::string, ShaderCBufferInfo> _nameToCBufferTable;
     std::unordered_map<std::string, ShaderRegisterInfo> _nameToRegisterTable;
@@ -144,6 +149,7 @@ public:
     bool _depthOnly = false;
     bool _stencilTest = false;
     bool _blendEnable = false;
+	bool _computeShader = false;
     int _stencilIndex = 0;
     int _renderOrder = 2000;
 
@@ -155,6 +161,10 @@ public:
     CullingType cullingType = CullingType::BACK;
     FrontWise _wise = FrontWise::CW;
     D3D12_PRIMITIVE_TOPOLOGY_TYPE _primitiveType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+
+    float depthBias = 0;
+    float slopeScaledDepthBias = 0.0f;
+    float depthBiasClamp = 0.0f;
 
     //D3D12_PRIMITIVE_TOPOLOGY _topologyType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
     //D3D_PRIMITIVE_TOPOLOGY_POINTLIST
@@ -184,23 +194,37 @@ public:
 class Shader
 {
 public:
+    string _name = "";
 
     std::unordered_map<std::string, std::shared_ptr<ShaderCode>> _shaderCodeTable;
     ShaderInfo _info;
     ShaderProfileInfo _profileInfo;
+	RENDER_PASS::PASS _pass = RENDER_PASS::Forward;
+
+    std::vector<BufferType> _cbufferInjectorTypes;
+    std::vector<VertexProp> _instanceProp;
+    std::vector<D3D_SHADER_MACRO> _macros = {{nullptr,nullptr}};
 
 public:
     D3D12_GRAPHICS_PIPELINE_STATE_DESC _pipelineDesc = {};
+    D3D12_COMPUTE_PIPELINE_STATE_DESC _cspipelineDesc = {};
     ComPtr<ID3D12PipelineState> _pipelineState;
 
-    void InitPipeLine(const std::vector<VertexProp>& prop);
+    void InitPipeLine(const std::vector<VertexProp>& props);
+    void SetMacro(const std::vector<D3D_SHADER_MACRO>& macros);
+	void SetInjector(const std::vector<BufferType>& injectors);
+    void SetInstanceProp(const std::vector<VertexProp>& props);
     void SetInfo(const ShaderInfo& info);
+    void SetPass(RENDER_PASS::PASS pass) { _pass = pass; }
+    RENDER_PASS::PASS GetPass() const { return _pass; }
     void Profile();
 
     int GetRegisterIndex(const std::string& name);
+    std::vector<ShaderRegisterInfo>& GetTRegisterStructured();
+
     std::vector<int>& GetTRegisterIndexs();
 
-    void Init(const std::wstring& path, std::vector<VertexProp>& prop , ShaderArg& shaderParams , const ShaderInfo& info = ShaderInfo());
+    void Init(const std::wstring& path, const std::vector<VertexProp>& prop, const ShaderArg& shaderParams, const ShaderInfo& info = ShaderInfo());
 protected:
     std::shared_ptr<ShaderCode> LoadBlob(std::wstring path, std::string endPointName, std::string shaderType);
 };

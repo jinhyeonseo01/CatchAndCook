@@ -1,0 +1,4 @@
+Wave Count: 3
+Wave 0: Amplitude = 2.5, Wavelength = 150, Speed = 1, Steepness = 0.5, Direction = (0.894427, 0.447214)
+Wave 1: Amplitude = 1.5, Wavelength = 200, Speed = 0.4, Steepness = 0.4, Direction = (0.573462, -0.819232)
+Wave 2: Amplitude = 1, Wavelength = 150, Speed = 3, Steepness = 0.3, Direction = (0.581238, 0.813733)

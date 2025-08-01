@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <assimp/color4.h>
 #include <assimp/matrix3x3.h>
@@ -62,7 +62,7 @@ protected:
     void ProcessMaterial(aiMaterial* pMat);
 
     // -------------------------------------------------------------------
-    /** Converts the given animation to LH coordinates.
+    /** Converts the given _animation to LH coordinates.
      * The rotation and translation keys are transformed, the scale keys
      * work in local space and can therefore be left untouched.
      * @param pAnim The bone animation to transform

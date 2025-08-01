@@ -1,4 +1,4 @@
-//////////////////////////////////////////////////////////////////////////////
+﻿//////////////////////////////////////////////////////////////////////////////
 //
 //  Copyright (C) Microsoft Corporation.  All Rights Reserved.
 //
@@ -1346,7 +1346,7 @@ inline void MemcpySubresource(
 }
 
 //------------------------------------------------------------------------------------------------
-// Returns required size of a buffer to be used for data upload
+// Returns required _heightSize of a buffer to be used for data upload
 inline UINT64 GetRequiredIntermediateSize(
     _In_ ID3D12Resource* pDestinationResource,
     _In_range_(0,D3D12_REQ_SUBRESOURCES) UINT FirstSubresource,

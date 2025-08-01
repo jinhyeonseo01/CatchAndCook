@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "guid_utility.h"
 
 std::wstring Guid::GetNewGuid()

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "simple_mesh_LH.h"
 
@@ -31,42 +31,42 @@ namespace DirectX::SimpleMath
         float z = quat.z;
         float w = quat.w;
 
-        // Yaw (ZÃà È¸Àü)
+        // Yaw (Zì¶• íšŒì „)
         float siny_cosp = 2 * (w * z + x * y);
         float cosy_cosp = 1 - 2 * (y * y + z * z);
-        float yaw = std::atan2(siny_cosp, cosy_cosp); // ¾ÆÅ©ÅºÁ¨Æ® °è»ê
+        float yaw = std::atan2(siny_cosp, cosy_cosp); // ì•„í¬íƒ„ì  íŠ¸ ê³„ì‚°
 
-        // Pitch (YÃà È¸Àü)
+        // Pitch (Yì¶• íšŒì „)
         float sinp = 2 * (w * y - z * x);
         float pitch;
         if (std::abs(sinp) >= 1)
-            pitch = std::copysign(XM_PI / 2, sinp); // Gimbal lock Ã³¸®
+            pitch = std::copysign(XM_PI / 2, sinp); // Gimbal lock ì²˜ë¦¬
         else
-            pitch = std::asin(sinp); // ÀÏ¹İÀûÀÎ °æ¿ìÀÇ Pitch °è»ê
+            pitch = std::asin(sinp); // ì¼ë°˜ì ì¸ ê²½ìš°ì˜ Pitch ê³„ì‚°
 
-        // Roll (XÃà È¸Àü)
+        // Roll (Xì¶• íšŒì „)
         float sinr_cosp = 2 * (w * x + y * z);
         float cosr_cosp = 1 - 2 * (x * x + y * y);
-        float roll = std::atan2(sinr_cosp, cosr_cosp); // ¾ÆÅ©ÅºÁ¨Æ® °è»ê
+        float roll = std::atan2(sinr_cosp, cosr_cosp); // ì•„í¬íƒ„ì  íŠ¸ ê³„ì‚°
 
-        // ¿ÀÀÏ·¯ °¢À» Vector3·Î ÀúÀå (Roll, Pitch, Yaw ¼ø¼­·Î)
-        euler = Vector3(roll, pitch, yaw); // ¼ø¼­: Roll, Pitch, Yaw
+        // ì˜¤ì¼ëŸ¬ ê°ì„ Vector3ë¡œ ì €ì¥ (Roll, Pitch, Yaw ìˆœì„œë¡œ)
+        euler = Vector3(roll, pitch, yaw); // ìˆœì„œ: Roll, Pitch, Yaw
     };
 
     inline Vector3 QuaternionToEuler(const Quaternion& quaternion)
     {
-        // ÄõÅÍ´Ï¾ğÀ» È¸Àü Çà·Ä·Î º¯È¯
+        // ì¿¼í„°ë‹ˆì–¸ì„ íšŒì „ í–‰ë ¬ë¡œ ë³€í™˜
         XMMATRIX rotationMatrix = XMMatrixRotationQuaternion(quaternion);
 
-        // Çà·Ä¿¡¼­ ¿ÀÀÏ·¯ °¢ ÃßÃâ
+        // í–‰ë ¬ì—ì„œ ì˜¤ì¼ëŸ¬ ê° ì¶”ì¶œ
         float pitch, yaw, roll;
 
-        // Çà·Ä¿¡¼­ ¿ÀÀÏ·¯ °¢ ÃßÃâ
+        // í–‰ë ¬ì—ì„œ ì˜¤ì¼ëŸ¬ ê° ì¶”ì¶œ
         pitch = std::asin(-rotationMatrix.r[2].m128_f32[0]);
 
         if (std::cos(pitch) > 0.0001)
         {
-            // ±â¿ï±â(Gimbal Lock) Ã¼Å©
+            // ê¸°ìš¸ê¸°(Gimbal Lock) ì²´í¬
             yaw = std::atan2(rotationMatrix.r[2].m128_f32[1], rotationMatrix.r[2].m128_f32[2]);
             roll = std::atan2(rotationMatrix.r[1].m128_f32[0], rotationMatrix.r[0].m128_f32[0]);
         }
@@ -81,12 +81,12 @@ namespace DirectX::SimpleMath
 
     inline Quaternion CreateRotationZXY(float rollZ, float pitchX, float yawY)
     {
-        // Z, X, Y °¢ Ãà¿¡ ´ëÇÑ È¸Àü ÄõÅÍ´Ï¾ğ »ı¼º
-        Quaternion rotationZ = Quaternion::CreateFromAxisAngle(Vector3::UnitZ, rollZ); // ZÃà È¸Àü (Roll)
-        Quaternion rotationX = Quaternion::CreateFromAxisAngle(Vector3::UnitX, pitchX); // XÃà È¸Àü (Pitch)
-        Quaternion rotationY = Quaternion::CreateFromAxisAngle(Vector3::UnitY, yawY); // YÃà È¸Àü (Yaw)
+        // Z, X, Y ê° ì¶•ì— ëŒ€í•œ íšŒì „ ì¿¼í„°ë‹ˆì–¸ ìƒì„±
+        Quaternion rotationZ = Quaternion::CreateFromAxisAngle(Vector3::UnitZ, rollZ); // Zì¶• íšŒì „ (Roll)
+        Quaternion rotationX = Quaternion::CreateFromAxisAngle(Vector3::UnitX, pitchX); // Xì¶• íšŒì „ (Pitch)
+        Quaternion rotationY = Quaternion::CreateFromAxisAngle(Vector3::UnitY, yawY); // Yì¶• íšŒì „ (Yaw)
 
-        // Z -> X -> Y ¼ø¼­·Î °áÇÕµÈ ÃÖÁ¾ È¸Àü ÄõÅÍ´Ï¾ğ »ı¼º
+        // Z -> X -> Y ìˆœì„œë¡œ ê²°í•©ëœ ìµœì¢… íšŒì „ ì¿¼í„°ë‹ˆì–¸ ìƒì„±
         Quaternion finalRotation = rotationY * rotationX * rotationZ;
         //Quaternion finalRotation = rotationZ * rotationX * rotationY;
         return finalRotation;
@@ -97,21 +97,20 @@ namespace DirectX::SimpleMath
         return CreateRotationZXY(euler.z, euler.x, euler.y);
     }
 
-    inline Quaternion LookToQuaternion(const Vector3& position, const Vector3& targetDirection,
-                                       const Vector3& up = Vector3::UnitY)
+    inline Quaternion LookToQuaternion(const Vector3& _forward, const Vector3& up = Vector3::UnitY)
     {
-        // forward º¤ÅÍ Á¤±ÔÈ­
-        Vector3 forward = targetDirection;
+        // forward ë²¡í„° ì •ê·œí™”
+        Vector3 forward = _forward;
         forward.Normalize();
 
-        // ¿À¸¥ÂÊ(right) º¤ÅÍ °è»ê
+        // ì˜¤ë¥¸ìª½(right) ë²¡í„° ê³„ì‚°
         Vector3 right = up.Cross(forward);
         right.Normalize();
 
-        // »õ·Î¿î up º¤ÅÍ Àç°è»ê
+        // ìƒˆë¡œìš´ up ë²¡í„° ì¬ê³„ì‚°
         Vector3 recalculatedUp = forward.Cross(right);
 
-        // È¸Àü Çà·Ä ±¸¼º
+        // íšŒì „ í–‰ë ¬ êµ¬ì„±
         Matrix lookToMatrix(
             right.x, right.y, right.z, 0.0f,
             recalculatedUp.x, recalculatedUp.y, recalculatedUp.z, 0.0f,
@@ -119,7 +118,7 @@ namespace DirectX::SimpleMath
             0.0f, 0.0f, 0.0f, 1.0f
         );
 
-        // È¸Àü Çà·Ä¿¡¼­ ÄõÅÍ´Ï¾ğ »ı¼º
+        // íšŒì „ í–‰ë ¬ì—ì„œ ì¿¼í„°ë‹ˆì–¸ ìƒì„±
         return Quaternion::CreateFromRotationMatrix(lookToMatrix);
     }
 
@@ -141,5 +140,25 @@ namespace DirectX::SimpleMath
             0.0f, 0.0f, scaleZ, 0.0f,  // Z scale
             offsetX, offsetY, offsetZ, 1.0f   // Translation
         );
+    }
+
+    inline BoundingOrientedBox TransformBoundingOrientedBox(const BoundingOrientedBox& box, const Matrix& mat, const Vector3& worldScale, const Quaternion& worldRot)
+    {
+        BoundingOrientedBox box2;
+        Vector3 corners[8];
+        box.GetCorners(corners);
+
+        // 2. ê° ê¼­ì§€ì ì— ë³€í™˜ í–‰ë ¬ ì ìš©
+        Vector3 center;
+        for (int i = 0; i < 8; ++i)
+        {
+            corners[i] = Vector3::Transform(corners[i], mat);
+            center += corners[i];
+        }
+        center /= 8;
+        box2.Center = center;
+        box2.Extents = box.Extents * worldScale;
+        box2.Orientation = worldRot;
+        return box2;
     }
 }

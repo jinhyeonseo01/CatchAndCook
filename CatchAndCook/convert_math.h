@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 
 #define D2R 0.017453292519943295f
@@ -9,9 +9,9 @@ namespace std
     inline const float to_radian() { return D2R; }
     inline const float to_degree() { return R2D; }
     /// <summary>
-    /// ºÎÈ£ ±âÁØ -1, 0, 1
+    /// ë¶€í˜¸ ê¸°ì¤€ -1, 0, 1
     /// </summary>
-    /// <param names="x">int °ª</param>
+    /// <param names="x">int ê°’</param>
     /// <returns></returns>
     inline int sign(const int& x) { return (x > 0) - (x < 0); }
     inline double sign(const double& x) { return (x > 0) - (x < 0); }

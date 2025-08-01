@@ -1,7 +1,9 @@
-#pragma once
+﻿#pragma once
 #include "Component.h"
 #include "RendererBase.h"
 
+
+class ForwardLightSetter;
 class Material;
 class Mesh;
 class Shader;
@@ -11,6 +13,7 @@ class MeshRenderer : public Component, public RendererBase
 public:
 	~MeshRenderer() override;
 
+	//Component
 	bool IsExecuteAble() override;
 	void Init() override;
 	void Start() override;
@@ -20,26 +23,36 @@ public:
 	void Disable() override;
 	void Destroy() override;
 	void RenderBegin() override;
-	void Collision(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other) override;
-	void DebugRendering() override;
+	void CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other) override;
+	void CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other) override;
 	void SetDestroy() override;
-	void DestroyComponentOnly() override;
 
-	void Rendering(const std::shared_ptr<Material>& material) override;
+	//RendererBase
+	void Rendering(Material* material, Mesh* mesh, int instanceCount = 1) override;
+	void DebugRendering() override;
 
-	void SetMesh(const std::shared_ptr<Mesh>& _mesh);
+	//MeshRenderer
+	void AddMesh(const std::shared_ptr<Mesh>& _mesh);
+	void SetMesh(const std::vector<std::shared_ptr<Mesh>>& mesh);
+	std::vector<std::shared_ptr<Mesh>>& GetMeshes() { return _mesh; }
 	void SetMaterials(const std::vector<std::shared_ptr<Material>>& _materials);
 	void AddMaterials(const std::vector<std::shared_ptr<Material>>& _materials);
+	void AddMaterial(shared_ptr<Material>& material);
+	std::vector<std::shared_ptr<Material>>& GetMaterials();
+	std::shared_ptr<Material> GetMaterial(int index = 0);
+	void SetSharedMaterials(const std::vector<std::shared_ptr<Material>>& _materials);
+	void AddSharedMaterials(const std::vector<std::shared_ptr<Material>>& _materials);
 
-	void SetDrawNormal(bool draw) { _drawNormal = draw; }
+	void SetSpecialMaterials();
 
+	std::vector<std::shared_ptr<Mesh>> _mesh;
+	std::vector<std::shared_ptr<Material>> _uniqueMaterials;
+	std::vector<std::shared_ptr<Material>> _sharedMaterials;
 private:
-	std::shared_ptr<Mesh> _mesh;
-	std::vector<std::shared_ptr<Material>> _materials;
 
-	bool _drawNormal = true;
-	static shared_ptr<Shader> _normalDebugShader;
+	std::vector<std::pair<int, std::shared_ptr<Material>>> _depthNormalMaterials;
+	std::vector<std::pair<int, std::shared_ptr<Material>>> _shadowMaterials;
 
-
+	//std::shared_ptr<ForwardLightSetter> _setter_ForwardLight;
 };
 

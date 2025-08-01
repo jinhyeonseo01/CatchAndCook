@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "IType.h"
 
 class IGuid : public std::enable_shared_from_this<IGuid>, public IType
@@ -7,9 +7,12 @@ public:
     static std::unordered_map<std::wstring, std::weak_ptr<IGuid>> _GuidTable;
 	static void StaticInit();
     static void StaticRelease();
+    static uint64_t AllocID();
+    static uint64_t idAllocator;
 
 protected:
     std::wstring guid;
+    uint64_t id = 0;
 
 public:
     IGuid();
@@ -24,19 +27,18 @@ public:
 
     void SetGUID(const std::wstring& str);
     std::wstring& GetGUID();
+    int GetInstanceID() const;
 
-    template <class T, class = std::enable_if_t<std::is_base_of_v<IGuid, T>>>
-    std::shared_ptr<T> CoreInit()
+    //template <class T, class = std::enable_if_t<std::is_base_of_v<IGuid, T>>>
+    void InitGuid()
     {
         AddObject(this->shared_from_this());
-        auto& obj = GetCast<T>();
-        return obj;
     }
 
     template <class T, class = std::enable_if_t<std::is_base_of_v<IGuid, T>>>
     std::shared_ptr<T> GetCast()
     {
-        return std::dynamic_pointer_cast<T>(this->shared_from_this());
+        return std::static_pointer_cast<T>(this->shared_from_this());
     }
 
 
@@ -46,10 +48,12 @@ public:
     {
         if (object == nullptr)
             return false;
+
         if (!_GuidTable.contains(object->guid))
         {
             _GuidTable.insert(std::make_pair(object->guid,
-                std::weak_ptr<IGuid>{
+                std::weak_ptr<IGuid>
+                {
                     std::dynamic_pointer_cast<IGuid>(object)
                 }));
             return true;
@@ -77,6 +81,7 @@ public:
             _GuidTable.erase(iter);
             return true;
         }
+
         return false;
     }
 

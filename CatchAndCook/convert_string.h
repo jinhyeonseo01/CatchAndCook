@@ -62,7 +62,7 @@ namespace Convert
     inline constexpr bool is_wstringstreamable_v = is_wstringstreamable<std::wstringstream, T>::value;
 
 
-    inline std::wstring to_wstring(const std::string& str, UINT codePage = CP_THREAD_ACP) noexcept
+    inline std::wstring to_wstring(const std::string& str, UINT codePage = CP_UTF8) noexcept
     {
         if (str.empty())
             return {};
@@ -72,7 +72,7 @@ namespace Convert
         return std::move(wstr);
     }
 
-    inline std::wstring to_wstring(const char* _first, const char* _end, UINT codePage = CP_THREAD_ACP) noexcept
+    inline std::wstring to_wstring(const char* _first, const char* _end, UINT codePage = CP_UTF8) noexcept
     {
         if (_first == _end)
             return {};
@@ -82,7 +82,7 @@ namespace Convert
         return std::move(str2);
     }
 
-    inline std::wstring to_wstring(const char* _first, UINT codePage = CP_THREAD_ACP) noexcept
+    inline std::wstring to_wstring(const char* _first, UINT codePage = CP_UTF8) noexcept
     {
         int size = std::strlen(_first);
         if (size == 0)
@@ -95,7 +95,7 @@ namespace Convert
     }
 
 
-    inline std::string to_string(const std::wstring& str, UINT codePage = CP_THREAD_ACP) noexcept
+    inline std::string to_string(const std::wstring& str, UINT codePage = CP_UTF8) noexcept
     {
         if (str.empty())
             return {};
@@ -107,7 +107,7 @@ namespace Convert
         return std::move(str2);
     }
 
-    inline std::string to_string(const wchar_t* _first, const wchar_t* _end, UINT codePage = CP_THREAD_ACP) noexcept
+    inline std::string to_string(const wchar_t* _first, const wchar_t* _end, UINT codePage = CP_UTF8) noexcept
     {
         std::string str2;
         str2.resize(WideCharToMultiByte(codePage, 0, _first, static_cast<int>(_end - _first), nullptr, 0, nullptr,
@@ -117,7 +117,7 @@ namespace Convert
         return std::move(str2);
     }
 
-    inline std::string to_string(const wchar_t* _first, UINT codePage = CP_THREAD_ACP) noexcept
+    inline std::string to_string(const wchar_t* _first, UINT codePage = CP_UTF8) noexcept
     {
         int size = std::wcslen(_first);
         if (size == 0)
@@ -133,7 +133,7 @@ namespace Convert
 
 namespace std
 {
-    inline std::wstring to_wstring(const std::string& str, UINT codePage = CP_THREAD_ACP) noexcept
+    inline std::wstring to_wstring(const std::string& str, UINT codePage = CP_UTF8) noexcept
     {
         if (str.empty())
             return {};
@@ -143,7 +143,7 @@ namespace std
         return std::move(wstr);
     }
 
-    inline std::wstring to_wstring(const char* _first, const char* _end, UINT codePage = CP_THREAD_ACP) noexcept
+    inline std::wstring to_wstring(const char* _first, const char* _end, UINT codePage = CP_UTF8) noexcept
     {
         if (_first == _end)
             return {};
@@ -153,7 +153,7 @@ namespace std
         return std::move(str2);
     }
 
-    inline std::wstring to_wstring(const char* _first, UINT codePage = CP_THREAD_ACP) noexcept
+    inline std::wstring to_wstring(const char* _first, UINT codePage = CP_UTF8) noexcept
     {
         int size = std::strlen(_first);
         if (size == 0)
@@ -166,7 +166,7 @@ namespace std
     }
 
 
-    inline std::string to_string(const std::wstring& str, UINT codePage = CP_THREAD_ACP) noexcept
+    inline std::string to_string(const std::wstring& str, UINT codePage = CP_UTF8) noexcept
     {
         if (str.empty())
             return {};
@@ -178,7 +178,7 @@ namespace std
         return std::move(str2);
     }
 
-    inline std::string to_string(const wchar_t* _first, const wchar_t* _end, UINT codePage = CP_THREAD_ACP) noexcept
+    inline std::string to_string(const wchar_t* _first, const wchar_t* _end, UINT codePage = CP_UTF8) noexcept
     {
         std::string str2;
         str2.resize(WideCharToMultiByte(codePage, 0, _first, static_cast<int>(_end - _first), nullptr, 0, nullptr,
@@ -188,7 +188,7 @@ namespace std
         return std::move(str2);
     }
 
-    inline std::string to_string(const wchar_t* _first, UINT codePage = CP_THREAD_ACP) noexcept
+    inline std::string to_string(const wchar_t* _first, UINT codePage = CP_UTF8) noexcept
     {
         int size = std::wcslen(_first);
         if (size == 0)
@@ -198,6 +198,19 @@ namespace std
         WideCharToMultiByte(codePage, 0, _first, size, str2.data(), static_cast<int>(str2.capacity()), nullptr,
                             nullptr);
         return std::move(str2);
+    }
+
+    inline std::string to_string(const Vector4& vec) noexcept
+    {
+        return std::format("{0},{1},{2},{3}", vec.x, vec.y, vec.z, vec.w);
+    }
+    inline std::string to_string(const Vector3& vec) noexcept
+    {
+        return std::format("{0},{1},{2}", vec.x, vec.y, vec.z);
+    }
+    inline std::string to_string(const Vector2& vec) noexcept
+    {
+        return std::format("{0},{1}", vec.x, vec.y);
     }
 
     template <class T, class Y>
@@ -231,7 +244,7 @@ namespace std
     };
 
     template <InputIterator Iter>
-    inline std::wstring to_wstring(Iter _First, Iter _End, UINT codePage = CP_THREAD_ACP)
+    inline std::wstring to_wstring(Iter _First, Iter _End, UINT codePage = CP_UTF8)
     {
         wstringstream wss;
         wss << "[";

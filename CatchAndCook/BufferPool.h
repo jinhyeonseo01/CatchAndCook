@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 
 /*************************
@@ -9,9 +9,11 @@
 
 struct CBufferContainer
 {
-	D3D12_CPU_DESCRIPTOR_HANDLE	CPUHandle; //Descriptor Table ¿¡´Ù°¡ ÇÚµé º¹»çÇÒ‹š »ç¿ë
-	D3D12_GPU_VIRTUAL_ADDRESS   GPUAdress; //View ¿¡´Ù°¡ ¹Ù·Î²Å¾ÆÁÙ¶§ »ç¿ë
+	D3D12_CPU_DESCRIPTOR_HANDLE	CPUHandle; //Descriptor Table ì—ë‹¤ê°€ í•¸ë“¤ ë³µì‚¬í• ë–„ ì‚¬ìš©
+	D3D12_GPU_VIRTUAL_ADDRESS   GPUAdress; //View ì—ë‹¤ê°€ ë°”ë¡œê¼½ì•„ì¤„ë•Œ ì‚¬ìš©
 	void* ptr;
+	uint32 count = 1;
+	bool isAlloc = false;
 };
 
 class CBufferPool
@@ -22,7 +24,10 @@ public:
 	~CBufferPool();
 	void Init(uint32 size, uint32 count);
 	void Reset();
-	CBufferContainer* Alloc(uint32 count=1);
+	uint32 GetCount() { return _currentIndex; }
+	CBufferContainer* Alloc(uint32 count = 1);
+
+
 
 private:
 
@@ -35,6 +40,9 @@ private:
 	uint32 _elementSize = 0;
 	uint32 _count=0;
 
+
+	static D3D12_CPU_DESCRIPTOR_HANDLE cbufferTableHandle;
+	static void SetCBufferTable(CBufferContainer* cbuffer, int registerIndex);
 };
 
 
@@ -53,6 +61,8 @@ struct HeapStructure
 	int32 handleIncrementSize = 0;
 	int32 currentIndex = 0;
 
+
+
 };
 
 class TextureBufferPool
@@ -60,6 +70,7 @@ class TextureBufferPool
 
 public:
 	void Init(int32 SrvUavCount , int32 RTVCount , int32 DSVCount);
+
 
 	void FreeSRVHandle(D3D12_CPU_DESCRIPTOR_HANDLE handle);
 	void FreeRTVHandle(D3D12_CPU_DESCRIPTOR_HANDLE handle);
@@ -69,7 +80,16 @@ public:
 	void AllocRTVDescriptorHandle(D3D12_CPU_DESCRIPTOR_HANDLE* hanlde);
 	void AllocDSVDescriptorHandle(D3D12_CPU_DESCRIPTOR_HANDLE* hanlde);
 
+	void PrintCount()
+	{
+		
+		cout << _srvHeap.currentIndex << endl;
+		cout << _rtvHeap.currentIndex << endl;
+		cout << _dsvHeap.currentIndex << endl;
+
+	};
 private:
+
 
 	int32 AllocSRV();
 	int32 AllocRTV();
@@ -79,7 +99,6 @@ private:
 	HeapStructure _srvHeap;
 	HeapStructure _rtvHeap;
 	HeapStructure _dsvHeap;
-
 };
 
 
@@ -89,7 +108,7 @@ private:
 *                                *
 **********************************/
 
-struct tableContainer
+struct TableContainer
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE CPUHandle;
 	D3D12_GPU_DESCRIPTOR_HANDLE GPUHandle;
@@ -102,15 +121,17 @@ class DescritporTable
 
 public:
 	void Init(uint32 count);
-	tableContainer Alloc(uint32 count);
-	void CopyHandle(D3D12_CPU_DESCRIPTOR_HANDLE& destHandle, D3D12_CPU_DESCRIPTOR_HANDLE& sourceHandle ,uint32 index);
+	TableContainer Alloc(uint32 count);
+	uint32 GetCount() { return _currentIndex; }
+	void CopyHandle(D3D12_CPU_DESCRIPTOR_HANDLE& destHandle, D3D12_CPU_DESCRIPTOR_HANDLE& sourceHandle, uint32 index);
+	void CopyHandles(D3D12_CPU_DESCRIPTOR_HANDLE& destHandle, D3D12_CPU_DESCRIPTOR_HANDLE& sourceHandle, uint32 size);
 	void Reset();
 
 	ComPtr<ID3D12DescriptorHeap>& GetDescriptorHeap() { return _heap; }
 private:
 	ComPtr<ID3D12DescriptorHeap> _heap;
-	uint32 _currentIndex=0; //ÇöÀç¸î°³ÇÒ´ç‰ç´ÂÁö
-	uint32 _count=0;  // handle °¹¼ö
+	uint32 _currentIndex=0; //í˜„ì¬ëª‡ê°œí• ë‹¹ë¬ëŠ”ì§€
+	uint32 _count=0;  // handle ê°¯ìˆ˜
 	uint32 _size = 0; 
 
 	D3D12_CPU_DESCRIPTOR_HANDLE _cpuHandle;
@@ -118,4 +139,83 @@ private:
 
 };
 
+
+/*************************
+*                        *
+*  InstanceBuffer Pool   *
+*                        *
+**************************/
+
+struct InstanceBufferContainer
+{
+	//D3D12_GPU_VIRTUAL_ADDRESS   GPUAdress; //View ì—ë‹¤ê°€ ë°”ë¡œê¼½ì•„ì¤„ë•Œ ì‚¬ìš©
+	D3D12_VERTEX_BUFFER_VIEW	_bufferView = {};
+	void* ptr;
+	uint32 elementCount = 1;
+	bool isAlloc = false;
+	int writeOffset = 0;
+	int writeIndex = 0;
+
+	int GetCount() { return writeIndex; }
+
+	template<class T>
+	void AddData(const T& data)
+	{
+		assert(writeOffset < elementCount * sizeof(T));
+		memcpy(static_cast<char*>(ptr) + writeOffset, &data, sizeof(T));
+		writeOffset += sizeof(T);
+		++writeIndex;
+	}
+	template<class T>
+	void SetData(const T& data, int index)
+	{
+		assert(index < elementCount);
+		memcpy(static_cast<char*>(ptr) + index * sizeof(T), &data, sizeof(T));
+	}
+	void SetIndex(int index, int size)
+	{
+		writeIndex = index;
+		writeOffset = index * size;
+	}
+	void Free(){
+		isAlloc = false;
+		Clear();
+	}
+	void Clear(){
+		writeOffset = 0;
+		writeIndex = 0;
+	}
+};
+
+
+
+class InstanceBufferPool
+{
+
+public:
+	InstanceBufferPool();
+	~InstanceBufferPool();
+	void Init(uint32 size,uint32 elementCount, uint32 bufferCount);
+	void Reset();
+	InstanceBufferContainer* Alloc();
+	void PrintCount()
+	{
+		for (auto& ele : _containers)
+		{
+			cout << ele.GetCount() << endl;
+		}
+	}
+private:
+	vector<InstanceBufferContainer> _containers;
+
+	ComPtr<ID3D12Resource> _resource;
+	void* offsetPtr = nullptr;
+
+	uint32 _currentIndex = 0;
+	uint32 _elementSize = 0;
+	uint32 _elementCount = 0;
+	uint32 _bufferSize = 0;
+	uint32 _bufferCount = 0;
+
+};
 

@@ -1,9 +1,10 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "IGuid.h"
 #include "guid_utility.h"
 
-
 std::unordered_map<std::wstring, std::weak_ptr<IGuid>> IGuid::_GuidTable{};
+
+uint64_t IGuid::idAllocator = 0;
 
 void IGuid::StaticInit()
 {
@@ -15,9 +16,15 @@ void IGuid::StaticRelease()
     _GuidTable.clear();
 }
 
+uint64_t IGuid::AllocID()
+{
+    return idAllocator++;
+}
+
 IGuid::IGuid()
 {
     this->SetGUID(Guid::GetNewGuid());
+    this->id = AllocID();
 }
 
 IGuid::~IGuid()
@@ -75,6 +82,11 @@ void IGuid::SetGUID(const std::wstring& str)
 std::wstring& IGuid::GetGUID()
 {
     return this->guid;
+}
+
+int IGuid::GetInstanceID() const
+{
+    return this->id;
 }
 
 bool IGuid::operator==(const IGuid& other) const

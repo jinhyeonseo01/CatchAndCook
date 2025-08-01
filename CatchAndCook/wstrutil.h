@@ -1,4 +1,4 @@
-/**
+﻿/**
  ******************************************************************************
  *
  *  @mainpage strutil v1.1.0 - header-only string utility library documentation

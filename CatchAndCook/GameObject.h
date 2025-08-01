@@ -1,17 +1,16 @@
-#pragma once
+癤�#pragma once
 
+#include "GameObjectSetting.h"
 #include "IDelayDestroy.h"
 #include "IGuid.h"
+#include "SceneManager.h"
 
 class Scene;
 class Component;
 class Transform;
 class Collider;
+class RendererBase;
 
-enum class ObjectTag
-{
-	defualt = 1 << 0,
-};
 
 class GameObject : public IGuid, public IDelayDestroy
 {
@@ -21,16 +20,16 @@ public:
 	virtual ~GameObject() override;
 
 	void Init();
-	void Start(); // 첫 프레임 // 첫 프레임 시.
-	void Update(); //
-	void Update2(); // 
-	void Enable(); // 
-	void Disable(); //
-	void Destroy(); //
-	void RenderBegin(); // CBuffer <- 갱신
-	//void Rendering(); // CBuffer <- 갱신
+	void Start(); 
+	void Update(); 
+	void Update2(); 
+	void Enable(); 
+	void Disable(); 
+	void Destroy(); 
+	void RenderBegin();
+	void RenderEnd();
 
-	// 이벤트 함수
+	void Reset();
 	void Collision(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other);
 	
 
@@ -39,15 +38,18 @@ public:
 	std::shared_ptr<T> AddComponent()
 	{
 		std::shared_ptr<T> component = std::make_shared<T>();
+		component->InitGuid();
 		component->SetOwner(GetCast<GameObject>());
 		_components.push_back(component);
 		component->Init();
-		if (!IsFirst() && GetActive()) component->Enable();
+		if (GetActive()) component->Enable();
+		SceneManager::main->GetCurrentScene()->AddStartQueue(GetCast<GameObject>());
 		return component;
-	};
+	}
+
 
 	template <class T, class = std::enable_if_t<std::is_base_of_v<Component, T>>>
-	void AddComponent(const std::shared_ptr<T>& component)
+	void AddComponent(shared_ptr<T> component)
 	{
 		if (component == nullptr)
 			return;
@@ -61,7 +63,8 @@ public:
 		component->SetOwner(GetCast<GameObject>());
 		_components.push_back(parentComponent);
 		component->Init();
-		if (!IsFirst() && GetActive()) component->Enable();
+		//if (GetActive()) component->Enable();
+		SceneManager::main->GetCurrentScene()->AddStartQueue(GetCast<GameObject>());
 	}
 
 	template <class T, class = std::enable_if_t<std::is_base_of_v<Component, T>>>
@@ -118,6 +121,18 @@ public:
 		}
 		return vec.size() - prevCount;
 	}
+	template <class T, class = std::enable_if_t<std::is_base_of_v<Component, T>>>
+	std::vector<std::shared_ptr<T>> GetComponents()
+	{
+		std::vector<std::shared_ptr<T>> vec;
+		for (auto& component : _components)
+		{
+			std::shared_ptr<T> downCast = std::dynamic_pointer_cast<T>(component);
+			if (downCast != nullptr)
+				vec.push_back(downCast);
+		}
+		return vec;
+	}
 
 
 	template <class T, class = std::enable_if_t<std::is_base_of_v<Component, T>>>
@@ -139,7 +154,119 @@ public:
 		return count;
 	}
 
+	template <class T, class = std::enable_if_t<std::is_base_of_v<Component, T>>>
+	std::shared_ptr<T> GetComponentWithChilds()
+	{
+		for (auto& component : _components)
+		{
+			std::shared_ptr<T> downCast = std::dynamic_pointer_cast<T>(component);
+			if (downCast != nullptr)
+				return downCast;
+		}
+		for (auto& child : _childs)
+			if (!child.expired())
+			{
+				std::shared_ptr<T> result = child.lock()->GetComponentWithChilds<T>();
+				if (result != nullptr)
+					return result;
+			}
+		return nullptr;
+	}
 
+	template <class T, class = std::enable_if_t<std::is_base_of_v<Component, T>>>
+	std::vector<std::shared_ptr<T>> GetComponentsWithChilds()
+	{
+		std::vector<std::shared_ptr<T>> vec;
+		for (auto& component : _components)
+		{
+			std::shared_ptr<T> downCast = std::dynamic_pointer_cast<T>(component);
+			if (downCast != nullptr)
+				vec.push_back(downCast);
+		}
+
+		for (auto& child : _childs)
+			if (!child.expired())
+				child.lock()->GetComponentsWithChilds<T>(vec);
+
+		return vec;
+	}
+
+	template <class T,class = std::enable_if_t<std::is_base_of_v<Component, T>>>
+	int GetComponentsWithParents(std::vector<std::shared_ptr<T>>& vec)
+	{
+		int count = vec.size();
+
+		for(auto& component : _components)
+		{
+			std::shared_ptr<T> downCast = std::dynamic_pointer_cast<T>(component);
+			if(downCast != nullptr)
+				vec.push_back(downCast);
+		}
+
+		count = vec.size() - count;
+
+		auto parent = GetParent();
+		if(parent != nullptr)
+			count += parent->GetComponentsWithParents(vec);
+
+		return count;
+	}
+
+	template <class T, class = std::enable_if_t<std::is_base_of_v<Component, T>>>
+	std::vector<std::shared_ptr<T>> GetComponentsWithParents()
+	{
+		std::vector<std::shared_ptr<T>> vec;
+		for (auto& component : _components)
+		{
+			std::shared_ptr<T> downCast = std::dynamic_pointer_cast<T>(component);
+			if (downCast != nullptr)
+				vec.push_back(downCast);
+		}
+
+		auto parent = GetParent();
+		if (parent != nullptr)
+			parent->GetComponentsWithParents(vec);
+
+		return vec;
+	}
+	template <class T,class = std::enable_if_t<std::is_base_of_v<Component,T>>>
+	std::shared_ptr<T> GetComponentWithParents()
+	{
+		for(auto& component : _components)
+		{
+			std::shared_ptr<T> downCast = std::dynamic_pointer_cast<T>(component);
+			if(downCast != nullptr)
+				return downCast;
+		}
+
+		auto parent = GetParent();
+		if(parent != nullptr)
+			if(auto result = parent->GetComponentWithParents<T>())
+				return result;
+		return nullptr;
+	}
+
+	template <class T>
+	void ForHierarchyAll(const T& func)
+	{
+		func(GetCast<GameObject>());
+		for(auto& child : _childs)
+			if(!child.expired())
+				child.lock()->ForHierarchyAll(func);
+	}
+
+	template <class T, class Y>
+	void ForHierarchyBeginEndAll(const T& func, const Y& func2)
+	{
+		auto obj = GetCast<GameObject>();
+		auto result = func(obj);
+		if (result) {
+			for (auto& child : _childs)
+				if (!child.expired())
+					child.lock()->ForHierarchyBeginEndAll(func, func2);
+		}
+		func2(result, obj);
+	}
 
 
 private:
@@ -154,6 +281,8 @@ public:
 
 	std::shared_ptr<GameObject> GetChild(int index);
 	std::shared_ptr<GameObject> GetChildByName(const std::wstring& name);
+	std::shared_ptr<GameObject> GetChildByNameRecursive(const std::wstring& name);
+	vector<shared_ptr<GameObject>> GetChildByNameRecursiveAll(const std::wstring& name);
 
 	int GetChildAll(std::vector<std::shared_ptr<GameObject>>& vec);
 	int GetChildsByName(const std::wstring& name, std::vector<std::shared_ptr<GameObject>>& vec);
@@ -161,22 +290,21 @@ public:
 	int GetChildsAllByName(const std::wstring& name, std::vector<std::shared_ptr<GameObject>>& vec);
 
 
-
-
 private:
-	bool _active_self = true;
+	bool _active_self = true; // 
 	bool _active_total_prev = false;
 	bool _active_total = true;
+
 public:
 	bool GetActive(); //_active_total
 	bool GetActiveSelf(); // _active_self
 	bool SetActiveSelf(bool _active); //_active_self
+
 private:
 	void SyncActivePrev();
 	void SetActivePrev(bool activeTotalPrev);
 	bool CheckActiveUpdated();
 	void ActiveUpdateChain(bool _active_total);
-
 
 public:
 	void SetName(const std::wstring name){_name = name;};
@@ -189,10 +317,30 @@ public:
 	void SetDestroy() override;
 	bool IsExecuteAble() override { return  IDelayDestroy::IsExecuteAble() && GetActive(); };
 
+
 	void Debug();
 
-	ObjectTag tag = ObjectTag::defualt;
+	static void AddDestroyComponent(const std::shared_ptr<Component>& component);
+	static void ExecuteDestroyComponents();
+
+	std::shared_ptr<RendererBase> GetRenderer() { return _renderer; }
+	std::shared_ptr<GameObject> GetParent() const {return parent.lock();};
+	std::shared_ptr<GameObject> GetRoot() const { return rootParent.lock(); };
+	bool IsRoot() const { return rootParent.lock().get() == this; };
+
+	void AddTag(GameObjectTag tag);
+	void RemoveTag(GameObjectTag tag);
+	GameObjectTag GetTag() const { return  _tag; };
+	bool HasTag(const GameObjectTag& tag2) const { return (static_cast<uint64>(_tag) & static_cast<uint64>(tag2)) != 0; };
+
+	void SetType(const GameObjectType& type) { _type = type; };
+	GameObjectType GetType() const { return  _type; };
+
+	GameObjectTag _tag = GameObjectTag::NONE;
+	GameObjectType _type = GameObjectType::Dynamic;
+
 	std::shared_ptr<Transform> _transform;
+	std::shared_ptr<RendererBase> _renderer;
 
 private:
 	std::wstring _name = L"none";
@@ -203,6 +351,9 @@ private:
 	std::weak_ptr<GameObject> rootParent;
 	std::vector<std::weak_ptr<GameObject>> _childs;
 
+	static std::queue<std::shared_ptr<Component>> _componentDestroyQueue;
+
 	friend class Transform;
+	friend class RectTransform;
 };
 

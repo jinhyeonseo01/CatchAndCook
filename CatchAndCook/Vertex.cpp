@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Vertex.h"
 
 SelectorInfo SelectorInfo::GetInfo(const std::vector<VertexProp>& props)
@@ -15,6 +15,7 @@ SelectorInfo SelectorInfo::GetInfo(const std::vector<VertexProp>& props)
         int elementTypeSize = sizeof(float);
         int byteSize = 0;
         int index = 0;
+        bool isFloat = true;
         switch (select)
         {
         case VertexProp::pos:
@@ -105,7 +106,48 @@ SelectorInfo SelectorInfo::GetInfo(const std::vector<VertexProp>& props)
             byteSize = sizeof(Vector4);
             index = 0;
             break;
+        default:
+	    {
+            index = 0;
+            if(select >= VertexProp::int_0 && select <= VertexProp::int_31)
+            {
+                byteSize = sizeof(int);
+                index = static_cast<int>(select) - static_cast<int>(VertexProp::int_0);
+                isFloat = false;
+            }
+            if(select >= VertexProp::float_0 && select <= VertexProp::float_31)
+            {
+                byteSize = sizeof(float);
+                index = static_cast<int>(select) - static_cast<int>(VertexProp::float_0);
+            }
+            if(select >= VertexProp::vec2_0 && select <= VertexProp::vec2_31)
+            {
+                byteSize = sizeof(Vector2);
+                index = static_cast<int>(select) - static_cast<int>(VertexProp::vec2_0);
+            }
+            if(select >= VertexProp::vec3_0 && select <= VertexProp::vec3_31)
+            {
+                byteSize = sizeof(Vector3);
+                index = static_cast<int>(select) - static_cast<int>(VertexProp::vec3_0);
+            }
+            if(select >= VertexProp::vec4_0 && select <= VertexProp::vec4_31)
+            {
+                byteSize = sizeof(Vector4);
+                index = static_cast<int>(select) - static_cast<int>(VertexProp::vec4_0);
+            }
+            if(select >= VertexProp::matrix_0 && select <= VertexProp::matrix_31)
+            {
+                byteSize = sizeof(Matrix);
+                index = 0;
+            }
+
+	    }
+        break;
         }
+        if(isFloat)
+            elementTypeSize = sizeof(float);
+        else
+            elementTypeSize = sizeof(int);
         int size = byteSize / elementTypeSize;
 
         propInfo.offset = offset;
@@ -114,6 +156,7 @@ SelectorInfo SelectorInfo::GetInfo(const std::vector<VertexProp>& props)
         propInfo.byteSize = byteSize;
         propInfo.prop = select;
         propInfo.index = index;
+        propInfo.isFloat = isFloat;
 
         info.propInfos.push_back(propInfo);
 
@@ -124,4 +167,77 @@ SelectorInfo SelectorInfo::GetInfo(const std::vector<VertexProp>& props)
     info.totalSize = offset;
     info.propCount = static_cast<int>(props.size());
     return info;
+}
+
+D3D12_INPUT_ELEMENT_DESC SelectorInfo::GetDesc(const VertexPropInfo& propInfo)
+{
+    D3D12_INPUT_ELEMENT_DESC elementDesc = {};
+    elementDesc.SemanticName = PropNameStrings[static_cast<int>(propInfo.prop)].c_str();
+    elementDesc.SemanticIndex = propInfo.index;
+    elementDesc.InputSlot = 0;
+    elementDesc.AlignedByteOffset = propInfo.byteOffset;
+    elementDesc.InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
+    elementDesc.InstanceDataStepRate = 0;
+    elementDesc.Format = DXGI_FORMAT_R32_FLOAT;
+    if(propInfo.isFloat){
+        if(propInfo.size == 1) elementDesc.Format = DXGI_FORMAT_R32_FLOAT;
+        else if(propInfo.size == 2) elementDesc.Format = DXGI_FORMAT_R32G32_FLOAT;
+        else if(propInfo.size == 3) elementDesc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+        else elementDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+    }
+    else
+    {
+        if(propInfo.size == 1) elementDesc.Format = DXGI_FORMAT_R32_SINT;
+        else if(propInfo.size == 2) elementDesc.Format = DXGI_FORMAT_R32G32_SINT;
+        else if(propInfo.size == 3) elementDesc.Format = DXGI_FORMAT_R32G32B32_SINT;
+        else elementDesc.Format = DXGI_FORMAT_R32G32B32A32_SINT;
+    }
+    return elementDesc;
+}
+
+std::vector<D3D12_INPUT_ELEMENT_DESC> SelectorInfo::GetInstanceDescs() const
+{
+    auto descList = GetRawDescs();
+    for(auto& desc : descList)
+    {
+        desc.InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA;
+        desc.InputSlot = 1;
+        desc.InstanceDataStepRate = 1;
+    }
+    return descList;
+}
+std::vector<D3D12_INPUT_ELEMENT_DESC> SelectorInfo::GetVertexDescs() const
+{
+    auto descList = GetRawDescs();
+    for(auto& desc : descList)
+    {
+        desc.InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
+        desc.InputSlot = 0;
+        desc.InstanceDataStepRate = 0;
+    }
+    return descList;
+}
+
+std::vector<D3D12_INPUT_ELEMENT_DESC> SelectorInfo::GetRawDescs() const
+{
+    std::vector<D3D12_INPUT_ELEMENT_DESC> descList;
+    for(int i=0;i<propInfos.size();i++)
+    {
+        auto& propInfo = propInfos[i];
+        auto desc = GetDesc(propInfo);
+        int splitCount = 0;
+        if(propInfo.size > 4)
+            splitCount = propInfo.size / 4;
+        else
+			descList.push_back(desc);
+
+        int byteOffset = propInfo.byteOffset;
+        for(int i=0;i<splitCount;i++)
+        {
+            desc.SemanticIndex = i;
+            desc.AlignedByteOffset = byteOffset + (propInfo.byteSize / splitCount) * i;
+            descList.push_back(desc);
+        }
+    }
+    return descList;
 }

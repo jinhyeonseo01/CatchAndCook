@@ -1,0 +1,11 @@
+﻿# Visual Studio가 C++ 설정을 사용하여 .editorconfig 파일을 생성했습니다.
+root = true
+
+[*]
+charset = utf-8-bom
+
+[*.{c++,cc,cpp,cppm,cxx,h,h++,hh,hpp,hxx,inl,ipp,ixx,tlh,tli}]
+
+# Visual C++ 코드 스타일 설정
+
+cpp_generate_documentation_comments = xml

@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 
 enum class TextureType
 {
@@ -23,21 +23,27 @@ inline bool HasFlag(TextureUsageFlags value, TextureUsageFlags flag) {
 	return (static_cast<uint32_t>(value) & static_cast<uint32_t>(flag)) != 0;
 }
 
+
 class Texture 
 {
 public:
 	Texture();
 	virtual ~Texture();
 
-	void Init(const wstring& path,TextureType type = TextureType::Texture2D);
+	void Init(const wstring& path, TextureType type = TextureType::Texture2D, bool relativePath = true, bool createMip = false);
+	void Init(vector<wstring>& paths);
+
+
 	void ResourceBarrier(D3D12_RESOURCE_STATES after);
 	void CreateStaticTexture(DXGI_FORMAT format, D3D12_RESOURCE_STATES initalState ,uint32 width, uint32 height, 
 		TextureUsageFlags usageFlags , bool Jump,bool depthShared, vec4 clearValue=vec4(0,0,0,0));
 
+	static bool IsTextureFullyOpaque(const std::vector<ScratchImage>& scratchImages, const TexMetadata& meta);
+	static bool IsTextureFullyOpaque(const ScratchImage& scratchImages, const TexMetadata& meta);
 
-	//DynamicTexture øÎ
+	//DynamicTexture Ïö©
 	void CreateDynamicTexture(DXGI_FORMAT format ,uint32 width , uint32 height ); //only for srv
-	void UpdateDynamicTexture(const BYTE* sysMemory);
+	void UpdateDynamicTexture(const BYTE* sysMemory, int dataSize = 4);
 	void CopyCpuToGpu();
 	//////////
 
@@ -52,9 +58,12 @@ public:
 	DXGI_FORMAT& GetFormat() { return _format; };
 	DXGI_FORMAT& SetFormat(DXGI_FORMAT format) { return _format = format; };
 
+	void SetSize(Vector2 size) { _size = size; }
+	Vector2 GetSize() { return _size; }
+
+	bool _isAlpha = false;
 private:
 	wstring _path = L"../Resources/";
-	ScratchImage			 		_image;
 
 	ComPtr<ID3D12Resource>			_resource;
 	ComPtr<ID3D12Resource>			_uploadResource;
@@ -65,9 +74,22 @@ private:
 
 	static D3D12_CPU_DESCRIPTOR_HANDLE _SharedDSVHandle;
 	D3D12_CPU_DESCRIPTOR_HANDLE _dsvHandle;
-	DXGI_FORMAT _format;
-public:
-	D3D12_RESOURCE_STATES _state; // √ﬂ¿˚øÎ
 
+
+	DXGI_FORMAT _format;
+	TextureUsageFlags _usageFlags;
+	bool _jump = false;
+	bool _detphShared = false;
+	vec4 _clearValue = vec4::One;
+
+	Vector2 _size;
+
+	//_image
+
+public:
+	D3D12_RESOURCE_STATES _state; // Ï∂îÏ†ÅÏö©
+
+
+	friend class Core;
 };
 

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 class Texture;
 
 namespace RENDER_PASS
@@ -6,34 +6,42 @@ namespace RENDER_PASS
 	enum PASS
 	{
 		Shadow = 1 << 0,
-		Deffered = 1 << 1,
+		Deferred = 1 << 1,
 		Forward = 1 << 2,
 		Transparent = 1 << 3,
 		PostProcessing = 1 << 4,
-		UI = 1 << 5,
-		Debug = 1 << 6,
+		NoEffectForwardPostProcessing = 1 << 5,
+		UI = 1 << 6,
+		ParticlePass = 1<<7,
+		TransparentAfterPP = 1 << 8,
+		UI2 = 1 << 9,
+		Debug = 1 << 10,
 	};
 
-	const int Count = 7;
+	const int Count = 11;
 
 	inline PASS operator|(PASS a, PASS b) {
 		return static_cast<PASS>(static_cast<int>(a) | static_cast<int>(b));
 	}
 
-
 	inline bool HasFlag(PASS value, PASS flag) {
 		return (static_cast<int>(value) & static_cast<int>(flag)) != 0;
 	}
 
-	inline int ToIndex(PASS pass) {
+	inline int ToIndex(PASS pass) 
+	{
 		switch (pass) {
 		case Shadow: return 0;
-		case Deffered: return 1;
+		case Deferred: return 1;
 		case Forward: return 2;
 		case Transparent: return 3;
 		case PostProcessing: return 4;
-		case UI: return 5;
-		case Debug: return 6;
+		case NoEffectForwardPostProcessing: return 5;
+		case UI: return 6;
+		case ParticlePass: return 7;
+		case TransparentAfterPP: return 8;
+		case UI2: return 9;
+		case Debug: return 10;
 		default: assert(false && "Invalid PASS value");
 		}
 	}
@@ -53,16 +61,99 @@ public:
 	void RenderBegin();
 	void RenderEnd();
 	void ClearDepth();
+	void SetRenderTarget();
 
-	array<shared_ptr<Texture>, SWAP_CHAIN_FRAME_COUNT> GetRenderTargetAll() { return _RenderTargets; }
-	shared_ptr<Texture> GetRenderTarget() { return _RenderTargets[_RenderTargetIndex]; }
-	shared_ptr<Texture> GetDSTexture() { return _DSTexture; };
+	shared_ptr<Texture>& GetRenderTarget() { return _RenderTargets[_RenderTargetIndex]; }
+	shared_ptr<Texture>& GetDSTexture() { return _DSTexture; };
+	//shared_ptr<Texture>& GetInterMediateTexture() {return _intermediateTexture;}
 private:
-
+	//[디퍼드렌더링,포워드렌더링] -> [ 중간텍스쳐 ] -> [후처리] -> [렌더타겟]
 	ComPtr<IDXGISwapChain3> _swapChain;
 	array<shared_ptr<Texture>, SWAP_CHAIN_FRAME_COUNT> _RenderTargets;
+
+	//shared_ptr<Texture> _intermediateTexture;
 	shared_ptr<Texture> _DSTexture;
 	D3D12_VIEWPORT	_viewport = {};
 	D3D12_RECT		_scissorRect = {};
 	uint32	_RenderTargetIndex = 0;
 };
+
+
+
+/*************************
+*                        *
+*         GBuffer        *
+*                        *
+**************************/
+class Texture;
+
+class GBuffer
+{
+public:
+	static const uint32 _count = 4;
+
+	GBuffer();
+	~GBuffer();
+
+	void Init();
+	void RenderBegin();
+	void RenderEnd();
+
+	shared_ptr<Texture>& GetTexture(int32 index);
+
+private:
+	array<shared_ptr<Texture>,_count> _textures = {nullptr,};
+
+	D3D12_VIEWPORT _viewport;
+	D3D12_RECT _scissorRect;
+};
+
+
+/*************************
+*                        *
+*         Shadow         *
+*                        *
+**************************/
+
+class ShadowBuffer
+{
+public:
+	static const uint32 _count = 4;
+
+	int currentIndex = 0;
+	D3D12_VIEWPORT	_viewport = {};
+	D3D12_RECT		_scissorRect = {};
+
+	ShadowBuffer();
+	~ShadowBuffer();
+
+	void Init();
+	void RenderBegin(int index);
+	void RenderEnd();
+
+	shared_ptr<Texture>& GetDSTexture(int32 index) { return _DSTextures[index]; };
+private:
+	array<shared_ptr<Texture>, _count> _DSTextures = { nullptr, };
+};
+
+
+
+//class VolumetricPass
+//{
+//public:
+//
+//	VolumetricPass();
+//	~VolumetricPass();
+//
+//	void Init();
+//	void RenderBegin();
+//	void RenderEnd();
+//
+//	shared_ptr<Texture>& GetTexture() { return _texture; }
+//
+//private:
+//	shared_ptr<Texture> _texture;
+//
+//	D3D12_VIEWPORT _viewport;
+//	D3D12_RECT _scissorRect;
+//};

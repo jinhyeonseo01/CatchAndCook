@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "pch.h"
 
@@ -26,8 +26,8 @@ enum KeyCode : short
     O = 79,
     P = 80,
 
-    LeftBracket = 219,
-    RightBracket = 221,
+    LeftBracket = 219,  // [ 키
+    RightBracket = 221, // ] 키
 
     A = 65,
     S = 83,
@@ -39,8 +39,8 @@ enum KeyCode : short
     K = 75,
     L = 76,
 
-    SemiColon = 186,
-    Quote = 222,
+    SemiColon = 186,    // ; 키
+    Quote = 222,        // ' 키
 
     Z = 90,
     X = 88,
@@ -50,11 +50,11 @@ enum KeyCode : short
     N = 78,
     M = 77,
 
-    Comma = 188,
-    Dot = 190,
-    Slash = 191,
+    Comma = 188,        // , 키
+    Dot = 190,          // . 키
+    Slash = 191,        // / 키
 
-    BackQoute = 192,
+    BackQoute = 192,    // ` 키
     Num1 = 49,
     Num2 = 50,
     Num3 = 51,
@@ -66,26 +66,27 @@ enum KeyCode : short
     Num9 = 57,
     Num0 = 48,
 
-    Minus = 189,
-    Eqauls = 187,
+    Minus = 189,       
+    Equals = 187,      
+    Plus = 187,        
 
-    Tap = 9,
-    Capslock = 20,
-    Shift = 16,
-    CtrlL = 17,
-    Win = 91,
-    Alt = 18,
-    Space = 32,
+    Tap = 9,            // Tab 키
+    Capslock = 20,      // Caps Lock 키
+    Shift = 16,         // 왼쪽 Shift 키
+    CtrlL = 17,         // 왼쪽 Ctrl 키
+    Win = 91,           // Windows 키
+    Alt = 18,           // 왼쪽 Alt 키
+    Space = 32,         // 스페이스 바
 
-    AltR = 18,
-    Menu = 93,
-    App = 93,
+    AltR = 18,          // 오른쪽 Alt 키
+    Menu = 93,          // 메뉴 키
+    App = 93,           // 응용 프로그램 키
 
-    CtrlR = 25,
-    ShiftR = 16,
-    Enter = 13,
-    BackSlash = 220,
-    Backspace = 8,
+    CtrlR = 25,         // 오른쪽 Ctrl 키
+    ShiftR = 16,        // 오른쪽 Shift 키
+    Enter = 13,         // Enter 키
+    BackSlash = 220,    // \ 키
+    Backspace = 8,      // Backspace 키
 
     Esc = 27,
     F1 = 112,
@@ -144,6 +145,8 @@ enum KeyCode : short
     CenterMouse = MOUSE_KEYCODE_OFFSET + 2,
     X1Mouse = MOUSE_KEYCODE_OFFSET + 3,
     X2Mouse = MOUSE_KEYCODE_OFFSET + 4,
+    WheelUpMouse = MOUSE_KEYCODE_OFFSET + 5,
+    WheelDownMouse = MOUSE_KEYCODE_OFFSET + 6,
 
     KEYBOARD_KEYCODE_ENDPOINT = 256
 };
@@ -184,6 +187,10 @@ struct InputMouseDesc
     bool isInClient;
     float posX;
     float posY;
+
+    int wheelDelta = 0;       // 세로 휠
+    int wheelDeltaH = 0;      // 가로 휠 (WM_MOUSEHWHEEL)
+
 };
 
 struct InputEventDesc
@@ -194,7 +201,7 @@ struct InputEventDesc
 class InputEvent
 {
 public:
-    InputEvent() = default;
+    InputEvent() {};
     InputType type;
 
     short keyCode;

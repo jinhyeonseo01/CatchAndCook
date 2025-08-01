@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 class IType
 {
@@ -28,8 +28,8 @@ public:
         if (pos != std::string::npos)
             fullName = fullName.substr(pos + 1);
 
-        // º¹ÀâÇÑ ºÎºÐÀ» ´Ü¼øÈ­ (¿¹: "1Derived" -> "Derived")
-        // ¼ýÀÚ°¡ Æ÷ÇÔµÈ °æ¿ì Á¦°Å
+        // ë³µìž¡í•œ ë¶€ë¶„ì„ ë‹¨ìˆœí™” (ì˜ˆ: "1Derived" -> "Derived")
+        // ìˆ«ìžê°€ í¬í•¨ëœ ê²½ìš° ì œê±°
         for (size_t i = 0; i < fullName.length(); ++i)
         {
             if (isdigit(fullName[i]))

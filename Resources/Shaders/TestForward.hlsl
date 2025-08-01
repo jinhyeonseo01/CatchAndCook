@@ -1,58 +1,53 @@
-#include "GLOBAL.hlsl"
+#include "Global_b0.hlsl"
+#include "Transform_b1.hlsl"
+#include "Camera_b2.hlsl"
 
-cbuffer cameraParams : register(b2)
+
+cbuffer DefaultMaterialParam : register(b7)
 {
-    row_major Matrix ViewMatrix;
-    row_major Matrix ProjectionMatrix;
-    row_major Matrix VPMatrix;
-    row_major Matrix InvertViewMatrix;
-    row_major Matrix InvertProjectionMatrix;
-    row_major Matrix InvertVPMatrix;
-
-    float4 cameraPos;
-    float4 cameraLook;
-    float4 cameraUp;
-    float4 cameraFrustumData;
-    float4 cameraScreenData;
+	float4 color;
+	float4 _baseMapST;
 };
-
-cbuffer TestTransform : register(b1)
-{
-    row_major matrix WorldMat;
-}
 
 struct VS_IN
 {
     float3 pos : POSITION;
     float3 normal : NORMAL;
+    float3 tangent : TANGENT;
     float2 uv : TEXCOORD0;
 };
 
 struct VS_OUT
 {
-    float4 pos : SV_Position;
+    float4 positionCS : SV_Position;
+    float4 positionWS : PositionWS;
+    float3 normalOS : NormalOS;
+    float3 normalWS : NormalWS;
+    float3 tangentOS : TangentOS;
+    float3 tangentWS : TangentWS;
     float2 uv : TEXCOORD0;
-    float3 normal : NORMAL;
 };
 
-Texture2D g_tex_0 : register(t0);
-SamplerState g_sam_0 : register(s0);
-SamplerState g_sam_1 : register(s1);
+Texture2D _BaseMap : register(t0);
+Texture2D _BumpMap : register(t1);
 
 VS_OUT VS_Main(VS_IN input)
 {
     VS_OUT output = (VS_OUT) 0;
 
-    output.pos = mul(float4(input.pos, 1.0f), WorldMat);
-    output.pos = mul(output.pos, VPMatrix);
-
-    
-    output.uv = input.uv;
+    output.positionWS = TransformLocalToWorld(float4(input.pos, 1.0f));
+    output.positionCS =  TransformWorldToClip(output.positionWS);
+    output.normalOS = input.normal;
+    output.normalWS = TransformNormalLocalToWorld(input.normal);
+    output.tangentOS = input.tangent;
+    output.tangentWS = TransformNormalLocalToWorld(input.tangent);
+    output.uv = input.uv * _baseMapST.xy + _baseMapST.zw;
 
     return output;
 }
 
 float4 PS_Main(VS_OUT input) : SV_Target
 {
-   return  g_tex_0 .Sample(g_sam_0, input.uv*5.0f);
+    float3 normalMapWS = TransformTangentToSpace(float4(NormalUnpack(_BumpMap.Sample(sampler_lerp, input.uv), 0.1f), 0), input.normalWS, input.tangentWS);
+	return _BaseMap.Sample(sampler_lerp, input.uv) * color * saturate(dot(normalMapWS, normalize(float3(0,1,-1))));
 }

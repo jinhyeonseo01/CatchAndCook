@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "pch.h"
 #include "input_module.h"
@@ -31,38 +31,45 @@ public:
     ~Input();
 
     void Update();
-
+  
 
 public:
 
     std::queue<InputEvent> _eventQueue;
 
-    //ÇÑ¹ø¸¸ ´­·ÈÀ»¶§ (ÃÖÃÊ)
+    //í•œë²ˆë§Œ ëˆŒë ¸ì„ë•Œ (ìµœì´ˆ)
     bool GetKeyDown(int keycode);
-    //²Ú´©¸£°íÀÖÀ»¶§ 
+    //ê¾¹ëˆ„ë¥´ê³ ìˆì„ë•Œ 
     bool GetKey(int keycode);
-    //Å°¸¦ ¾÷ÇßÀ»¶§
+    //í‚¤ë¥¼ ì—…í–ˆì„ë•Œ
     bool GetKeyUp(int keycode);
 
     bool GetMouseDown(int keycode);
     bool GetMouse(int keycode);
     bool GetMouseUp(int keycode);
 
-    Vector2 GetMousePosition();
-    Vector2 GetMouseDownPosition(int keycode);
-    Vector2 GetMouseUpPosition(int keycode);
+    void SetMousePosition(const vec2& pos);
+    vec2 GetMousePosition();
+    Vector2 GetMousePrevPosition();
+    vec2 GetMouseDownPosition(int keycode);
+	vec2 GetNDCMouseDownPosition(int keycode);
+    vec2 GetMouseUpPosition(int keycode);
+
+    bool IsMouseLock() { return _isMouseLock; }
+    void SetMouseLock(bool isMouseLock);
+    void SetCursor(const Vector2& pos);
 
 private:
-
+    bool _isMouseLock = false;
     bool DataUpdate(const InputEvent& event);
     void DataBeginUpdate();
 
     static const int _maxInputKeyField = 512;
-    static const int _maxInputMouseField = 518;
+    static const int _maxInputMouseField = 540;
     InputKeyData _inputKeyboardField[Input::_maxInputKeyField];
     InputMouseData _inputMouseField[Input::_maxInputMouseField];
     Vector2 mousePos{ 0, 0 };
-
+    Vector2 prevMousePos{ 0, 0 };
 
 
 };

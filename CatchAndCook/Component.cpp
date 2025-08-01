@@ -1,5 +1,6 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Component.h"
+#include "Game.h"
 #include "GameObject.h"
 
 Component::Component()
@@ -8,6 +9,7 @@ Component::Component()
 
 Component::~Component()
 {
+	
 }
 
 bool Component::operator<(const Component& other) const
@@ -38,6 +40,7 @@ void Component::Update2()
 
 void Component::Enable()
 {
+
 }
 
 void Component::Disable()
@@ -46,6 +49,12 @@ void Component::Disable()
 
 void Component::Destroy()
 {
+
+}
+
+void Component::Reset()
+{
+
 }
 
 void Component::RenderBegin()
@@ -53,18 +62,36 @@ void Component::RenderBegin()
 
 }
 
-
-void Component::Collision(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
+void Component::RenderEnd()
 {
+
+}
+
+void Component::CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
+{
+
+}
+
+void Component::CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other)
+{
+
+}
+
+void Component::ChangeParent(const std::shared_ptr<GameObject>& prev, const std::shared_ptr<GameObject>& current)
+{
+
+}
+
+void Component::ChangeScene(const std::shared_ptr<Scene>& currentScene, const std::shared_ptr<Scene>& nextScene)
+{
+
 }
 
 
 void Component::SetDestroy()
 {
 	IDelayDestroy::SetDestroy();
+	GameObject::AddDestroyComponent(GetCast<Component>());
 }
 
-void Component::DestroyComponentOnly()
-{
 
-}

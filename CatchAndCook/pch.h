@@ -1,6 +1,7 @@
-#pragma once
-#define WIN32_LEAN_AND_MEAN             // °ÅÀÇ »ç¿ëµÇÁö ¾Ê´Â ³»¿ëÀ» Windows Çì´õ¿¡¼­ Á¦¿ÜÇÕ´Ï´Ù.
+ï»¿#pragma once
+#define WIN32_LEAN_AND_MEAN             // ê±°ì˜ ì‚¬ìš©ë˜ì§€ ì•ŠëŠ” ë‚´ìš©ì„ Windows í—¤ë”ì—ì„œ ì œì™¸í•©ë‹ˆë‹¤.
 #define _HAS_STD_BYTE 0
+#define NOMINMAX
 
 #include <windows.h>
 #include <tchar.h>
@@ -19,6 +20,7 @@
 #include <typeinfo>
 #include <filesystem>
 #include <any>
+#include <random>
 #include <rpc.h>
 
 #pragma comment(lib, "rpcrt4.lib")
@@ -45,14 +47,15 @@ using namespace Microsoft::WRL;
 #include <DirectXTex/DirectXTex.h>
 #include <DirectXTex/DirectXTex.inl>
 
-// °¢Á¾ lib
+// ê°ì¢… lib
 #pragma comment(lib, "DXGI.lib")
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "D3D12.lib")
-#pragma comment( lib, "d3d11.lib" )
+#pragma comment(lib, "d3d11.lib" )
 #pragma comment(lib, "D3DCompiler.lib")
 #pragma comment(lib, "d2d1.lib")
 #pragma comment(lib, "dwrite.lib")
+#pragma comment(lib, "Fmod/fmod_vc.lib")
 
 #ifdef _DEBUG
 #pragma comment(lib, "DirectXTex\\DirectXTex_Debug.lib")
@@ -74,6 +77,7 @@ using namespace Microsoft::WRL;
 #endif
 
 #include <assimp/Importer.hpp>
+#include <assimp/Exporter.hpp>
 #include <assimp/scene.h>
 #include <Assimp/postprocess.h>
 #include <assimp/cimport.h>
@@ -89,6 +93,12 @@ using namespace Microsoft::WRL;
 
 #include "simple_mesh_LH.h"
 #include "SimpleMath_LH.inl"
+
+#include "nlohmann/json.hpp"
+
+#include "NVApi/nvapi.h"
+#pragma comment(lib, "NVApi/nvapi64.lib")
+
 
 
 using int8 = __int8;
@@ -126,9 +136,26 @@ namespace fs = std::filesystem;
 #include "GeoMetryHelper.h"
 #include "SceneManager.h"
 #include "SpriteAction.h"
+#include "Vertex.h"
+#include "InGameGlobal.h"
+#include "SoundManager.h"
+#include "ParticleManager.h"
+
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "Imgui/imgui.h"
+#include "Imgui/imgui_impl_dx12.h"
+#include "Imgui/imgui_impl_win32.h"
+
+#include "ImguiManager.h"
+#include "IComponentFactory.h"
+#define IMGUI_ON
+
+inline std::random_device _random;
+inline std::uniform_int_distribution _random_dist(0, std::numeric_limits<int>::max());
+inline std::uniform_real_distribution<float> _random_dist01(0, 1.0f);
 
 inline void ThrowIfFailed(HRESULT hr) {
     if (FAILED(hr)) {
-        throw std::exception();
+         throw std::exception();
     }
 }

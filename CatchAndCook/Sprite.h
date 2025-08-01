@@ -1,14 +1,14 @@
-#pragma once
+Ôªø#pragma once
+#include "Component.h"
+#include "RendererBase.h"
+#include "SpriteAction.h"
 
-class Mesh;
-class Texture;
-class Shader;
 class ActionCommand;
 
 struct SpriteWorldParam
 {
 	vec3 ndcPos = { 0.0f,0.0f,0.1f };
-	float alpha =1.0f;
+	float alpha = 1.0f;
 
 	vec2 ndcScale = { 1.0f,1.0f };
 	vec2 padding = {};
@@ -32,78 +32,56 @@ struct SpriteRect
 	float bottom;
 };
 
-/*****************************************************************
-*                                                                *
-*                         Sprite                                 *
-*                                                                *
-******************************************************************/
-
-class Sprite  : public enable_shared_from_this<Sprite>
+class Sprite :public Component, public RenderCBufferSetter
 {
 public:
 	Sprite();
 	virtual ~Sprite();
 
 public:
-	virtual void Init() =0 ;
-	virtual void Update() =0;
-	virtual void Render() =0;
+	void Init() override;
+	void Start() override;
+	void Update()override;
+	void Update2()override;
+	void Enable()override;
+	void Disable()override;
+	void RenderBegin() override;
+	void CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other) override;
+	void CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other) override;
+	void SetDestroy() override;
+	void Destroy() override;
+	void SetData(Material* material = nullptr) override;
+
+	void CalculateScreenSpacePos();
 
 public:
-	void SetSize(vec2 size);
-	void SetPos(vec3 screenPos);
-	void SetClipingColor(vec4 color);  // https://imagecolorpicker.com/
+	void SetTexture(shared_ptr<Texture> texture);
+	void SetSize(const vec2& size);
 
-	void AddAction(shared_ptr<ActionCommand> action);
-	void AddChildern(shared_ptr<Sprite> child);
+	void SetLocalPos(const vec3& screenPos);
+	void SetWorldPos(const vec3& worldScreenPos);
+
+	void SetUVCoord(const SpriteRect& rect);
+	void SetClipingColor(const vec4& color);  // https://imagecolorpicker.com/
+	void AddAction(shared_ptr<ActionCommand> action) { _actions.emplace_back(action); };
+	vec3 GetTargetPos() { return _screenLocalPos; }
 
 protected:
+
+
 	SpriteWorldParam _spriteWorldParam;
+	SprtieTextureParam _sprtieTextureParam;
 
-	vec3 _screenPos;
-	vec3 _ndcPos;
+	vec3 _screenLocalPos;
+	vec3 _ndcWorldPos;
 
-	vec2 _screenSize;
 	vec2 _ndcSize;
 
-	vec2 _firstWindowSize;
+	shared_ptr<Texture> _spriteImage;
 
-protected:
-	vector<shared_ptr<Sprite>> _children;
-	weak_ptr<Sprite> _parent;
-
-public:
 	friend class ActionFunc;
-	bool _renderEnable = true;
 	vector<shared_ptr<ActionCommand>> _actions;
-};
 
-/*****************************************************************
-*                                                                *
-*                         BasicSprite                            *
-*                                                                *
-******************************************************************/
-
-class BasicSprite : public Sprite
-{
-
-public:
-	BasicSprite();
-	virtual ~BasicSprite();
-
-public:
-	virtual void Init();
-	virtual void Update();
-	virtual void Render();
-
-	void SetUVCoord(SpriteRect& rect);
-	void SetTexture(shared_ptr<Texture> texture);
-
-private:
-	shared_ptr<Mesh> _mesh;
-	shared_ptr<Shader> _shader;
-	shared_ptr<Texture> _texture;
-	SprtieTextureParam _sprtieTextureParam;
 };
 
 
@@ -122,25 +100,41 @@ public:
 	TextSprite();
 	virtual ~TextSprite();
 
+	void Init() override;
+	void Start() override;
+	void Update()override;
+	void Update2()override;
+	void Enable()override;
+	void Disable()override;
+	void RenderBegin() override;
+	void CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other) override;
+	void CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other) override;
+	void SetDestroy() override;
+	void Destroy() override;
+	void SetData(Material* material = nullptr) override;
+
+	void SetTexture(shared_ptr<Texture> texture) = delete;
 public:
-	virtual void Init();
-	virtual void Update();
-	virtual void Render();
-
-	void SetText(const wstring& text) { _text = text; _textChanged = true; }
+	void SetText(const wstring& text)
+	{
+		if (_text != text)
+			_textChanged = true;
+		_text = text;
+	}
 	void CreateObject(int width, int height, const WCHAR* font, FontColor color, float fontsize);
+	void Clear();
 
-	
 private:
 	bool _textChanged = true;
-	wstring _text =L"NULL";
+	wstring _text = L"NULL";
 	shared_ptr<TextHandle> _textHandle;
-	shared_ptr<Mesh> _mesh;
-	shared_ptr<Shader> _shader;
-	shared_ptr<Texture> _texture;
 	SprtieTextureParam _sprtieTextureParam;
-	BYTE* _sysMemory;
+	BYTE* _sysMemory = nullptr;
+
+	int _width{};
+	int _height{};
 };
+
 
 /*****************************************************************
 *                                                                *
@@ -151,39 +145,39 @@ private:
 class AnimationSprite : public Sprite
 {
 public:
-
 	AnimationSprite();
 	virtual ~AnimationSprite();
 
-public:
-	virtual void Init();
-	virtual void Update();
-	virtual void Render();
+private:
+	void SetUVCoord(const SpriteRect& rect) = delete;
 
+public:
+	void Init() override;
+	void Start() override;
+	void Update()override;
+	void Update2()override;
+	void Enable()override;
+	void Disable()override;
+	void RenderBegin() override;
+	void CollisionBegin(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other) override;
+	void CollisionEnd(const std::shared_ptr<Collider>& collider, const std::shared_ptr<Collider>& other) override;
+	void SetDestroy() override;
+	void Destroy() override;
+	void SetData(Material* material = nullptr) override;
+
+public:
 	void PushUVCoord(SpriteRect& rect);
-	void SetTexture(shared_ptr<Texture> texture);
 	void SetFrameRate(float frameRate) { _frameRate = frameRate; }
 
 private:
 	void AnimationUpdate();
 
 private:
-	shared_ptr<Mesh> _mesh;
-	shared_ptr<Shader> _shader;
-	shared_ptr<Texture> _texture;
 	vector<SprtieTextureParam> _sprtieTextureParam;
 
 private:
-	float _frameRate{1.0f}; //  æ÷¥œ∏ﬁ¿Ãº« ¡¯«‡ º”µµ
-	float _currentTime{}; //«ˆ¿Á æ÷¥œ∏ﬁ¿Ãº« ¡¯«‡ Ω√∞£
-	int32 _currentFrameIndex{}; // «ˆ¿Á æ÷¥œ∏ﬁ¿Ãº« ¿Œµ¶Ω∫
-	int32 _maxFrameIndex =0 ; // √÷¥Î æ÷¥œ∏ﬁ¿Ãº« «¡∑π¿”
+	float _frameRate{ 1.0f }; //  Ïï†ÎãàÎ©îÏù¥ÏÖò ÏßÑÌñâ ÏÜçÎèÑ
+	float _currentTime{}; //ÌòÑÏû¨ Ïï†ÎãàÎ©îÏù¥ÏÖò ÏßÑÌñâ ÏãúÍ∞Ñ
+	int32 _currentFrameIndex{}; // ÌòÑÏû¨ Ïï†ÎãàÎ©îÏù¥ÏÖò Ïù∏Îç±Ïä§
+	int32 _maxFrameIndex = 0; // ÏµúÎåÄ Ïï†ÎãàÎ©îÏù¥ÏÖò ÌîÑÎ†àÏûÑ
 };
-
-
-/*****************************************************************
-*                                                                *
-*                         Invetory                               *
-*                                                                *
-******************************************************************/
-
