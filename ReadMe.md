@@ -71,16 +71,14 @@ The third-person game project developed by designing and building a C++20 and Di
  - A growth‑oriented management tycoon game  
 </details>  
 
-
+#### 줄거리
 <details>
 <summary>줄거리</summary>
 
-   - 망망대해 위에 어느 한 섬. 희귀한 광물 **미스라이트**가 풍부한 것으로 알려진 이 섬에는 무역상인들을 중심으로 한 모험가와 귀족상단이 주둔하여 광물을 채집하고 무역을 하고 있었다. 사람은 모여있고, 돈은 많고, 먹을 것은 부족한 이 섬에서 주인공은 식장을 개업하기로 하는데...  
+   - 망망대해 위에 어느 한 섬. 희귀한 광물 **미스라이트**가 풍부한 것으로 알려진 이 섬에는 무역상인들을 중심으로 한 모험가와 귀족상단이 주둔하여 광물을 채집하고 무역을 하고 있었다. 사람은 모여있고, 돈은 많고, 먹을 것은 부족한 이 섬에서 주인공은 식당을 개업하기로 하는데...  
 </details>  
 
-<br><br>  
-
-# Project Overview  
+#### 영상 / Video
 **Youtube - Devlog**  
  - [[Devlog] DirectX12 - Post Processing](https://youtu.be/-TeBrZH87XQ)  
  - [[Devlog] DirectX12 - Character NPR Toon Shader](https://youtu.be/TLnCw8tBEnE)  
@@ -88,6 +86,31 @@ The third-person game project developed by designing and building a C++20 and Di
  - [[Devlog] DirectX12 - Stylized Water Shader](https://youtu.be/ExiXoHy73so)  
  - [[Devlog] DirectX12 - Collision & PathFinding](https://youtu.be/xzuFgoVAOT0)  
  - [[Devlog] DirectX12 - Skinned Mesh Animation](https://youtu.be/XBQ563GVM80)  
+
+#### 플레이
+ - [실행파일 / Executable File](https://drive.google.com/file/d/1mJVY8-xbjTHjggJgFJks5_SR9z3ktg3_/view?usp=sharing)  
+
+#### 조작법
+<details> <summary>조작법 / Control-Keys</summary>
+
+| 키 / Key | 설명 (한국어)       | Description (English)    |
+| ------- | -------------- | ------------------------ |
+| 1 \~ 5    | 인벤토리 전환        | Switch inventory         |
+| Shift   | 달리기            | Sprint                   |
+| F       | 상호작용           | Interact                 |
+| F1      | Debug View로 전환 | Switch to Debug View     |
+| F2      | 캐릭터 View로 전환   | Switch to Character View |
+| F5      | ImGUI 창 토글     | Toggle ImGUI window      |
+| F9      | 전체화면 토글        | Toggle fullscreen        |
+| \` (백틱) | 마우스 고정 토글      | Toggle mouse lock        |
+
+</details>
+
+
+<br><br>  
+
+# Project Overview  
+
 
 ### 맵소개
 #### 인트로 / Intro
@@ -193,10 +216,10 @@ The third-person game project developed by designing and building a C++20 and Di
 ![image](./docs/Animation105.gif)  
 
 ### Unity-based Level-Design(*Scene*) Loader
-
 ![image](./docs/Scene%20Loader.png)  
 
 #### Scene&Object Json Exporter  
+
 **The project’s functionality was modularized and released as an asset.**  
 [Click to visit the Asset Store](https://assetstore.unity.com/packages/tools/utilities/scene-object-json-exporter-322005)  
 
@@ -288,7 +311,7 @@ The third-person game project developed by designing and building a C++20 and Di
  - 육지 - Sea Water Visual, Movement
 
 **Core Systems**
- - Call based Collision Division Space
+ - Cell based Collision Division Space
  - Path Trail Mover System
  - UI - Text, Texture Rendering System
  - Buffer Pool, Manager
@@ -323,5 +346,5 @@ The third-person game project developed by designing and building a C++20 and Di
 
 * * *  
 
-Middle Present Execute : https://drive.google.com/file/d/1GvVb6xl6p1NtAi3A1yd_0g4KXDfFq1Eu/view?usp=drive_link
+Middle Present Execute : https://drive.google.com/file/d/1GvVb6xl6p1NtAi3A1yd_0g4KXDfFq1Eu/view?usp=sharing
 Last Present Execute : https://drive.google.com/file/d/1mJVY8-xbjTHjggJgFJks5_SR9z3ktg3_/view?usp=sharing
