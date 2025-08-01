@@ -93,7 +93,7 @@ void TestScene_jin::Init()
 	};
 
 	ColliderManager::main->SetCellSize(5);
-	ResourceManager::main->Load<SceneLoader>(L"test", L"../Resources/Datas/Scenes/MainField2.json");
+	ResourceManager::main->Load<SceneLoader>(L"test", L"../Resources/Datas/Scenes/MainField.json");
 	auto sceneLoader = ResourceManager::main->Get<SceneLoader>(L"test");
 	sceneLoader->Load(GetCast<Scene>());
 

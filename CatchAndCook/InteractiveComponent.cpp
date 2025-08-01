@@ -128,7 +128,7 @@ void InteractiveComponent::Start()
 			auto sprite = exitMessage->AddComponent<Sprite>();
 			sprite->SetLocalPos(vec3(0.52f, 0.4f, 0.0f));
 			sprite->SetSize(vec2(0.10f, 0.15f));
-			sprite->SetTexture(ResourceManager::main->Load<Texture>(L"exitTexture",L"../Resources/Textures/exit.png"));
+			sprite->SetTexture(ResourceManager::main->Load<Texture>(L"exitTexture",L"../Resources/Textures/Configs/exit.png"));
 			shared_ptr<Material> material = make_shared<Material>();
 			material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
 			material->SetPass(RENDER_PASS::UI);
@@ -155,7 +155,7 @@ void InteractiveComponent::Start()
 			auto sprite = stopMessage->AddComponent<Sprite>();
 			sprite->SetLocalPos(vec3(0.38f, 0.4f, 0.0f));
 			sprite->SetSize(vec2(0.10f, 0.15f));
-			sprite->SetTexture(ResourceManager::main->Load<Texture>(L"stopTexture", L"../Resources/Textures/stop.png"));
+			sprite->SetTexture(ResourceManager::main->Load<Texture>(L"stopTexture", L"../Resources/Textures/Configs/stop.png"));
 			shared_ptr<Material> material = make_shared<Material>();
 			material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
 			material->SetPass(RENDER_PASS::UI);

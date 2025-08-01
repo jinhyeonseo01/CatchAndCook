@@ -106,7 +106,7 @@ void TestScene::Init()
 	{
 		{
 
-			shared_ptr<Texture> texture = ResourceManager::main->Load<Texture>(L"start", L"Textures/start.jpg");
+			shared_ptr<Texture> texture = ResourceManager::main->Load<Texture>(L"start", L"Textures/Configs/start.jpg");
 			shared_ptr<GameObject> root = CreateGameObject(L"root_test");
 
 			auto meshRenderer = root->AddComponent<MeshRenderer>();

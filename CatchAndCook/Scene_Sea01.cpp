@@ -38,7 +38,7 @@ void Scene_Sea01::Init()
 	Scene::Init();
 
 	caustics = make_shared<Texture>();
-	caustics->Init(L"../Resources/Textures/test.jpg");
+	caustics->Init(L"../Resources/Textures/Configs/water_wave.jpg");
 
 
 	ColliderManager::main->SetCellSize(200);
@@ -134,7 +134,7 @@ void Scene_Sea01::Init()
 
 	ColliderManager::main->SetCellSize(100);
 
-	ResourceManager::main->Load<SceneLoader>(L"test2", L"../Resources/Datas/Scenes/sea2.json");
+	ResourceManager::main->Load<SceneLoader>(L"test2", L"../Resources/Datas/Scenes/Sea.json");
 	auto sceneLoader = ResourceManager::main->Get<SceneLoader>(L"test2");
 	sceneLoader->Load(GetCast<Scene>());
 	auto player = Find(L"seaPlayer");

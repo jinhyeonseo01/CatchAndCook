@@ -68,7 +68,7 @@ void UITestScene::Init()
 
 		inventory->SetLocalPos(vec3(0, 0, 0.3f));
 		inventory->SetSize(vec2(300, 300));
-		inventory->SetTexture(ResourceManager::main->Load<Texture>(L"inventory", L"Textures/start.jpg"));
+		inventory->SetTexture(ResourceManager::main->Load<Texture>(L"inventory", L"Textures/Configs/start.jpg"));
 		inventory->AddAction(make_shared<DragAction>(KeyCode::LeftMouse));
 
 		shared_ptr<Material> material = make_shared<Material>();
@@ -77,14 +77,14 @@ void UITestScene::Init()
 		renderer->AddMaterials({ material });
 
 		{
-			inventory->AddItem(ResourceManager::main->Load<Texture>(L"start", L"Textures/start.jpg"));
-			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/start.jpg"));
-			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/start.jpg"));
-			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/start.jpg"));
-			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/start.jpg"));
-			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/start.jpg"));
-			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/start.jpg"));
-			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/start.jpg"));
+			inventory->AddItem(ResourceManager::main->Load<Texture>(L"start", L"Textures/Configs/start.jpg"));
+			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/Configs/start.jpg"));
+			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/Configs/start.jpg"));
+			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/Configs/start.jpg"));
+			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/Configs/start.jpg"));
+			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/Configs/start.jpg"));
+			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/Configs/start.jpg"));
+			inventory->AddItem(ResourceManager::main->Load<Texture>(L"spriteTest", L"Textures/Configs/start.jpg"));
 		}
 
 	}
@@ -98,7 +98,7 @@ void UITestScene::Init()
 	//	sprite->AddAction(make_shared<DragAction>(KeyCode::LeftMouse));
 	//	sprite->SetLocalPos(vec3(300, 0, 0));
 	//	sprite->SetSize(vec2(100, 100));
-	//	sprite->SetTexture(ResourceManager::main->Load<Texture>(L"start", L"Textures/start.jpg"));
+	//	sprite->SetTexture(ResourceManager::main->Load<Texture>(L"start", L"Textures/Configs/start.jpg"));
 
 	//	shared_ptr<Material> material = make_shared<Material>();
 	//	material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
@@ -113,7 +113,7 @@ void UITestScene::Init()
 	//		child->SetParent(root);
 	//		sprite->SetLocalPos(vec3(-100, 0, 0));
 	//		sprite->SetSize(vec2(50, 50));
-	//		sprite->SetTexture(ResourceManager::main->Load<Texture>(L"disable", L"Textures/disable.png"));
+	//		sprite->SetTexture(ResourceManager::main->Load<Texture>(L"disable", L"Textures/Configs/disable.png"));
 
 	//		shared_ptr<Material> material = make_shared<Material>();
 	//		material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
@@ -127,7 +127,7 @@ void UITestScene::Init()
 	//			child2->SetParent(child);
 	//			sprite->SetSize(vec2(50, 50));
 	//			sprite->SetLocalPos(vec3(100, 0, 0));
-	//			sprite->SetTexture(ResourceManager::main->Load<Texture>(L"disable", L"Textures/disable.png"));
+	//			sprite->SetTexture(ResourceManager::main->Load<Texture>(L"disable", L"Textures/Configs/disable.png"));
 
 
 	//			shared_ptr<Material> material = make_shared<Material>();
@@ -162,7 +162,7 @@ void UITestScene::Init()
 
 			shared_ptr<GameObject> gameObject = CreateGameObject(L"AnimationSprite");
 			auto meshRenderer = gameObject->AddComponent<MeshRenderer>();
-			shared_ptr<Texture> texture = ResourceManager::main->Load<Texture>(L"fire", L"Textures/fire.png");
+			shared_ptr<Texture> texture = ResourceManager::main->Load<Texture>(L"fire", L"Textures/Configs/fire.png");
 			auto& sprite = gameObject->AddComponent<AnimationSprite>();
 			sprite->SetLocalPos(vec3(0.5f, 0.5f, 0.0001f));
 			sprite->SetSize(vec2(0.3f, 0.3f));

@@ -28,7 +28,7 @@ void Weapon::Init(SeaPlayerController* contorller)
 
 	sprite->SetLocalPos(vec3(0.5f, 0.5f, 0.0f));
 	sprite->SetClipingColor(vec4(0, 0, 0, 0));
-	sprite->SetTexture(ResourceManager::main->Load<Texture>(L"targetHud", L"Textures/targetHud.png"));
+	sprite->SetTexture(ResourceManager::main->Load<Texture>(L"targetHud", L"Textures/Configs/targetHud.png"));
 	shared_ptr<Material> material = make_shared<Material>();
 	material->SetShader(ResourceManager::main->Get<Shader>(L"SpriteShader"));
 	material->SetBlendFactor({ 0.4f,0.4f,0.4f,0.4f });

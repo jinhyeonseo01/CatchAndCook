@@ -1091,15 +1091,14 @@ void ResourceManager::CreateDefaultTexture()
 	_cubemap_skyNTexture = Load<Texture>(L"cubemap_sky1", L"Textures/cubemap/Sky_1.png.dds", TextureType::CubeMap);
 	_cubemap_skyETexture = Load<Texture>(L"cubemap_sky2", L"Textures/cubemap/Sky_2.png.dds", TextureType::CubeMap);
 
-	Load<Texture>(L"bleedTexture", L"Textures/bleedTexture.png");
-	Load<Texture>(L"smokeTexture", L"Textures/smoke.png");
-	Load<Texture>(L"bubble", L"Textures/bubble.png");
-	Load<Texture>(L"interactive", L"Textures/interactive.png");
-	Load<Texture>(L"Icon_Water", L"Textures/Icon_Water.png");
-	Load<Texture>(L"success", L"Textures/success.png");
-	Load<Texture>(L"dive", L"Textures/dive.png");
-	Load<Texture>(L"success_red", L"Textures/success_red.png");
-	Load<Texture>(L"success_green", L"Textures/success_green.png");
+	Load<Texture>(L"bleedTexture", L"Textures/Configs/bleedTexture.png");
+	Load<Texture>(L"smokeTexture", L"Textures/Configs/smoke.png");
+	Load<Texture>(L"bubble", L"Textures/Configs/bubble.png");
+	Load<Texture>(L"interactive", L"Textures/Configs/interactive.png");
+	Load<Texture>(L"success", L"Textures/Configs/success.png");
+	Load<Texture>(L"dive", L"Textures/Configs/dive.png");
+	Load<Texture>(L"success_red", L"Textures/Configs/success_red.png");
+	Load<Texture>(L"success_green", L"Textures/Configs/success_green.png");
 }
 
 void ResourceManager::CreateDefaultAnimation()
