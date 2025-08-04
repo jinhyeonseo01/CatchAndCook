@@ -158,7 +158,7 @@ The third-person game project developed by designing and building a C++20 and Di
 ![image](./docs/Animation79.gif)  
 ![image](./docs/Animation84.gif)  
 
-### Collision
+### Spatial Hashing Collision Detection
 ![image](./docs/Animation90.gif)  
 
 ### Frustum Culling
@@ -311,7 +311,7 @@ The third-person game project developed by designing and building a C++20 and Di
  - 육지 - Sea Water Visual, Movement
 
 **Core Systems**
- - Cell based Collision Division Space
+ - Spatial Hashing Collision Detection
  - Path Trail Mover System
  - UI - Text, Texture Rendering System
  - Buffer Pool, Manager
