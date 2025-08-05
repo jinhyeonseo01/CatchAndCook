@@ -215,14 +215,8 @@ The third-person game project developed by designing and building a C++20 and Di
 ### Seawater Visualization & Waves
 ![image](./docs/Animation105.gif)  
 
-#### Geometry, Stream-Output based Particle System
+### Geometry, Stream-Output based Particle System
 ![image](./docs/particle.gif)  
-
-#### Sea Gerstner Waves
-![image](./docs/sea.gif)  
-
-### Unity-based Level-Design(*Scene*) Loader
-![image](./docs/Scene%20Loader.png)  
 
 #### Scene&Object Json Exporter  
 
@@ -230,6 +224,12 @@ The third-person game project developed by designing and building a C++20 and Di
 [Click to visit the Asset Store](https://assetstore.unity.com/packages/tools/utilities/scene-object-json-exporter-322005)  
 
 ![Asset Store](./docs/Asset%20Store.png)  
+
+### Sea Gerstner Waves
+![image](./docs/sea.gif)  
+
+### Unity-based Level-Design(*Scene*) Loader
+![image](./docs/Scene%20Loader.png)  
 
 * * *  
 <br><br>  
