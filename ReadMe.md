@@ -131,6 +131,12 @@ The third-person game project developed by designing and building a C++20 and Di
 #### 부둣가 / Dockside
 ![image](./docs/Animation119.gif)  
 
+#### 파티클 / Particle
+![image](./docs/particle.gif)  
+
+#### 바다 / Sea (Gerstner Waves)
+![image](./docs/sea.gif)  
+
 #### 바닷속 / UnderWater
 ![image](./docs/Animation121.gif)  
 
