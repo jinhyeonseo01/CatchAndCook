@@ -131,12 +131,6 @@ The third-person game project developed by designing and building a C++20 and Di
 #### 부둣가 / Dockside
 ![image](./docs/Animation119.gif)  
 
-#### 파티클 / Particle
-![image](./docs/particle.gif)  
-
-#### 바다 / Sea (Gerstner Waves)
-![image](./docs/sea.gif)  
-
 #### 바닷속 / UnderWater
 ![image](./docs/Animation121.gif)  
 
@@ -220,6 +214,12 @@ The third-person game project developed by designing and building a C++20 and Di
 **(+Rim Light, Simple GI)**
 ### Seawater Visualization & Waves
 ![image](./docs/Animation105.gif)  
+
+#### Geometry, Stream-Output based Particle System
+![image](./docs/particle.gif)  
+
+#### Sea Gerstner Waves
+![image](./docs/sea.gif)  
 
 ### Unity-based Level-Design(*Scene*) Loader
 ![image](./docs/Scene%20Loader.png)  
