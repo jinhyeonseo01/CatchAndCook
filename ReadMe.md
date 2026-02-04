@@ -33,7 +33,7 @@ The third-person game project developed by designing and building a C++20 and Di
 
 #### AI 사용 범위 명시
 - AI의 사용은 Web기반으로 사용하여 그래픽스 이론과 CS 지식 학습, 이론적 설명, Funnel 알고리즘을 도움받았습니다.  
-- 그 외의 직접적인 코드 복사/붙여넣기 나 AI 에이전트를 사용하지 않았습니다. 파이프라인 개발과 기능 및 컨텐츠 개발 전반의 실질적인 개발은 모두 수작업으로 작업되었습니다.
+- 그 외의 직접적인 코드 복사/붙여넣기 나 에이전트 AI를 **사용하지 않았습니다**. 파이프라인 개발과 기능 및 컨텐츠 개발 전반의 실질적인 개발은 모두 수작업으로 작업되었습니다.
 
 <details>
 <summary>English</summary>
