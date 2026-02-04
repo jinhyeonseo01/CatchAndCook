@@ -31,18 +31,18 @@ The third-person game project developed by designing and building a C++20 and Di
  - C++20과 DirectX 12를 활용해 렌더링 파이프라인 프레임워크를 직접 설계·구축하고, 이를 기반으로 플레이 가능한 3인칭 게임을 개발하기 위함  
  - 이 과정을 통해 그래픽스 및 코어 엔진 엔지니어링에 대한 이해를 심화하기 위함  
 
-#### AI 사용 범위 명시
-- AI의 사용은 Web기반으로 사용하여 그래픽스 이론과 CS 지식 학습, 이론적 설명, Funnel 알고리즘을 도움받았습니다.  
-- 그 외의 직접적인 코드 복사/붙여넣기 나 AI 에이전트를 사용하지 않았습니다. 파이프라인 개발과 기능 및 컨텐츠 개발 전반의 실질적인 개발은 모두 수작업으로 작업되었습니다.
-
-*(AI was used through web-based resources to assist with learning graphics theory, computer science concepts, theoretical explanations, and Funnel algorithms. All other practical development was carried out by manually typing the code, without any direct code copying/pasting or development using AI agents.)*
-
 <details>
 <summary>English</summary>
 
  - To design and implement a rendering‑pipeline framework using C++20 and DirectX 12, and develop a playable third‑person game based on it  
  - To deepen my understanding of graphics and core‑engine engineering through this process  
 </details>  
+
+#### AI 사용 범위 명시
+- AI의 사용은 Web기반으로 사용하여 그래픽스 이론과 CS 지식 학습, 이론적 설명, Funnel 알고리즘을 도움받았습니다.  
+- 그 외의 직접적인 코드 복사/붙여넣기 나 AI 에이전트를 사용하지 않았습니다. 파이프라인 개발과 기능 및 컨텐츠 개발 전반의 실질적인 개발은 모두 수작업으로 작업되었습니다.
+
+*(AI was used through web-based resources to assist with learning graphics theory, computer science concepts, theoretical explanations, and Funnel algorithms. All other practical development was carried out by manually typing the code, without any direct code copying/pasting or development using AI agents.)*
 
 ### 사용 기술 & 서드파티
  - C++ 20 (*MSVC*)  
