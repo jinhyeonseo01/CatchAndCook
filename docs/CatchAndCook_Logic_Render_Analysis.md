@@ -336,6 +336,71 @@ flowchart LR
     O --> P["Scattering"]
 ```
 
+### 4.4 테셀레이션 / 패치 기반 지오메트리 흐름
+
+이번에는 엔진 코드뿐 아니라 실제 HLSL도 같이 확인했다. 결론부터 말하면 이 프로젝트는 terrain과 water에서 "실제 DX 테셀레이션 단계"를 사용한다.
+
+확인 근거:
+
+- `CatchAndCook/ResourceManager.cpp:385`, `CatchAndCook/ResourceManager.cpp:389`, `CatchAndCook/ResourceManager.cpp:394`
+- `CatchAndCook/TestScene_jin.cpp:62`, `CatchAndCook/TestScene_jin.cpp:65`, `CatchAndCook/TestScene_jin.cpp:89`
+- `CatchAndCook/Scene_Sea01.cpp:80`, `CatchAndCook/Scene_Sea01.cpp:83`, `CatchAndCook/Scene_Sea01.cpp:104`
+- `CatchAndCook/Terrain.cpp:299`, `CatchAndCook/Terrain.cpp:303`
+- `Resources/Shaders/Terrain.hlsl:13`, `Resources/Shaders/Terrain.hlsl:185`, `Resources/Shaders/Terrain.hlsl:200`
+- `Resources/Shaders/TerrainQuad.hlsl:15`, `Resources/Shaders/TerrainQuad.hlsl:181`, `Resources/Shaders/TerrainQuad.hlsl:195`
+- `Resources/Shaders/seatest.hlsl:18`, `Resources/Shaders/seatest.hlsl:196`, `Resources/Shaders/seatest.hlsl:209`
+- `Resources/Shaders/ShadowCaster_Terrain.hlsl:15`, `Resources/Shaders/ShadowCaster_Terrain.hlsl:138`, `Resources/Shaders/ShadowCaster_Terrain.hlsl:151`
+
+핵심 해석:
+
+- terrain은 `D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH` + `HS_Main` + `DS_Main` 조합으로 로드된다.
+- terrain mesh는 3-control-point 또는 4-control-point patch list를 사용한다.
+- water(`seatest.hlsl`)는 4-control-point patch list 위에서 hull/domain shader를 돌린다.
+- terrain shadow caster도 별도 tessellation shader를 사용해 본 렌더와 shadow silhouette을 맞춘다.
+
+```mermaid
+flowchart TD
+    A["ResourceManager / Scene init"] --> B["ShaderInfo._primitiveType = PATCH"]
+    B --> C["VS/PS + HS_Main/DS_Main 포함 PSO 생성"]
+    C --> D["Mesh topology = 3 or 4 control point patch list"]
+
+    D --> E["VS_Main"]
+    E --> F["ConstantHS"]
+    F --> G["카메라 거리 기반 tess factor 계산"]
+    G --> H["HS_Main"]
+    H --> I["DS_Main"]
+
+    I --> J["Terrain: heightMap displacement + normal 재계산"]
+    I --> K["Water: Gerstner wave displacement"]
+
+    J --> L["PS_Main: detail/normal/mask/blend 맵 합성"]
+    K --> M["PS_Main: bump/cubemap/reflection 계산"]
+
+    J --> N["ShadowCaster_Terrain.hlsl 에서 동일한 tessellation 재사용"]
+```
+
+#### Terrain tessellation에서 실제로 일어나는 일
+
+- `Terrain.hlsl` / `TerrainQuad.hlsl`의 `ConstantHS()`는 패치 중점과 카메라의 거리를 보고 tess factor를 계산한다.
+- 가까운 패치는 더 많이 분할되고, 먼 패치는 factor가 낮아진다.
+- `DS_Main()`은 `heightMap`을 샘플링해 높이를 밀어 올리고, 주변 샘플로 normal까지 다시 계산한다.
+- 픽셀 단계에서는 detail / normal / mask / blend 맵이 대량으로 묶여 들어오며, 결국 terrain은 "heightfield displacement + splat-style layered material" 구조다.
+
+#### Water tessellation에서 실제로 일어나는 일
+
+- `seatest.hlsl`의 `ConstantHS()`도 카메라 거리 기반 adaptive tessellation을 수행한다.
+- `DS_Main()`은 보간된 patch 위치에 `WaveGeneration()`을 적용해서 Gerstner wave 변형을 만든다.
+- 픽셀 단계에서는 `_bumpMap`, `_bumpMap2`, `_dudv`, cubemap을 섞어 수면 normal/reflection을 만든다.
+
+즉 water는 단순 plane scrolling UV가 아니라:
+
+1. patch 분할
+2. domain displacement
+3. normal animation
+4. environment reflection
+
+까지 들어간다.
+
 ---
 
 ## 5. 리소스 바인딩과 드로우콜 생성 구조
@@ -402,6 +467,168 @@ flowchart TD
 - `InstancingManager`는 shader가 요구하는 structured buffer 이름을 보고 setter를 호출한다.
 - `Material::SetData()`는 texture descriptor table과 injector cbuffer를 바인딩한다.
 - `RendererBase`는 "그리기 로직"보다 "draw 직전 데이터 공급 인터페이스" 역할이 더 크다.
+
+### 5.3 `cbuffer` 주입 구조
+
+이 프로젝트의 `cbuffer` 주입은 크게 3계층이다.
+
+1. 프레임 전역 CBV 직접 바인딩
+2. `Material` injector 기반 동적 `cbuffer`
+3. 컴포넌트/렌더러가 직접 넣는 per-draw `cbuffer`
+
+#### A. 프레임 전역 CBV
+
+- `Scene::GlobalSetting()`이 `b0`에 `GlobalParam`을 넣는다.
+- `Camera::PushData()` + `Camera::SetData()`가 `b2`에 카메라 행렬을 넣는다.
+- `LightManager::SetData()`가 `b3`에 light helper를 넣고, 별도로 `t16` 구조화 버퍼도 바인딩한다.
+- `InstancingManager`가 `b4`에 `InstanceOffsetParam`을 넣는다.
+- `ShadowManager::SetData()`가 `b6`에 shadow caster 파라미터를 넣는다.
+- shadow pass는 `b7`에 현재 cascade index를 넣는다.
+
+```mermaid
+flowchart LR
+    A["Scene::GlobalSetting"] -->|"b0"| G["Graphics/Compute Root"]
+    B["Camera::SetData"] -->|"b2"| G
+    C["LightManager::SetData"] -->|"b3"| G
+    D["InstancingManager"] -->|"b4"| G
+    E["ShadowManager::SetData"] -->|"b6"| G
+    F["Scene::ShadowPass / WaterController / injector"] -->|"b7,b10..."| G
+```
+
+#### B. `Material` injector 기반 `cbuffer`
+
+이쪽이 이 프로젝트의 특이점이다. 셰이더가 "어떤 material param cbuffer가 필요한지"를 코드에서 선언하고, 실제 머티리얼 바인딩 시 injector가 동적으로 CBV를 만들어 준다.
+
+확인 근거:
+
+- `CatchAndCook/Material.h:20`
+- `CatchAndCook/Material.cpp:48`, `CatchAndCook/Material.cpp:63`, `CatchAndCook/Material.cpp:89`
+- `CatchAndCook/ICBufferInjector.h:30`
+- `CatchAndCook/CbufferParam.h:53`, `CatchAndCook/CbufferParam.h:72`, `CatchAndCook/CbufferParam.h:119`, `CatchAndCook/CbufferParam.h:137`, `CatchAndCook/CbufferParam.h:157`
+- `CatchAndCook/Shader.cpp:324`
+
+대표 injector:
+
+- `DefaultMaterialParam`
+- `EnvMaterialParam`
+- `PlayerMaterialParam`
+- `WaterParam`
+- `TerrainDetailsParam`
+- `SeaDefaultMaterialParam`
+
+```mermaid
+flowchart TD
+    A["ResourceManager::Load<Shader>()"] --> B["shader->SetInjector(BufferType...)"]
+    B --> C["Material::SetShader(shader)"]
+    C --> D["InjectorManager 가 BufferType -> Injector 생성"]
+    D --> E["Material::_shaderInjectors 에 저장"]
+
+    E --> F["드로우 직전 Material::SetData()"]
+    F --> G["injector->Inject(material)"]
+    G --> H["BufferManager::CreateAndGetBufferPool(...)->Alloc(1)"]
+    H --> I["material property -> C struct memcpy"]
+    I --> J["injector->SetData(shader)"]
+    J --> K["shader->GetRegisterIndex(cbufferName)"]
+    K --> L["SetGraphicsRootConstantBufferView(register, GPUAddress)"]
+```
+
+즉 이 구조는 "머티리얼 프로퍼티 dictionary -> C++ struct -> 동적 CBV -> shader named register"로 이어진다.
+
+#### C. 컴포넌트가 직접 넣는 `cbuffer`
+
+모든 것이 injector로 끝나는 것은 아니다. 렌더러의 `_cbufferSetters`가 먼저 돌고, 그 안에서 직접 `cbuffer`를 만들어 꽂는 경로도 있다.
+
+대표 예:
+
+- `WaterController::SetData()`가 `SeaParam` 이름을 찾아 수면 파라미터를 직접 바인딩
+- `ProgressCycleComponent`가 UI progress 관련 CBV를 직접 바인딩
+- `Sprite`, `RectTransform`, `ImageRenderer`도 각자 필요한 per-draw CBV를 직접 넣음
+
+즉 material injector는 "머티리얼 공통 파라미터", renderer/component setter는 "오브젝트/효과 전용 파라미터"를 맡는다.
+
+### 5.4 `StructuredBuffer` 주입 구조
+
+`StructuredBuffer` 쪽은 더 흥미롭다. 이 프로젝트는 HLSL의 `t30~t39` 영역을 "instance/오브젝트 전용 structured data 슬롯"으로 써서, draw 직전 CPU가 데이터를 쌓고 offset으로 인덱싱하게 만든다.
+
+확인 근거:
+
+- `CatchAndCook/Shader.cpp:339`, `CatchAndCook/Shader.cpp:592`, `CatchAndCook/Shader.cpp:608`
+- `CatchAndCook/BufferManager.cpp:115`, `CatchAndCook/BufferManager.cpp:282`
+- `CatchAndCook/InstancingManager.cpp:8`, `CatchAndCook/InstancingManager.cpp:55`
+- `Resources/Shaders/Global_b0.hlsl:16`, `Resources/Shaders/Global_b0.hlsl:20`
+- `Resources/Shaders/Transform_b1.hlsl:24`
+- `Resources/Shaders/ObjectSetting_t31.hlsl:21`
+- `Resources/Shaders/Skinned_t32.hlsl:16`
+- `Resources/Shaders/Light_b3.hlsl:52`
+
+대표 structured resource:
+
+- `TransformDatas : register(t30)`
+- `ObjectSettingDatas : register(t31)`
+- `BoneDatas : register(t32)`
+- `g_lights : register(t16)` -> light는 별도 global slot
+
+```mermaid
+flowchart TD
+    A["Shader::Profile()"] --> B["reflection으로 BoundResources 수집"]
+    B --> C["registerType == t && bufferType == buffer"]
+    C --> D["ShaderProfileInfo.structuredBuffers 저장"]
+
+    D --> E["Scene pass loop"]
+    E --> F["InstancingManager::Render / RenderNoInstancing"]
+    F --> G["structured resource 이름 순회"]
+    G --> H["BufferManager: name -> BufferType 매핑"]
+    H --> I["해당 StructuredBuffer pool 확보"]
+    I --> J["Renderer structured setter SetData(pool, material)"]
+    J --> K["pool SRV 를 root descriptor table(t30~t39)로 바인딩"]
+    K --> L["현재 write offset 을 b4 InstanceOffsetParam 에 기록"]
+    L --> M["HLSL 이 offset + instanceID 로 데이터 읽기"]
+```
+
+실제 HLSL 사용 패턴은 이렇다.
+
+- `TransformDatas[offset[STRUCTURED_OFFSET(30)].r + instanceID]`
+- `ObjectSettingDatas[offset[STRUCTURED_OFFSET(31)].r + instanceID]`
+- `BoneDatas[offset[STRUCTURED_OFFSET(32)].r + BoneMatrixSize * 2 * instanceID + boneIndex]`
+
+즉 structured buffer 자체는 프레임 단위 append처럼 채워지고, 현재 drawcall의 시작 위치를 `b4`가 알려 주는 구조다.
+
+#### 이 구조가 중요한 이유
+
+- 같은 shader가 여러 오브젝트를 한 번에 그려도 per-instance 데이터를 유지할 수 있다.
+- transform, object setting, bone data를 서로 독립된 SRV 스트림으로 유지할 수 있다.
+- skinned mesh도 bone matrix를 큰 `StructuredBuffer` 한 덩어리로 밀어 넣고 offset으로 slice 해서 읽는다.
+
+참고로 `Skinned_t32.hlsl`에는 `cbuffer BoneParam : register(b5)`도 남아 있지만, 실제 계산 함수는 `BoneDatas : register(t32)`와 `offset` 기반 경로를 더 적극적으로 사용한다. 즉 b5는 레거시/보조 경로이고, 현재 주 흐름은 structured bone buffer 쪽에 가깝다.
+
+### 5.5 루트 시그니처와 레지스터 규약
+
+`RootSignature.cpp`를 보면 그래픽스 루트 시그니처는 사실상 "이 프로젝트 전용 ABI" 역할을 한다.
+
+- root `0~11`: 직접 CBV (`b0~b11`)
+- root `13`: 일반 SRV table (`t0~t15`)
+- root `14`: long SRV table (`t40~t99`)
+- root `16~21`: shadow / GBuffer global SRV
+- root `22~31`: structured SRV slot (`t30~t39`)
+- root `32`: light structured SRV (`t16`)
+- root `33`: extra global SRV (`t17~t19`)
+
+compute 루트 시그니처는 더 단순하다.
+
+- root `0~9`: 직접 CBV
+- root `10`: SRV/UAV table
+- root `11`: `g_lights`
+- root `12`: shadow textures
+
+즉 이 프로젝트는 descriptor table을 "범용 한 장"으로 퉁치는 것이 아니라:
+
+1. 일반 텍스처
+2. 장문 텍스처 배열
+3. structured instance data
+4. light
+5. GBuffer / shadow
+
+를 슬롯 성격별로 분리해서 쓴다.
 
 ---
 
@@ -834,6 +1061,17 @@ flowchart TD
 - 씬 데이터와 행동 코드를 분리
 - Unity export된 배치를 재사용하면서 게임 로직은 C++에서 유지
 
+### 8.10 거리 기반 adaptive tessellation
+
+- `Terrain.hlsl`, `TerrainQuad.hlsl`, `seatest.hlsl`의 hull shader가 카메라 거리로 tess factor를 계산
+- terrain shadow pass도 `ShadowCaster_Terrain.hlsl`에서 동일 계열 tessellation 사용
+
+효과:
+
+- 가까운 지형/수면은 디테일 유지
+- 먼 영역은 patch 분할 수를 줄여 과도한 기하량을 억제
+- 본 패스와 shadow pass의 지오메트리 silhouette 차이를 줄임
+
 ```mermaid
 flowchart TD
     A["CPU 최적화"] --> B["Frustum culling"]
@@ -843,6 +1081,7 @@ flowchart TD
     E["GPU 최적화"] --> F["Deferred GBuffer"]
     E --> G["4-split shadow map"]
     E --> H["Ping-Pong compute"]
+    E --> O["Adaptive tessellation"]
 
     I["메모리/수명주기"] --> J["Buffer/Descriptor pool"]
     I --> K["Bullet object pool"]
@@ -902,4 +1141,4 @@ flowchart TD
 
 ## 10. 한 줄 요약
 
-`CatchAndCook`의 런타임은 `Game`이 프레임을 스케줄하고, `Scene`이 로직과 렌더 패스를 통합 관리하며, `RendererBase + Material + InstancingManager + ComputeManager`가 실제 GPU 파이프라인을 완성하는 구조다. 그 위에 메인 필드의 경제/조리 루프와 바다 씬의 수중 사냥 루프가 씬 전환으로 이어지며, `SceneLoader`가 정적 콘텐츠를 복원하고 각 씬 C++ 코드가 실제 플레이 규칙을 붙인다.
+`CatchAndCook`의 런타임은 `Game`이 프레임을 스케줄하고, `Scene`이 로직과 렌더 패스를 통합 관리하며, `RendererBase + Material + InstancingManager + ComputeManager`가 실제 GPU 파이프라인을 완성하는 구조다. 그 위에 terrain/water tessellation, `cbuffer` injector, structured buffer offset 바인딩 같은 엔진 기술 계층이 얹혀 있고, 메인 필드의 경제/조리 루프와 바다 씬의 수중 사냥 루프가 씬 전환으로 이어지며, `SceneLoader`가 정적 콘텐츠를 복원하고 각 씬 C++ 코드가 실제 플레이 규칙을 붙인다.

@@ -154,7 +154,7 @@ Most of the substantive work involved in pipeline development, feature implement
 ![image](./docs/Flow%20Chart%20Pass.png)  
 
 ### Mermaid Flow
-[flow](./docs/CatchAndCook_Logic_Render_Analysis.md)  
+ - [Mermaid 형태로 출력한 동작 Flow 문서](./docs/CatchAndCook_Logic_Render_Analysis.md)  
 
 * * *  
 <br><br>  
